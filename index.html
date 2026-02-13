@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mercado Digital - Sistema Ativo</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f6f9;
+}
+
+header {
+    background: #198754;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background: #145c32;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+section {
+    padding: 40px 20px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+h2 {
+    color: #198754;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+button {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #146c43;
+}
+
+.status {
+    padding: 10px;
+    background: #e9f7ef;
+    border-left: 4px solid #198754;
+    margin-top: 15px;
+}
+
+footer {
+    background: #198754;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+</style>
+
+<script>
+let carrinho = [];
+
+function adicionarProduto(nome, preco) {
+    carrinho.push({nome, preco});
+    alert(nome + " adicionado ao carrinho!");
+}
+
+function finalizarPedido() {
+    if (carrinho.length === 0) {
+        alert("Seu carrinho está vazio.");
+        return;
+    }
+
+    let total = carrinho.reduce((soma, item) => soma + item.preco, 0);
+    alert("Pedido enviado com sucesso!\nTotal: R$ " + total.toFixed(2));
+    carrinho = [];
+}
+
+function consultarFiado() {
+    let saldo = 127.50;
+    alert("Seu saldo atual no fiado é: R$ " + saldo.toFixed(2) + 
+    "\nVencimento: 20/03/2026");
+}
+
+function agendarEntrega() {
+    alert("Entrega agendada com sucesso!\nData: 15/02/2026\nHorário: 18:00");
+}
+</script>
+
+</head>
+<body>
+
+<header>
+<h1>Mercado São Gabriel</h1>
+<p>Aberto das 08h às 20h | Rua Central, 123 | WhatsApp: (00) 99999-9999</p>
+</header>
+
+<nav>
+<a href="#promocoes">Promoções</a>
+<a href="#catalogo">Catálogo</a>
+<a href="#pedido">Pedidos</a>
+<a href="#fiado">Fiado</a>
+<a href="#entrega">Entrega</a>
+</nav>
+
+<section id="promocoes">
+<h2>🔥 Promoções da Semana</h2>
+<div class="grid">
+<div class="card">
+<h3>Arroz 5kg</h3>
+<p><strong>R$ 19,90</strong></p>
+<p>Promoção válida até domingo</p>
+</div>
+
+<div class="card">
+<h3>Óleo de Soja 900ml</h3>
+<p><strong>R$ 6,49</strong></p>
+<p>Estoque limitado</p>
+</div>
+
+<div class="card">
+<h3>Refrigerante 2L</h3>
+<p><strong>R$ 8,99</strong></p>
+<p>Oferta especial</p>
+</div>
+</div>
+</section>
+
+<section id="catalogo">
+<h2>🛒 Catálogo de Produtos</h2>
+<div class="grid">
+<div class="card">
+<h3>Feijão 1kg</h3>
+<p>R$ 7,50</p>
+<button onclick="adicionarProduto('Feijão 1kg', 7.50)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Açúcar 1kg</h3>
+<p>R$ 4,20</p>
+<button onclick="adicionarProduto('Açúcar 1kg', 4.20)">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Macarrão 500g</h3>
+<p>R$ 3,80</p>
+<button onclick="adicionarProduto('Macarrão 500g', 3.80)">Adicionar</button>
+</div>
+</div>
+</section>
+
+<section id="pedido">
+<h2>📦 Finalizar Pedido</h2>
+<p>Após adicionar os produtos, clique abaixo para enviar seu pedido.</p>
+<button onclick="finalizarPedido()">Finalizar Pedido</button>
+<div class="status">
+Status atual: Recebendo pedidos normalmente 🟢
+</div>
+</section>
+
+<section id="fiado">
+<h2>💳 Consulta de Fiado</h2>
+<p>Clientes cadastrados podem consultar saldo e vencimento.</p>
+<button onclick="consultarFiado()">Consultar Meu Fiado</button>
+</section>
+
+<section id="entrega">
+<h2>🚚 Agendamento de Entrega</h2>
+<p>Escolha o melhor horário para receber sua compra.</p>
+<button onclick="agendarEntrega()">Agendar Entrega</button>
+</section>
+
+<footer>
+<p>Sistema Mercado Digital - Em Operação | Desenvolvido por Gabriel</p>
+</footer>
+
+</body>
+</html>
+
+
