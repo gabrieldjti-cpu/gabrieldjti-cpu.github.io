@@ -1,256 +1,393 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Mercado Jacinto | Sistema Digital</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
-    --verde:#198754;
-    --verde-escuro:#146c43;
-    --bg:#f1f4f8;
+--verde:#198754;
+--verde-escuro:#146c43;
+--bg:#f1f4f8;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
 
-body{background:var(--bg);}
+body{
+background:var(--bg);
+}
+
+/* HEADER */
 
 header{
-    background:linear-gradient(135deg,var(--verde),#20c997);
-    color:white;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
+background:linear-gradient(135deg,var(--verde),#20c997);
+color:white;
+padding:30px;
+text-align:center;
+box-shadow:0 3px 10px rgba(0,0,0,.15);
 }
+
 header h1{
-    font-size:32px;
-    margin-top:10px;
-    font-weight:600;
-    letter-spacing;1px
+font-size:32px;
+margin-top:10px;
+font-weight:600;
+letter-spacing:1px;
 }
+
 header p{
-    opacity:9;
-    font-size:14px;
-    margin-top:5px;
+opacity:.9;
+font-size:14px;
+margin-top:5px;
 }
+
+.logo{
+width:120px;
+height:120px;
+object-fit:cover;
+border-radius:50%;
+margin-bottom:10px;
+}
+
+/* MENU */
+
 nav{
-    background:#0f5132;
-    padding:15px;
-    text-align:center;
-    position:sticky;
-    top:o;
-    z-index:1000;
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
+background:#0f5132;
+padding:15px;
+text-align:center;
+position:sticky;
+top:0;
+z-index:1000;
+box-shadow:0 3px 10px rgba(0,0,0,.15);
 }
 
 nav a{
-    color:white;
-    text-decoration:none;
-    margin:0 18px;
-    font-weight:500;
-    transition:0.2s;
+color:white;
+text-decoration:none;
+margin:0 18px;
+font-weight:500;
+transition:.2s;
 }
 
 nav a:hover{
-    color:#20c997;
+color:#20c997;
 }
+
+/* SECTION */
 
 section{
-    max-width:1100px;
-    margin:40px auto;
-    padding:0 20px;
+max-width:1100px;
+margin:40px auto;
+padding:0 20px;
 }
 
-h2{color:var(--verde);
-   margin-bottom:20px;
-   font-size:26px;
-   border-left:6px solid var(--verde);
-   pading-left:10px;
+h2{
+color:var(--verde);
+margin-bottom:20px;
+font-size:26px;
+border-left:6px solid var(--verde);
+padding-left:10px;
 }
+
+/* BUSCA */
+
+.buscaBox{
+width:100%;
+max-width:420px;
+margin-bottom:25px;
+}
+
 #buscarProduto{
-    width:100%;
-    max-width:400px;
-    padding:12px;
-    margin-buttom:20px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:14px
+width:100%;
+padding:14px 18px;
+border-radius:30px;
+border:1px solid #ddd;
+font-size:14px;
+outline:none;
+transition:.3s;
+box-shadow:0 4px 10px rgba(0,0,0,.05);
 }
+
+#buscarProduto:focus{
+border:1px solid var(--verde);
+box-shadow:0 0 8px rgba(25,135,84,.4);
+}
+
+/* GRID */
 
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:22px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:22px;
 }
 
+/* CARD */
+
 .card{
-    background:white;
-    padding:22px;
-    border-radius:14px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:.3s;
-    text-align:center;
+background:white;
+padding:22px;
+border-radius:14px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+transition:.3s;
+text-align:center;
+cursor:pointer;
 }
-.card h3{
-    margin-bottom:8px;
-    }
-    .card p{
-    font-weight:600;
-    color:#333;
-    }
-.card{
-    cursor:pointer;
-}
+
 .card:hover{
-    transform:translateY(-6px) scale(1.02);
-    box-shadow:0 12px 25px rgba(0,0,0,.15);
+transform:translateY(-6px) scale(1.02);
+box-shadow:0 12px 25px rgba(0,0,0,.15);
 }
+
+.card h3{
+margin-bottom:8px;
+}
+
+.card p{
+font-weight:600;
+color:#333;
+}
+
+/* BOTÃO */
 
 button{
-    background:var(--verde);
-    color:white;
-    border:none;
-    padding:10px 16px;
-    border-radius:10px;
-    cursor:pointer;
-    margin-top:12px;
-    font-weight:600;
-    transition:.2s;
+background:var(--verde);
+color:white;
+border:none;
+padding:10px 16px;
+border-radius:10px;
+cursor:pointer;
+margin-top:12px;
+font-weight:600;
+transition:.2s;
 }
 
 button:hover{
-     background:var(--verde-escuro);
-     transform:scale(1.05);         
+background:var(--verde-escuro);
+transform:scale(1.05);
 }
+
+/* STATUS */
 
 .status{
-    margin-top:15px;
-    padding:15px;
-    border-radius:8px;
-    background:#e9f7ef;
-    border-left:5px solid var(--verde);
+margin-top:15px;
+padding:15px;
+border-radius:8px;
+background:#e9f7ef;
+border-left:5px solid var(--verde);
 }
+
+/* CARRINHO */
 
 #carrinhoBox{
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    background:white;
-    width:260px;
-    padding:18px;
-    border-radius:14px;
-    box-shadow:0 12px 30px rgba(0,0,0,.2);
-    boder-top:4px solid var(--verde);
+position:fixed;
+right:20px;
+bottom:20px;
+background:white;
+width:260px;
+padding:18px;
+border-radius:14px;
+box-shadow:0 12px 30px rgba(0,0,0,.2);
+border-top:4px solid var(--verde);
 }
 
-footer{
-    background:var(--verde);
-    color:white;
-    text-align:center;
-    padding:18px;
-    margin-top:40px;
+/* LOGIN */
+
+#loginBox{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
+width:300px;
+z-index:2000;
 }
-    .logo{
-        widht:120px;
-        height:120px;
-        object-fit:cover;
-        boder-radius:50%;
-        margin-bottom:10px;
-    }
+
+/* FOOTER */
+
+footer{
+background:var(--verde);
+color:white;
+text-align:center;
+padding:18px;
+margin-top:40px;
+}
+
 </style>
 
 <script>
 
 let carrinho=[];
 
-/* =========================
-   PREÇOS DINÂMICOS HORTIFRÚTI
-========================= */
+/* HORTIFRUTI */
 
-const hortifrutiProdutos = {
-    tomate: {nome:"Tomate 1kg", preco:6.90},
-    banana: {nome:"Banana Prata 1kg", preco:4.50},
-    alface: {nome:"Alface", preco:2.99},
-    batata: {nome:"Batata Inglesa 1kg", preco:5.80},
-    cebola: {nome:"Cebola 1kg", preco:4.20},
-    maca: {nome:"Maçã Gala 1kg", preco:7.90}
+const hortifrutiProdutos={
+tomate:{nome:"Tomate 1kg",preco:6.90},
+banana:{nome:"Banana Prata 1kg",preco:4.50},
+alface:{nome:"Alface",preco:2.99},
+batata:{nome:"Batata Inglesa 1kg",preco:5.80},
+cebola:{nome:"Cebola 1kg",preco:4.20},
+maca:{nome:"Maçã Gala 1kg",preco:7.90}
 };
 
 function aplicarPromocoes(){
-    const hoje = new Date().getDay();
 
-    if(hoje === 1){ // Segunda
-        hortifrutiProdutos.banana.preco = 3.99;
-    }
-    if(hoje === 3){ // Quarta
-        hortifrutiProdutos.tomate.preco = 5.90;
-    }
-    if(hoje === 5){ // Sexta
-        hortifrutiProdutos.maca.preco = 6.50;
-    }
+const hoje=new Date().getDay();
 
-    atualizarPrecosTela();
+if(hoje===1){hortifrutiProdutos.banana.preco=3.99;}
+if(hoje===3){hortifrutiProdutos.tomate.preco=5.90;}
+if(hoje===5){hortifrutiProdutos.maca.preco=6.50;}
+
+atualizarPrecosTela();
 }
 
 function atualizarPrecosTela(){
-    for(let key in hortifrutiProdutos){
-        const el = document.getElementById(key+"Preco");
-        if(el){
-            el.innerText = "R$ " + hortifrutiProdutos[key].preco.toFixed(2);
-        }
-    }
+
+for(let key in hortifrutiProdutos){
+
+const el=document.getElementById(key+"Preco");
+
+if(el){
+el.innerText="R$ "+hortifrutiProdutos[key].preco.toFixed(2);
 }
 
-/* =========================
-   CARRINHO
-========================= */
+}
+
+}
+
+/* CARRINHO */
 
 function atualizarCarrinho(){
-    const lista=document.getElementById("listaCarrinho");
-    lista.innerHTML="";
-    let total=0;
 
-    carrinho.forEach(item=>{
-        total+=item.preco;
-        lista.innerHTML+=`<div>${item.nome} - R$ ${item.preco.toFixed(2)}</div>`;
-    });
+const lista=document.getElementById("listaCarrinho");
+lista.innerHTML="";
+let total=0;
 
-    document.getElementById("total").innerText="Total: R$ "+total.toFixed(2);
+carrinho.forEach(item=>{
+total+=item.preco;
+lista.innerHTML+=`<div>${item.nome} - R$ ${item.preco.toFixed(2)}</div>`;
+});
+
+document.getElementById("total").innerText="Total: R$ "+total.toFixed(2);
+
 }
 
 function adicionarProduto(nome,preco){
-    carrinho.push({nome,preco});
-    atualizarCarrinho();
+carrinho.push({nome,preco});
+atualizarCarrinho();
 }
 
 function adicionarHorti(chave){
-    const p = hortifrutiProdutos[chave];
-    adicionarProduto(p.nome,p.preco);
+const p=hortifrutiProdutos[chave];
+adicionarProduto(p.nome,p.preco);
 }
 
-function finalizarPedido(){
-    if(carrinho.length===0){
-        alert("Carrinho vazio.");
-        return;
-    }
+/* BUSCA */
 
-    alert("✅ Pedido enviado com sucesso!");
-    carrinho=[];
-    atualizarCarrinho();
+function filtrarProdutos(){
+
+let input=document.getElementById("buscarProduto").value.toLowerCase();
+let cards=document.querySelectorAll(".card");
+
+cards.forEach(card=>{
+
+let nome=card.innerText.toLowerCase();
+
+if(nome.includes(input)){
+card.style.display="block";
+}else{
+card.style.display="none";
+}
+
+});
+
+}
+
+/* SISTEMA */
+
+function finalizarPedido(){
+
+if(carrinho.length===0){
+alert("Carrinho vazio.");
+return;
+}
+
+alert("✅ Pedido enviado com sucesso!");
+carrinho=[];
+atualizarCarrinho();
+
 }
 
 function consultarFiado(){
-    alert("Saldo fiado: R$ 127,50\nVencimento: 20/03/2026");
+alert("Saldo fiado: R$ 127,50\nVencimento: 20/03/2026");
 }
 
 function agendarEntrega(){
-    alert("Entrega agendada para 15/02/2026 às 18:00");
+alert("Entrega agendada para 15/02/2026 às 18:00");
 }
 
-window.onload = aplicarPromocoes;
+/* LOGIN CLIENTE */
+
+function abrirLogin(){
+document.getElementById("loginBox").style.display="block";
+}
+
+function fecharLogin(){
+document.getElementById("loginBox").style.display="none";
+}
+
+function criarConta(){
+
+let email=document.getElementById("loginEmail").value;
+let senha=document.getElementById("loginSenha").value;
+
+if(email=="" || senha==""){
+alert("Preencha os campos");
+return;
+}
+
+localStorage.setItem("clienteEmail",email);
+localStorage.setItem("clienteSenha",senha);
+
+alert("Conta criada com sucesso!");
+
+}
+
+function entrarConta(){
+
+let email=document.getElementById("loginEmail").value;
+let senha=document.getElementById("loginSenha").value;
+
+let emailSalvo=localStorage.getItem("clienteEmail");
+let senhaSalva=localStorage.getItem("clienteSenha");
+
+if(email===emailSalvo && senha===senhaSalva){
+
+alert("Bem vindo "+email);
+fecharLogin();
+
+}else{
+
+alert("Login inválido");
+
+}
+
+}
+
+window.onload=aplicarPromocoes;
 
 </script>
 
@@ -260,26 +397,36 @@ window.onload = aplicarPromocoes;
 
 <header>
 
-<img class="logo" src="https://gabrieldjti-cpu.github.io/logo.png" alt="Supermercado Jacinto">
+<img class="logo" src="https://gabrieldjti-cpu.github.io/logo.png">
 
 <h1>Supermercado Jacinto</h1>
 
 <p>Sistema Digital em Operação • 08h às 20h</p>
+
 </header>
 
 <nav>
+
 <a href="#promocoes">Promoções</a>
 <a href="#catalogo">Catálogo</a>
 <a href="#hortifruti">Hortifrúti</a>
 <a href="#pedido">Pedidos</a>
 <a href="#fiado">Fiado</a>
 <a href="#entrega">Entrega</a>
+<a href="#" onclick="abrirLogin()">👤 Login</a>
+
 </nav>
 
 <section id="catalogo">
+
 <h2>🛒 Catálogo</h2>
-<input type="text" id="buscarProduto" placeholder="Buscar produto..." onkeyup="filtrarProdutos()">
+
+<div class="buscaBox">
+<input type="text" id="buscarProduto" placeholder="🔎 Buscar produto..." onkeyup="filtrarProdutos()">
+</div>
+
 <div class="grid">
+
 <div class="card">
 <h3>Feijão 1kg</h3>
 <p>R$ 7,50</p>
@@ -297,10 +444,13 @@ window.onload = aplicarPromocoes;
 <p>R$ 3,80</p>
 <button onclick="adicionarProduto('Macarrão 500g',3.80)">Adicionar</button>
 </div>
+
 </div>
+
 </section>
 
 <section id="hortifruti">
+
 <h2>🥦 Hortifrúti Fresquinho</h2>
 
 <div class="grid">
@@ -323,55 +473,72 @@ window.onload = aplicarPromocoes;
 <button onclick="adicionarHorti('alface')">Adicionar</button>
 </div>
 
-<div class="card">
-<h3>Batata Inglesa 1kg</h3>
-<p id="batataPreco">R$ 5,80</p>
-<button onclick="adicionarHorti('batata')">Adicionar</button>
 </div>
 
-<div class="card">
-<h3>Cebola 1kg</h3>
-<p id="cebolaPreco">R$ 4,20</p>
-<button onclick="adicionarHorti('cebola')">Adicionar</button>
-</div>
-
-<div class="card">
-<h3>Maçã Gala 1kg</h3>
-<p id="macaPreco">R$ 7,90</p>
-<button onclick="adicionarHorti('maca')">Adicionar</button>
-</div>
-
-</div>
 </section>
 
 <section id="pedido">
+
 <h2>📦 Finalizar Pedido</h2>
+
 <button onclick="finalizarPedido()">Finalizar Pedido</button>
 
 <div class="status">
 🟢 Sistema online — pedidos sendo recebidos normalmente
 </div>
+
 </section>
 
 <section id="fiado">
+
 <h2>💳 Consulta de Fiado</h2>
+
 <button onclick="consultarFiado()">Consultar</button>
+
 </section>
 
 <section id="entrega">
+
 <h2>🚚 Agendar Entrega</h2>
+
 <button onclick="agendarEntrega()">Agendar</button>
+
 </section>
 
 <div id="carrinhoBox">
+
 <h3>🛒 Carrinho</h3>
+
 <div id="listaCarrinho"></div>
+
 <hr>
+
 <p id="total">Total: R$ 0,00</p>
+
+</div>
+
+<!-- LOGIN -->
+
+<div id="loginBox">
+
+<h3>👤 Login do Cliente</h3>
+
+<input id="loginEmail" placeholder="Email" style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;">
+
+<input id="loginSenha" type="password" placeholder="Senha" style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;">
+
+<button onclick="entrarConta()" style="width:100%;margin-top:10px;">Entrar</button>
+
+<button onclick="criarConta()" style="width:100%;margin-top:10px;background:#20c997;">Criar Conta</button>
+
+<button onclick="fecharLogin()" style="width:100%;margin-top:10px;background:#dc3545;">Fechar</button>
+
 </div>
 
 <footer>
+
 <p>Mercado Digital • Sistema Ativo • Desenvolvido por Gabriel</p>
+
 </footer>
 
 </body>
