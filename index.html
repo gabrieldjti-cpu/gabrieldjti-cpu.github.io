@@ -200,21 +200,6 @@ box-shadow:0 12px 30px rgba(0,0,0,.2);
 border-top:4px solid var(--verde);
 }
 
-/* LOGIN */
-
-#loginBox{
-display:none;
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,.3);
-width:300px;
-z-index:2000;
-}
 
 /* FOOTER */
 
@@ -338,55 +323,6 @@ alert("Saldo fiado: R$ 127,50\nVencimento: 20/03/2026");
 function agendarEntrega(){
 alert("Entrega agendada para 15/02/2026 às 18:00");
 }
-
-/* LOGIN CLIENTE */
-
-function abrirLogin(){
-document.getElementById("loginBox").style.display="block";
-}
-
-function fecharLogin(){
-document.getElementById("loginBox").style.display="none";
-}
-
-function criarConta(){
-
-let email=document.getElementById("loginEmail").value;
-let senha=document.getElementById("loginSenha").value;
-
-if(email=="" || senha==""){
-alert("Preencha os campos");
-return;
-}
-
-localStorage.setItem("clienteEmail",email);
-localStorage.setItem("clienteSenha",senha);
-
-alert("Conta criada com sucesso!");
-
-}
-
-function entrarConta(){
-
-let email=document.getElementById("loginEmail").value;
-let senha=document.getElementById("loginSenha").value;
-
-let emailSalvo=localStorage.getItem("clienteEmail");
-let senhaSalva=localStorage.getItem("clienteSenha");
-
-if(email===emailSalvo && senha===senhaSalva){
-
-alert("Bem vindo "+email);
-fecharLogin();
-
-}else{
-
-alert("Login inválido");
-
-}
-
-}
-
 window.onload=aplicarPromocoes;
 
 </script>
@@ -413,7 +349,7 @@ window.onload=aplicarPromocoes;
 <a href="#pedido">Pedidos</a>
 <a href="#fiado">Fiado</a>
 <a href="#entrega">Entrega</a>
-<a href="#" onclick="abrirLogin()">👤 Login</a>
+<a href="login.html">👤 Login</a>
 
 </nav>
 
@@ -514,24 +450,6 @@ window.onload=aplicarPromocoes;
 <hr>
 
 <p id="total">Total: R$ 0,00</p>
-
-</div>
-
-<!-- LOGIN -->
-
-<div id="loginBox">
-
-<h3>👤 Login do Cliente</h3>
-
-<input id="loginEmail" placeholder="Email" style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;">
-
-<input id="loginSenha" type="password" placeholder="Senha" style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc;">
-
-<button onclick="entrarConta()" style="width:100%;margin-top:10px;">Entrar</button>
-
-<button onclick="criarConta()" style="width:100%;margin-top:10px;background:#20c997;">Criar Conta</button>
-
-<button onclick="fecharLogin()" style="width:100%;margin-top:10px;background:#dc3545;">Fechar</button>
 
 </div>
 
