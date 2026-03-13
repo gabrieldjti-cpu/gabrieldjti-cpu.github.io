@@ -143,6 +143,8 @@ let senhaSalva=localStorage.getItem("clienteSenha");
 
 if(email===emailSalvo && senha===senhaSalva){
 
+localStorage.setItem("logado","sim");
+
 alert("Bem vindo "+email);
 window.location.href="index.html";
 
