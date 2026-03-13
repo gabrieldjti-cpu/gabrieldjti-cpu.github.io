@@ -1,1 +1,181 @@
 
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login | Mercado Jacinto</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--verde:#198754;
+--verde-escuro:#146c43;
+--bg:#f1f4f8;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#198754,#20c997);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* CARD LOGIN */
+
+.loginCard{
+background:white;
+padding:40px;
+border-radius:16px;
+width:320px;
+box-shadow:0 15px 40px rgba(0,0,0,.2);
+text-align:center;
+}
+
+.loginCard h2{
+margin-bottom:20px;
+color:var(--verde);
+}
+
+/* INPUT */
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:1px solid #ddd;
+outline:none;
+transition:.3s;
+}
+
+input:focus{
+border-color:var(--verde);
+box-shadow:0 0 6px rgba(25,135,84,.3);
+}
+
+/* BOTÕES */
+
+button{
+width:100%;
+padding:12px;
+margin-top:12px;
+border:none;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.btnEntrar{
+background:var(--verde);
+color:white;
+}
+
+.btnEntrar:hover{
+background:var(--verde-escuro);
+}
+
+.btnCriar{
+background:#20c997;
+color:white;
+}
+
+.btnCriar:hover{
+background:#1aa179;
+}
+
+/* VOLTAR */
+
+.voltar{
+margin-top:15px;
+display:block;
+font-size:14px;
+text-decoration:none;
+color:#555;
+}
+
+.voltar:hover{
+color:var(--verde);
+}
+
+</style>
+
+<script>
+
+function criarConta(){
+
+let email=document.getElementById("email").value;
+let senha=document.getElementById("senha").value;
+
+if(email=="" || senha==""){
+alert("Preencha os campos.");
+return;
+}
+
+localStorage.setItem("clienteEmail",email);
+localStorage.setItem("clienteSenha",senha);
+
+alert("Conta criada com sucesso!");
+
+}
+
+function entrarConta(){
+
+let email=document.getElementById("email").value;
+let senha=document.getElementById("senha").value;
+
+let emailSalvo=localStorage.getItem("clienteEmail");
+let senhaSalva=localStorage.getItem("clienteSenha");
+
+if(email===emailSalvo && senha===senhaSalva){
+
+alert("Bem vindo "+email);
+window.location.href="index.html";
+
+}else{
+
+alert("Login inválido");
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="loginCard">
+
+<h2>👤 Login</h2>
+
+<input id="email" type="email" placeholder="Seu email">
+
+<input id="senha" type="password" placeholder="Sua senha">
+
+<button class="btnEntrar" onclick="entrarConta()">Entrar</button>
+
+<button class="btnCriar" onclick="criarConta()">Criar Conta</button>
+
+<a class="voltar" href="index.html">⬅ Voltar ao site</a>
+
+</div>
+
+</body>
+
+</html>
