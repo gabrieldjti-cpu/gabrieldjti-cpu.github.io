@@ -126,58 +126,140 @@ pnpm prisma:generate
 ## Roadmap de Desenvolvimento
 
 ### Fase 1: Setup Inicial ✅
-- [x] Estrutura Next.js com TypeScript
-- [x] Configuração Tailwind CSS
+- [x] Estrutura Next.js 15 com TypeScript
+- [x] Configuração Tailwind CSS e design tokens
 - [x] Schema Prisma com multi-tenancy
-- [x] Componentes base
-- [x] Middleware de proteção
+- [x] Componentes base (Button, Input, Card)
+- [x] Middleware de proteção de rotas
 
-### Fase 2: Autenticação (Próxima)
-- [ ] NextAuth.js v5 setup
-- [ ] Página de signup com validação
-- [ ] Página de login
-- [ ] Recuperação de senha
-- [ ] Email verification
+### Fase 2: Autenticação ✅
+- [x] NextAuth.js v5 setup
+- [x] Página de signup com validação
+- [x] Página de login
+- [x] Proteção de sessão
+- [x] Hook useAuth customizado
 
-### Fase 3: E-commerce
-- [ ] Dashboard de produtos
-- [ ] CRUD de produtos
-- [ ] Página de catálogo
-- [ ] Carrinho de compras
-- [ ] Checkout e pagamento
+### Fase 3: E-commerce ✅
+- [x] API de produtos (CRUD)
+- [x] API de carrinho
+- [x] Componente ProductCard
+- [x] Página de catálogo
+- [x] Página de carrinho de compras
+- [x] Checkout com formulário
+- [x] API de pedidos
+- [x] Página de detalhes do pedido
+- [x] Página de histórico de pedidos
 
-### Fase 4: Multi-tenancy & Permissões
-- [ ] System RBAC
-- [ ] Gestão de membros
-- [ ] Limites por plano
+### Fase 4: Multi-tenancy & Permissões ✅
+- [x] System RBAC (Owner, Admin, Manager, Seller, Customer)
+- [x] API de organizações (CRUD)
+- [x] Gestão de membros (add/edit/remove)
+- [x] Permissões baseadas em roles
+- [x] Dashboard de organização
+- [x] Utilitários de controle de acesso
 
-### Fase 5: Monetização
-- [ ] Integração Stripe
-- [ ] Gestão de subscriptions
-- [ ] Webhooks Stripe
+### Fase 5: Monetização ✅
+- [x] Integração Stripe (checkout)
+- [x] Gestão de planos tiered
+- [x] Webhook Stripe para atualizar status
+- [x] Página de billing
+- [x] Componente PricingCards
+- [x] API de planos de assinatura
 
-### Fase 6: Produção
-- [ ] Performance optimization
-- [ ] SEO
-- [ ] Monitoring
-- [ ] Deployment
+### Fase 6: Produção ✅
+- [x] Configuração Vercel (vercel.json)
+- [x] Documentação de deployment
+- [x] Variáveis de ambiente para produção
+- [x] Navbar com autenticação
+- [x] Documentação completa
+
+## Recursos Disponíveis
+
+### API Routes
+
+#### Autenticação
+- `POST /api/auth/signup` - Criar novo usuário
+- `POST /api/auth/[...nextauth]` - NextAuth provider
+
+#### Produtos
+- `GET /api/products` - Listar produtos
+- `POST /api/products` - Criar produto
+- `GET /api/products/[id]` - Detalhes do produto
+- `PUT /api/products/[id]` - Atualizar produto
+- `DELETE /api/products/[id]` - Deletar produto
+
+#### Carrinho
+- `GET /api/cart` - Ver carrinho do usuário
+- `POST /api/cart` - Adicionar ao carrinho
+- `PUT /api/cart/[id]` - Atualizar quantidade
+- `DELETE /api/cart/[id]` - Remover do carrinho
+
+#### Pedidos
+- `GET /api/orders` - Listar pedidos do usuário
+- `POST /api/orders` - Criar pedido
+- `GET /api/orders/[id]` - Detalhes do pedido
+
+#### Organizações
+- `GET /api/organizations` - Listar organizações do usuário
+- `POST /api/organizations` - Criar organização
+- `GET /api/organizations/[slug]` - Detalhes da organização
+- `PUT /api/organizations/[slug]` - Atualizar organização
+
+#### Membros
+- `GET /api/organizations/[slug]/members` - Listar membros
+- `POST /api/organizations/[slug]/members` - Adicionar membro
+- `PUT /api/organizations/[slug]/members/[id]` - Atualizar role
+- `DELETE /api/organizations/[slug]/members/[id]` - Remover membro
+
+#### Billing & Payments
+- `POST /api/checkout` - Criar sessão de checkout Stripe
+- `GET /api/subscription-plans` - Listar planos disponíveis
+- `POST /api/webhooks/stripe` - Webhook do Stripe
+
+### Páginas Principais
+
+**Públicas:**
+- `/` - Landing page
+- `/login` - Página de login
+- `/signup` - Página de cadastro
+
+**Protegidas (Autenticado):**
+- `/dashboard` - Dashboard inicial
+- `/catalog` - Catálogo de produtos
+- `/cart` - Carrinho de compras
+- `/checkout` - Checkout
+- `/orders` - Histórico de pedidos
+- `/orders/[id]` - Detalhes do pedido
+
+**Organizações:**
+- `/organizations` - Lista de organizações
+- `/org/[slug]` - Dashboard da organização
+- `/org/[slug]/members` - Gerenciar membros
+- `/org/[slug]/billing` - Planos e faturamento
 
 ## Deployment
 
-### Vercel
+Para instruções detalhadas de deployment, veja [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+### Deploy Rápido no Vercel
 
 ```bash
-# Instale a CLI Vercel
-npm i -g vercel
+# 1. Faça push ao repositório
+git push origin main
 
-# Faça o deploy
+# 2. Vercel detectará automaticamente e fará deploy
+# ou use a CLI:
 vercel
 ```
 
-Variáveis de ambiente serão configuradas no painel Vercel.
+Após deploy:
+1. Configure variáveis de ambiente no painel Vercel
+2. Execute migrações do banco de dados
+3. Configure webhooks do Stripe
+4. Teste o checkout completo
 
 ---
 
-**Status**: 🚀 Em desenvolvimento ativo
+**Status**: ✅ MVP Completo - Arquitetura SaaS Escalável Implementada
 
-Última atualização: 2025-03-13
+Última atualização: 2026-03-13
