@@ -1,0 +1,271 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ AUTENTICAÇÃO E USUÁRIOS ============
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  password  String     // bcrypt hashed
+  avatar    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relacionamentos
+  organizationMembers OrganizationMember[]
+  sessions            Session[]
+  orders              Order[]
+  cart                CartItem[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ============ MULTI-TENANCY ============
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  description String?
+  logo      String?
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  members     OrganizationMember[]
+  plan        Plan     @relation(fields: [planId], references: [id], onDelete: SetDefault)
+  planId      String   @default("free")
+  products    Product[]
+  orders      Order[]
+  settings    OrganizationSettings?
+
+  @@map("organizations")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MANAGER
+  SELLER
+  CUSTOMER
+}
+
+model OrganizationMember {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           Role     @default(CUSTOMER)
+  joinedAt       DateTime @default(now())
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+  @@map("organization_members")
+}
+
+model OrganizationSettings {
+  id             String   @id @default(cuid())
+  organizationId String   @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  currency       String   @default("USD")
+  timezone       String   @default("UTC")
+  taxPercentage  Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("organization_settings")
+}
+
+// ============ MONETIZAÇÃO - PLANOS ============
+enum PlanType {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+model Plan {
+  id              String   @id @default(cuid())
+  type            PlanType @unique
+  name            String
+  description     String?
+  price           Float    @default(0)
+  stripePriceId   String?
+  maxProducts     Int      @default(10)
+  maxOrders       Int      @default(100)
+  maxUsers        Int      @default(1)
+  features        String[] // JSON array of features
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organizations Organization[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  organizationId    String
+  planType          PlanType
+  stripeCustomerId  String?
+  stripeSubId       String?  @unique
+  status            String   // active, past_due, canceled, expired
+  currentPeriodStart DateTime
+  currentPeriodEnd  DateTime
+  cancelAt          DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([organizationId])
+  @@map("subscriptions")
+}
+
+// ============ E-COMMERCE - PRODUTOS ============
+model Product {
+  id              String   @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?
+  price           Float
+  originalPrice   Float?
+  inventory       Int      @default(0)
+  sku             String   @unique
+  image           String?
+  category        String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relacionamentos
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+  reviews    Review[]
+
+  @@index([organizationId])
+  @@map("products")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@map("reviews")
+}
+
+// ============ E-COMMERCE - CARRINHO ============
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("cart_items")
+}
+
+// ============ E-COMMERCE - PEDIDOS ============
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+  REFUNDED
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  status          OrderStatus @default(PENDING)
+  totalAmount     Float
+  taxAmount       Float    @default(0)
+  shippingAmount  Float    @default(0)
+  
+  // Endereço de entrega
+  shippingAddress String
+  shippingCity    String
+  shippingState   String
+  shippingZip     String
+  
+  // Pagamento
+  stripePaymentId String?
+  paymentStatus   String   @default("pending") // pending, succeeded, failed
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relacionamentos
+  items           OrderItem[]
+
+  @@index([organizationId])
+  @@index([userId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float    // Preço no momento da compra
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+// ============ AUDITORIA ============
+model AuditLog {
+  id            String   @id @default(cuid())
+  organizationId String?
+  action        String
+  entity        String
+  entityId      String
+  changes       String   // JSON
+  userId        String?
+  ipAddress     String?
+  createdAt     DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
