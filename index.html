@@ -292,7 +292,7 @@ cards.forEach(card=>{
 let nome=card.innerText.toLowerCase();
 
 if(nome.includes(input)){
-card.style.display="block";
+card.style.display="";
 }else{
 card.style.display="none";
 }
@@ -323,8 +323,33 @@ alert("Saldo fiado: R$ 127,50\nVencimento: 20/03/2026");
 function agendarEntrega(){
 alert("Entrega agendada para 15/02/2026 às 18:00");
 }
-window.onload=aplicarPromocoes;
+function carregarProdutosAdmin(){
 
+let dados = localStorage.getItem("produtos");
+
+if(!dados) return;
+
+let produtos = JSON.parse(dados);
+
+let grid = document.querySelector("#catalogo .grid");
+
+produtos.forEach(p=>{
+
+grid.innerHTML += `
+<div class="card">
+<h3>${p.nome}</h3>
+<p>R$ ${p.preco.toFixed(2)}</p>
+<button onclick="adicionarProduto('${p.nome}',${p.preco})">Adicionar</button>
+</div>
+`;
+
+});
+
+}
+window.onload = function(){
+aplicarPromocoes();
+carregarProdutosAdmin();
+}
 </script>
 
 </head>
@@ -349,7 +374,7 @@ window.onload=aplicarPromocoes;
 <a href="#pedido">Pedidos</a>
 <a href="#fiado">Fiado</a>
 <a href="#entrega">Entrega</a>
-<a href="Login.html">👤 Login</a>
+<a href="login.html">👤 Login</a>
 
 </nav>
 
