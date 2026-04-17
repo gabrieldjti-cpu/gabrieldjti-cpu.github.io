@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vendas</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<header class="menu">
+
+<h2>Sistema Estoque</h2>
+
+<nav>
+
+<a href="dashboard.html">Dashboard</a>
+<a href="estoque.html">Estoque</a>
+<a href="clientes.html">Clientes</a>
+<a href="vendas.html">Vendas</a>
+<a href="configuracoes.html">Configurações</a>
+
+</nav>
+
+</header>
+
+<div class="container">
+
+<h1>Controle de Vendas</h1>
+
+<div class="form">
+
+<select id="clienteVenda"></select>
+
+<select id="produtoVenda"></select>
+
+<input type="number" id="quantidadeVenda" placeholder="Quantidade">
+
+<button onclick="registrarVenda()">Registrar Venda</button>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Produto</th>
+<th>Quantidade</th>
+<th>Total</th>
+</tr>
+</thead>
+
+<tbody id="listaVendas">
+
+</tbody>
+
+</table>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
