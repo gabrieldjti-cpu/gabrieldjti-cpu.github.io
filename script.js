@@ -1,7 +1,17 @@
+let empresaLogada = localStorage.getItem("empresaLogada")
+
+// LOGIN
+
 function login(){
 
 let email = document.getElementById("email").value
 let senha = document.getElementById("senha").value
+
+// LOGIN ADMIN
+if(email === "admin" && senha === "admin123"){
+window.location = "admin.html"
+return
+}
 
 let empresas = JSON.parse(localStorage.getItem("empresas")) || []
 
@@ -24,7 +34,7 @@ alert("Email ou senha inválidos")
 
 // PRODUTOS
 
-let produtos = JSON.parse(localStorage.getItem("produtos")) || []
+let produtos = JSON.parse(localStorage.getItem("produtos_" + empresaLogada)) || []
 
 function adicionarProduto(){
 
@@ -40,7 +50,7 @@ preco
 
 produtos.push(produto)
 
-localStorage.setItem("produtos", JSON.stringify(produtos))
+localStorage.setItem("produtos_" + empresaLogada, JSON.stringify(produtos))
 
 listarProdutos()
 
@@ -84,7 +94,7 @@ function excluirProduto(index){
 
 produtos.splice(index, 1)
 
-localStorage.setItem("produtos", JSON.stringify(produtos))
+localStorage.setItem("produtos_" + empresaLogada, JSON.stringify(produtos))
 
 listarProdutos()
 
@@ -93,7 +103,7 @@ listarProdutos()
 
 // CLIENTES
 
-let clientes = JSON.parse(localStorage.getItem("clientes")) || []
+let clientes = JSON.parse(localStorage.getItem("clientes_" + empresaLogada)) || []
 
 function adicionarCliente(){
 
@@ -109,7 +119,7 @@ email
 
 clientes.push(cliente)
 
-localStorage.setItem("clientes", JSON.stringify(clientes))
+localStorage.setItem("clientes_" + empresaLogada, JSON.stringify(clientes))
 
 listarClientes()
 
@@ -153,7 +163,7 @@ function excluirCliente(index){
 
 clientes.splice(index, 1)
 
-localStorage.setItem("clientes", JSON.stringify(clientes))
+localStorage.setItem("clientes_" + empresaLogada, JSON.stringify(clientes))
 
 listarClientes()
 
@@ -162,7 +172,7 @@ listarClientes()
 
 // VENDAS
 
-let vendas = JSON.parse(localStorage.getItem("vendas")) || []
+let vendas = JSON.parse(localStorage.getItem("vendas_" + empresaLogada)) || []
 
 function carregarDadosVenda(){
 
@@ -216,7 +226,7 @@ total
 
 vendas.push(venda)
 
-localStorage.setItem("vendas", JSON.stringify(vendas))
+localStorage.setItem("vendas_" + empresaLogada, JSON.stringify(vendas))
 
 listarVendas()
 
@@ -277,7 +287,90 @@ window.location = "index.html"
 }
 
 
-// EXECUTAR APENAS QUANDO EXISTIR
+// DASHBOARD
+
+function carregarEmpresa(){
+
+let email = localStorage.getItem("empresaLogada")
+
+let empresas = JSON.parse(localStorage.getItem("empresas")) || []
+
+let empresa = empresas.find(e => e.email === email)
+
+let nome = document.getElementById("nomeEmpresa")
+
+if(nome && empresa){
+nome.innerText = "Bem-vindo, " + empresa.nome
+}
+
+}
+
+carregarEmpresa()
+
+
+function atualizarDashboard(){
+
+let produtos = JSON.parse(localStorage.getItem("produtos_" + empresaLogada)) || []
+let clientes = JSON.parse(localStorage.getItem("clientes_" + empresaLogada)) || []
+let vendas = JSON.parse(localStorage.getItem("vendas_" + empresaLogada)) || []
+
+let totalProdutos = document.getElementById("totalProdutos")
+let totalClientes = document.getElementById("totalClientes")
+let totalVendas = document.getElementById("totalVendas")
+
+if(totalProdutos) totalProdutos.innerText = produtos.length
+if(totalClientes) totalClientes.innerText = clientes.length
+if(totalVendas) totalVendas.innerText = vendas.length
+
+}
+
+atualizarDashboard()
+
+
+// ADMIN
+
+function listarEmpresas(){
+
+let empresas = JSON.parse(localStorage.getItem("empresas")) || []
+
+let lista = document.getElementById("listaEmpresas")
+
+if(!lista) return
+
+lista.innerHTML = ""
+
+empresas.forEach(empresa => {
+
+lista.innerHTML += `
+
+<tr>
+
+<td>${empresa.nome}</td>
+<td>${empresa.email}</td>
+
+</tr>
+
+`
+
+})
+
+}
+
+listarEmpresas()
+
+
+// SAIR
+
+function sair(){
+
+localStorage.removeItem("empresaLogada")
+
+window.location = "index.html"
+
+}
+
+
+// EXECUÇÕES AUTOMÁTICAS
 
 if(document.getElementById("listaProdutos")){
 listarProdutos()
