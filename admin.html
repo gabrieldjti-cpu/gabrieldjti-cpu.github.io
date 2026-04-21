@@ -13,11 +13,28 @@
 
 <body>
 
+<div class="menu">
+
+<h2>Painel Admin</h2>
+
+<button onclick="sair()" class="btn-sair">
+Sair
+</button>
+
+</div>
+
 <div class="container">
 
-<h2>Painel do Dono</h2>
+<h1>Empresas Cadastradas</h1>
 
-<h3>Empresas Cadastradas</h3>
+<div class="cards">
+
+<div class="card">
+<h3>Total de Empresas</h3>
+<p id="totalEmpresas">0</p>
+</div>
+
+</div>
 
 <table>
 
@@ -26,6 +43,7 @@
 <tr>
 <th>Empresa</th>
 <th>Email</th>
+<th>Ações</th>
 </tr>
 
 </thead>

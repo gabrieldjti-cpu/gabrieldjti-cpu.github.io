@@ -387,3 +387,56 @@ carregarDadosVenda()
 if(document.getElementById("listaVendas")){
 listarVendas()
 }
+function listarEmpresas(){
+
+let empresas = JSON.parse(localStorage.getItem("empresas")) || []
+
+let lista = document.getElementById("listaEmpresas")
+let total = document.getElementById("totalEmpresas")
+
+if(!lista) return
+
+lista.innerHTML = ""
+
+empresas.forEach((empresa, index) => {
+
+lista.innerHTML += `
+
+<tr>
+
+<td>${empresa.nome}</td>
+<td>${empresa.email}</td>
+
+<td>
+
+<button onclick="excluirEmpresa(${index})">
+Excluir
+</button>
+
+</td>
+
+</tr>
+
+`
+
+})
+
+if(total){
+total.innerText = empresas.length
+}
+
+}
+
+function excluirEmpresa(index){
+
+let empresas = JSON.parse(localStorage.getItem("empresas")) || []
+
+empresas.splice(index, 1)
+
+localStorage.setItem("empresas", JSON.stringify(empresas))
+
+listarEmpresas()
+
+}
+
+listarEmpresas()
