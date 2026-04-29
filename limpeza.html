@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Limpeza</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-limpeza">
+
+  <!-- TOPO -->
+  <header class="topo">
+    <div class="logo">🧴 Limpeza</div>
+
+    <div class="busca">
+      <input type="text" id="busca" placeholder="Buscar produtos de limpeza..." onkeyup="filtrarLimpeza()">
+      <button>🔍</button>
+    </div>
+
+    <div class="carrinho" onclick="irCarrinho()">
+      🛍️ Carrinho (<span id="contador">0</span>)
+    </div>
+  </header>
+
+  <!-- MENU -->
+  <nav class="menu">
+    <a href="index.html">Início</a>
+    <a href="hortifruti.html">Hortifruti</a>
+    <a href="carnes.html">Carnes</a>
+    <a href="#">Bebidas</a>
+  </nav>
+
+  <!-- TÍTULO -->
+  <h1 style="text-align:center; margin-top:20px;">🧴 Limpeza</h1>
+
+  <!-- PRODUTOS -->
+  <main class="produtos" id="lista-limpeza"></main>
+
+  <script src="script.js"></script>
+
+  <script>
+    carregarLimpeza();
+    atualizarContador();
+  </script>
+
+</body>
+</html> 
