@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carnes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOPO -->
+  <header class="topo">
+    <div class="logo">🥩 Carnes</div>
+
+    <div class="busca">
+      <input type="text" id="busca" placeholder="Buscar carnes..." onkeyup="filtrarCarnes()">
+      <button>🔍</button>
+    </div>
+
+    <div class="carrinho" onclick="irCarrinho()">
+      🛍️ Carrinho (<span id="contador">0</span>)
+    </div>
+  </header>
+
+  <!-- MENU -->
+  <nav class="menu">
+    <a href="index.html">Início</a>
+    <a href="#">Hortifruti</a>
+    <a href="#">Bebidas</a>
+    <a href="#">Limpeza</a>
+  </nav>
+
+  <!-- TÍTULO -->
+  <h1 style="text-align:center; margin-top:20px;">🥩 Açougue</h1>
+
+  <!-- PRODUTOS -->
+  <main class="produtos" id="lista-carnes"></main>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+
+  <script>
+    carregarCarnes();
+    atualizarContador();
+  </script>
+
+</body>
+</html>
