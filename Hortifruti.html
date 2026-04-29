@@ -42,6 +42,42 @@
     carregarHortifruti();
     atualizarContador();
   </script>
+<div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
 
+<div id="carrinho-lateral" class="carrinho-lateral">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2>Meu Carrinho</h2>
+        <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+    </div>
+    <hr>
+    <div id="lista-carrinho" style="flex-grow: 1; overflow-y: auto; margin-top: 20px;">
+        </div>
+    <div id="total" style="font-weight: bold; font-size: 20px; margin: 20px 0;"></div>
+    <button onclick="finalizarPedido()" style="width: 100%; padding: 15px; background: #198754; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+        Finalizar Pedido
+    </button>
+</div>
+<div id="modal-pagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
+      <div style="background:white; padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%;">
+          <h3 style="margin-top:0;">Como deseja pagar?</h3>
+          <p>Escolha uma opção para finalizar no WhatsApp:</p>
+          
+          <button onclick="escolherPagamento('Cartão (Levar maquininha)')" style="width:100%; padding:12px; margin:10px 0; border:none; background:#007bff; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
+              💳 Cartão (Maquininha)
+          </button>
+          
+          <button onclick="escolherPagamento('Pix')" style="width:100%; padding:12px; margin:10px 0; border:none; background:#000; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
+              📱 Pix
+          </button>
+          
+          <button onclick="escolherPagamento('Dinheiro')" style="width:100%; padding:12px; margin:10px 0; border:none; background:#28a745; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
+              💵 Dinheiro
+          </button>
+
+          <button onclick="fecharModal()" style="background:none; border:none; color:red; cursor:pointer; margin-top:10px; font-weight:bold;">
+              Cancelar
+          </button>
+      </div>
+  </div>
 </body>
 </html>

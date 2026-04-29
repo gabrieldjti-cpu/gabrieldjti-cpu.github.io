@@ -72,5 +72,20 @@
     <button onclick="fecharModal()">Cancelar</button>
   </div>
 </div>
+<div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
+
+<div id="carrinho-lateral" class="carrinho-lateral">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2>Meu Carrinho</h2>
+        <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+    </div>
+    <hr>
+    <div id="lista-carrinho" style="flex-grow: 1; overflow-y: auto; margin-top: 20px;">
+        </div>
+    <div id="total" style="font-weight: bold; font-size: 20px; margin: 20px 0;"></div>
+    <button onclick="finalizarPedido()" style="width: 100%; padding: 15px; background: #198754; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+        Finalizar Pedido
+    </button>
+</div>
 </body>
 </html>

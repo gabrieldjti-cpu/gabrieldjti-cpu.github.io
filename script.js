@@ -50,11 +50,16 @@ function mostrarProdutos(lista, idContainer = "lista-produtos") {
         : "";
 
     lista.forEach(p => {
+        // Lógica de Badges Dinâmicas
+        let badgeHTML = "";
+        if (idContainer === "lista-carnes") badgeHTML = `<span class="badge badge-premium">Premium</span>`;
+        if (idContainer === "lista-hortifruti") badgeHTML = `<span class="badge badge-organico">Orgânico</span>`;
+
         const card = document.createElement("div");
         card.className = "card";
-        // Ajuste aqui: Agora usa p.img do banco de dados ou um placeholder se estiver vazio
         card.innerHTML = `
             <span class="desconto">${p.desconto}</span>
+            ${badgeHTML}
             <img src="${p.img || 'https://via.placeholder.com/180'}" alt="${p.nome}">
             <h3>${p.nome}</h3>
             <p class="preco-antigo">R$ ${p.antigo.toFixed(2)}</p>
@@ -76,7 +81,7 @@ function filtrarProdutos(categoria) {
 }
 
 // ===============================
-// 🛒 LÓGICA DO CARRINHO
+// 🛒 LÓGICA DO CARRINHO (LATERAL)
 // ===============================
 
 function adicionarCarrinho(nome, preco) {
@@ -92,6 +97,79 @@ function adicionarCarrinho(nome, preco) {
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
     mostrarAviso(`✅ ${nome} no carrinho!`);
+    
+    // Opcional: Abrir o carrinho automaticamente ao adicionar
+    // irCarrinho(); 
+}
+
+function irCarrinho() {
+    const drawer = document.getElementById("carrinho-lateral");
+    const overlay = document.getElementById("overlay");
+    if(drawer && overlay) {
+        drawer.classList.add("ativo");
+        overlay.style.display = "block";
+        carregarCarrinho();
+    }
+}
+
+function fecharCarrinho() {
+    const drawer = document.getElementById("carrinho-lateral");
+    const overlay = document.getElementById("overlay");
+    if(drawer && overlay) {
+        drawer.classList.remove("ativo");
+        overlay.style.display = "none";
+    }
+}
+
+function carregarCarrinho() {
+    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    const container = document.getElementById("lista-carrinho");
+    const totalEl = document.getElementById("total");
+    if (!container || !totalEl) return;
+
+    container.innerHTML = carrinho.length === 0 ? "<p style='text-align:center;'>Vazio 🛒</p>" : "";
+    let somaTotal = 0;
+
+    carrinho.forEach((p, i) => {
+        const item = document.createElement("div");
+        item.className = "item-carrinho";
+        item.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <div style="flex: 1;">
+                    <div class="item-info" style="font-weight: bold;">${p.nome}</div>
+                    <div class="controle-qtd" style="margin-top: 5px;">
+                        <button onclick="mudarQtd(${i}, -1)" style="padding: 2px 8px;">-</button>
+                        <span style="margin: 0 10px;">${p.quantidade}</span>
+                        <button onclick="mudarQtd(${i}, 1)" style="padding: 2px 8px;">+</button>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: #198754; font-weight: bold;">R$ ${(p.preco * p.quantidade).toFixed(2)}</div>
+                    <button class="btn-remover" onclick="removerItem(${i})" style="background: none; border: none; cursor: pointer; color: red; font-size: 12px; margin-top: 5px;">Remover</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(item);
+        somaTotal += p.preco * p.quantidade;
+    });
+    totalEl.innerText = `Total: R$ ${somaTotal.toFixed(2)}`;
+}
+
+function mudarQtd(index, valor) {
+    let carrinho = JSON.parse(localStorage.getItem("carrinho"));
+    carrinho[index].quantidade += valor;
+    if (carrinho[index].quantidade <= 0) return removerItem(index);
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+    carregarCarrinho();
+    atualizarContador();
+}
+
+function removerItem(index) {
+    let carrinho = JSON.parse(localStorage.getItem("carrinho"));
+    carrinho.splice(index, 1);
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+    carregarCarrinho();
+    atualizarContador();
 }
 
 function atualizarContador() {
@@ -140,59 +218,7 @@ window.onload = () => {
     if (document.getElementById("lista-carnes")) mostrarProdutos(produtosData.carnes, "lista-carnes");
     if (document.getElementById("lista-hortifruti")) mostrarProdutos(produtosData.hortifruti, "lista-hortifruti");
     if (document.getElementById("lista-limpeza")) mostrarProdutos(produtosData.limpeza, "lista-limpeza");
-    if (document.getElementById("lista-carrinho")) carregarCarrinho();
 };
-
-// ===============================
-// 🛒 PÁGINA DO CARRINHO
-// ===============================
-
-function carregarCarrinho() {
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    const container = document.getElementById("lista-carrinho");
-    const totalEl = document.getElementById("total");
-    if (!container || !totalEl) return;
-
-    container.innerHTML = carrinho.length === 0 ? "<p style='text-align:center;'>Vazio 🛒</p>" : "";
-    let somaTotal = 0;
-
-    carrinho.forEach((p, i) => {
-        const item = document.createElement("div");
-        item.className = "item-carrinho";
-        item.innerHTML = `
-            <div>
-                <div class="item-info">${p.nome}</div>
-                <div class="controle-qtd">
-                    <button onclick="mudarQtd(${i}, -1)">-</button>
-                    <span>${p.quantidade}</span>
-                    <button onclick="mudarQtd(${i}, 1)">+</button>
-                </div>
-                <div>R$ ${(p.preco * p.quantidade).toFixed(2)}</div>
-            </div>
-            <button class="btn-remover" onclick="removerItem(${i})">❌</button>
-        `;
-        container.appendChild(item);
-        somaTotal += p.preco * p.quantidade;
-    });
-    totalEl.innerText = `Total: R$ ${somaTotal.toFixed(2)}`;
-}
-
-function mudarQtd(index, valor) {
-    let carrinho = JSON.parse(localStorage.getItem("carrinho"));
-    carrinho[index].quantidade += valor;
-    if (carrinho[index].quantidade <= 0) return removerItem(index);
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    carregarCarrinho();
-    atualizarContador();
-}
-
-function removerItem(index) {
-    let carrinho = JSON.parse(localStorage.getItem("carrinho"));
-    carrinho.splice(index, 1);
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    carregarCarrinho();
-    atualizarContador();
-}
 
 // ===============================
 // 📲 FINALIZAÇÃO (WHATSAPP)
@@ -201,6 +227,9 @@ function removerItem(index) {
 function finalizarPedido() {
     const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     if (carrinho.length === 0) return alert("Carrinho vazio!");
+    
+    // Fecha o carrinho lateral para mostrar o modal de pagamento
+    fecharCarrinho();
     document.getElementById("modal-pagamento").style.display = "flex";
 }
 
@@ -222,4 +251,3 @@ function escolherPagamento(tipo) {
 }
 
 function fecharModal() { document.getElementById("modal-pagamento").style.display = "none"; }
-function irCarrinho() { location.href = "carrinho.html"; }
