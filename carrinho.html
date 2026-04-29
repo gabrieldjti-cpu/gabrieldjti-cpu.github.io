@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOPO -->
+  <header class="topo">
+    <div class="logo">🛒 Seu Carrinho</div>
+
+    <div class="carrinho" onclick="voltar()">
+      ⬅ Voltar
+    </div>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main>
+
+    <div id="lista-carrinho"></div>
+
+    <h2 id="total"></h2>
+
+    <!-- BOTÕES -->
+    <div style="max-width:700px; margin:20px auto; text-align:center;">
+
+      <button onclick="finalizarPedido()" style="margin:10px;">
+        Finalizar Pedido
+      </button>
+
+      <button onclick="limparCarrinho()" style="margin:10px;">
+        Limpar Carrinho
+      </button>
+
+    </div>
+
+  </main>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+
+  <script>
+    carregarCarrinho();
+  </script>
+<!-- MODAL PAGAMENTO -->
+<div id="modal-pagamento" class="modal">
+
+  <div class="modal-conteudo">
+    <h2>Escolha a forma de pagamento</h2>
+
+    <button onclick="escolherPagamento('Dinheiro')">💵 Dinheiro</button>
+    <button onclick="escolherPagamento('Cartão')">💳 Cartão</button>
+    <button onclick="escolherPagamento('PIX')">📱 PIX</button>
+
+    <br><br>
+    <button onclick="fecharModal()">Cancelar</button>
+  </div>
+
+</div>
+<div id="modal-pagamento" class="modal">
+  <div class="modal-conteudo">
+    <h2>Forma de pagamento</h2>
+
+    <button onclick="escolherPagamento('Dinheiro')">Dinheiro</button>
+    <button onclick="escolherPagamento('Cartão')">Cartão</button>
+    <button onclick="escolherPagamento('PIX')">PIX</button>
+
+    <br><br>
+    <button onclick="fecharModal()">Cancelar</button>
+  </div>
+</div>
+</body>
+</html>
