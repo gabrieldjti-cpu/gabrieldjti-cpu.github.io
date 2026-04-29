@@ -1,110 +1,99 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sistema de Estoque</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supermercado Online</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header class="home-topo">
+  <!-- TOPO -->
+  <header class="topo">
+    <div class="logo">🛒 Supermercado Online</div>
 
-<h1>Sistema Bem-Estoque</h1>
+    <div class="busca">
+      <input type="text" id="busca" placeholder="Buscar produtos..." onkeyup="filtrarProdutos()">
+      <button>🔍</button>
+    </div>
 
-<nav>
-<a href="#recursos">Recursos</a>
-<a href="#sobre">Sobre</a>
-<a href="#login">Entrar</a>
-</nav>
+    <!-- CARRINHO COM CONTADOR -->
+    <div class="carrinho" onclick="irCarrinho()">
+      🛍️ Carrinho (<span id="contador">0</span>)
+    </div>
+  </header>
 
-</header>
+  <!-- MENU -->
+  <nav class="menu">
+    <a href="index.html">Início</a>
+    <a href="hortifruti.html">Hortifruti</a>
+    <a href="#">Bebidas</a>
+    <a href="limpeza.html">Limpeza</a>
+    <a href="#">Promoções</a>
+  </nav>
 
+  <!-- BANNER -->
+  <section class="banner">
+    <div class="banner-texto">
+      <h1>Ofertas Imperdíveis</h1>
+      <p>Os melhores preços da sua cidade sem sair de casa</p>
+      <button>Comprar Agora</button>
+    </div>
+  </section>
 
-<section class="hero">
-
-<h2>Controle de Estoque e Vendas para sua Empresa</h2>
-
-<p>
-Gerencie produtos, clientes e vendas de forma simples, rápida e online.
-</p>
-
-<a href="#login" class="btn">Começar Agora</a>
-
+  <!-- CATEGORIAS -->
+<section class="categorias">
+  <a href="hortifruti.html" class="categoria">🥦 Hortifruti</a>
+  <a href="carnes.html" class="categoria">🥩 Carnes</a>
+  <a href="#" class="categoria">🥤 Bebidas</a>
+  <a href="limpeza.html" class="categoria">🧴 Limpeza</a>
 </section>
 
+  <!-- PRODUTOS -->
+  <main class="produtos" id="lista-produtos">
 
-<section id="recursos" class="recursos">
+    <div class="card">
+      <span class="desconto">-20%</span>
+      <img src="https://via.placeholder.com/180" alt="">
+      <h3>Arroz 5kg</h3>
+      <p class="preco-antigo">R$ 30,00</p>
+      <p class="preco">R$ 24,00</p>
+      <button onclick="adicionarCarrinho('Arroz 5kg', 24)">Adicionar</button>
+    </div>
 
-<h2>O que o sistema oferece</h2>
+    <div class="card">
+      <span class="desconto">-15%</span>
+      <img src="https://via.placeholder.com/180" alt="">
+      <h3>Óleo 900ml</h3>
+      <p class="preco-antigo">R$ 8,50</p>
+      <p class="preco">R$ 7,20</p>
+      <button onclick="adicionarCarrinho('Óleo 900ml', 7.20)">Adicionar</button>
+    </div>
 
-<div class="cards">
+    <div class="card">
+      <span class="desconto">-10%</span>
+      <img src="https://via.placeholder.com/180" alt="">
+      <h3>Feijão 1kg</h3>
+      <p class="preco-antigo">R$ 10,00</p>
+      <p class="preco">R$ 9,00</p>
+      <button onclick="adicionarCarrinho('Feijão 1kg', 9.00)">Adicionar</button>
+    </div>
 
-<div class="card">
-<h3>Controle de Estoque</h3>
-<p>Cadastre e gerencie seus produtos facilmente.</p>
-</div>
+  </main>
 
-<div class="card">
-<h3>Gestão de Clientes</h3>
-<p>Cadastre clientes e acompanhe suas vendas.</p>
-</div>
+  <!-- RODAPÉ -->
+  <footer class="footer">
+    <p>© 2026 Supermercado Online | Atendimento local da sua cidade</p>
+  </footer>
 
-<div class="card">
-<h3>Controle de Vendas</h3>
-<p>Registre vendas e acompanhe resultados.</p>
-</div>
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
 
-</div>
-
-</section>
-
-
-<section id="login" class="login">
-
-<div class="login-box">
-
-<h2>Entrar no Sistema</h2>
-
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="senha" placeholder="Senha">
-
-<button onclick="login()">Entrar</button>
-
-<p class="cadastro-link">
-Não tem conta? 
-<a href="cadastro.html">Criar conta</a>
-</p>
-
-</div>
-
-</section>
-
-
-<section id="sobre" class="sobre">
-
-<h2>Sobre o Sistema</h2>
-
-<p>
-Sistema desenvolvido para pequenas e médias empresas que precisam
-de controle de estoque, clientes e vendas de forma simples.
-</p>
-
-</section>
-
-
-<footer class="footer">
-
-<p>Sistema Bem-Estoque © 2026</p>
-
-</footer>
-
-<script src="script.js"></script>
+  <script>
+    atualizarContador();
+    mostrarProdutos(produtos);
+    atualizarContador();
+  </script>
 
 </body>
-</html>
+</html> 
