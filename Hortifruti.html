@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hortifruti</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-hortifruti">
+
+  <!-- TOPO -->
+  <header class="topo">
+    <div class="logo">🥦 Hortifruti</div>
+
+    <div class="busca">
+      <input type="text" id="busca" placeholder="Buscar frutas e verduras..." onkeyup="filtrarHortifruti()">
+      <button>🔍</button>
+    </div>
+
+    <div class="carrinho" onclick="irCarrinho()">
+      🛍️ Carrinho (<span id="contador">0</span>)
+    </div>
+  </header>
+
+  <!-- MENU -->
+  <nav class="menu">
+    <a href="index.html">Início</a>
+    <a href="carnes.html">Carnes</a>
+    <a href="#">Bebidas</a>
+    <a href="#">Limpeza</a>
+  </nav>
+
+  <!-- TÍTULO -->
+  <h1 style="text-align:center; margin-top:20px;">🥦 Hortifruti</h1>
+
+  <!-- PRODUTOS -->
+  <main class="produtos" id="lista-hortifruti"></main>
+
+  <script src="script.js"></script>
+
+  <script>
+    carregarHortifruti();
+    atualizarContador();
+  </script>
+
+</body>
+</html>
