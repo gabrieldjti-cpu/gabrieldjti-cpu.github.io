@@ -220,7 +220,7 @@ const produtos = [
         mensagem += `%0A💰 Total: R$ ${total.toFixed(2)}`;
         mensagem += `%0A💳 Pagamento: ${tipo}`;
     
-        let telefone = "5533988101744"; // TROQUE AQUI
+        let telefone = "5533988101944"; // TROQUE AQUI
 
     window.open(`https://wa.me/${telefone}?text=${mensagem}`, "_blank");
 
