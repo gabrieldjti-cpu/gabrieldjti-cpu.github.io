@@ -1,442 +1,321 @@
-let empresaLogada = localStorage.getItem("empresaLogada")
+// ===============================
+// 🛍️ PRODUTOS (INDEX)
+// ===============================
+const produtos = [
+    { nome: "Arroz 5kg", preco: 24, antigo: 30, desconto: "-20%" },
+    { nome: "Óleo 900ml", preco: 7.20, antigo: 8.50, desconto: "-15%" },
+    { nome: "Feijão 1kg", preco: 9.00, antigo: 10.00, desconto: "-10%" },
+    { nome: "Açúcar 1kg", preco: 4.40, antigo: 5.00, desconto: "-12%" },
+    { nome: "Leite 1L", preco: 5.99, antigo: 6.50, desconto: "-8%" },
+    { nome: "Café 500g", preco: 9.80, antigo: 12.00, desconto: "-18%" },
+    { nome: "Macarrão 500g", preco: 3.50, antigo: 4.00, desconto: "-10%" },
+    { nome: "Refrigerante 2L", preco: 8.90, antigo: 10.00, desconto: "-11%" }
+];
 
-// LOGIN
+// ===============================
+// 🧱 MOSTRAR PRODUTOS
+// ===============================
+    function mostrarProdutos(lista) {
+        let container = document.getElementById("lista-produtos");
+        if (!container) return;
+    
+        container.innerHTML = "";
+    
+        if (lista.length === 0) {
+            container.innerHTML = "<p style='text-align:center;'>Nenhum produto encontrado 😢</p>";
+            return;
+        }
+    
+        lista.forEach(produto => {
+            let card = document.createElement("div");
+            card.classList.add("card");
+    
+            card.innerHTML = `
+                <span class="desconto">${produto.desconto}</span>
+                <img src="https://via.placeholder.com/180">
+                <h3>${produto.nome}</h3>
+                <p class="preco-antigo">R$ ${produto.antigo}</p>
+                <p class="preco">R$ ${produto.preco}</p>
+                <button onclick="adicionarCarrinho('${produto.nome}', ${produto.preco})">
+                    Adicionar
+                </button>
+            `;
+    
+            container.appendChild(card);
+        });
+    }
+    
+    // ===============================
+    // 🔍 BUSCA (INDEX)
+    // ===============================
+    function filtrarProdutos() {
+        let termo = document.getElementById("busca").value.toLowerCase();
+    
+        let filtrados = produtos.filter(p =>
+            p.nome.toLowerCase().includes(termo)
+        );
+    
+        mostrarProdutos(filtrados);
+    }
+    
+    // ===============================
+    // 🛒 CARRINHO
+    // ===============================
+    function adicionarCarrinho(nome, preco) {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    
+        let produto = carrinho.find(p => p.nome === nome);
+    
+        if (produto) {
+            produto.quantidade++;
+        } else {
+            carrinho.push({ nome, preco, quantidade: 1 });
+        }
+    
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+    
+        atualizarContador();
+        alert("Produto adicionado!");
+    }
+    
+    // ===============================
+    // 🔢 CONTADOR
+    // ===============================
+    function atualizarContador() {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    
+        let total = carrinho.reduce((soma, p) => soma + p.quantidade, 0);
+    
+        let contador = document.getElementById("contador");
+        if (contador) contador.innerText = total;
+    }
+    
+    // ===============================
+    // 📦 CARREGAR CARRINHO
+    // ===============================
+    function carregarCarrinho() {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        let container = document.getElementById("lista-carrinho");
+        let totalEl = document.getElementById("total");
+    
+        if (!container || !totalEl) return;
+    
+        let total = 0;
+        container.innerHTML = "";
+    
+        if (carrinho.length === 0) {
+            container.innerHTML = "<p style='text-align:center;'>Seu carrinho está vazio 🛒</p>";
+            totalEl.innerText = "";
+            return;
+        }
+    
+        carrinho.forEach((produto, index) => {
+            let item = document.createElement("div");
+            item.classList.add("item-carrinho");
+    
+            item.innerHTML = `
+                <div>
+                    <div class="item-info">${produto.nome}</div>
+    
+                    <div class="controle-qtd">
+                        <button onclick="diminuirQtd(${index})">-</button>
+                        <span>${produto.quantidade}</span>
+                        <button onclick="aumentarQtd(${index})">+</button>
+                    </div>
+    
+                    <div>R$ ${(produto.preco * produto.quantidade).toFixed(2)}</div>
+                </div>
+    
+                <button class="btn-remover" onclick="removerItem(${index})">❌</button>
+            `;
+    
+            container.appendChild(item);
+            total += produto.preco * produto.quantidade;
+        });
+    
+        totalEl.innerText = "Total: R$ " + total.toFixed(2);
+    }
+    
+    // ===============================
+    // ➕➖ CONTROLE
+    // ===============================
+    function aumentarQtd(i) {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        carrinho[i].quantidade++;
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        carregarCarrinho();
+        atualizarContador();
+    }
+    
+    function diminuirQtd(i) {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    
+        if (carrinho[i].quantidade > 1) {
+            carrinho[i].quantidade--;
+        } else {
+            carrinho.splice(i, 1);
+        }
+    
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        carregarCarrinho();
+        atualizarContador();
+    }
+    
+    // ===============================
+    // ❌ REMOVER / LIMPAR
+    // ===============================
+    function removerItem(i) {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        carrinho.splice(i, 1);
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        carregarCarrinho();
+        atualizarContador();
+    }
+    
+    function limparCarrinho() {
+        localStorage.removeItem("carrinho");
+        carregarCarrinho();
+        atualizarContador();
+    }
+    
+    // ===============================
+    // 🔀 NAVEGAÇÃO
+    // ===============================
+    function voltar() {
+        window.location.href = "index.html";
+    }
+    
+    function irCarrinho() {
+        window.location.href = "carrinho.html";
+    }
+    
+    // ===============================
+    // 💳 FINALIZAR (ABRE MODAL)
+    // ===============================
+    function finalizarPedido() {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    
+        if (carrinho.length === 0) {
+            alert("Seu carrinho está vazio!");
+            return;
+        }
+    
+        document.getElementById("modal-pagamento").style.display = "flex";
+    }
+    
+    // ===============================
+    // 📲 ESCOLHER PAGAMENTO
+    // ===============================
+    function escolherPagamento(tipo) {
+        let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    
+        let mensagem = "🛒 *Pedido do Supermercado*%0A%0A";
+        let total = 0;
+    
+        carrinho.forEach(p => {
+            mensagem += `- ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}%0A`;
+            total += p.preco * p.quantidade;
+        });
+    
+        mensagem += `%0A💰 Total: R$ ${total.toFixed(2)}`;
+        mensagem += `%0A💳 Pagamento: ${tipo}`;
+    
+        let telefone = "5533988101744"; // TROQUE AQUI
 
-function login(){
+    window.open(`https://wa.me/${telefone}?text=${mensagem}`, "_blank");
 
-let email = document.getElementById("email").value
-let senha = document.getElementById("senha").value
-
-// LOGIN ADMIN
-if(email === "admin" && senha === "admin123"){
-window.location = "admin.html"
-return
+    fecharModal();
 }
 
-let empresas = JSON.parse(localStorage.getItem("empresas")) || []
+// ===============================
+// ❌ FECHAR MODAL
+// ===============================
+function fecharModal() {
+    document.getElementById("modal-pagamento").style.display = "none";
+}
+const carnes = [
+    { nome: "Carne Bovina 1kg", preco: 32.90, antigo: 38.00, desconto: "-13%" },
+    { nome: "Frango Inteiro", preco: 15.50, antigo: 18.00, desconto: "-14%" },
+    { nome: "Costela 1kg", preco: 29.90, antigo: 35.00, desconto: "-15%" },
+    { nome: "Linguiça 1kg", preco: 18.90, antigo: 22.00, desconto: "-14%" },
+    { nome: "Carne Moída 1kg", preco: 26.90, antigo: 30.00, desconto: "-10%" }
+];
 
-let empresa = empresas.find(e => e.email === email && e.senha === senha)
-
-if(empresa){
-
-localStorage.setItem("empresaLogada", empresa.email)
-
-window.location = "dashboard.html"
-
-}else{
-
-alert("Email ou senha inválidos")
-
+function carregarCarnes() {
+    mostrarLista(carnes, "lista-carnes");
 }
 
+function filtrarCarnes() {
+    filtrarLista(carnes, "lista-carnes");
+}
+const hortifruti = [
+    { nome: "Banana 1kg", preco: 4.50, antigo: 5.50, desconto: "-18%" },
+    { nome: "Maçã 1kg", preco: 6.90, antigo: 8.00, desconto: "-13%" },
+    { nome: "Tomate 1kg", preco: 7.50, antigo: 9.00, desconto: "-17%" },
+    { nome: "Batata 1kg", preco: 5.20, antigo: 6.00, desconto: "-13%" },
+    { nome: "Alface Unidade", preco: 2.50, antigo: 3.00, desconto: "-16%" },
+    { nome: "Cenoura 1kg", preco: 4.80, antigo: 5.50, desconto: "-12%" }
+];
+
+function carregarHortifruti() {
+    mostrarLista(hortifruti, "lista-hortifruti");
 }
 
+function filtrarHortifruti() {
+    filtrarLista(hortifruti, "lista-hortifruti");
+}
+const limpeza = [
+    { nome: "Detergente 500ml", preco: 2.50, antigo: 3.00, desconto: "-16%" },
+    { nome: "Sabão em Pó 1kg", preco: 9.90, antigo: 12.00, desconto: "-18%" },
+    { nome: "Água Sanitária 1L", preco: 3.80, antigo: 4.50, desconto: "-15%" },
+    { nome: "Desinfetante 2L", preco: 6.90, antigo: 8.00, desconto: "-13%" },
+    { nome: "Esponja de Louça", preco: 1.50, antigo: 2.00, desconto: "-25%" },
+    { nome: "Amaciante 2L", preco: 11.90, antigo: 14.00, desconto: "-15%" }
+];
 
-// PRODUTOS
-
-let produtos = JSON.parse(localStorage.getItem("produtos_" + empresaLogada)) || []
-
-function adicionarProduto(){
-
-let nome = document.getElementById("produto").value
-let quantidade = document.getElementById("quantidade").value
-let preco = document.getElementById("preco").value
-
-let produto = {
-nome,
-quantidade,
-preco
+function carregarLimpeza() {
+    mostrarLista(limpeza, "lista-limpeza");
 }
 
-produtos.push(produto)
+function filtrarLimpeza() {
+    filtrarLista(limpeza, "lista-limpeza");
+}
+function mostrarLista(lista, id) {
+    let container = document.getElementById(id);
+    if (!container) return;
 
-localStorage.setItem("produtos_" + empresaLogada, JSON.stringify(produtos))
+    container.innerHTML = "";
 
-listarProdutos()
+    if (lista.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>Nenhum produto encontrado 😢</p>";
+        return;
+    }
 
+    lista.forEach(produto => {
+        let card = document.createElement("div");
+        card.classList.add("card");
+
+        card.innerHTML = `
+            <span class="desconto">${produto.desconto}</span>
+            <img src="https://via.placeholder.com/180">
+            <h3>${produto.nome}</h3>
+            <p class="preco-antigo">R$ ${produto.antigo}</p>
+            <p class="preco">R$ ${produto.preco}</p>
+            <button onclick="adicionarCarrinho('${produto.nome}', ${produto.preco})">
+                Adicionar
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
 }
 
-function listarProdutos(){
+function filtrarLista(lista, id) {
+    let termo = document.getElementById("busca").value.toLowerCase();
 
-let lista = document.getElementById("listaProdutos")
+    let filtrados = lista.filter(p =>
+        p.nome.toLowerCase().includes(termo)
+    );
 
-if(!lista) return
-
-lista.innerHTML = ""
-
-produtos.forEach((produto, index) => {
-
-lista.innerHTML += `
-
-<tr>
-
-<td>${produto.nome}</td>
-<td>${produto.quantidade}</td>
-<td>R$ ${produto.preco}</td>
-
-<td>
-
-<button onclick="excluirProduto(${index})">
-Excluir
-</button>
-
-</td>
-
-</tr>
-
-`
-
-})
-
+    mostrarLista(filtrados, id);
 }
-
-function excluirProduto(index){
-
-produtos.splice(index, 1)
-
-localStorage.setItem("produtos_" + empresaLogada, JSON.stringify(produtos))
-
-listarProdutos()
-
-}
-
-
-// CLIENTES
-
-let clientes = JSON.parse(localStorage.getItem("clientes_" + empresaLogada)) || []
-
-function adicionarCliente(){
-
-let nome = document.getElementById("nomeCliente").value
-let telefone = document.getElementById("telefoneCliente").value
-let email = document.getElementById("emailCliente").value
-
-let cliente = {
-nome,
-telefone,
-email
-}
-
-clientes.push(cliente)
-
-localStorage.setItem("clientes_" + empresaLogada, JSON.stringify(clientes))
-
-listarClientes()
-
-}
-
-function listarClientes(){
-
-let lista = document.getElementById("listaClientes")
-
-if(!lista) return
-
-lista.innerHTML = ""
-
-clientes.forEach((cliente, index) => {
-
-lista.innerHTML += `
-
-<tr>
-
-<td>${cliente.nome}</td>
-<td>${cliente.telefone}</td>
-<td>${cliente.email}</td>
-
-<td>
-
-<button onclick="excluirCliente(${index})">
-Excluir
-</button>
-
-</td>
-
-</tr>
-
-`
-
-})
-
-}
-
-function excluirCliente(index){
-
-clientes.splice(index, 1)
-
-localStorage.setItem("clientes_" + empresaLogada, JSON.stringify(clientes))
-
-listarClientes()
-
-}
-
-
-// VENDAS
-
-let vendas = JSON.parse(localStorage.getItem("vendas_" + empresaLogada)) || []
-
-function carregarDadosVenda(){
-
-let selectCliente = document.getElementById("clienteVenda")
-let selectProduto = document.getElementById("produtoVenda")
-
-if(!selectCliente || !selectProduto) return
-
-selectCliente.innerHTML = "<option>Cliente</option>"
-selectProduto.innerHTML = "<option>Produto</option>"
-
-clientes.forEach((cliente, index)=>{
-
-selectCliente.innerHTML += `
-<option value="${index}">
-${cliente.nome}
-</option>
-`
-
-})
-
-produtos.forEach((produto, index)=>{
-
-selectProduto.innerHTML += `
-<option value="${index}">
-${produto.nome}
-</option>
-`
-
-})
-
-}
-
-function registrarVenda(){
-
-let clienteIndex = document.getElementById("clienteVenda").value
-let produtoIndex = document.getElementById("produtoVenda").value
-let quantidade = document.getElementById("quantidadeVenda").value
-
-let cliente = clientes[clienteIndex]
-let produto = produtos[produtoIndex]
-
-let total = quantidade * produto.preco
-
-let venda = {
-cliente: cliente.nome,
-produto: produto.nome,
-quantidade,
-total
-}
-
-vendas.push(venda)
-
-localStorage.setItem("vendas_" + empresaLogada, JSON.stringify(vendas))
-
-listarVendas()
-
-}
-
-function listarVendas(){
-
-let lista = document.getElementById("listaVendas")
-
-if(!lista) return
-
-lista.innerHTML = ""
-
-vendas.forEach((venda)=>{
-
-lista.innerHTML += `
-
-<tr>
-
-<td>${venda.cliente}</td>
-<td>${venda.produto}</td>
-<td>${venda.quantidade}</td>
-<td>R$ ${venda.total}</td>
-
-</tr>
-
-`
-
-})
-
-}
-
-
-// CADASTRO EMPRESA
-
-function cadastrar(){
-
-let nome = document.getElementById("nomeEmpresa").value
-let email = document.getElementById("emailCadastro").value
-let senha = document.getElementById("senhaCadastro").value
-
-let empresas = JSON.parse(localStorage.getItem("empresas")) || []
-
-let novaEmpresa = {
-nome,
-email,
-senha
-}
-
-empresas.push(novaEmpresa)
-
-localStorage.setItem("empresas", JSON.stringify(empresas))
-
-alert("Conta criada com sucesso!")
-
-window.location = "index.html"
-
-}
-
-
-// DASHBOARD
-
-function carregarEmpresa(){
-
-let email = localStorage.getItem("empresaLogada")
-
-let empresas = JSON.parse(localStorage.getItem("empresas")) || []
-
-let empresa = empresas.find(e => e.email === email)
-
-let nome = document.getElementById("nomeEmpresa")
-
-if(nome && empresa){
-nome.innerText = "Bem-vindo, " + empresa.nome
-}
-
-}
-
-carregarEmpresa()
-
-
-function atualizarDashboard(){
-
-let produtos = JSON.parse(localStorage.getItem("produtos_" + empresaLogada)) || []
-let clientes = JSON.parse(localStorage.getItem("clientes_" + empresaLogada)) || []
-let vendas = JSON.parse(localStorage.getItem("vendas_" + empresaLogada)) || []
-
-let totalProdutos = document.getElementById("totalProdutos")
-let totalClientes = document.getElementById("totalClientes")
-let totalVendas = document.getElementById("totalVendas")
-
-if(totalProdutos) totalProdutos.innerText = produtos.length
-if(totalClientes) totalClientes.innerText = clientes.length
-if(totalVendas) totalVendas.innerText = vendas.length
-
-}
-
-atualizarDashboard()
-
-
-// ADMIN
-
-function listarEmpresas(){
-
-let empresas = JSON.parse(localStorage.getItem("empresas")) || []
-
-let lista = document.getElementById("listaEmpresas")
-
-if(!lista) return
-
-lista.innerHTML = ""
-
-empresas.forEach(empresa => {
-
-lista.innerHTML += `
-
-<tr>
-
-<td>${empresa.nome}</td>
-<td>${empresa.email}</td>
-
-</tr>
-
-`
-
-})
-
-}
-
-listarEmpresas()
-
-
-// SAIR
-
-function sair(){
-
-localStorage.removeItem("empresaLogada")
-
-window.location = "index.html"
-
-}
-
-
-// EXECUÇÕES AUTOMÁTICAS
-
-if(document.getElementById("listaProdutos")){
-listarProdutos()
-}
-
-if(document.getElementById("listaClientes")){
-listarClientes()
-}
-
-if(document.getElementById("clienteVenda")){
-carregarDadosVenda()
-}
-
-if(document.getElementById("listaVendas")){
-listarVendas()
-}
-function listarEmpresas(){
-
-let empresas = JSON.parse(localStorage.getItem("empresas")) || []
-
-let lista = document.getElementById("listaEmpresas")
-let total = document.getElementById("totalEmpresas")
-
-if(!lista) return
-
-lista.innerHTML = ""
-
-empresas.forEach((empresa, index) => {
-
-lista.innerHTML += `
-
-<tr>
-
-<td>${empresa.nome}</td>
-<td>${empresa.email}</td>
-
-<td>
-
-<button onclick="excluirEmpresa(${index})">
-Excluir
-</button>
-
-</td>
-
-</tr>
-
-`
-
-})
-
-if(total){
-total.innerText = empresas.length
-}
-
-}
-
-function excluirEmpresa(index){
-
-let empresas = JSON.parse(localStorage.getItem("empresas")) || []
-
-empresas.splice(index, 1)
-
-localStorage.setItem("empresas", JSON.stringify(empresas))
-
-listarEmpresas()
-
-}
-
-listarEmpresas()
