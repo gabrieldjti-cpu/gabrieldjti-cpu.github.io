@@ -251,3 +251,59 @@ function escolherPagamento(tipo) {
 }
 
 function fecharModal() { document.getElementById("modal-pagamento").style.display = "none"; }
+function abrirLogin() {
+    document.getElementById('modal-login').style.display = 'flex';
+}
+
+function fecharLogin() {
+    document.getElementById('modal-login').style.display = 'none';
+}
+
+function fazerLogin() {
+    const email = document.getElementById('login-email').value;
+    const senha = document.getElementById('login-senha').value;
+
+    if(email && senha) {
+        // Simulação de login
+        alert("Login realizado com sucesso!");
+        document.getElementById('user-name').innerText = "Olá, Cliente! 👋";
+        fecharLogin();
+    } else {
+        alert("Por favor, preencha todos os campos.");
+    }
+}
+// Alternar entre Login e Cadastro
+function alternarAba(tipo) {
+    const formLogin = document.getElementById('form-login');
+    const formCad = document.getElementById('form-cadastro');
+    const tabLogin = document.getElementById('tab-login');
+    const tabCad = document.getElementById('tab-cadastro');
+
+    if (tipo === 'login') {
+        formLogin.style.display = 'block';
+        formCad.style.display = 'none';
+        tabLogin.style.borderBottom = '3px solid var(--primary)';
+        tabLogin.style.color = 'var(--primary)';
+        tabCad.style.borderBottom = 'none';
+        tabCad.style.color = '#999';
+    } else {
+        formLogin.style.display = 'none';
+        formCad.style.display = 'block';
+        tabCad.style.borderBottom = '3px solid var(--primary)';
+        tabCad.style.color = 'var(--primary)';
+        tabLogin.style.borderBottom = 'none';
+        tabLogin.style.color = '#999';
+    }
+}
+
+// Simulação de Cadastro
+function fazerCadastro() {
+    const nome = document.getElementById('cad-nome').value;
+    if(nome) {
+        alert("Conta criada com sucesso, " + nome + "!");
+        document.getElementById('user-name').innerText = "Olá, " + nome.split(' ')[0] + " 👋";
+        fecharLogin();
+    } else {
+        alert("Preencha seu nome!");
+    }
+}
