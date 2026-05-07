@@ -38,9 +38,15 @@ const produtosData = {
 };
 
 // ===============================
-// 🧱 INTERFACE PRINCIPAL
+// 🧱 CONFIGURAÇÃO SUPABASE
 // ===============================
+const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
+const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+// ===============================
+// 🧱 INTERFACE DE PRODUTOS
+// ===============================
 function mostrarProdutos(lista, idContainer = "lista-produtos") {
     const container = document.getElementById(idContainer);
     if (!container) return;
@@ -50,7 +56,6 @@ function mostrarProdutos(lista, idContainer = "lista-produtos") {
         : "";
 
     lista.forEach(p => {
-        // Lógica de Badges Dinâmicas
         let badgeHTML = "";
         if (idContainer === "lista-carnes") badgeHTML = `<span class="badge badge-premium">Premium</span>`;
         if (idContainer === "lista-hortifruti") badgeHTML = `<span class="badge badge-organico">Orgânico</span>`;
@@ -70,36 +75,24 @@ function mostrarProdutos(lista, idContainer = "lista-produtos") {
     });
 }
 
-// Filtro universal
 function filtrarProdutos(categoria) {
     const termo = document.getElementById("busca").value.toLowerCase();
     const listaOriginal = produtosData[categoria] || produtosData.index;
     const filtrados = listaOriginal.filter(p => p.nome.toLowerCase().includes(termo));
-    
     const idContainer = categoria === 'index' ? 'lista-produtos' : `lista-${categoria}`;
     mostrarProdutos(filtrados, idContainer);
 }
 
 // ===============================
-// 🛒 LÓGICA DO CARRINHO (LATERAL)
+// 🛒 LÓGICA DO CARRINHO
 // ===============================
-
 function adicionarCarrinho(nome, preco) {
     let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     let item = carrinho.find(p => p.nome === nome);
-
-    if (item) {
-        item.quantidade++;
-    } else {
-        carrinho.push({ nome, preco, quantidade: 1 });
-    }
-
+    if (item) { item.quantidade++; } else { carrinho.push({ nome, preco, quantidade: 1 }); }
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
     mostrarAviso(`✅ ${nome} no carrinho!`);
-    
-    // Opcional: Abrir o carrinho automaticamente ao adicionar
-    // irCarrinho(); 
 }
 
 function irCarrinho() {
@@ -136,19 +129,18 @@ function carregarCarrinho() {
         item.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                 <div style="flex: 1;">
-                    <div class="item-info" style="font-weight: bold;">${p.nome}</div>
-                    <div class="controle-qtd" style="margin-top: 5px;">
-                        <button onclick="mudarQtd(${i}, -1)" style="padding: 2px 8px;">-</button>
+                    <div style="font-weight: bold;">${p.nome}</div>
+                    <div style="margin-top: 5px;">
+                        <button onclick="mudarQtd(${i}, -1)">-</button>
                         <span style="margin: 0 10px;">${p.quantidade}</span>
-                        <button onclick="mudarQtd(${i}, 1)" style="padding: 2px 8px;">+</button>
+                        <button onclick="mudarQtd(${i}, 1)">+</button>
                     </div>
                 </div>
                 <div style="text-align: right;">
                     <div style="color: #198754; font-weight: bold;">R$ ${(p.preco * p.quantidade).toFixed(2)}</div>
-                    <button class="btn-remover" onclick="removerItem(${i})" style="background: none; border: none; cursor: pointer; color: red; font-size: 12px; margin-top: 5px;">Remover</button>
+                    <button onclick="removerItem(${i})" style="color:red; background:none; border:none; cursor:pointer; font-size:12px;">Remover</button>
                 </div>
-            </div>
-        `;
+            </div>`;
         container.appendChild(item);
         somaTotal += p.preco * p.quantidade;
     });
@@ -180,130 +172,132 @@ function atualizarContador() {
 }
 
 // ===============================
-// 🔔 NOTIFICAÇÕES (TOAST)
+// 🔐 AUTENTICAÇÃO E PERFIL
 // ===============================
-
-function mostrarAviso(msg) {
-    const antigo = document.querySelector(".toast-aviso");
-    if (antigo) antigo.remove();
-
-    const aviso = document.createElement("div");
-    aviso.className = "toast-aviso";
-    aviso.innerText = msg;
-    aviso.style.cssText = `
-        position: fixed; bottom: 20px; right: 20px; background: #198754;
-        color: white; padding: 15px 25px; border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 9999;
-        font-weight: bold; animation: subir 0.4s ease-out;
-    `;
-    document.body.appendChild(aviso);
-    setTimeout(() => {
-        aviso.style.opacity = "0";
-        aviso.style.transition = "0.5s";
-        setTimeout(() => aviso.remove(), 500);
-    }, 2500);
+async function verificarUsuario() {
+    const { data: { user } } = await _supabase.auth.getUser();
+    const btnUser = document.getElementById('user-name');
+    if (user) {
+        const nomeExibir = user.user_metadata.display_name || user.email.split('@')[0];
+        btnUser.innerText = `Olá, ${nomeExibir} ⚙️`;
+        btnUser.onclick = abrirPerfil; 
+    } else {
+        btnUser.innerText = "👤 Entrar";
+        btnUser.onclick = abrirLogin;
+    }
 }
 
-const style = document.createElement("style");
-style.innerHTML = `@keyframes subir { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`;
-document.head.appendChild(style);
+async function fazerLogin() {
+    const email = document.getElementById('login-email').value;
+    const senha = document.getElementById('login-senha').value;
+    const { error } = await _supabase.auth.signInWithPassword({ email, password: senha });
+    if (error) alert("Erro: " + error.message);
+    else { fecharLogin(); verificarUsuario(); mostrarAviso("Bem-vindo! 👋"); }
+}
+
+async function fazerCadastro() {
+    const nome = document.getElementById('cad-nome').value;
+    const email = document.getElementById('cad-email').value;
+    const senha = document.getElementById('cad-senha').value;
+    const { error } = await _supabase.auth.signUp({ email, password: senha, options: { data: { display_name: nome } } });
+    if (error) alert("Erro: " + error.message);
+    else alert("Conta criada! Verifique seu e-mail.");
+}
+
+async function fazerLogout() {
+    if (confirm("Deseja sair?")) {
+        await _supabase.auth.signOut();
+        window.location.reload();
+    }
+}
 
 // ===============================
-// 📄 CARREGAMENTO INICIAL
+// 📍 GESTÃO DE ENDEREÇO (PERFIL)
 // ===============================
+function abrirPerfil() { document.getElementById('secao-perfil').style.display = 'flex'; carregarDadosPerfil(); }
+function fecharPerfil() { document.getElementById('secao-perfil').style.display = 'none'; }
 
-window.onload = () => {
-    atualizarContador();
-    if (document.getElementById("lista-produtos")) mostrarProdutos(produtosData.index);
-    if (document.getElementById("lista-carnes")) mostrarProdutos(produtosData.carnes, "lista-carnes");
-    if (document.getElementById("lista-hortifruti")) mostrarProdutos(produtosData.hortifruti, "lista-hortifruti");
-    if (document.getElementById("lista-limpeza")) mostrarProdutos(produtosData.limpeza, "lista-limpeza");
-};
+async function carregarDadosPerfil() {
+    const { data: { user } } = await _supabase.auth.getUser();
+    if (!user) return;
+    const { data: perfil } = await _supabase.from('perfis').select('*').eq('id', user.id).single();
+    if (perfil) {
+        document.getElementById('perf-tel').value = perfil.telefone || '';
+        document.getElementById('perf-rua').value = perfil.rua || '';
+        document.getElementById('perf-num').value = perfil.numero || '';
+        document.getElementById('perf-bairro').value = perfil.bairro || '';
+        document.getElementById('perf-cidade').value = perfil.cidade || '';
+    }
+}
+
+async function salvarPerfil() {
+    const { data: { user } } = await _supabase.auth.getUser();
+    if (!user) return alert("Logue primeiro!");
+    const dados = {
+        id: user.id,
+        telefone: document.getElementById('perf-tel').value,
+        rua: document.getElementById('perf-rua').value,
+        numero: document.getElementById('perf-num').value,
+        bairro: document.getElementById('perf-bairro').value,
+        cidade: document.getElementById('perf-cidade').value
+    };
+    const { error } = await _supabase.from('perfis').upsert(dados);
+    if (error) alert("Erro ao salvar!");
+    else { alert("📍 Endereço salvo!"); fecharPerfil(); }
+}
 
 // ===============================
-// 📲 FINALIZAÇÃO (WHATSAPP)
+// 🛠 AUXILIARES (MODAIS E AVISOS)
 // ===============================
+function abrirLogin() { document.getElementById('modal-login').style.display = 'flex'; }
+function fecharLogin() { document.getElementById('modal-login').style.display = 'none'; }
 
+function alternarAba(tipo) {
+    document.getElementById('form-login').style.display = tipo === 'login' ? 'block' : 'none';
+    document.getElementById('form-cadastro').style.display = tipo === 'cadastro' ? 'block' : 'none';
+}
+
+function mostrarAviso(msg) {
+    const aviso = document.createElement("div");
+    aviso.innerText = msg;
+    aviso.style.cssText = "position:fixed; bottom:20px; right:20px; background:#198754; color:white; padding:15px; border-radius:10px; z-index:9999;";
+    document.body.appendChild(aviso);
+    setTimeout(() => aviso.remove(), 3000);
+}
+
+// ===============================
+// 📲 WHATSAPP
+// ===============================
 function finalizarPedido() {
     const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     if (carrinho.length === 0) return alert("Carrinho vazio!");
-    
-    // Fecha o carrinho lateral para mostrar o modal de pagamento
-    fecharCarrinho();
     document.getElementById("modal-pagamento").style.display = "flex";
 }
 
+function fecharModal() { document.getElementById("modal-pagamento").style.display = "none"; }
+
 function escolherPagamento(tipo) {
     const carrinho = JSON.parse(localStorage.getItem("carrinho"));
-    const telefone = "5533988101944";
     let msg = "🛒 *Novo Pedido*%0A%0A";
     let total = 0;
-
     carrinho.forEach(p => {
         msg += `• ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}%0A`;
         total += p.preco * p.quantidade;
     });
-
     msg += `%0A💰 *Total: R$ ${total.toFixed(2)}*%0A💳 Pagamento: ${tipo}`;
-    window.open(`https://wa.me/${telefone}?text=${msg}`, "_blank");
-    localStorage.removeItem("carrinho");
-    location.href = "index.html";
+    window.open(`https://wa.me/5533988101944?text=${msg}`, "_blank");
 }
 
-function fecharModal() { document.getElementById("modal-pagamento").style.display = "none"; }
-function abrirLogin() {
-    document.getElementById('modal-login').style.display = 'flex';
-}
-
-function fecharLogin() {
-    document.getElementById('modal-login').style.display = 'none';
-}
-
-function fazerLogin() {
-    const email = document.getElementById('login-email').value;
-    const senha = document.getElementById('login-senha').value;
-
-    if(email && senha) {
-        // Simulação de login
-        alert("Login realizado com sucesso!");
-        document.getElementById('user-name').innerText = "Olá, Cliente! 👋";
-        fecharLogin();
-    } else {
-        alert("Por favor, preencha todos os campos.");
-    }
-}
-// Alternar entre Login e Cadastro
-function alternarAba(tipo) {
-    const formLogin = document.getElementById('form-login');
-    const formCad = document.getElementById('form-cadastro');
-    const tabLogin = document.getElementById('tab-login');
-    const tabCad = document.getElementById('tab-cadastro');
-
-    if (tipo === 'login') {
-        formLogin.style.display = 'block';
-        formCad.style.display = 'none';
-        tabLogin.style.borderBottom = '3px solid var(--primary)';
-        tabLogin.style.color = 'var(--primary)';
-        tabCad.style.borderBottom = 'none';
-        tabCad.style.color = '#999';
-    } else {
-        formLogin.style.display = 'none';
-        formCad.style.display = 'block';
-        tabCad.style.borderBottom = '3px solid var(--primary)';
-        tabCad.style.color = 'var(--primary)';
-        tabLogin.style.borderBottom = 'none';
-        tabLogin.style.color = '#999';
-    }
-}
-
-// Simulação de Cadastro
-function fazerCadastro() {
-    const nome = document.getElementById('cad-nome').value;
-    if(nome) {
-        alert("Conta criada com sucesso, " + nome + "!");
-        document.getElementById('user-name').innerText = "Olá, " + nome.split(' ')[0] + " 👋";
-        fecharLogin();
-    } else {
-        alert("Preencha seu nome!");
-    }
-}
+// ===============================
+// 📄 INICIALIZAÇÃO (ESSENCIAL)
+// ===============================
+window.onload = () => {
+    atualizarContador();
+    verificarUsuario();
+    
+    // CARREGA OS PRODUTOS DEPENDENDO DA PÁGINA
+    if (document.getElementById("lista-produtos")) mostrarProdutos(produtosData.index, "lista-produtos");
+    if (document.getElementById("lista-carnes")) mostrarProdutos(produtosData.carnes, "lista-carnes");
+    if (document.getElementById("lista-hortifruti")) mostrarProdutos(produtosData.hortifruti, "lista-hortifruti");
+    if (document.getElementById("lista-limpeza")) mostrarProdutos(produtosData.limpeza, "lista-limpeza");
+};
