@@ -3,138 +3,603 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Supermercado Online | Qualidade e Praticidade</title>
+
     <link rel="stylesheet" href="style.css">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
+    <!-- =========================
+         🟢 HEADER
+    ========================== -->
     <header class="topo">
-        <div class="logo">🛒 Supermercado</div>
 
+        <div class="logo">
+            🛒 Supermercado
+        </div>
+
+        <!-- BUSCA -->
         <div class="busca">
-            <input type="text" id="busca" placeholder="O que você procura hoje?" onkeyup="filtrarProdutos('index')">
-            <button>🔍</button>
+            <input
+                type="text"
+                id="busca"
+                placeholder="O que você procura hoje?"
+                onkeyup="filtrarProdutos('index')"
+            >
+
+            <button>
+                🔍
+            </button>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div id="user-name" onclick="abrirLogin()" style="cursor: pointer; font-weight: 700; font-size: 14px; background: rgba(255,255,255,0.15); padding: 8px 15px; border-radius: 50px; transition: 0.3s; color: white;">
-                👤 Entrar
+        <!-- AÇÕES -->
+        <div class="acoes-topo">
+
+            <!-- USUÁRIO -->
+            <div class="usuario-box" onclick="abrirPerfil()">
+
+                <div class="avatar-user">
+                    👤
+                </div>
+
+                <div class="usuario-info">
+                    <span id="user-name">Entrar</span>
+                    <small>Minha Conta</small>
+                </div>
+
             </div>
 
-            <div class="carrinho" onclick="irCarrinho()">
-                🛍️ <span id="contador">0</span> itens
+            <!-- CARRINHO -->
+            <div class="carrinho-topo" onclick="irCarrinho()">
+
+                <span class="icone-cart">
+                    🛍️
+                </span>
+
+                <div class="cart-info">
+                    <span>Carrinho</span>
+
+                    <small>
+                        <span id="contador">0</span> itens
+                    </small>
+                </div>
+
             </div>
+
         </div>
+
     </header>
 
+    <!-- =========================
+         🟢 MENU
+    ========================== -->
     <nav class="menu">
+
         <a href="index.html">Início</a>
         <a href="hortifruti.html">Hortifruti</a>
         <a href="carnes.html">Carnes</a>
         <a href="limpeza.html">Limpeza</a>
         <a href="#">Promoções</a>
+
     </nav>
 
+    <!-- =========================
+         🟢 BANNER
+    ========================== -->
     <section class="banner">
+
         <div class="banner-texto">
-            <h1>Ofertas Imperdíveis</h1>
-            <p>Os melhores preços da sua cidade sem sair de casa.</p>
-            <button>Ver Promoções</button>
+
+            <h1>
+                Ofertas Imperdíveis
+            </h1>
+
+            <p>
+                Os melhores preços da sua cidade sem sair de casa.
+            </p>
+
+            <button>
+                Ver Promoções
+            </button>
+
         </div>
+
     </section>
 
+    <!-- =========================
+         🟢 BENEFÍCIOS
+    ========================== -->
+    <section class="beneficios">
+
+        <div class="beneficio">
+
+            <div class="icone">
+                🚚
+            </div>
+
+            <h3>
+                Entrega Rápida
+            </h3>
+
+            <p>
+                Receba suas compras rapidamente na sua casa.
+            </p>
+
+        </div>
+
+        <div class="beneficio">
+
+            <div class="icone">
+                💳
+            </div>
+
+            <h3>
+                Pagamento Fácil
+            </h3>
+
+            <p>
+                Pix, cartão ou dinheiro na entrega.
+            </p>
+
+        </div>
+
+        <div class="beneficio">
+
+            <div class="icone">
+                🥬
+            </div>
+
+            <h3>
+                Produtos Frescos
+            </h3>
+
+            <p>
+                Qualidade garantida todos os dias.
+            </p>
+
+        </div>
+
+        <div class="beneficio">
+
+            <div class="icone">
+                🛡️
+            </div>
+
+            <h3>
+                Compra Segura
+            </h3>
+
+            <p>
+                Seus dados protegidos com segurança.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- =========================
+         🟢 CATEGORIAS
+    ========================== -->
     <section class="categorias">
-        <a href="hortifruti.html" class="categoria">🥦 Hortifruti</a>
-        <a href="carnes.html" class="categoria">🥩 Carnes</a>
-        <a href="limpeza.html" class="categoria">🧴 Limpeza</a>
-        <a href="#" class="categoria">🥤 Bebidas</a>
+
+        <a href="hortifruti.html" class="categoria">
+            🥦 Hortifruti
+        </a>
+
+        <a href="carnes.html" class="categoria">
+            🥩 Carnes
+        </a>
+
+        <a href="limpeza.html" class="categoria">
+            🧴 Limpeza
+        </a>
+
+        <a href="#" class="categoria">
+            🥤 Bebidas
+        </a>
+
     </section>
 
-    <main class="produtos" id="lista-produtos">
-        </main>
+    <!-- =========================
+         🟢 MAIS VENDIDOS
+    ========================== -->
+    <section class="secao-produtos">
 
+        <div class="titulo-secao">
+
+            <h2>
+                🔥 Mais Vendidos
+            </h2>
+
+            <div class="acoes-carrossel">
+
+                <button onclick="scrollCarrossel('lista-produtos', -1)">
+                    ◀
+                </button>
+
+                <button onclick="scrollCarrossel('lista-produtos', 1)">
+                    ▶
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="carrossel" id="lista-produtos"></div>
+
+    </section>
+
+    <!-- =========================
+         🟢 HORTIFRUTI
+    ========================== -->
+    <section class="secao-produtos">
+
+        <div class="titulo-secao">
+
+            <h2>
+                🥦 Hortifruti Fresquinho
+            </h2>
+
+            <div class="acoes-carrossel">
+
+                <button onclick="scrollCarrossel('carrossel-horti', -1)">
+                    ◀
+                </button>
+
+                <button onclick="scrollCarrossel('carrossel-horti', 1)">
+                    ▶
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="carrossel" id="carrossel-horti"></div>
+
+    </section>
+
+    <!-- =========================
+         🟢 CARNES
+    ========================== -->
+    <section class="secao-produtos">
+
+        <div class="titulo-secao">
+
+            <h2>
+                🥩 Carnes Premium
+            </h2>
+
+            <div class="acoes-carrossel">
+
+                <button onclick="scrollCarrossel('carrossel-carnes', -1)">
+                    ◀
+                </button>
+
+                <button onclick="scrollCarrossel('carrossel-carnes', 1)">
+                    ▶
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="carrossel" id="carrossel-carnes"></div>
+
+    </section>
+
+    <!-- =========================
+         🟢 FOOTER
+    ========================== -->
     <footer class="footer">
-        <p>© 2026 Supermercado Online | 📍 Atendimento Local</p>
+
+        <p>
+            © 2026 Supermercado Online | 📍 Atendimento Local
+        </p>
+
     </footer>
 
-    <div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
+    <!-- =========================
+         🟢 OVERLAY
+    ========================== -->
+    <div
+        id="overlay"
+        class="overlay"
+        onclick="fecharCarrinho()"
+    ></div>
+
+    <!-- =========================
+         🟢 CARRINHO
+    ========================== -->
     <div id="carrinho-lateral" class="carrinho-lateral">
-        <div style="display:flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin:0;">Meu Carrinho</h2>
-            <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:32px; cursor:pointer; line-height:1;">&times;</button>
+
+        <div class="topo-carrinho">
+
+            <h2>
+                Meu Carrinho
+            </h2>
+
+            <button onclick="fecharCarrinho()" class="btn-fechar">
+                &times;
+            </button>
+
         </div>
-        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-        <div id="lista-carrinho" style="flex-grow: 1; overflow-y: auto;"></div>
-        <div id="total" style="font-weight: 800; font-size: 22px; margin: 20px 0; border-top: 2px solid #eee; padding-top: 15px; color: #198754;">
+
+        <hr>
+
+        <div id="lista-carrinho" class="lista-carrinho"></div>
+
+        <div id="total" class="total-carrinho">
             Total: R$ 0,00
         </div>
-        <button onclick="finalizarPedido()" style="width: 100%; padding: 18px; background: #198754; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px;">
+
+        <button
+            onclick="finalizarPedido()"
+            class="btn-finalizar"
+        >
             Finalizar Pedido
         </button>
+
     </div>
 
-    <div id="modal-pagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:30px; border-radius:20px; text-align:center; max-width:400px; width:90%;">
-            <h3 style="margin-top:0;">Como deseja pagar?</h3>
-            <button onclick="escolherPagamento('Cartão')" style="width:100%; padding:15px; margin:8px 0; background:#007bff; color:white; border:none; border-radius:10px; cursor:pointer;">💳 Cartão</button>
-            <button onclick="escolherPagamento('Pix')" style="width:100%; padding:15px; margin:8px 0; background:#000; color:white; border:none; border-radius:10px; cursor:pointer;">📱 Pix</button>
-            <button onclick="escolherPagamento('Dinheiro')" style="width:100%; padding:15px; margin:8px 0; background:#28a745; color:white; border:none; border-radius:10px; cursor:pointer;">💵 Dinheiro</button>
-            <button onclick="fecharModal()" style="background:none; border:none; color:#dc3545; cursor:pointer; margin-top:15px;">Voltar</button>
+    <!-- =========================
+         🟢 MODAL PAGAMENTO
+    ========================== -->
+    <div id="modal-pagamento" class="modal">
+
+        <div class="modal-box">
+
+            <h3>
+                Como deseja pagar?
+            </h3>
+
+            <button
+                onclick="escolherPagamento('Cartão')"
+                class="btn-cartao"
+            >
+                💳 Cartão
+            </button>
+
+            <button
+                onclick="escolherPagamento('Pix')"
+                class="btn-pix"
+            >
+                📱 Pix
+            </button>
+
+            <button
+                onclick="escolherPagamento('Dinheiro')"
+                class="btn-dinheiro"
+            >
+                💵 Dinheiro
+            </button>
+
+            <button
+                onclick="fecharModal()"
+                class="btn-voltar"
+            >
+                Voltar
+            </button>
+
         </div>
+
     </div>
 
-    <div id="modal-login" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:4000; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
-        <div style="background:white; padding:30px; border-radius:20px; width:90%; max-width:400px;">
-            <div style="display:flex; margin-bottom: 25px; border-bottom: 2px solid #eee;">
-                <div id="tab-login" onclick="alternarAba('login')" style="flex:1; padding:10px; cursor:pointer; text-align:center; font-weight:bold; color:#198754; border-bottom: 3px solid #198754;">Entrar</div>
-                <div id="tab-cadastro" onclick="alternarAba('cadastro')" style="flex:1; padding:10px; cursor:pointer; text-align:center; font-weight:bold; color:#999;">Cadastrar</div>
+    <!-- =========================
+         🟢 LOGIN / CADASTRO
+    ========================== -->
+    <div id="modal-login" class="modal">
+
+        <div class="modal-login-box">
+
+            <!-- TABS -->
+            <div class="abas-login">
+
+                <div
+                    id="tab-login"
+                    onclick="alternarAba('login')"
+                    class="aba ativa"
+                >
+                    Entrar
+                </div>
+
+                <div
+                    id="tab-cadastro"
+                    onclick="alternarAba('cadastro')"
+                    class="aba"
+                >
+                    Cadastrar
+                </div>
+
             </div>
 
+            <!-- LOGIN -->
             <div id="form-login">
-                <input type="email" id="login-email" placeholder="Seu e-mail" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-                <input type="password" id="login-senha" placeholder="Sua senha" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
-                <button onclick="fazerLogin()" style="width:100%; padding:15px; background:#198754; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Entrar na Conta</button>
+
+                <input
+                    type="email"
+                    id="login-email"
+                    placeholder="Seu e-mail"
+                    class="input-premium"
+                >
+
+                <input
+                    type="password"
+                    id="login-senha"
+                    placeholder="Sua senha"
+                    class="input-premium"
+                >
+
+                <button
+                    onclick="fazerLogin()"
+                    class="btn-acesso-principal"
+                >
+                    Entrar na Conta
+                </button>
+
             </div>
 
+            <!-- CADASTRO -->
             <div id="form-cadastro" style="display:none;">
-                <input type="text" id="cad-nome" placeholder="Nome Completo" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-                <input type="email" id="cad-email" placeholder="Seu melhor e-mail" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-                <input type="password" id="cad-senha" placeholder="Crie uma senha" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
-                <button onclick="fazerCadastro()" style="width:100%; padding:15px; background:#28a745; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Criar minha Conta</button>
+
+                <input
+                    type="text"
+                    id="cad-nome"
+                    placeholder="Nome Completo"
+                    class="input-premium"
+                >
+
+                <input
+                    type="email"
+                    id="cad-email"
+                    placeholder="Seu melhor e-mail"
+                    class="input-premium"
+                >
+
+                <input
+                    type="password"
+                    id="cad-senha"
+                    placeholder="Crie uma senha"
+                    class="input-premium"
+                >
+
+                <button
+                    onclick="fazerCadastro()"
+                    class="btn-acesso-principal"
+                >
+                    Criar minha Conta
+                </button>
+
             </div>
 
-            <div style="text-align:center; margin-top:15px;">
-                <button onclick="fecharLogin()" style="background:none; border:none; color:#ff4757; cursor:pointer; font-weight:600;">Fechar</button>
+            <div class="fechar-login">
+
+                <button onclick="fecharLogin()">
+                    Fechar
+                </button>
+
             </div>
+
         </div>
+
     </div>
 
-    <div id="secao-perfil" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:5000; justify-content:center; align-items:center; backdrop-filter: blur(3px);">
-        <div style="background:white; padding:30px; border-radius:20px; width:90%; max-width:400px; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-            <h3 style="margin-top:0;">📍 Dados de Entrega</h3>
-            
-            <input type="text" id="perf-tel" placeholder="Telefone (ex: 33 99999-9999)" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-            <input type="text" id="perf-rua" placeholder="Rua" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-            <input type="text" id="perf-num" placeholder="Número" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-            <input type="text" id="perf-bairro" placeholder="Bairro" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-            <input type="text" id="perf-cidade" placeholder="Cidade" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ddd; border-radius:8px;">
-            
-            <button onclick="salvarPerfil()" style="background:#198754; color:white; border:none; padding:15px; width:100%; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom:10px;">
+    <!-- =========================
+         🟢 PERFIL
+    ========================== -->
+    <div id="secao-perfil" class="modal">
+
+        <div class="perfil-box">
+
+            <!-- HEADER PERFIL -->
+            <div class="perfil-header">
+
+                <div class="perfil-avatar">
+                    👤
+                </div>
+
+                <h2 id="perfil-nome">
+                    Gabriel
+                </h2>
+
+                <p id="perfil-email">
+                    email@gmail.com
+                </p>
+
+            </div>
+
+            <!-- TÍTULO -->
+            <h3 class="titulo-perfil">
+                📍 Dados de Entrega
+            </h3>
+
+            <!-- INPUTS -->
+            <input
+                type="text"
+                id="perf-tel"
+                placeholder="Telefone"
+                class="input-premium"
+            >
+
+            <input
+                type="text"
+                id="perf-rua"
+                placeholder="Rua"
+                class="input-premium"
+            >
+
+            <input
+                type="text"
+                id="perf-num"
+                placeholder="Número"
+                class="input-premium"
+            >
+
+            <input
+                type="text"
+                id="perf-bairro"
+                placeholder="Bairro"
+                class="input-premium"
+            >
+
+            <input
+                type="text"
+                id="perf-cidade"
+                placeholder="Cidade"
+                class="input-premium"
+            >
+
+            <!-- HISTÓRICO -->
+            <h3 class="titulo-historico">
+                🧾 Histórico
+            </h3>
+
+            <div id="historico-compras">
+
+                <div class="pedido-item">
+
+                    <strong>
+                        Pedido #1021
+                    </strong>
+
+                    <p>
+                        R$ 89,90
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- BOTÕES -->
+            <button
+                onclick="salvarPerfil()"
+                class="btn-salvar"
+            >
                 Salvar Endereço
             </button>
-            
-            <button onclick="fazerLogout()" style="background:none; border:1px solid #dc3545; color:#dc3545; padding:12px; width:100%; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom:10px;">
+
+            <button
+                onclick="fazerLogout()"
+                class="btn-logout"
+            >
                 Sair da Minha Conta
             </button>
 
-            <button onclick="fecharPerfil()" style="background:none; border:none; color:#999; width:100%; cursor:pointer; margin-top:5px;">
+            <button
+                onclick="fecharPerfil()"
+                class="btn-fechar-perfil"
+            >
                 Fechar
             </button>
+
         </div>
+
     </div>
 
     <script src="script.js"></script>
 
 </body>
-</html>
+    </html>
