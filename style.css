@@ -1068,3 +1068,62 @@ body{
     }
 
    }
+/* ===============================
+   👤 MODAL PERFIL RESPONSIVO
+   =============================== */
+
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    z-index:5000;
+
+    backdrop-filter:blur(4px);
+
+    overflow-y:auto;
+    padding:20px;
+}
+
+.perfil-box{
+    background:white;
+    width:100%;
+    max-width:420px;
+
+    padding:30px;
+    border-radius:25px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+
+    max-height:90vh;
+    overflow-y:auto;
+
+    margin:auto;
+}
+
+/* SCROLL BONITO */
+.perfil-box::-webkit-scrollbar{
+    width:6px;
+}
+
+.perfil-box::-webkit-scrollbar-thumb{
+    background:#198754;
+    border-radius:10px;
+}
+
+/* CELULAR */
+@media(max-width:600px){
+
+    .perfil-box{
+        padding:22px;
+        border-radius:20px;
+    }
+
+}
