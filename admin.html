@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel ADM</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+    <div class="topo">
+
+        <h1>
+            👑 Painel Administrativo
+        </h1>
+
+    </div>
+
+    <!-- FORM -->
+    <div class="box">
+
+        <h2>
+            ➕ Adicionar Produto
+        </h2>
+
+        <div class="form-grid">
+
+            <input type="text" id="nome" placeholder="Nome do produto">
+
+            <input type="number" id="preco" placeholder="Preço">
+
+            <input type="number" id="preco_antigo" placeholder="Preço antigo">
+
+            <input type="text" id="desconto" placeholder="Desconto">
+
+            <input type="text" id="imagem" placeholder="URL da imagem">
+
+            <select id="categoria">
+
+                <option value="index">
+                    Mais vendidos
+                </option>
+
+                <option value="hortifruti">
+                    Hortifruti
+                </option>
+
+                <option value="carnes">
+                    Carnes
+                </option>
+
+                <option value="limpeza">
+                    Limpeza
+                </option>
+
+            </select>
+
+        </div>
+
+        <button class="btn" onclick="salvarProduto()">
+            Salvar Produto
+        </button>
+
+    </div>
+
+    <!-- PRODUTOS -->
+    <div class="box">
+
+        <h2>
+            📦 Produtos
+        </h2>
+
+        <div class="produtos" id="lista-produtos">
+
+        </div>
+
+    </div>
+
+    <script src="admin.js"></script>
+
+</body>
+</html>

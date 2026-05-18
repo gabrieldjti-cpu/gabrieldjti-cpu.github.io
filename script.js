@@ -496,9 +496,59 @@ async function fazerLogin() {
 
         fecharLogin();
 
-        verificarUsuario();
+        await verificarUsuario();
+
+        await verificarAdmin();
 
         mostrarAviso("👋 Bem-vindo!");
+    }
+}
+// ===============================
+// 👑 VERIFICAR ADMIN
+// ===============================
+async function verificarAdmin() {
+
+    const {
+        data: { user }
+    } = await _supabase.auth.getUser();
+
+    if (!user) return;
+
+    // EMAIL DO ADMIN
+    const adminEmail = "gabriel@gmail.com";
+
+    // SE FOR ADMIN
+    if (user.email === adminEmail) {
+
+        // cria botão admin no topo
+        const acoesTopo =
+        document.querySelector(".acoes-topo");
+
+        if (acoesTopo && !document.getElementById("btn-admin")) {
+
+            const botao = document.createElement("div");
+
+            botao.id = "btn-admin";
+
+            botao.className = "usuario-box";
+
+            botao.innerHTML = `
+                <div class="avatar-user">
+                    👑
+                </div>
+
+                <div class="usuario-info">
+                    <span>Admin</span>
+                    <small>Painel</small>
+                </div>
+            `;
+
+            botao.onclick = () => {
+                window.location.href = "admin.html";
+            };
+
+            acoesTopo.appendChild(botao);
+        }
     }
 }
 
@@ -756,13 +806,40 @@ function fecharLogin() {
 
 function alternarAba(tipo) {
 
-    document.getElementById("form-login")
-    .style.display =
-    tipo === "login" ? "block" : "none";
+    const login =
+    document.getElementById("form-login");
 
-    document.getElementById("form-cadastro")
-    .style.display =
-    tipo === "cadastro" ? "block" : "none";
+    const cadastro =
+    document.getElementById("form-cadastro");
+
+    const tabLogin =
+    document.getElementById("tab-login");
+
+    const tabCadastro =
+    document.getElementById("tab-cadastro");
+
+    // RESET
+    tabLogin.classList.remove("ativa");
+    tabCadastro.classList.remove("ativa");
+
+    // LOGIN
+    if (tipo === "login") {
+
+        login.style.display = "block";
+        cadastro.style.display = "none";
+
+        tabLogin.classList.add("ativa");
+
+    }
+
+    // CADASTRO
+    else {
+
+        login.style.display = "none";
+        cadastro.style.display = "block";
+
+        tabCadastro.classList.add("ativa");
+    }
 }
 
 // ===============================
@@ -820,6 +897,8 @@ window.onload = () => {
 
     verificarUsuario();
 
+    verificarAdmin();
+
     if (document.getElementById("lista-produtos")) {
 
         mostrarProdutos(
@@ -844,3 +923,21 @@ window.onload = () => {
         );
     }
 };
+function abrirConta() {
+
+    const nome =
+    document.getElementById("user-name").innerText;
+
+    // SE NÃO ESTIVER LOGADO
+    if (nome === "Entrar") {
+
+        abrirLogin();
+
+    }
+
+    // SE ESTIVER LOGADO
+    else {
+
+        abrirPerfil();
+    }
+}
