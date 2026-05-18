@@ -1170,3 +1170,36 @@ body{
     background:#198754;
     color:white;
 }
+/* =========================
+   👑 BOTÃO ADM
+========================= */
+
+.btn-admin-topo{
+
+    background: #111;
+
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: .3s;
+}
+
+.btn-admin-topo:hover{
+
+    background: #222;
+
+    transform: translateY(-2px);
+}

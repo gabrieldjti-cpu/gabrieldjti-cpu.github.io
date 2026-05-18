@@ -3,7 +3,7 @@
 // =========================
 
 const supabaseUrl =
-'https://ikrsxmjrdnhyecjchjju.supabase.co/rest/v1/';
+'https://ikrsxmjrdnhyecjchjju.supabase.co';
 
 const supabaseKey =
 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
@@ -18,7 +18,7 @@ supabase.createClient(
 // ➕ SALVAR PRODUTO
 // =========================
 
-async function salvarProduto(){
+async function salvarProduto() {
 
     const produto = {
 
@@ -38,7 +38,7 @@ async function salvarProduto(){
         desconto:
             document.getElementById('desconto').value,
 
-        imagem:
+        img:
             document.getElementById('imagem').value,
 
         categoria:
@@ -51,36 +51,35 @@ async function salvarProduto(){
         .from('produtos')
         .insert([produto]);
 
-    if(error){
+    if (error) {
 
         alert(error.message);
         return;
 
     }
 
-    alert('Produto cadastrado!');
+    alert('✅ Produto cadastrado com sucesso!');
 
     limparFormulario();
 
     carregarProdutos();
-
 }
 
 // =========================
 // 📦 LISTAR PRODUTOS
 // =========================
 
-async function carregarProdutos(){
+async function carregarProdutos() {
 
     const { data, error } =
         await supabaseClient
         .from('produtos')
         .select('*')
-        .order('created_at', {
-            ascending:false
+        .order('id', {
+            ascending: false
         });
 
-    if(error){
+    if (error) {
 
         alert(error.message);
         return;
@@ -100,14 +99,25 @@ async function carregarProdutos(){
 
             <div class="card">
 
-                <img src="${produto.imagem}">
+                <img
+                    src="${produto.img}"
+                    alt="${produto.nome}"
+                >
 
                 <h3>
                     ${produto.nome}
                 </h3>
 
                 <div class="preco">
-                    R$ ${produto.preco}
+                    R$ ${Number(produto.preco).toFixed(2)}
+                </div>
+
+                <div class="preco-antigo">
+                    R$ ${Number(produto.preco_antigo).toFixed(2)}
+                </div>
+
+                <div class="desconto">
+                    ${produto.desconto}
                 </div>
 
                 <p>
@@ -142,17 +152,17 @@ async function carregarProdutos(){
 }
 
 // =========================
-// ❌ EXCLUIR
+// ❌ EXCLUIR PRODUTO
 // =========================
 
-async function excluirProduto(id){
+async function excluirProduto(id) {
 
     const confirmar =
         confirm(
             'Deseja excluir esse produto?'
         );
 
-    if(!confirmar) return;
+    if (!confirmar) return;
 
     const { error } =
         await supabaseClient
@@ -160,27 +170,29 @@ async function excluirProduto(id){
         .delete()
         .eq('id', id);
 
-    if(error){
+    if (error) {
 
         alert(error.message);
         return;
 
     }
 
+    alert('🗑️ Produto excluído!');
+
     carregarProdutos();
 
 }
 
 // =========================
-// ✏️ EDITAR
+// ✏️ EDITAR PRODUTO
 // =========================
 
-async function editarProduto(id){
+async function editarProduto(id) {
 
     const novoNome =
-        prompt('Novo nome');
+        prompt('Novo nome do produto');
 
-    if(!novoNome) return;
+    if (!novoNome) return;
 
     const { error } =
         await supabaseClient
@@ -190,28 +202,36 @@ async function editarProduto(id){
         })
         .eq('id', id);
 
-    if(error){
+    if (error) {
 
         alert(error.message);
         return;
 
     }
 
+    alert('✏️ Produto atualizado!');
+
     carregarProdutos();
 
 }
 
 // =========================
-// 🧹 LIMPAR
+// 🧹 LIMPAR FORMULÁRIO
 // =========================
 
-function limparFormulario(){
+function limparFormulario() {
 
     document.getElementById('nome').value = '';
+
     document.getElementById('preco').value = '';
+
     document.getElementById('preco_antigo').value = '';
+
     document.getElementById('desconto').value = '';
+
     document.getElementById('imagem').value = '';
+
+    document.getElementById('categoria').value = '';
 
 }
 
@@ -219,9 +239,189 @@ function limparFormulario(){
 // 🚀 INICIAR
 // =========================
 
-carregarProdutos();
-
 window.onload = () => {
-    verificarAdmin();
+
     carregarProdutos();
+
+};
+// =========================
+// 🛒 CARREGAR PEDIDOS
+// =========================
+
+async function carregarPedidos(){
+
+    const { data, error } =
+    await supabaseClient
+    .from('pedidos')
+    .select('*')
+    .order('id', {
+        ascending:false
+    });
+
+    if(error){
+
+        console.log(error);
+
+        return;
+    }
+
+    const container =
+    document.getElementById(
+        'lista-pedidos'
+    );
+
+    if(!container) return;
+
+    container.innerHTML = '';
+
+    data.forEach(pedido => {
+
+        let produtosHTML = '';
+
+        pedido.produtos.forEach(produto => {
+
+            produtosHTML += `
+                <li>
+                    ${produto.nome}
+                    (${produto.quantidade}x)
+                </li>
+            `;
+        });
+
+        container.innerHTML += `
+
+            <div class="pedido-card">
+
+                <h3>
+                    Pedido #${pedido.id}
+                </h3>
+
+                <p>
+                    👤 ${pedido.cliente}
+                </p>
+
+                <p>
+                    📞 ${pedido.telefone}
+                </p>
+
+                <p>
+                    📍 ${pedido.endereco}
+                </p>
+
+                <p>
+                    💳 ${pedido.pagamento}
+                </p>
+
+                <p>
+                    💰 R$ ${pedido.total}
+                </p>
+
+                <p>
+                    📦 Status:
+                    <strong>
+                        ${pedido.status}
+                    </strong>
+                </p>
+
+                <ul>
+                    ${produtosHTML}
+                </ul>
+
+                <select
+                    onchange="
+                    atualizarStatus(
+                        '${pedido.id}',
+                        this.value
+                    )"
+                >
+
+                    <option>
+                        ${pedido.status}
+                    </option>
+
+                    <option>
+                        Recebido
+                    </option>
+
+                    <option>
+                        Preparando
+                    </option>
+
+                    <option>
+                        Saiu para entrega
+                    </option>
+
+                    <option>
+                        Entregue
+                    </option>
+
+                </select>
+
+            </div>
+
+        `;
+    });
+}
+
+// =========================
+// 🔄 STATUS
+// =========================
+
+async function atualizarStatus(
+    id,
+    status
+){
+
+    await supabaseClient
+    .from('pedidos')
+    .update({
+        status: status
+    })
+    .eq('id', id);
+
+    carregarPedidos();
+}
+// =========================
+// 🔐 VERIFICAR ADMIN
+// =========================
+
+async function verificarAdmin(){
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if(!user){
+
+        alert('Faça login como administrador');
+
+        window.location.href = 'index.html';
+
+        return;
+    }
+
+    // EMAIL DO ADMIN
+    const adminEmail =
+    'gabriel@gmail.com';
+
+    if(user.email !== adminEmail){
+
+        alert('Acesso negado!');
+
+        window.location.href = 'index.html';
+
+    }
+
+}
+// =========================
+// 🚀 INICIAR
+// =========================
+
+window.onload = async () => {
+
+    await verificarAdmin();
+
+    carregarProdutos();
+
+    carregarPedidos();
 };

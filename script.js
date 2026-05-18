@@ -1,120 +1,133 @@
 // ===============================
 // 🛒 BANCO DE DADOS (PRODUTOS)
 // ===============================
-const produtosData = {
+// ===============================
+// 📦 CARREGAR PRODUTOS DO SUPABASE
+// ===============================
 
-    index: [
-        {
-            nome: "Arroz 5kg",
-            preco: 24,
-            antigo: 30,
-            desconto: "-20%",
-            img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"
-        },
+async function carregarProdutosSupabase() {
 
-        {
-            nome: "Óleo 900ml",
-            preco: 7.20,
-            antigo: 8.50,
-            desconto: "-15%",
-            img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"
-        },
+    const { data, error } =
+    await _supabase
+    .from('produtos')
+    .select('*');
 
-        {
-            nome: "Feijão 1kg",
-            preco: 9.00,
-            antigo: 10.00,
-            desconto: "-10%",
-            img: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=400"
-        },
+    if (error) {
 
-        {
-            nome: "Açúcar 1kg",
-            preco: 4.40,
-            antigo: 5.00,
-            desconto: "-12%",
-            img: "https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=400"
-        },
+        console.log(error);
 
-        {
-            nome: "Leite 1L",
-            preco: 5.99,
-            antigo: 6.50,
-            desconto: "-8%",
-            img: "https://images.unsplash.com/photo-1563636619-e910ef49e9cf?w=400"
-        },
+        return;
+    }
 
-        {
-            nome: "Café 500g",
-            preco: 9.80,
-            antigo: 12.00,
-            desconto: "-18%",
-            img: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400"
-        },
+    // MAIS VENDIDOS
+    const index =
+    data.filter(p =>
+        p.categoria === 'index'
+    );
 
-        {
-            nome: "Macarrão 500g",
-            preco: 3.50,
-            antigo: 4.00,
-            desconto: "-10%",
-            img: "https://images.unsplash.com/photo-1551462147-37885abb3e4a?w=400"
-        },
+    mostrarProdutosSupabase(
+        index,
+        'lista-produtos'
+    );
 
-        {
-            nome: "Refrigerante 2L",
-            preco: 8.90,
-            antigo: 10.00,
-            desconto: "-11%",
-            img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400"
+    // HORTIFRUTI
+    const horti =
+    data.filter(p =>
+        p.categoria === 'hortifruti'
+    );
+
+    mostrarProdutosSupabase(
+        horti,
+        'carrossel-horti'
+    );
+
+    // CARNES
+    const carnes =
+    data.filter(p =>
+        p.categoria === 'carnes'
+    );
+
+    mostrarProdutosSupabase(
+        carnes,
+        'carrossel-carnes'
+    );
+}
+function mostrarProdutosSupabase(
+    lista,
+    idContainer
+){
+
+    const container =
+    document.getElementById(idContainer);
+
+    if(!container) return;
+
+    container.innerHTML = '';
+
+    lista.forEach(produto => {
+
+        let badgeHTML = '';
+
+        if(produto.categoria === 'carnes'){
+
+            badgeHTML = `
+                <span class="badge badge-premium">
+                    Premium
+                </span>
+            `;
         }
-    ],
 
-    carnes: [
-        {
-            nome: "Carne Bovina 1kg",
-            preco: 32.90,
-            antigo: 38.00,
-            desconto: "-13%",
-            img: "https://images.unsplash.com/photo-1607623814075-e512199b028b?w=400"
-        },
+        if(produto.categoria === 'hortifruti'){
 
-        {
-            nome: "Frango Inteiro",
-            preco: 15.50,
-            antigo: 18.00,
-            desconto: "-14%",
-            img: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400"
+            badgeHTML = `
+                <span class="badge badge-organico">
+                    Orgânico
+                </span>
+            `;
         }
-    ],
 
-    hortifruti: [
-        {
-            nome: "Banana 1kg",
-            preco: 4.50,
-            antigo: 5.50,
-            desconto: "-18%",
-            img: "https://images.unsplash.com/photo-1603833665858-e81b1c7e4460?w=400"
-        },
+        container.innerHTML += `
 
-        {
-            nome: "Tomate 1kg",
-            preco: 7.50,
-            antigo: 9.00,
-            desconto: "-17%",
-            img: "https://images.unsplash.com/photo-1518977676601-b53f02bad67b?w=400"
-        }
-    ],
+            <div class="card">
 
-    limpeza: [
-        {
-            nome: "Detergente 500ml",
-            preco: 2.50,
-            antigo: 3.00,
-            desconto: "-16%",
-            img: "https://images.unsplash.com/photo-1584622781564-1d9876a13d00?w=400"
-        }
-    ]
-};
+                <span class="desconto">
+                    ${produto.desconto}
+                </span>
+
+                ${badgeHTML}
+
+                <img
+                    src="${produto.imagem}"
+                    alt="${produto.nome}"
+                >
+
+                <h3>
+                    ${produto.nome}
+                </h3>
+
+                <p class="preco-antigo">
+                    R$ ${Number(produto.preco_antigo).toFixed(2)}
+                </p>
+
+                <p class="preco">
+                    R$ ${Number(produto.preco).toFixed(2)}
+                </p>
+
+                <button
+                    onclick="
+                    adicionarCarrinho(
+                        '${produto.nome}',
+                        ${produto.preco}
+                    )"
+                >
+                    Adicionar
+                </button>
+
+            </div>
+
+        `;
+    });
+}
 
 // ===============================
 // 🔗 CONFIGURAÇÃO SUPABASE
@@ -441,36 +454,73 @@ function removerItem(index) {
 // ===============================
 // 👤 LOGIN / CADASTRO
 // ===============================
+// ===============================
+// 👤 VERIFICAR USUÁRIO
+// ===============================
+
 async function verificarUsuario() {
 
     const {
-        data: { user }
-    } = await _supabase.auth.getUser();
+        data: { session }
+    } = await _supabase.auth.getSession();
 
     const btnUser =
     document.getElementById("user-name");
 
-    if (user) {
+    // BOTÃO ADMIN
+    const adminBtn =
+    document.getElementById("btn-admin");
+
+    if (session && session.user) {
+
+        const user = session.user;
 
         const nome =
         user.user_metadata.display_name ||
         user.email.split("@")[0];
 
-        btnUser.innerText = nome;
+        // NOME DO USUÁRIO
+        if(btnUser){
+            btnUser.innerText = nome;
+        }
 
+        // PERFIL
         const perfilNome =
         document.getElementById("perfil-nome");
 
         const perfilEmail =
         document.getElementById("perfil-email");
 
-        if (perfilNome) perfilNome.innerText = nome;
+        if (perfilNome) {
+            perfilNome.innerText = nome;
+        }
 
-        if (perfilEmail) perfilEmail.innerText = user.email;
+        if (perfilEmail) {
+            perfilEmail.innerText = user.email;
+        }
+
+        // EMAIL ADMIN
+        const adminEmail =
+        'gabriel@gmail.com';
+
+        // MOSTRAR BOTÃO ADM
+        if (
+            adminBtn &&
+            user.email === adminEmail
+        ) {
+
+            adminBtn.style.display = "flex";
+        }
 
     } else {
 
-        btnUser.innerText = "Entrar";
+        if(btnUser){
+            btnUser.innerText = "Entrar";
+        }
+
+        if(adminBtn){
+            adminBtn.style.display = "none";
+        }
     }
 }
 
@@ -738,53 +788,97 @@ async function escolherPagamento(tipo) {
         data: { user }
     } = await _supabase.auth.getUser();
 
-    let enderecoMsg = "";
+    if (!user) {
 
-    if (user) {
+        alert("Faça login.");
 
-        const { data: perfil } =
-        await _supabase
-        .from("enderecos")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-        if (perfil) {
-
-            enderecoMsg = `
-%0A%0A📍 *Entrega:* ${perfil.rua},
-${perfil.numero_casa}
-- ${perfil.bairro}
-            `;
-        }
+        return;
     }
 
-    let mensagem =
-    "🛒 *Novo Pedido*%0A%0A";
+    const { data: perfil } =
+    await _supabase
+    .from("enderecos")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
     let total = 0;
+
+    carrinho.forEach(item => {
+
+        total +=
+        item.preco * item.quantidade;
+    });
+
+    // SALVAR PEDIDO
+    const { error } =
+    await _supabase
+    .from("pedidos")
+    .insert([{
+
+        user_id: user.id,
+
+        cliente:
+        user.user_metadata.display_name,
+
+        telefone:
+        perfil?.telefone || "",
+
+        endereco:
+        `${perfil?.rua || ""}
+        ${perfil?.numero_casa || ""}
+        - ${perfil?.bairro || ""}`,
+
+        produtos: carrinho,
+
+        total: total,
+
+        pagamento: tipo
+
+    }]);
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+    }
+
+    // WHATSAPP
+    let mensagem =
+    "🛒 *Novo Pedido*%0A%0A";
 
     carrinho.forEach(produto => {
 
         mensagem += `
-• *${produto.nome}*
+• ${produto.nome}
 (${produto.quantidade}x)
 - R$ ${(produto.preco * produto.quantidade).toFixed(2)}%0A
         `;
-
-        total += produto.preco * produto.quantidade;
     });
 
     mensagem += `
-%0A💰 *Total: R$ ${total.toFixed(2)}*
-%0A💳 Pagamento: ${tipo}
-${enderecoMsg}
+%0A💰 Total:
+R$ ${total.toFixed(2)}
+
+%0A💳 Pagamento:
+${tipo}
     `;
 
     window.open(
         `https://wa.me/5533988101944?text=${mensagem}`,
         "_blank"
     );
+
+    localStorage.removeItem("carrinho");
+
+    atualizarContador();
+
+    fecharCarrinho();
+
+    fecharModal();
+
+    mostrarAviso("✅ Pedido enviado!");
 }
 
 // ===============================
@@ -891,37 +985,14 @@ function scrollCarrossel(id, direcao) {
 // ===============================
 // 🚀 INICIALIZAÇÃO
 // ===============================
-window.onload = () => {
+
+window.onload = async () => {
 
     atualizarContador();
 
-    verificarUsuario();
+    await verificarUsuario();
 
-    verificarAdmin();
-
-    if (document.getElementById("lista-produtos")) {
-
-        mostrarProdutos(
-            produtosData.index,
-            "lista-produtos"
-        );
-    }
-
-    if (document.getElementById("carrossel-horti")) {
-
-        mostrarProdutos(
-            produtosData.hortifruti,
-            "carrossel-horti"
-        );
-    }
-
-    if (document.getElementById("carrossel-carnes")) {
-
-        mostrarProdutos(
-            produtosData.carnes,
-            "carrossel-carnes"
-        );
-    }
+    carregarProdutosSupabase();
 };
 function abrirConta() {
 
@@ -941,3 +1012,4 @@ function abrirConta() {
         abrirPerfil();
     }
 }
+

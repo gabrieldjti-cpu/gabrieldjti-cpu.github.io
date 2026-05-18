@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Supermercado Online | Qualidade e Praticidade</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Supermercado Online | Qualidade e Praticidade
+    </title>
 
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
@@ -24,6 +33,7 @@
 
         <!-- BUSCA -->
         <div class="busca">
+
             <input
                 type="text"
                 id="busca"
@@ -34,38 +44,72 @@
             <button>
                 🔍
             </button>
+
         </div>
 
         <!-- AÇÕES -->
         <div class="acoes-topo">
 
+            <!-- BOTÃO ADM -->
+            <a
+                href="admin.html"
+                id="btn-admin"
+                class="btn-admin-topo"
+                style="display:none;"
+            >
+                👑 ADM
+            </a>
+
             <!-- USUÁRIO -->
-            <div class="usuario-box" onclick="abrirConta()">
+            <div
+                class="usuario-box"
+                onclick="abrirConta()"
+            >
 
                 <div class="avatar-user">
                     👤
                 </div>
 
                 <div class="usuario-info">
-                    <span id="user-name">Entrar</span>
-                    <small>Minha Conta</small>
+
+                    <span id="user-name">
+                        Entrar
+                    </span>
+
+                    <small>
+                        Minha Conta
+                    </small>
+
                 </div>
 
             </div>
 
             <!-- CARRINHO -->
-            <div class="carrinho-topo" onclick="irCarrinho()">
+            <div
+                class="carrinho-topo"
+                onclick="irCarrinho()"
+            >
 
                 <span class="icone-cart">
                     🛍️
                 </span>
 
                 <div class="cart-info">
-                    <span>Carrinho</span>
+
+                    <span>
+                        Carrinho
+                    </span>
 
                     <small>
-                        <span id="contador">0</span> itens
+
+                        <span id="contador">
+                            0
+                        </span>
+
+                        itens
+
                     </small>
+
                 </div>
 
             </div>
@@ -79,11 +123,25 @@
     ========================== -->
     <nav class="menu">
 
-        <a href="index.html">Início</a>
-        <a href="hortifruti.html">Hortifruti</a>
-        <a href="carnes.html">Carnes</a>
-        <a href="limpeza.html">Limpeza</a>
-        <a href="#">Promoções</a>
+        <a href="index.html">
+            Início
+        </a>
+
+        <a href="hortifruti.html">
+            Hortifruti
+        </a>
+
+        <a href="carnes.html">
+            Carnes
+        </a>
+
+        <a href="limpeza.html">
+            Limpeza
+        </a>
+
+        <a href="#">
+            Promoções
+        </a>
 
     </nav>
 
@@ -186,19 +244,31 @@
     ========================== -->
     <section class="categorias">
 
-        <a href="hortifruti.html" class="categoria">
+        <a
+            href="hortifruti.html"
+            class="categoria"
+        >
             🥦 Hortifruti
         </a>
 
-        <a href="carnes.html" class="categoria">
+        <a
+            href="carnes.html"
+            class="categoria"
+        >
             🥩 Carnes
         </a>
 
-        <a href="limpeza.html" class="categoria">
+        <a
+            href="limpeza.html"
+            class="categoria"
+        >
             🧴 Limpeza
         </a>
 
-        <a href="#" class="categoria">
+        <a
+            href="#"
+            class="categoria"
+        >
             🥤 Bebidas
         </a>
 
@@ -217,11 +287,15 @@
 
             <div class="acoes-carrossel">
 
-                <button onclick="scrollCarrossel('lista-produtos', -1)">
+                <button
+                    onclick="scrollCarrossel('lista-produtos', -1)"
+                >
                     ◀
                 </button>
 
-                <button onclick="scrollCarrossel('lista-produtos', 1)">
+                <button
+                    onclick="scrollCarrossel('lista-produtos', 1)"
+                >
                     ▶
                 </button>
 
@@ -229,7 +303,10 @@
 
         </div>
 
-        <div class="carrossel" id="lista-produtos"></div>
+        <div
+            class="carrossel"
+            id="lista-produtos"
+        ></div>
 
     </section>
 
@@ -246,11 +323,15 @@
 
             <div class="acoes-carrossel">
 
-                <button onclick="scrollCarrossel('carrossel-horti', -1)">
+                <button
+                    onclick="scrollCarrossel('carrossel-horti', -1)"
+                >
                     ◀
                 </button>
 
-                <button onclick="scrollCarrossel('carrossel-horti', 1)">
+                <button
+                    onclick="scrollCarrossel('carrossel-horti', 1)"
+                >
                     ▶
                 </button>
 
@@ -258,7 +339,10 @@
 
         </div>
 
-        <div class="carrossel" id="carrossel-horti"></div>
+        <div
+            class="carrossel"
+            id="carrossel-horti"
+        ></div>
 
     </section>
 
@@ -275,11 +359,15 @@
 
             <div class="acoes-carrossel">
 
-                <button onclick="scrollCarrossel('carrossel-carnes', -1)">
+                <button
+                    onclick="scrollCarrossel('carrossel-carnes', -1)"
+                >
                     ◀
                 </button>
 
-                <button onclick="scrollCarrossel('carrossel-carnes', 1)">
+                <button
+                    onclick="scrollCarrossel('carrossel-carnes', 1)"
+                >
                     ▶
                 </button>
 
@@ -287,7 +375,10 @@
 
         </div>
 
-        <div class="carrossel" id="carrossel-carnes"></div>
+        <div
+            class="carrossel"
+            id="carrossel-carnes"
+        ></div>
 
     </section>
 
@@ -314,7 +405,10 @@
     <!-- =========================
          🟢 CARRINHO
     ========================== -->
-    <div id="carrinho-lateral" class="carrinho-lateral">
+    <div
+        id="carrinho-lateral"
+        class="carrinho-lateral"
+    >
 
         <div class="topo-carrinho">
 
@@ -322,7 +416,10 @@
                 Meu Carrinho
             </h2>
 
-            <button onclick="fecharCarrinho()" class="btn-fechar">
+            <button
+                onclick="fecharCarrinho()"
+                class="btn-fechar"
+            >
                 &times;
             </button>
 
@@ -330,9 +427,15 @@
 
         <hr>
 
-        <div id="lista-carrinho" class="lista-carrinho"></div>
+        <div
+            id="lista-carrinho"
+            class="lista-carrinho"
+        ></div>
 
-        <div id="total" class="total-carrinho">
+        <div
+            id="total"
+            class="total-carrinho"
+        >
             Total: R$ 0,00
         </div>
 
@@ -348,7 +451,10 @@
     <!-- =========================
          🟢 MODAL PAGAMENTO
     ========================== -->
-    <div id="modal-pagamento" class="modal">
+    <div
+        id="modal-pagamento"
+        class="modal"
+    >
 
         <div class="modal-box">
 
@@ -391,7 +497,10 @@
     <!-- =========================
          🟢 LOGIN / CADASTRO
     ========================== -->
-    <div id="modal-login" class="modal">
+    <div
+        id="modal-login"
+        class="modal"
+    >
 
         <div class="modal-login-box">
 
@@ -443,7 +552,10 @@
             </div>
 
             <!-- CADASTRO -->
-            <div id="form-cadastro" style="display:none;">
+            <div
+                id="form-cadastro"
+                style="display:none;"
+            >
 
                 <input
                     type="text"
@@ -490,11 +602,14 @@
     <!-- =========================
          🟢 PERFIL
     ========================== -->
-    <div id="secao-perfil" class="modal">
+    <div
+        id="secao-perfil"
+        class="modal"
+    >
 
         <div class="perfil-box">
 
-            <!-- HEADER PERFIL -->
+            <!-- HEADER -->
             <div class="perfil-header">
 
                 <div class="perfil-avatar">
@@ -502,7 +617,7 @@
                 </div>
 
                 <h2 id="perfil-nome">
-                    Gabriel
+                    Usuário
                 </h2>
 
                 <p id="perfil-email">
@@ -511,12 +626,11 @@
 
             </div>
 
-            <!-- TÍTULO -->
+            <!-- DADOS -->
             <h3 class="titulo-perfil">
                 📍 Dados de Entrega
             </h3>
 
-            <!-- INPUTS -->
             <input
                 type="text"
                 id="perf-tel"
@@ -602,4 +716,5 @@
     <script src="script.js"></script>
 
 </body>
-    </html>
+
+</html>
