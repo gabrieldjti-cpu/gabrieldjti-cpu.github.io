@@ -1,412 +1,169 @@
 // ===============================
-// 🛒 BANCO DE DADOS (PRODUTOS)
+// 🔗 CONFIGURAÇÃO SUPABASE
 // ===============================
+const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
+const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
+
+// Variável padrão unificada para todo o sistema
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 // ===============================
 // 📦 CARREGAR PRODUTOS DO SUPABASE
 // ===============================
-
 async function carregarProdutosSupabase() {
-
-    const { data, error } =
-    await _supabase
-    .from('produtos')
-    .select('*');
+    const { data, error } = await _supabase
+        .from('produtos')
+        .select('*');
 
     if (error) {
-
-        console.log(error);
-
+        console.error("Erro ao carregar produtos:", error);
         return;
     }
 
-    // MAIS VENDIDOS
-    const index =
-    data.filter(p =>
-        p.categoria === 'index'
-    );
+    // Filtros por categorias direto do banco
+    const index = data.filter(p => p.categoria === 'index');
+    mostrarProdutosSupabase(index, 'lista-produtos');
 
-    mostrarProdutosSupabase(
-        index,
-        'lista-produtos'
-    );
+    const horti = data.filter(p => p.categoria === 'hortifruti');
+    mostrarProdutosSupabase(horti, 'carrossel-horti');
 
-    // HORTIFRUTI
-    const horti =
-    data.filter(p =>
-        p.categoria === 'hortifruti'
-    );
-
-    mostrarProdutosSupabase(
-        horti,
-        'carrossel-horti'
-    );
-
-    // CARNES
-    const carnes =
-    data.filter(p =>
-        p.categoria === 'carnes'
-    );
-
-    mostrarProdutosSupabase(
-        carnes,
-        'carrossel-carnes'
-    );
+    const carnes = data.filter(p => p.categoria === 'carnes');
+    mostrarProdutosSupabase(carnes, 'carrossel-carnes');
 }
-function mostrarProdutosSupabase(
-    lista,
-    idContainer
-){
 
-    const container =
-    document.getElementById(idContainer);
-
-    if(!container) return;
+function mostrarProdutosSupabase(lista, idContainer) {
+    const container = document.getElementById(idContainer);
+    if (!container) return;
 
     container.innerHTML = '';
 
     lista.forEach(produto => {
-
         let badgeHTML = '';
 
-        if(produto.categoria === 'carnes'){
-
-            badgeHTML = `
-                <span class="badge badge-premium">
-                    Premium
-                </span>
-            `;
+        if (produto.categoria === 'carnes') {
+            badgeHTML = `<span class="badge badge-premium">Premium</span>`;
         }
-
-        if(produto.categoria === 'hortifruti'){
-
-            badgeHTML = `
-                <span class="badge badge-organico">
-                    Orgânico
-                </span>
-            `;
+        if (produto.categoria === 'hortifruti') {
+            badgeHTML = `<span class="badge badge-organico">Orgânico</span>`;
         }
 
         container.innerHTML += `
-
             <div class="card">
-
-                <span class="desconto">
-                    ${produto.desconto}
-                </span>
-
+                <span class="desconto">-${produto.desconto}%</span>
                 ${badgeHTML}
-
-                <img
-                    src="${produto.imagem}"
-                    alt="${produto.nome}"
-                >
-
-                <h3>
-                    ${produto.nome}
-                </h3>
-
-                <p class="preco-antigo">
-                    R$ ${Number(produto.preco_antigo).toFixed(2)}
-                </p>
-
-                <p class="preco">
-                    R$ ${Number(produto.preco).toFixed(2)}
-                </p>
-
-                <button
-                    onclick="
-                    adicionarCarrinho(
-                        '${produto.nome}',
-                        ${produto.preco}
-                    )"
-                >
+                <img src="${produto.img}" alt="${produto.nome}">
+                <h3>${produto.nome}</h3>
+                <p class="preco-antigo">R$ ${Number(produto.preco_antigo).toFixed(2)}</p>
+                <p class="preco">R$ ${Number(produto.preco).toFixed(2)}</p>
+                <button onclick="adicionarCarrinho('${produto.nome}', ${produto.preco})">
                     Adicionar
                 </button>
-
             </div>
-
         `;
     });
 }
 
-// ===============================
-// 🔗 CONFIGURAÇÃO SUPABASE
-// ===============================
-const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
-
-const supabaseKey =
-'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
-
-const _supabase =
-supabase.createClient(supabaseUrl, supabaseKey);
+// Inicialização automática ao carregar a página
+document.addEventListener("DOMContentLoaded", () => {
+    carregarProdutosSupabase();
+    verificarUsuario();
+    atualizarContador();
+});
 
 // ===============================
-// 🛍️ MOSTRAR PRODUTOS
+// 🔍 FILTRAR PRODUTOS (BUSCA)
 // ===============================
-function mostrarProdutos(lista, idContainer = "lista-produtos") {
+async function filtrarProdutos() {
+    const termo = document.getElementById("busca").value.toLowerCase();
+    
+    const { data, error } = await _supabase
+        .from('produtos')
+        .select('*')
+        .ilike('nome', `%${termo}%`);
 
-    const container = document.getElementById(idContainer);
+    if (error) return;
 
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    if (lista.length === 0) {
-
-        container.innerHTML = `
-            <p style="text-align:center; width:100%;">
-                Nenhum produto encontrado 😢
-            </p>
-        `;
-
-        return;
+    const containerGeral = document.getElementById("lista-produtos");
+    if (containerGeral) {
+        mostrarProdutosSupabase(data, "lista-produtos");
     }
-
-    lista.forEach(produto => {
-
-        let badgeHTML = "";
-
-        if (idContainer.includes("carnes")) {
-            badgeHTML = `
-                <span class="badge badge-premium">
-                    Premium
-                </span>
-            `;
-        }
-
-        if (idContainer.includes("horti")) {
-            badgeHTML = `
-                <span class="badge badge-organico">
-                    Orgânico
-                </span>
-            `;
-        }
-
-        const card = document.createElement("div");
-
-        card.className = "card";
-
-        card.innerHTML = `
-            <span class="desconto">
-                ${produto.desconto}
-            </span>
-
-            ${badgeHTML}
-
-            <img src="${produto.img}" alt="${produto.nome}">
-
-            <h3>${produto.nome}</h3>
-
-            <p class="preco-antigo">
-                R$ ${produto.antigo.toFixed(2)}
-            </p>
-
-            <p class="preco">
-                R$ ${produto.preco.toFixed(2)}
-            </p>
-
-            <button onclick="adicionarCarrinho('${produto.nome}', ${produto.preco})">
-                Adicionar
-            </button>
-        `;
-
-        container.appendChild(card);
-    });
 }
 
 // ===============================
-// 🔍 FILTRAR PRODUTOS
-// ===============================
-function filtrarProdutos(categoria = "index") {
-
-    const termo =
-    document.getElementById("busca")
-    .value
-    .toLowerCase();
-
-    const lista =
-    produtosData[categoria] || produtosData.index;
-
-    const filtrados = lista.filter(produto =>
-        produto.nome.toLowerCase().includes(termo)
-    );
-
-    mostrarProdutos(filtrados, "lista-produtos");
-}
-
-// ===============================
-// 🛒 CARRINHO
+// 🛒 GERENCIAMENTO DO CARRINHO
 // ===============================
 function adicionarCarrinho(nome, preco) {
-
-    let carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
-
-    const itemExistente =
-    carrinho.find(item => item.nome === nome);
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    const itemExistente = carrinho.find(item => item.nome === nome);
 
     if (itemExistente) {
-
         itemExistente.quantidade++;
-
     } else {
-
-        carrinho.push({
-            nome,
-            preco,
-            quantidade: 1
-        });
+        carrinho.push({ nome, preco, quantidade: 1 });
     }
 
-    localStorage.setItem(
-        "carrinho",
-        JSON.stringify(carrinho)
-    );
-
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
-
-    mostrarAviso(`✅ ${nome} adicionado ao carrinho!`);
+    mostrarAviso(`✅ ${nome} adicionado!`, 'sucesso');
 }
 
 function atualizarContador() {
-
-    const carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
-
-    const totalItens =
-    carrinho.reduce((soma, item) =>
-        soma + item.quantidade, 0
-    );
-
-    const contador =
-    document.getElementById("contador");
-
-    if (contador) {
-        contador.innerText = totalItens;
-    }
+    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    const totalItens = carrinho.reduce((soma, item) => soma + item.quantidade, 0);
+    const contador = document.getElementById("contador");
+    if (contador) contador.innerText = totalItens;
 }
 
 function irCarrinho() {
-
-    document
-    .getElementById("carrinho-lateral")
-    .classList.add("ativo");
-
-    document
-    .getElementById("overlay")
-    .style.display = "block";
-
+    document.getElementById("carrinho-lateral").classList.add("ativo");
+    document.getElementById("overlay").style.display = "block";
     carregarCarrinho();
 }
 
+function fecharCarrinhoLateral() {
+    document.getElementById("carrinho-lateral").classList.remove("ativo");
+    document.getElementById("overlay").style.display = "none";
+}
+
 function fecharCarrinho() {
-
-    document
-    .getElementById("carrinho-lateral")
-    .classList.remove("ativo");
-
-    document
-    .getElementById("overlay")
-    .style.display = "none";
+    fecharCarrinhoLateral();
 }
 
 function carregarCarrinho() {
-
-    const carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
-
-    const container =
-    document.getElementById("lista-carrinho");
-
-    const totalEl =
-    document.getElementById("total");
+    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    const container = document.getElementById("lista-carrinho");
+    const totalEl = document.getElementById("total");
 
     if (!container || !totalEl) return;
-
     container.innerHTML = "";
-
     let total = 0;
 
     if (carrinho.length === 0) {
-
-        container.innerHTML = `
-            <p style="text-align:center;">
-                Carrinho vazio 🛒
-            </p>
-        `;
-
+        container.innerHTML = `<p style="text-align:center;">Carrinho vazio 🛒</p>`;
         totalEl.innerText = "Total: R$ 0,00";
-
         return;
     }
 
     carrinho.forEach((produto, index) => {
-
         total += produto.preco * produto.quantidade;
-
         const item = document.createElement("div");
-
         item.className = "item-carrinho";
-
         item.innerHTML = `
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                gap:15px;
-                margin-bottom:15px;
-                padding-bottom:15px;
-                border-bottom:1px solid #eee;
-            ">
-
+            <div style="display:flex; justify-content:space-between; gap:15px; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #eee;">
                 <div>
-
                     <strong>${produto.nome}</strong>
-
                     <div style="margin-top:8px;">
-
-                        <button onclick="mudarQtd(${index}, -1)">
-                            -
-                        </button>
-
-                        <span style="margin:0 10px;">
-                            ${produto.quantidade}
-                        </span>
-
-                        <button onclick="mudarQtd(${index}, 1)">
-                            +
-                        </button>
-
+                        <button onclick="mudarQtd(${index}, -1)">-</button>
+                        <span style="margin:0 10px;">${produto.quantidade}</span>
+                        <button onclick="mudarQtd(${index}, 1)">+</button>
                     </div>
-
                 </div>
-
                 <div style="text-align:right;">
-
-                    <div style="
-                        color:#198754;
-                        font-weight:bold;
-                    ">
-                        R$ ${(produto.preco * produto.quantidade).toFixed(2)}
-                    </div>
-
-                    <button
-                        onclick="removerItem(${index})"
-                        style="
-                            border:none;
-                            background:none;
-                            color:red;
-                            cursor:pointer;
-                            margin-top:5px;
-                        "
-                    >
-                        Remover
-                    </button>
-
+                    <div style="color:#198754; font-weight:bold;">R$ ${(produto.preco * produto.quantidade).toFixed(2)}</div>
+                    <button onclick="removerItem(${index})" style="border:none; background:none; color:red; cursor:pointer; margin-top:5px;">Remover</button>
                 </div>
-
             </div>
         `;
-
         container.appendChild(item);
     });
 
@@ -414,342 +171,253 @@ function carregarCarrinho() {
 }
 
 function mudarQtd(index, valor) {
-
-    let carrinho =
-    JSON.parse(localStorage.getItem("carrinho"));
-
+    let carrinho = JSON.parse(localStorage.getItem("carrinho"));
     carrinho[index].quantidade += valor;
 
     if (carrinho[index].quantidade <= 0) {
-
         removerItem(index);
         return;
     }
 
-    localStorage.setItem(
-        "carrinho",
-        JSON.stringify(carrinho)
-    );
-
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
     carregarCarrinho();
     atualizarContador();
 }
 
 function removerItem(index) {
-
-    let carrinho =
-    JSON.parse(localStorage.getItem("carrinho"));
-
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     carrinho.splice(index, 1);
-
-    localStorage.setItem(
-        "carrinho",
-        JSON.stringify(carrinho)
-    );
-
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
     carregarCarrinho();
     atualizarContador();
 }
 
 // ===============================
-// 👤 LOGIN / CADASTRO
+// 👤 SISTEMA DE AUTENTICAÇÃO (TABELA COMUM)
 // ===============================
-// ===============================
-// 👤 VERIFICAR USUÁRIO
-// ===============================
-
 async function verificarUsuario() {
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const btnUser = document.getElementById("user-name");
+    const adminBtn = document.getElementById("btn-admin");
 
-    const {
-        data: { session }
-    } = await _supabase.auth.getSession();
+    if (usuarioLogado) {
+        const nome = usuarioLogado.nome;
 
-    const btnUser =
-    document.getElementById("user-name");
+        if (btnUser) btnUser.innerText = nome;
 
-    // BOTÃO ADMIN
-    const adminBtn =
-    document.getElementById("btn-admin");
+        const perfilNome = document.getElementById("perfil-nome");
+        const perfilEmail = document.getElementById("perfil-email");
+        if (perfilNome) perfilNome.innerText = nome;
+        if (perfilEmail) perfilEmail.innerText = usuarioLogado.email;
 
-    if (session && session.user) {
-
-        const user = session.user;
-
-        const nome =
-        user.user_metadata.display_name ||
-        user.email.split("@")[0];
-
-        // NOME DO USUÁRIO
-        if(btnUser){
-            btnUser.innerText = nome;
+        // Seu e-mail oficial de administrador
+        const adminEmail = 'gabrieldj.ti@gmail.com';
+        
+        if (usuarioLogado.email === adminEmail) {
+            if (adminBtn) adminBtn.style.display = "flex";
+        } else {
+            if (adminBtn) adminBtn.style.display = "none";
         }
-
-        // PERFIL
-        const perfilNome =
-        document.getElementById("perfil-nome");
-
-        const perfilEmail =
-        document.getElementById("perfil-email");
-
-        if (perfilNome) {
-            perfilNome.innerText = nome;
-        }
-
-        if (perfilEmail) {
-            perfilEmail.innerText = user.email;
-        }
-
-        // EMAIL ADMIN
-        const adminEmail =
-        'gabriel@gmail.com';
-
-        // MOSTRAR BOTÃO ADM
-        if (
-            adminBtn &&
-            user.email === adminEmail
-        ) {
-
-            adminBtn.style.display = "flex";
-        }
-
     } else {
-
-        if(btnUser){
-            btnUser.innerText = "Entrar";
-        }
-
-        if(adminBtn){
-            adminBtn.style.display = "none";
-        }
+        if (btnUser) btnUser.innerText = "Entrar";
+        if (adminBtn) adminBtn.style.display = "none";
     }
 }
 
 async function fazerLogin() {
+    const email = document.getElementById("login-email").value.trim();
+    const senha = document.getElementById("login-senha").value.trim();
 
-    const email =
-    document.getElementById("login-email").value;
+    if (!email || !senha) {
+        mostrarAviso("⚠️ Por favor, digite seu e-mail e sua senha.", "aviso");
+        return;
+    }
 
-    const senha =
-    document.getElementById("login-senha").value;
-
-    const { error } =
-    await _supabase.auth.signInWithPassword({
-        email,
-        password: senha
-    });
+    const { data, error } = await _supabase
+        .from('usuarios')
+        .select('*')
+        .eq('email', email)
+        .eq('senha', senha);
 
     if (error) {
-
-        alert("Erro: " + error.message);
-
-    } else {
-
-        fecharLogin();
-
-        await verificarUsuario();
-
-        await verificarAdmin();
-
-        mostrarAviso("👋 Bem-vindo!");
+        mostrarAviso("❌ Erro ao conectar ao banco de dados.", "erro");
+        return;
     }
-}
-// ===============================
-// 👑 VERIFICAR ADMIN
-// ===============================
-async function verificarAdmin() {
 
-    const {
-        data: { user }
-    } = await _supabase.auth.getUser();
-
-    if (!user) return;
-
-    // EMAIL DO ADMIN
-    const adminEmail = "gabriel@gmail.com";
-
-    // SE FOR ADMIN
-    if (user.email === adminEmail) {
-
-        // cria botão admin no topo
-        const acoesTopo =
-        document.querySelector(".acoes-topo");
-
-        if (acoesTopo && !document.getElementById("btn-admin")) {
-
-            const botao = document.createElement("div");
-
-            botao.id = "btn-admin";
-
-            botao.className = "usuario-box";
-
-            botao.innerHTML = `
-                <div class="avatar-user">
-                    👑
-                </div>
-
-                <div class="usuario-info">
-                    <span>Admin</span>
-                    <small>Painel</small>
-                </div>
-            `;
-
-            botao.onclick = () => {
-                window.location.href = "admin.html";
-            };
-
-            acoesTopo.appendChild(botao);
-        }
+    if (data && data.length > 0) {
+        const conta = data[0];
+        localStorage.setItem("usuario_logado", JSON.stringify(conta));
+        
+        fecharLogin();
+        await verificarUsuario();
+        mostrarAviso(`👋 Bem-vindo de volta, ${conta.nome}!`, "sucesso");
+    } else {
+        mostrarAviso("❌ E-mail ou senha incorretos.", "erro");
     }
 }
 
 async function fazerCadastro() {
+    const nome = document.getElementById("cad-nome").value.trim();
+    const email = document.getElementById("cad-email").value.trim();
+    const senha = document.getElementById("cad-senha").value.trim();
 
-    const nome =
-    document.getElementById("cad-nome").value;
+    if (!nome || !email || !senha) {
+        mostrarAviso("⚠️ Preencha todos os campos para criar a conta.", "aviso");
+        return;
+    }
 
-    const email =
-    document.getElementById("cad-email").value;
-
-    const senha =
-    document.getElementById("cad-senha").value;
-
-    const { error } =
-    await _supabase.auth.signUp({
-
-        email,
-        password: senha,
-
-        options: {
-            data: {
-                display_name: nome
-            }
-        }
-    });
+    const { error } = await _supabase
+        .from('usuarios')
+        .insert([{
+            nome: nome,
+            email: email,
+            senha: senha
+        }]);
 
     if (error) {
-
-        alert("Erro: " + error.message);
-
+        mostrarAviso("❌ Erro ao criar conta: " + error.message, "erro");
     } else {
-
-        alert("Conta criada! Verifique seu e-mail.");
+        mostrarAviso("✅ Conta criada com sucesso! Faça login.", "sucesso");
+        alternarAba('login');
     }
 }
 
 async function fazerLogout() {
-
-    const sair = confirm("Deseja sair da conta?");
-
-    if (!sair) return;
-
-    await _supabase.auth.signOut();
-
+    localStorage.removeItem("usuario_logado");
     window.location.reload();
 }
 
 // ===============================
-// 📍 PERFIL E ENDEREÇO
+// 📍 PERFIL, DADOS DE ENTREGA E HISTÓRICO
 // ===============================
-function abrirPerfil() {
-
-    document.getElementById(
-        "secao-perfil"
-    ).style.display = "flex";
-
-    carregarDadosPerfil();
+function abrirConta() {
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    if (usuarioLogado) {
+        document.getElementById("secao-perfil").style.display = "flex";
+        carregarDadosPerfil();
+    } else {
+        abrirLogin();
+    }
 }
 
 function fecharPerfil() {
-
-    document.getElementById(
-        "secao-perfil"
-    ).style.display = "none";
+    document.getElementById("secao-perfil").style.display = "none";
 }
 
 async function carregarDadosPerfil() {
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    if (!usuarioLogado) return;
 
-    const {
-        data: { user }
-    } = await _supabase.auth.getUser();
-
-    if (!user) return;
-
-    const {
-        data: perfil,
-        error
-    } = await _supabase
-    .from("enderecos")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+    const { data: perfil, error } = await _supabase
+        .from("usuarios")
+        .select("*")
+        .eq("email", usuarioLogado.email)
+        .maybeSingle();
 
     if (perfil) {
-
-        document.getElementById("perf-tel").value =
-        perfil.telefone || "";
-
-        document.getElementById("perf-rua").value =
-        perfil.rua || "";
-
-        document.getElementById("perf-num").value =
-        perfil.numero_casa || "";
-
-        document.getElementById("perf-bairro").value =
-        perfil.bairro || "";
-
-        document.getElementById("perf-cidade").value =
-        perfil.cidade || "";
+        document.getElementById("perf-tel").value = perfil.telefone || "";
+        
+        if (perfil.endereco) {
+            try {
+                const partes = perfil.endereco.split(', ');
+                document.getElementById("perf-rua").value = partes[0] || "";
+                
+                const numBairro = partes[1] ? partes[1].split(' - Bairro: ') : [];
+                document.getElementById("perf-num").value = numBairro[0] ? numBairro[0].replace('Nº ', '') : "";
+                
+                const bairroCidade = numBairro[1] ? numBairro[1].split(', ') : [];
+                document.getElementById("perf-bairro").value = bairroCidade[0] || "";
+                document.getElementById("perf-cidade").value = bairroCidade[1] || "";
+            } catch (e) {
+                document.getElementById("perf-rua").value = perfil.endereco;
+            }
+        }
     }
 
     if (error && error.code !== "PGRST116") {
         console.error(error.message);
     }
-}
 
-async function salvarPerfil() {
+    const containerHistorico = document.getElementById("historico-compras");
+    if (!containerHistorico) return;
 
-    const {
-        data: { user }
-    } = await _supabase.auth.getUser();
+    containerHistorico.innerHTML = "<p style='font-size:12px; color:gray;'>Carregando histórico...</p>";
 
-    if (!user) {
-        alert("Faça login primeiro!");
+    const { data: pedidos, errorPedidos } = await _supabase
+        .from("pedidos")
+        .select("*")
+        .eq("cliente", usuarioLogado.nome)
+        .order("id", { ascending: false });
+
+    if (errorPedidos) {
+        containerHistorico.innerHTML = "<p style='color:red; font-size:12px;'>Erro ao carregar histórico.</p>";
         return;
     }
 
-    const dados = {
+    if (!pedidos || pedidos.length === 0) {
+        containerHistorico.innerHTML = "<p style='font-size:13px; color:gray; text-align:center; padding: 10px 0;'>Você ainda não fez nenhum pedido 🛍️</p>";
+        return;
+    }
 
-        id: user.id,
+    containerHistorico.innerHTML = "";
+    pedidos.forEach(pedido => {
+        let corStatus = "#ffc107";
+        if (pedido.status === "Entregue") corStatus = "#198754";
+        if (pedido.status === "Saiu para entrega") corStatus = "#0d6efd";
+        if (pedido.status === "Cancelado") corStatus = "#dc3545";
 
-        telefone:
-        document.getElementById("perf-tel").value,
+        containerHistorico.innerHTML += `
+            <div class="pedido-item" style="border: 1px solid #eee; padding: 10px; border-radius: 8px; margin-bottom: 10px; background: #fdfdfd;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>Pedido #${pedido.id}</strong>
+                    <span style="font-size: 11px; background: ${corStatus}; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">${pedido.status || 'Recebido'}</span>
+                </div>
+                <p style="margin: 5px 0 0 0; font-size: 14px; color: #198754; font-weight: bold;">Total: R$ ${Number(pedido.total).toFixed(2)}</p>
+                <small style="color: gray; font-size: 11px;">Forma de Pág: ${pedido.pagamento}</small>
+            </div>
+        `;
+    });
+}
 
-        rua:
-        document.getElementById("perf-rua").value,
+async function salvarPerfil() {
+    try {
+        const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+        if (!usuarioLogado) {
+            mostrarAviso("⚠️ Faça login para atualizar seu endereço.", "aviso");
+            return;
+        }
 
-        numero_casa:
-        document.getElementById("perf-num").value,
+        const nome = document.getElementById('perfil-nome').innerText;
+        const email = document.getElementById('perfil-email').innerText;
+        const telefone = document.getElementById('perf-tel').value.trim();
+        const rua = document.getElementById('perf-rua').value.trim();
+        const numero = document.getElementById('perf-num').value.trim();
+        const bairro = document.getElementById('perf-bairro').value.trim();
+        const city = document.getElementById('perf-cidade').value.trim();
 
-        bairro:
-        document.getElementById("perf-bairro").value,
+        if (!telefone || !rua || !numero || !bairro || !city) {
+            mostrarAviso("⚠️ Preencha todos os campos do endereço.", "aviso");
+            return;
+        }
 
-        cidade:
-        document.getElementById("perf-cidade").value
-    };
+        const enderecoMontado = `${rua}, Nº ${numero} - Bairro: ${bairro}, ${city}`;
 
-    const { error } =
-    await _supabase
-    .from("enderecos")
-    .upsert(dados);
+        const { error } = await _supabase
+            .from('usuarios')
+            .upsert({
+                nome: nome,
+                email: email,
+                telefone: telefone,
+                endereco: enderecoMontado
+            }, { onConflict: 'email' });
 
-    if (error) {
+        if (error) throw error;
 
-        alert("Erro: " + error.message);
-
-    } else {
-
-        mostrarAviso("📍 Endereço salvo!");
+        mostrarAviso("📍 Endereço de entrega salvo!", "sucesso");
         fecharPerfil();
+
+    } catch (error) {
+        mostrarAviso("❌ Erro ao salvar dados: " + error.message, "erro");
     }
 }
 
@@ -757,259 +425,154 @@ async function salvarPerfil() {
 // 📦 FINALIZAR PEDIDO
 // ===============================
 function finalizarPedido() {
-
-    const carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
-
+    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     if (carrinho.length === 0) {
-
-        alert("Carrinho vazio!");
+        mostrarAviso("⚠️ Seu carrinho está vazio!", "aviso");
         return;
     }
-
-    document.getElementById(
-        "modal-pagamento"
-    ).style.display = "flex";
+    document.getElementById("modal-pagamento").style.display = "flex";
 }
 
 function fecharModal() {
-
-    document.getElementById(
-        "modal-pagamento"
-    ).style.display = "none";
+    document.getElementById("modal-pagamento").style.display = "none";
 }
 
 async function escolherPagamento(tipo) {
+    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
 
-    const carrinho =
-    JSON.parse(localStorage.getItem("carrinho")) || [];
-
-    const {
-        data: { user }
-    } = await _supabase.auth.getUser();
-
-    if (!user) {
-
-        alert("Faça login.");
-
+    if (!usuarioLogado) {
+        mostrarAviso("⚠️ Entre na sua conta para finalizar a compra.", "aviso");
         return;
     }
 
-    const { data: perfil } =
-    await _supabase
-    .from("enderecos")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+    const { data: perfil } = await _supabase
+        .from("usuarios")
+        .select("*")
+        .eq("email", usuarioLogado.email)
+        .maybeSingle();
 
-    let total = 0;
+    if (!perfil || !perfil.endereco) {
+        mostrarAviso("📍 Por favor, cadastre seu endereço antes de finalizar.", "aviso");
+        fecharModal();
+        document.getElementById("secao-perfil").style.display = "flex";
+        carregarDadosPerfil();
+        return;
+    }
 
-    carrinho.forEach(item => {
+    let total = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
 
-        total +=
-        item.preco * item.quantidade;
-    });
-
-    // SALVAR PEDIDO
-    const { error } =
-    await _supabase
-    .from("pedidos")
-    .insert([{
-
-        user_id: user.id,
-
-        cliente:
-        user.user_metadata.display_name,
-
-        telefone:
-        perfil?.telefone || "",
-
-        endereco:
-        `${perfil?.rua || ""}
-        ${perfil?.numero_casa || ""}
-        - ${perfil?.bairro || ""}`,
-
-        produtos: carrinho,
-
-        total: total,
-
-        pagamento: tipo
-
-    }]);
+    const { error } = await _supabase
+        .from("pedidos")
+        .insert([{
+            cliente: perfil.nome,
+            telefone: perfil.telefone,
+            endereco: perfil.endereco,
+            produtos: carrinho,
+            total: total,
+            pagamento: tipo,
+            status: 'Recebido'
+        }]);
 
     if (error) {
-
-        alert(error.message);
-
+        mostrarAviso("❌ Erro ao enviar pedido: " + error.message, "erro");
         return;
     }
 
-    // WHATSAPP
-    let mensagem =
-    "🛒 *Novo Pedido*%0A%0A";
-
-    carrinho.forEach(produto => {
-
-        mensagem += `
-• ${produto.nome}
-(${produto.quantidade}x)
-- R$ ${(produto.preco * produto.quantidade).toFixed(2)}%0A
-        `;
+    let mensagem = "🛒 *Novo Pedido - Supermercado*%0A%0A";
+    carrinho.forEach(p => {
+        mensagem += `• ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}%0A`;
     });
+    mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2)}%0A💳 *Pagamento:* ${tipo}%0A📍 *Entrega:* ${perfil.endereco}`;
 
-    mensagem += `
-%0A💰 Total:
-R$ ${total.toFixed(2)}
-
-%0A💳 Pagamento:
-${tipo}
-    `;
-
-    window.open(
-        `https://wa.me/5533988101944?text=${mensagem}`,
-        "_blank"
-    );
+    window.open(`https://wa.me/5533988101944?text=${mensagem}`, "_blank");
 
     localStorage.removeItem("carrinho");
-
     atualizarContador();
-
-    fecharCarrinho();
-
+    fecharCarrinhoLateral();
     fecharModal();
-
-    mostrarAviso("✅ Pedido enviado!");
+    mostrarAviso("✅ Pedido enviado com sucesso!", "sucesso");
 }
 
 // ===============================
 // 💬 MODAIS
 // ===============================
-function abrirLogin() {
-
-    document.getElementById(
-        "modal-login"
-    ).style.display = "flex";
-}
-
-function fecharLogin() {
-
-    document.getElementById(
-        "modal-login"
-    ).style.display = "none";
+function abrirLogin() { document.getElementById("modal-login").style.display = "flex"; }
+function fecharLogin() { 
+    document.getElementById("modal-login").style.display = "none"; 
 }
 
 function alternarAba(tipo) {
+    const login = document.getElementById("form-login");
+    const cadastro = document.getElementById("form-cadastro");
+    const tabLogin = document.getElementById("tab-login");
+    const tabCadastro = document.getElementById("tab-cadastro");
 
-    const login =
-    document.getElementById("form-login");
-
-    const cadastro =
-    document.getElementById("form-cadastro");
-
-    const tabLogin =
-    document.getElementById("tab-login");
-
-    const tabCadastro =
-    document.getElementById("tab-cadastro");
-
-    // RESET
     tabLogin.classList.remove("ativa");
     tabCadastro.classList.remove("ativa");
 
-    // LOGIN
     if (tipo === "login") {
-
         login.style.display = "block";
         cadastro.style.display = "none";
-
         tabLogin.classList.add("ativa");
-
-    }
-
-    // CADASTRO
-    else {
-
+    } else {
         login.style.display = "none";
         cadastro.style.display = "block";
-
         tabCadastro.classList.add("ativa");
     }
 }
 
-// ===============================
-// 🔔 AVISO
-// ===============================
-function mostrarAviso(msg) {
+// ===============================================
+// ↕️ CONTROLE DOS CARROSSÉIS (EXIGIDO PELO HTML)
+// ===============================================
+function scrollCarrossel(idContainer, direcao) {
+    const container = document.getElementById(idContainer);
+    if (container) {
+        const quantidadeScroll = 300; 
+        container.scrollBy({
+            left: direcao * quantidadeScroll,
+            behavior: 'smooth'
+        });
+    }
+}
 
-    const aviso =
-    document.createElement("div");
-
+// ===============================================
+// 🔔 AVISOS CUSTOMIZADOS (VERDE, VERMELHO E AMARELO)
+// ===============================================
+function mostrarAviso(msg, tipo = 'sucesso') {
+    const aviso = document.createElement("div");
     aviso.innerText = msg;
+
+    let corFundo = "#198754"; 
+    if (tipo === 'erro') corFundo = "#dc3545";   
+    if (tipo === 'aviso') corFundo = "#ffc107";  
+
+    let corTexto = tipo === 'aviso' ? '#212529' : 'white';
 
     aviso.style.cssText = `
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background: #198754;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 12px;
-        z-index: 9999;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        background: ${corFundo};
+        color: ${corTexto};
+        padding: 14px 28px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        font-family: Arial, sans-serif;
         font-weight: bold;
+        font-size: 15px;
+        z-index: 10000;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        transform: translateY(10px);
     `;
 
     document.body.appendChild(aviso);
 
-    setTimeout(() => {
-        aviso.remove();
-    }, 3000);
-}
+    setTimeout(() => { aviso.style.transform = 'translateY(0)'; }, 50);
 
-// ===============================
-// 🎠 CARROSSEL
-// ===============================
-function scrollCarrossel(id, direcao) {
-
-    const container =
-    document.getElementById(id);
-
-    const distancia = 260;
-
-    container.scrollBy({
-        left: distancia * direcao,
-        behavior: "smooth"
-    });
-}
-
-// ===============================
-// 🚀 INICIALIZAÇÃO
-// ===============================
-
-window.onload = async () => {
-
-    atualizarContador();
-
-    await verificarUsuario();
-
-    carregarProdutosSupabase();
-};
-function abrirConta() {
-
-    const nome =
-    document.getElementById("user-name").innerText;
-
-    // SE NÃO ESTIVER LOGADO
-    if (nome === "Entrar") {
-
-        abrirLogin();
-
-    }
-
-    // SE ESTIVER LOGADO
-    else {
-
-        abrirPerfil();
-    }
+    setTimeout(() => { 
+        aviso.style.opacity = '0'; 
+        setTimeout(() => aviso.remove(), 300); 
+    }, 3200);
 }
 
