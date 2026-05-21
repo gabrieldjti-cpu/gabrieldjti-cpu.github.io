@@ -2,718 +2,207 @@
 <html lang="pt-br">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Supermercado Online | Qualidade e Praticidade
-    </title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermercado Online | Qualidade e Praticidade</title>
+    
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 </head>
 
 <body>
 
-    <!-- =========================
-         🟢 HEADER
-    ========================== -->
     <header class="topo">
-
         <div class="logo">
             🛒 Supermercado
         </div>
 
-        <!-- BUSCA -->
         <div class="busca">
-
-            <input
-                type="text"
-                id="busca"
-                placeholder="O que você procura hoje?"
-                onkeyup="filtrarProdutos('index')"
-            >
-
-            <button>
-                🔍
-            </button>
-
+            <input type="text" id="busca" placeholder="O que você procura hoje?" onkeyup="filtrarProdutos()">
+            <button>🔍</button>
         </div>
 
-        <!-- AÇÕES -->
         <div class="acoes-topo">
-
-            <!-- BOTÃO ADM -->
-            <a
-                href="admin.html"
-                id="btn-admin"
-                class="btn-admin-topo"
-                style="display:none;"
-            >
+            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;">
                 👑 ADM
             </a>
 
-            <!-- USUÁRIO -->
-            <div
-                class="usuario-box"
-                onclick="abrirConta()"
-            >
-
-                <div class="avatar-user">
-                    👤
-                </div>
-
+            <div class="usuario-box" onclick="abrirConta()">
+                <div class="avatar-user">👤</div>
                 <div class="usuario-info">
-
-                    <span id="user-name">
-                        Entrar
-                    </span>
-
-                    <small>
-                        Minha Conta
-                    </small>
-
+                    <span id="user-name">Entrar</span>
+                    <small>Minha Conta</small>
                 </div>
-
             </div>
 
-            <!-- CARRINHO -->
-            <div
-                class="carrinho-topo"
-                onclick="irCarrinho()"
-            >
-
-                <span class="icone-cart">
-                    🛍️
-                </span>
-
+            <div class="carrinho-topo" onclick="irCarrinho()">
+                <span class="icone-cart">🛍️</span>
                 <div class="cart-info">
-
-                    <span>
-                        Carrinho
-                    </span>
-
-                    <small>
-
-                        <span id="contador">
-                            0
-                        </span>
-
-                        itens
-
-                    </small>
-
+                    <span>Carrinho</span>
+                    <small><span id="contador">0</span> itens</small>
                 </div>
-
             </div>
-
         </div>
-
     </header>
 
-    <!-- =========================
-         🟢 MENU
-    ========================== -->
     <nav class="menu">
-
-        <a href="index.html">
-            Início
-        </a>
-
-        <a href="hortifruti.html">
-            Hortifruti
-        </a>
-
-        <a href="carnes.html">
-            Carnes
-        </a>
-
-        <a href="limpeza.html">
-            Limpeza
-        </a>
-
-        <a href="#">
-            Promoções
-        </a>
-
+        <a href="index.html">Início</a>
+        <a href="hortifruti.html">Hortifruti</a>
+        <a href="carnes.html">Carnes</a>
+        <a href="limpeza.html">Limpeza</a>
+        <a href="#">Promoções</a>
     </nav>
 
-    <!-- =========================
-         🟢 BANNER
-    ========================== -->
     <section class="banner">
-
         <div class="banner-texto">
-
-            <h1>
-                Ofertas Imperdíveis
-            </h1>
-
-            <p>
-                Os melhores preços da sua cidade sem sair de casa.
-            </p>
-
-            <button>
-                Ver Promoções
-            </button>
-
+            <h1>Ofertas Imperdíveis</h1>
+            <p>Os melhores preços da sua cidade sem sair de casa.</p>
+            <button>Ver Promoções</button>
         </div>
-
     </section>
 
-    <!-- =========================
-         🟢 BENEFÍCIOS
-    ========================== -->
     <section class="beneficios">
-
         <div class="beneficio">
-
-            <div class="icone">
-                🚚
-            </div>
-
-            <h3>
-                Entrega Rápida
-            </h3>
-
-            <p>
-                Receba suas compras rapidamente na sua casa.
-            </p>
-
+            <div class="icone">🚚</div>
+            <h3>Entrega Rápida</h3>
+            <p>Receba suas compras rapidamente na sua casa.</p>
         </div>
-
         <div class="beneficio">
-
-            <div class="icone">
-                💳
-            </div>
-
-            <h3>
-                Pagamento Fácil
-            </h3>
-
-            <p>
-                Pix, cartão ou dinheiro na entrega.
-            </p>
-
+            <div class="icone">💳</div>
+            <h3>Pagamento Fácil</h3>
+            <p>Pix, cartão ou dinheiro na entrega.</p>
         </div>
-
         <div class="beneficio">
-
-            <div class="icone">
-                🥬
-            </div>
-
-            <h3>
-                Produtos Frescos
-            </h3>
-
-            <p>
-                Qualidade garantida todos os dias.
-            </p>
-
+            <div class="icone">🥬</div>
+            <h3>Produtos Frescos</h3>
+            <p>Qualidade garantida todos os dias.</p>
         </div>
-
         <div class="beneficio">
-
-            <div class="icone">
-                🛡️
-            </div>
-
-            <h3>
-                Compra Segura
-            </h3>
-
-            <p>
-                Seus dados protegidos com segurança.
-            </p>
-
+            <div class="icone">🛡️</div>
+            <h3>Compra Segura</h3>
+            <p>Seus dados protegidos com segurança.</p>
         </div>
-
     </section>
 
-    <!-- =========================
-         🟢 CATEGORIAS
-    ========================== -->
     <section class="categorias">
-
-        <a
-            href="hortifruti.html"
-            class="categoria"
-        >
-            🥦 Hortifruti
-        </a>
-
-        <a
-            href="carnes.html"
-            class="categoria"
-        >
-            🥩 Carnes
-        </a>
-
-        <a
-            href="limpeza.html"
-            class="categoria"
-        >
-            🧴 Limpeza
-        </a>
-
-        <a
-            href="#"
-            class="categoria"
-        >
-            🥤 Bebidas
-        </a>
-
+        <a href="hortifruti.html" class="categoria">🥦 Hortifruti</a>
+        <a href="carnes.html" class="categoria">🥩 Carnes</a>
+        <a href="limpeza.html" class="categoria">🧴 Limpeza</a>
+        <a href="#" class="categoria">🥤 Bebidas</a>
     </section>
 
-    <!-- =========================
-         🟢 MAIS VENDIDOS
-    ========================== -->
     <section class="secao-produtos">
-
         <div class="titulo-secao">
-
-            <h2>
-                🔥 Mais Vendidos
-            </h2>
-
+            <h2>🔥 Mais Vendidos</h2>
             <div class="acoes-carrossel">
-
-                <button
-                    onclick="scrollCarrossel('lista-produtos', -1)"
-                >
-                    ◀
-                </button>
-
-                <button
-                    onclick="scrollCarrossel('lista-produtos', 1)"
-                >
-                    ▶
-                </button>
-
+                <button onclick="scrollCarrossel('lista-produtos', -1)">◀</button>
+                <button onclick="scrollCarrossel('lista-produtos', 1)">▶</button>
             </div>
-
         </div>
-
-        <div
-            class="carrossel"
-            id="lista-produtos"
-        ></div>
-
+        <div class="carrossel" id="lista-produtos"></div>
     </section>
 
-    <!-- =========================
-         🟢 HORTIFRUTI
-    ========================== -->
     <section class="secao-produtos">
-
         <div class="titulo-secao">
-
-            <h2>
-                🥦 Hortifruti Fresquinho
-            </h2>
-
+            <h2>🥦 Hortifruti Fresquinho</h2>
             <div class="acoes-carrossel">
-
-                <button
-                    onclick="scrollCarrossel('carrossel-horti', -1)"
-                >
-                    ◀
-                </button>
-
-                <button
-                    onclick="scrollCarrossel('carrossel-horti', 1)"
-                >
-                    ▶
-                </button>
-
+                <button onclick="scrollCarrossel('carrossel-horti', -1)">◀</button>
+                <button onclick="scrollCarrossel('carrossel-horti', 1)">▶</button>
             </div>
-
         </div>
-
-        <div
-            class="carrossel"
-            id="carrossel-horti"
-        ></div>
-
+        <div class="carrossel" id="carrossel-horti"></div>
     </section>
 
-    <!-- =========================
-         🟢 CARNES
-    ========================== -->
     <section class="secao-produtos">
-
         <div class="titulo-secao">
-
-            <h2>
-                🥩 Carnes Premium
-            </h2>
-
+            <h2>🥩 Carnes Premium</h2>
             <div class="acoes-carrossel">
-
-                <button
-                    onclick="scrollCarrossel('carrossel-carnes', -1)"
-                >
-                    ◀
-                </button>
-
-                <button
-                    onclick="scrollCarrossel('carrossel-carnes', 1)"
-                >
-                    ▶
-                </button>
-
+                <button onclick="scrollCarrossel('carrossel-carnes', -1)">◀</button>
+                <button onclick="scrollCarrossel('carrossel-carnes', 1)">▶</button>
             </div>
-
         </div>
-
-        <div
-            class="carrossel"
-            id="carrossel-carnes"
-        ></div>
-
+        <div class="carrossel" id="carrossel-carnes"></div>
     </section>
 
-    <!-- =========================
-         🟢 FOOTER
-    ========================== -->
     <footer class="footer">
-
-        <p>
-            © 2026 Supermercado Online | 📍 Atendimento Local
-        </p>
-
+        <p>© 2026 Supermercado Online | 📍 Atendimento Local</p>
     </footer>
 
-    <!-- =========================
-         🟢 OVERLAY
-    ========================== -->
-    <div
-        id="overlay"
-        class="overlay"
-        onclick="fecharCarrinho()"
-    ></div>
+    <div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
 
-    <!-- =========================
-         🟢 CARRINHO
-    ========================== -->
-    <div
-        id="carrinho-lateral"
-        class="carrinho-lateral"
-    >
-
+    <div id="carrinho-lateral" class="carrinho-lateral">
         <div class="topo-carrinho">
-
-            <h2>
-                Meu Carrinho
-            </h2>
-
-            <button
-                onclick="fecharCarrinho()"
-                class="btn-fechar"
-            >
-                &times;
-            </button>
-
+            <h2>Meu Carrinho</h2>
+            <button onclick="fecharCarrinho()" class="btn-fechar">&times;</button>
         </div>
-
         <hr>
-
-        <div
-            id="lista-carrinho"
-            class="lista-carrinho"
-        ></div>
-
-        <div
-            id="total"
-            class="total-carrinho"
-        >
-            Total: R$ 0,00
-        </div>
-
-        <button
-            onclick="finalizarPedido()"
-            class="btn-finalizar"
-        >
-            Finalizar Pedido
-        </button>
-
+        <div id="lista-carrinho" class="lista-carrinho"></div>
+        <div id="total" class="total-carrinho">Total: R$ 0,00</div>
+        <button onclick="finalizarPedido()" class="btn-finalizar">Finalizar Pedido</button>
     </div>
 
-    <!-- =========================
-         🟢 MODAL PAGAMENTO
-    ========================== -->
-    <div
-        id="modal-pagamento"
-        class="modal"
-    >
-
+    <div id="modal-pagamento" class="modal">
         <div class="modal-box">
-
-            <h3>
-                Como deseja pagar?
-            </h3>
-
-            <button
-                onclick="escolherPagamento('Cartão')"
-                class="btn-cartao"
-            >
-                💳 Cartão
-            </button>
-
-            <button
-                onclick="escolherPagamento('Pix')"
-                class="btn-pix"
-            >
-                📱 Pix
-            </button>
-
-            <button
-                onclick="escolherPagamento('Dinheiro')"
-                class="btn-dinheiro"
-            >
-                💵 Dinheiro
-            </button>
-
-            <button
-                onclick="fecharModal()"
-                class="btn-voltar"
-            >
-                Voltar
-            </button>
-
+            <h3>Como deseja pagar?</h3>
+            <button onclick="escolherPagamento('Cartão')" class="btn-cartao">💳 Cartão</button>
+            <button onclick="escolherPagamento('Pix')" class="btn-pix">📱 Pix</button>
+            <button onclick="escolherPagamento('Dinheiro')" class="btn-dinheiro">💵 Dinheiro</button>
+            <button onclick="fecharModal()" class="btn-voltar">Voltar</button>
         </div>
-
     </div>
 
-    <!-- =========================
-         🟢 LOGIN / CADASTRO
-    ========================== -->
-    <div
-        id="modal-login"
-        class="modal"
-    >
-
+    <div id="modal-login" class="modal">
         <div class="modal-login-box">
-
-            <!-- TABS -->
             <div class="abas-login">
-
-                <div
-                    id="tab-login"
-                    onclick="alternarAba('login')"
-                    class="aba ativa"
-                >
-                    Entrar
-                </div>
-
-                <div
-                    id="tab-cadastro"
-                    onclick="alternarAba('cadastro')"
-                    class="aba"
-                >
-                    Cadastrar
-                </div>
-
+                <div id="tab-login" onclick="alternarAba('login')" class="aba ativa">Entrar</div>
+                <div id="tab-cadastro" onclick="alternarAba('cadastro')" class="aba">Cadastrar</div>
             </div>
 
-            <!-- LOGIN -->
             <div id="form-login">
-
-                <input
-                    type="email"
-                    id="login-email"
-                    placeholder="Seu e-mail"
-                    class="input-premium"
-                >
-
-                <input
-                    type="password"
-                    id="login-senha"
-                    placeholder="Sua senha"
-                    class="input-premium"
-                >
-
-                <button
-                    onclick="fazerLogin()"
-                    class="btn-acesso-principal"
-                >
-                    Entrar na Conta
-                </button>
-
+                <input type="email" id="login-email" placeholder="Seu e-mail" class="input-premium">
+                <input type="password" id="login-senha" placeholder="Sua senha" class="input-premium">
+                <button onclick="fazerLogin()" class="btn-acesso-principal">Entrar na Conta</button>
             </div>
 
-            <!-- CADASTRO -->
-            <div
-                id="form-cadastro"
-                style="display:none;"
-            >
-
-                <input
-                    type="text"
-                    id="cad-nome"
-                    placeholder="Nome Completo"
-                    class="input-premium"
-                >
-
-                <input
-                    type="email"
-                    id="cad-email"
-                    placeholder="Seu melhor e-mail"
-                    class="input-premium"
-                >
-
-                <input
-                    type="password"
-                    id="cad-senha"
-                    placeholder="Crie uma senha"
-                    class="input-premium"
-                >
-
-                <button
-                    onclick="fazerCadastro()"
-                    class="btn-acesso-principal"
-                >
-                    Criar minha Conta
-                </button>
-
+            <div id="form-cadastro" style="display:none;">
+                <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
+                <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
+                <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
+                <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
             </div>
 
             <div class="fechar-login">
-
-                <button onclick="fecharLogin()">
-                    Fechar
-                </button>
-
+                <button onclick="fecharLogin()">Fechar</button>
             </div>
-
         </div>
-
     </div>
 
-    <!-- =========================
-         🟢 PERFIL
-    ========================== -->
-    <div
-        id="secao-perfil"
-        class="modal"
-    >
-
+    <div id="secao-perfil" class="modal">
         <div class="perfil-box">
-
-            <!-- HEADER -->
             <div class="perfil-header">
-
-                <div class="perfil-avatar">
-                    👤
-                </div>
-
-                <h2 id="perfil-nome">
-                    Usuário
-                </h2>
-
-                <p id="perfil-email">
-                    email@gmail.com
-                </p>
-
+                <div class="perfil-avatar">👤</div>
+                <h2 id="perfil-nome">Usuário</h2>
+                <p id="perfil-email">email@gmail.com</p>
             </div>
 
-            <!-- DADOS -->
-            <h3 class="titulo-perfil">
-                📍 Dados de Entrega
-            </h3>
+            <h3 class="titulo-perfil">📍 Dados de Entrega</h3>
+            <input type="text" id="perf-tel" placeholder="Telefone" class="input-premium">
+            <input type="text" id="perf-rua" placeholder="Rua" class="input-premium">
+            <input type="text" id="perf-num" placeholder="Número" class="input-premium">
+            <input type="text" id="perf-bairro" placeholder="Bairro" class="input-premium">
+            <input type="text" id="perf-cidade" placeholder="Cidade" class="input-premium">
 
-            <input
-                type="text"
-                id="perf-tel"
-                placeholder="Telefone"
-                class="input-premium"
-            >
+            <h3 class="titulo-historico">🧾 Histórico de Compras</h3>
+            <div id="historico-compras"></div>
 
-            <input
-                type="text"
-                id="perf-rua"
-                placeholder="Rua"
-                class="input-premium"
-            >
-
-            <input
-                type="text"
-                id="perf-num"
-                placeholder="Número"
-                class="input-premium"
-            >
-
-            <input
-                type="text"
-                id="perf-bairro"
-                placeholder="Bairro"
-                class="input-premium"
-            >
-
-            <input
-                type="text"
-                id="perf-cidade"
-                placeholder="Cidade"
-                class="input-premium"
-            >
-
-            <!-- HISTÓRICO -->
-            <h3 class="titulo-historico">
-                🧾 Histórico
-            </h3>
-
-            <div id="historico-compras">
-
-                <div class="pedido-item">
-
-                    <strong>
-                        Pedido #1021
-                    </strong>
-
-                    <p>
-                        R$ 89,90
-                    </p>
-
-                </div>
-
-            </div>
-
-            <!-- BOTÕES -->
-            <button
-                onclick="salvarPerfil()"
-                class="btn-salvar"
-            >
-                Salvar Endereço
-            </button>
-
-            <button
-                onclick="fazerLogout()"
-                class="btn-logout"
-            >
-                Sair da Minha Conta
-            </button>
-
-            <button
-                onclick="fecharPerfil()"
-                class="btn-fechar-perfil"
-            >
-                Fechar
-            </button>
-
+            <button onclick="salvarPerfil()" class="btn-salvar">Salvar Endereço</button>
+            <button onclick="fazerLogout()" class="btn-logout">Sair da Minha Conta</button>
+            <button onclick="fecharPerfil()" class="btn-fechar-perfil">Fechar</button>
         </div>
-
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=3"></script>
 
 </body>
 
