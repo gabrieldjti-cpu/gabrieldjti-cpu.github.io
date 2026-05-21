@@ -99,7 +99,7 @@ function adicionarCarrinho(nome, preco) {
     if (itemExistente) {
         itemExistente.quantidade++;
     } else {
-        carrinho.push({ nome, preco, quantidade: 1 });
+        carrinho.push({ nome, preco, grandmother: 1, quantidade: 1 });
     }
 
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
@@ -379,6 +379,7 @@ async function carregarDadosPerfil() {
     });
 }
 
+// CORREÇÃO AQUI: Mudança de .upsert() para .update() filtrando pelo email cadastrado
 async function salvarPerfil() {
     try {
         const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
@@ -387,8 +388,6 @@ async function salvarPerfil() {
             return;
         }
 
-        const nome = document.getElementById('perfil-nome').innerText;
-        const email = document.getElementById('perfil-email').innerText;
         const telefone = document.getElementById('perf-tel').value.trim();
         const rua = document.getElementById('perf-rua').value.trim();
         const numero = document.getElementById('perf-num').value.trim();
@@ -402,14 +401,14 @@ async function salvarPerfil() {
 
         const enderecoMontado = `${rua}, Nº ${numero} - Bairro: ${bairro}, ${city}`;
 
+        // Usando .update() e vinculando ao email com .eq() para evitar conflitos de chaves primárias
         const { error } = await _supabase
             .from('usuarios')
-            .upsert({
-                nome: nome,
-                email: email,
+            .update({
                 telefone: telefone,
                 endereco: enderecoMontado
-            }, { onConflict: 'email' });
+            })
+            .eq('email', usuarioLogado.email);
 
         if (error) throw error;
 
@@ -575,4 +574,3 @@ function mostrarAviso(msg, tipo = 'sucesso') {
         setTimeout(() => aviso.remove(), 300); 
     }, 3200);
 }
-
