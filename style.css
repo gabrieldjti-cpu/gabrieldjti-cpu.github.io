@@ -1203,3 +1203,27 @@ body{
 
     transform: translateY(-2px);
 }
+/* ==========================================
+   🔔 ESTILIZAÇÃO COMPLEMENTAR DOS AVISOS
+   ========================================== */
+div[style*="background: #ffc107"], 
+div[style*="background:#ffc107"] {
+    color: #212529 !important; /* Força o texto a ficar preto no fundo amarelo de atenção */
+}
+
+div[style*="position: fixed"] {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    animation: surgindoAviso 0.3s ease-out;
+}
+
+/* Animação suave para o balão subir na tela */
+@keyframes surgindoAviso {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
