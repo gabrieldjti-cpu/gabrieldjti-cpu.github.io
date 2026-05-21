@@ -1,427 +1,296 @@
 // =========================
-// 🔥 SUPABASE
+// 🔥 CONFIGURAÇÃO SUPABASE
 // =========================
+const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
+const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 
-const supabaseUrl =
-'https://ikrsxmjrdnhyecjchjju.supabase.co';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-const supabaseKey =
-'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
+// =========================
+// 🔐 VERIFICAR ADMIN
+// =========================
+async function verificarAdmin() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
 
-const supabaseClient =
-supabase.createClient(
-    supabaseUrl,
-    supabaseKey
-);
+    if (!user) {
+        mostrarAviso('🔒 Faça login como administrador primeiro.', 'aviso');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+        return;
+    }
+
+    // SEU NOVO EMAIL MASTER CONFIGURADO
+    const adminEmail = 'gabrieldj.ti@gmail.com';
+
+    if (user.email !== adminEmail) {
+        mostrarAviso('❌ Acesso negado! Você não é um administrador.', 'erro');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    }
+}
 
 // =========================
 // ➕ SALVAR PRODUTO
 // =========================
-
 async function salvarProduto() {
+    const nome = document.getElementById('nome').value.trim();
+    const preco = document.getElementById('preco').value;
+    const preco_antigo = document.getElementById('preco_antigo').value;
+    const desconto = document.getElementById('desconto').value.trim();
+    const img = document.getElementById('imagem').value.trim();
+    const categoria = document.getElementById('categoria').value;
+
+    // Validação básica para não enviar dados quebrados ou vazios
+    if (!nome || !preco || !img || !categoria || desconto === '') {
+        mostrarAviso('⚠️ Preencha os campos obrigatórios (Nome, Preço, Desconto, Imagem e Categoria).', 'aviso');
+        return;
+    }
 
     const produto = {
-
-        nome:
-            document.getElementById('nome').value,
-
-        preco:
-            Number(
-                document.getElementById('preco').value
-            ),
-
-        preco_antigo:
-            Number(
-                document.getElementById('preco_antigo').value
-            ),
-
-        desconto:
-            document.getElementById('desconto').value,
-
-        img:
-            document.getElementById('imagem').value,
-
-        categoria:
-            document.getElementById('categoria').value
-
+        nome: nome,
+        preco: Number(preco),
+        preco_antigo: preco_antigo ? Number(preco_antigo) : 0,
+        desconto: desconto,
+        img: img,
+        categoria: categoria
     };
 
-    const { error } =
-        await supabaseClient
+    const { error } = await supabaseClient
         .from('produtos')
         .insert([produto]);
 
     if (error) {
-
-        alert(error.message);
+        mostrarAviso("❌ Erro ao salvar produto: " + error.message, "erro");
         return;
-
     }
 
-    alert('✅ Produto cadastrado com sucesso!');
-
+    mostrarAviso('✅ Produto cadastrado com sucesso!', 'sucesso');
     limparFormulario();
-
     carregarProdutos();
 }
 
 // =========================
 // 📦 LISTAR PRODUTOS
 // =========================
-
 async function carregarProdutos() {
-
-    const { data, error } =
-        await supabaseClient
+    const { data, error } = await supabaseClient
         .from('produtos')
         .select('*')
-        .order('id', {
-            ascending: false
-        });
+        .order('id', { ascending: false });
 
     if (error) {
-
-        alert(error.message);
+        mostrarAviso("❌ Erro ao carregar produtos: " + error.message, "erro");
         return;
-
     }
 
-    const container =
-        document.getElementById(
-            'lista-produtos'
-        );
-
+    const container = document.getElementById('lista-produtos');
+    if (!container) return;
+    
     container.innerHTML = '';
 
     data.forEach(produto => {
-
         container.innerHTML += `
-
             <div class="card">
-
-                <img
-                    src="${produto.img}"
-                    alt="${produto.nome}"
-                >
-
-                <h3>
-                    ${produto.nome}
-                </h3>
-
-                <div class="preco">
-                    R$ ${Number(produto.preco).toFixed(2)}
-                </div>
-
-                <div class="preco-antigo">
-                    R$ ${Number(produto.preco_antigo).toFixed(2)}
-                </div>
-
-                <div class="desconto">
-                    ${produto.desconto}
-                </div>
-
-                <p>
-                    Categoria:
-                    ${produto.categoria}
-                </p>
-
+                <img src="${produto.img}" alt="${produto.nome}">
+                <h3>${produto.nome}</h3>
+                <div class="preco">R$ ${Number(produto.preco).toFixed(2)}</div>
+                <div class="preco-antigo">R$ ${Number(produto.preco_antigo).toFixed(2)}</div>
+                <div class="desconto">-${produto.desconto}%</div>
+                <p>Categoria: ${produto.categoria}</p>
                 <div class="acoes">
-
-                    <button
-                        class="btn-editar"
-                        onclick="editarProduto('${produto.id}')"
-                    >
-                        Editar
-                    </button>
-
-                    <button
-                        class="btn-excluir"
-                        onclick="excluirProduto('${produto.id}')"
-                    >
-                        Excluir
-                    </button>
-
+                    <button class="btn-editar" onclick="editarProduto('${produto.id}')">Editar</button>
+                    <button class="btn-excluir" onclick="excluirProduto('${produto.id}')">Excluir</button>
                 </div>
-
             </div>
-
         `;
-
     });
-
 }
 
 // =========================
 // ❌ EXCLUIR PRODUTO
 // =========================
-
 async function excluirProduto(id) {
-
-    const confirmar =
-        confirm(
-            'Deseja excluir esse produto?'
-        );
-
+    const confirmar = confirm('Deseja realmente excluir esse produto?');
     if (!confirmar) return;
 
-    const { error } =
-        await supabaseClient
+    const { error } = await supabaseClient
         .from('produtos')
         .delete()
         .eq('id', id);
 
     if (error) {
-
-        alert(error.message);
+        mostrarAviso("❌ Erro ao excluir: " + error.message, "erro");
         return;
-
     }
 
-    alert('🗑️ Produto excluído!');
-
+    mostrarAviso('🗑️ Produto excluído com sucesso!', 'sucesso');
     carregarProdutos();
-
 }
 
 // =========================
 // ✏️ EDITAR PRODUTO
 // =========================
-
 async function editarProduto(id) {
+    const novoNome = prompt('Novo nome do produto:');
+    if (!novoNome || novoNome.trim() === '') return;
 
-    const novoNome =
-        prompt('Novo nome do produto');
-
-    if (!novoNome) return;
-
-    const { error } =
-        await supabaseClient
+    const { error } = await supabaseClient
         .from('produtos')
-        .update({
-            nome: novoNome
-        })
+        .update({ nome: novoNome.trim() })
         .eq('id', id);
 
     if (error) {
-
-        alert(error.message);
+        mostrarAviso("❌ Erro ao atualizar: " + error.message, "erro");
         return;
-
     }
 
-    alert('✏️ Produto atualizado!');
-
+    mostrarAviso('✏️ Nome do produto atualizado!', 'sucesso');
     carregarProdutos();
-
 }
 
-// =========================
-// 🧹 LIMPAR FORMULÁRIO
-// =========================
-
-function limparFormulario() {
-
-    document.getElementById('nome').value = '';
-
-    document.getElementById('preco').value = '';
-
-    document.getElementById('preco_antigo').value = '';
-
-    document.getElementById('desconto').value = '';
-
-    document.getElementById('imagem').value = '';
-
-    document.getElementById('categoria').value = '';
-
-}
-
-// =========================
-// 🚀 INICIAR
-// =========================
-
-window.onload = () => {
-
-    carregarProdutos();
-
-};
 // =========================
 // 🛒 CARREGAR PEDIDOS
 // =========================
+async function carregarPedidos() {
+    const { data, error } = await supabaseClient
+        .from('pedidos')
+        .select('*')
+        .order('id', { ascending: false });
 
-async function carregarPedidos(){
-
-    const { data, error } =
-    await supabaseClient
-    .from('pedidos')
-    .select('*')
-    .order('id', {
-        ascending:false
-    });
-
-    if(error){
-
-        console.log(error);
-
+    if (error) {
+        console.error("Erro ao buscar pedidos:", error);
         return;
     }
 
-    const container =
-    document.getElementById(
-        'lista-pedidos'
-    );
-
-    if(!container) return;
+    const container = document.getElementById('lista-pedidos');
+    if (!container) return;
 
     container.innerHTML = '';
 
     data.forEach(pedido => {
-
         let produtosHTML = '';
 
-        pedido.produtos.forEach(produto => {
-
-            produtosHTML += `
-                <li>
-                    ${produto.nome}
-                    (${produto.quantidade}x)
-                </li>
-            `;
-        });
+        if (pedido.produtos && Array.isArray(pedido.produtos)) {
+            pedido.produtos.forEach(produto => {
+                produtosHTML += `
+                    <li>
+                        <strong>${produto.nome}</strong> (${produto.quantidade}x)
+                    </li>
+                `;
+            });
+        }
 
         container.innerHTML += `
-
             <div class="pedido-card">
+                <h3>Pedido #${pedido.id}</h3>
+                <p>👤 <strong>Cliente:</strong> ${pedido.cliente}</p>
+                <p>📞 <strong>Telefone:</strong> ${pedido.telefone || 'Não informado'}</p>
+                <p>📍 <strong>Endereço:</strong> ${pedido.endereco}</p>
+                <p>💳 <strong>Pagamento:</strong> ${pedido.pagamento}</p>
+                <p>💰 <strong>Total:</strong> R$ ${Number(pedido.total).toFixed(2)}</p>
+                <p>📦 <strong>Status Atual:</strong> <span class="status-tag">${pedido.status}</span></p>
+                
+                <div style="margin: 10px 0;">
+                    <strong>Itens do Pedido:</strong>
+                    <ul>${produtosHTML}</ul>
+                </div>
 
-                <h3>
-                    Pedido #${pedido.id}
-                </h3>
-
-                <p>
-                    👤 ${pedido.cliente}
-                </p>
-
-                <p>
-                    📞 ${pedido.telefone}
-                </p>
-
-                <p>
-                    📍 ${pedido.endereco}
-                </p>
-
-                <p>
-                    💳 ${pedido.pagamento}
-                </p>
-
-                <p>
-                    💰 R$ ${pedido.total}
-                </p>
-
-                <p>
-                    📦 Status:
-                    <strong>
-                        ${pedido.status}
-                    </strong>
-                </p>
-
-                <ul>
-                    ${produtosHTML}
-                </ul>
-
-                <select
-                    onchange="
-                    atualizarStatus(
-                        '${pedido.id}',
-                        this.value
-                    )"
-                >
-
-                    <option>
-                        ${pedido.status}
-                    </option>
-
-                    <option>
-                        Recebido
-                    </option>
-
-                    <option>
-                        Preparando
-                    </option>
-
-                    <option>
-                        Saiu para entrega
-                    </option>
-
-                    <option>
-                        Entregue
-                    </option>
-
+                <select onchange="atualizarStatus('${pedido.id}', this.value)">
+                    <option value="" disabled selected>Alterar Status para...</option>
+                    <option value="Recebido">Recebido</option>
+                    <option value="Preparando">Preparando</option>
+                    <option value="Saiu para entrega">Saiu para entrega</option>
+                    <option value="Entregue">Entregue</option>
                 </select>
-
             </div>
-
         `;
     });
 }
 
 // =========================
-// 🔄 STATUS
+// 🔄 ATUALIZAR STATUS DO PEDIDO
 // =========================
+async function atualizarStatus(id, novoStatus) {
+    if (!novoStatus) return;
 
-async function atualizarStatus(
-    id,
-    status
-){
+    const { error } = await supabaseClient
+        .from('pedidos')
+        .update({ status: novoStatus })
+        .eq('id', id);
 
-    await supabaseClient
-    .from('pedidos')
-    .update({
-        status: status
-    })
-    .eq('id', id);
-
-    carregarPedidos();
-}
-// =========================
-// 🔐 VERIFICAR ADMIN
-// =========================
-
-async function verificarAdmin(){
-
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
-
-    if(!user){
-
-        alert('Faça login como administrador');
-
-        window.location.href = 'index.html';
-
+    if (error) {
+        mostrarAviso("❌ Erro ao mudar status: " + error.message, "erro");
         return;
     }
 
-    // EMAIL DO ADMIN
-    const adminEmail =
-    'gabriel@gmail.com';
-
-    if(user.email !== adminEmail){
-
-        alert('Acesso negado!');
-
-        window.location.href = 'index.html';
-
-    }
-
-}
-// =========================
-// 🚀 INICIAR
-// =========================
-
-window.onload = async () => {
-
-    await verificarAdmin();
-
-    carregarProdutos();
-
+    mostrarAviso(`🔄 Status do pedido #${id} alterado para: ${novoStatus}`, 'sucesso');
     carregarPedidos();
-};
+}
+
+// =========================
+// 🧹 LIMPAR FORMULÁRIO
+// =========================
+function limparFormulario() {
+    document.getElementById('nome').value = '';
+    document.getElementById('preco').value = '';
+    document.getElementById('preco_antigo').value = '';
+    document.getElementById('desconto').value = '';
+    document.getElementById('imagem').value = '';
+    document.getElementById('categoria').value = '';
+}
+
+// =========================
+// 🚀 INICIALIZAÇÃO ÚNICA E SEGURA
+// =========================
+document.addEventListener("DOMContentLoaded", async () => {
+    await verificarAdmin();
+    carregarProdutos();
+    carregarPedidos();
+});
+
+// ===============================
+// 🔔 AVISO (COR, DESIGN E TIPOS DINÂMICOS)
+// ===============================
+function mostrarAviso(msg, tipo = 'sucesso') {
+    const aviso = document.createElement("div");
+    aviso.innerText = msg;
+
+    // Configuração de cores dinâmica baseada no tipo do aviso
+    let corFundo = "#198754"; // Padrão Verde (Sucesso)
+    if (tipo === 'erro') corFundo = "#dc3545";   // Vermelho (Erro)
+    if (tipo === 'aviso') corFundo = "#ffc107";  // Amarelo (Atenção)
+
+    // Ajusta o texto para ficar legível (preto no fundo amarelo, branco nos outros)
+    let corTexto = tipo === 'aviso' ? '#212529' : 'white';
+
+    aviso.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${corFundo};
+        color: ${corTexto};
+        padding: 14px 28px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        font-size: 15px;
+        z-index: 10000;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        transform: translateY(10px);
+    `;
+
+    document.body.appendChild(aviso);
+
+    // Efeito sutil de subida ao aparecer
+    setTimeout(() => { aviso.style.transform = 'translateY(0)'; }, 50);
+
+    // Fade-out automático após 3.2 segundos
+    setTimeout(() => { 
+        aviso.style.opacity = '0'; 
+        setTimeout(() => aviso.remove(), 300); 
+    }, 3200);
+}
+    
