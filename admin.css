@@ -1,171 +1,269 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-body{
-    background:#f5f5f5;
-    padding:30px;
+body {
+    background: #f5f5f5;
+    padding: 30px;
 }
 
-.topo{
-    background:#198754;
-    color:white;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:30px;
+.topo {
+    background: #198754;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
 }
 
-.topo h1{
-    font-size:28px;
+.topo h1 {
+    font-size: 28px;
 }
 
-.box{
-    background:white;
-    padding:25px;
-    border-radius:20px;
-    margin-bottom:25px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.05);
+.box {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
 }
 
-.box h2{
-    margin-bottom:20px;
-    color:#198754;
+.box h2 {
+    margin-bottom: 20px;
+    color: #198754;
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .form-grid input,
-.form-grid select{
-    padding:15px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    font-size:15px;
-}
-
-.btn{
-    background:#198754;
-    color:white;
-    border:none;
-    padding:15px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-    margin-top:15px;
-    width:100%;
-}
-
-.btn:hover{
-    background:#146c43;
-}
-
-.produtos{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:white;
-    border-radius:20px;
-    padding:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.08);
-}
-
-.card img{
-    width:100%;
-    height:180px;
-    object-fit:cover;
-    border-radius:15px;
-    margin-bottom:15px;
-}
-
-.card h3{
-    margin-bottom:10px;
-}
-
-.preco{
-    color:#198754;
-    font-size:24px;
-    font-weight:bold;
-}
-
-.acoes{
-    display:flex;
-    gap:10px;
-    margin-top:15px;
-}
-
-.btn-editar{
-    flex:1;
-    background:#0d6efd;
-    color:white;
-    border:none;
-    padding:12px;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-.btn-excluir{
-    flex:1;
-    background:#dc3545;
-    color:white;
-    border:none;
-    padding:12px;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-@media(max-width:700px){
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    body{
-        padding:15px;
-    }
-
-}
-/* =========================
-   🛒 PEDIDOS
-========================= */
-
-.pedido-card{
-
-    background: white;
-
-    padding: 20px;
-
-    border-radius: 16px;
-
-    margin-top: 20px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
-.pedido-card ul{
-
-    margin-top: 10px;
-
-    padding-left: 20px;
-}
-
-.pedido-card select{
-
-    margin-top: 15px;
-
-    width: 100%;
-
-    padding: 12px;
-
-    border-radius: 10px;
-
+.form-grid select {
+    padding: 15px;
     border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    width: 100%;
+    background: white;
+}
+
+.btn {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+    width: 100%;
+    font-size: 16px;
+    transition: background 0.2s ease;
+}
+
+.btn:hover {
+    background: #146c43;
+}
+
+/* =========================================
+   📦 GRID E CARDS DE PRODUTOS
+   ========================================= */
+.produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.card p {
+    font-size: 13px;
+    color: #777;
+    margin-top: 5px;
+}
+
+.preco {
+    color: #198754;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* CORREÇÃO: Estilização do preço antigo que estava faltando */
+.preco-antigo {
+    color: #999;
+    font-size: 14px;
+    text-decoration: line-through;
+    margin-top: 2px;
+}
+
+/* CORREÇÃO: Estilização da tag de desconto que estava faltando */
+.desconto {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 5px;
+    align-self: flex-start;
+}
+
+.acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-editar {
+    flex: 1;
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-excluir {
+    flex: 1;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* =========================================
+   🛒 SEÇÃO DE PEDIDOS
+   ========================================= */
+.pedido-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 20px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+}
+
+.pedido-card h3 {
+    margin-bottom: 12px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.pedido-card p {
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: #444;
+}
+
+/* CORREÇÃO: Estilização para a tag de status dinâmica do pedido */
+.status-tag {
+    background: #e2e3e5;
+    color: #383d41;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.pedido-card ul {
+    margin-top: 12px;
+    padding-left: 20px;
+    background: #f9f9f9;
+    padding: 15px 15px 15px 30px;
+    border-radius: 10px;
+    border: 1px dashed #ddd;
+}
+
+.pedido-card li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #555;
+}
+
+.pedido-card select {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* =========================================
+   📱 RESPONSIVIDADE (TELA CELULAR)
+   ========================================= */
+@media(max-width: 700px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        padding: 15px;
+    }
+    
+    .topo h1 {
+        font-size: 22px;
+    }
+}
+/* ==========================================
+   🔔 ESTILIZAÇÃO COMPLEMENTAR DOS AVISOS
+   ========================================== */
+div[style*="background: #ffc107"], 
+div[style*="background:#ffc107"] {
+    color: #212529 !important; /* Força o texto a ficar preto no fundo amarelo de atenção */
+}
+
+div[style*="position: fixed"] {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    animation: surgindoAviso 0.3s ease-out;
+}
+
+/* Animação suave para o balão subir na tela */
+@keyframes surgindoAviso {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
