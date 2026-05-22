@@ -18,7 +18,8 @@ async function carregarProdutosSupabase() {
     if (error) {
         console.error("Erro ao carregar produtos:", error);
         return;
-    }
+    } 
+    console.log(data)
 
     // Filtros por categorias direto do banco
     const index = data.filter(p => p.categoria === 'index');
@@ -99,7 +100,7 @@ function adicionarCarrinho(nome, preco) {
     if (itemExistente) {
         itemExistente.quantidade++;
     } else {
-        carrinho.push({ nome, preco, grandmother: 1, quantidade: 1 });
+        carrinho.push({ nome, preco, grandmother: 1, quantity: 1, quantidade: 1 });
     }
 
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
@@ -200,6 +201,9 @@ async function verificarUsuario() {
     const btnUser = document.getElementById("user-name");
     const adminBtn = document.getElementById("btn-admin");
 
+    const urlAtual = window.location.pathname.toLowerCase();
+    const ehPaginaAdmin = urlAtual.includes('adm') || urlAtual.includes('painel');
+
     if (usuarioLogado) {
         const nome = usuarioLogado.nome;
 
@@ -210,17 +214,27 @@ async function verificarUsuario() {
         if (perfilNome) perfilNome.innerText = nome;
         if (perfilEmail) perfilEmail.innerText = usuarioLogado.email;
 
-        // Seu e-mail oficial de administrador
         const adminEmail = 'gabrieldj.ti@gmail.com';
         
         if (usuarioLogado.email === adminEmail) {
             if (adminBtn) adminBtn.style.display = "flex";
         } else {
             if (adminBtn) adminBtn.style.display = "none";
+            
+            if (ehPaginaAdmin) {
+                mostrarAviso("⚠️ Acesso restrito para administradores.", "aviso");
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
         }
     } else {
         if (btnUser) btnUser.innerText = "Entrar";
         if (adminBtn) adminBtn.style.display = "none";
+
+        if (ehPaginaAdmin) {
+            window.location.href = 'index.html';
+        }
     }
 }
 
@@ -343,11 +357,12 @@ async function carregarDadosPerfil() {
 
     containerHistorico.innerHTML = "<p style='font-size:12px; color:gray;'>Carregando histórico...</p>";
 
+    // ADAPTAÇÃO UUID: Busca os pedidos filtrando diretamente pelo ID (UUID) do usuário logado
     const { data: pedidos, errorPedidos } = await _supabase
         .from("pedidos")
         .select("*")
-        .eq("cliente", usuarioLogado.nome)
-        .order("id", { ascending: false });
+        .eq("id_usuario", usuarioLogado.id)
+        .order("created_at", { ascending: false });
 
     if (errorPedidos) {
         containerHistorico.innerHTML = "<p style='color:red; font-size:12px;'>Erro ao carregar histórico.</p>";
@@ -366,10 +381,11 @@ async function carregarDadosPerfil() {
         if (pedido.status === "Saiu para entrega") corStatus = "#0d6efd";
         if (pedido.status === "Cancelado") corStatus = "#dc3545";
 
+        // ADAPTAÇÃO UUID: Removida a conversão de tipo Number() para manter a string estável
         containerHistorico.innerHTML += `
             <div class="pedido-item" style="border: 1px solid #eee; padding: 10px; border-radius: 8px; margin-bottom: 10px; background: #fdfdfd;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong>Pedido #${pedido.id}</strong>
+                    <strong style="font-size: 11px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pedido: ${pedido.id}</strong>
                     <span style="font-size: 11px; background: ${corStatus}; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">${pedido.status || 'Recebido'}</span>
                 </div>
                 <p style="margin: 5px 0 0 0; font-size: 14px; color: #198754; font-weight: bold;">Total: R$ ${Number(pedido.total).toFixed(2)}</p>
@@ -379,7 +395,6 @@ async function carregarDadosPerfil() {
     });
 }
 
-// CORREÇÃO AQUI: Mudança de .upsert() para .update() filtrando pelo email cadastrado
 async function salvarPerfil() {
     try {
         const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
@@ -401,7 +416,6 @@ async function salvarPerfil() {
 
         const enderecoMontado = `${rua}, Nº ${numero} - Bairro: ${bairro}, ${city}`;
 
-        // Usando .update() e vinculando ao email com .eq() para evitar conflitos de chaves primárias
         const { error } = await _supabase
             .from('usuarios')
             .update({
@@ -411,6 +425,11 @@ async function salvarPerfil() {
             .eq('email', usuarioLogado.email);
 
         if (error) throw error;
+
+        // Atualiza os dados também no cache local para sincronizar na mesma hora
+        usuarioLogado.telefone = telefone;
+        usuarioLogado.endereco = enderecoMontado;
+        localStorage.setItem("usuario_logado", JSON.stringify(usuarioLogado));
 
         mostrarAviso("📍 Endereço de entrega salvo!", "sucesso");
         fecharPerfil();
@@ -461,6 +480,7 @@ async function escolherPagamento(tipo) {
 
     let total = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
 
+    // ADAPTAÇÃO UUID: Agora enviamos explicitamente a id (UUID) do perfil do usuário para amarrar na tabela de pedidos
     const { error } = await _supabase
         .from("pedidos")
         .insert([{
@@ -470,7 +490,8 @@ async function escolherPagamento(tipo) {
             produtos: carrinho,
             total: total,
             pagamento: tipo,
-            status: 'Recebido'
+            status: 'Recebido',
+            id_usuario: perfil.id 
         }]);
 
     if (error) {

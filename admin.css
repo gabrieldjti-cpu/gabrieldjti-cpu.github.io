@@ -267,3 +267,28 @@ div[style*="position: fixed"] {
         transform: translateY(0);
     }
 }
+/* Estilo do Botão Voltar */
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #6c757d; /* Cor cinza elegante */
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-voltar:hover {
+    background-color: #5a6268; /* Escurece um pouco ao passar o mouse */
+    transform: translateY(-2px); /* Efeito sutil de flutuar */
+}
+
+.btn-voltar:active {
+    transform: translateY(0);
+}

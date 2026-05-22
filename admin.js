@@ -7,28 +7,34 @@ const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // =========================
-// 🔐 VERIFICAR ADMIN
+// 🔐 VERIFICAR ADMIN (CORRIGIDO)
 // =========================
 async function verificarAdmin() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    // Busca o usuário logado no sistema de localStorage customizado
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const adminEmail = 'gabrieldj.ti@gmail.com';
 
-    if (!user) {
+    // 1. Se não houver nenhum usuário logado
+    if (!usuarioLogado) {
         mostrarAviso('🔒 Faça login como administrador primeiro.', 'aviso');
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1500);
-        return;
+        return false;
     }
 
-    // SEU NOVO EMAIL MASTER CONFIGURADO
-    const adminEmail = 'gabrieldj.ti@gmail.com';
-
-    if (user.email !== adminEmail) {
+    // 2. Se houver usuário, mas o e-mail não for o master admin
+    if (!usuarioLogado.email || usuarioLogado.email.toLowerCase().trim() !== adminEmail) {
         mostrarAviso('❌ Acesso negado! Você não é um administrador.', 'erro');
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1500);
+        return false;
     }
+
+    // Acesso autorizado!
+    console.log("👑 Painel Admin liberado para:", usuarioLogado.nome);
+    return true;
 }
 
 // =========================
@@ -78,7 +84,7 @@ async function carregarProdutos() {
     const { data, error } = await supabaseClient
         .from('produtos')
         .select('*')
-        .order('id', { ascending: false });
+        .order('created_at', { ascending: false });
 
     if (error) {
         mostrarAviso("❌ Erro ao carregar produtos: " + error.message, "erro");
@@ -157,7 +163,7 @@ async function carregarPedidos() {
     const { data, error } = await supabaseClient
         .from('pedidos')
         .select('*')
-        .order('id', { ascending: false });
+        .order('created_at', { ascending: false });
 
     if (error) {
         console.error("Erro ao buscar pedidos:", error);
@@ -184,7 +190,7 @@ async function carregarPedidos() {
 
         container.innerHTML += `
             <div class="pedido-card">
-                <h3>Pedido #${pedido.id}</h3>
+                <h3 style="font-size: 13px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pedido: ${pedido.id}</h3>
                 <p>👤 <strong>Cliente:</strong> ${pedido.cliente}</p>
                 <p>📞 <strong>Telefone:</strong> ${pedido.telefone || 'Não informado'}</p>
                 <p>📍 <strong>Endereço:</strong> ${pedido.endereco}</p>
@@ -225,7 +231,7 @@ async function atualizarStatus(id, novoStatus) {
         return;
     }
 
-    mostrarAviso(`🔄 Status do pedido #${id} alterado para: ${novoStatus}`, 'sucesso');
+    mostrarAviso(`🔄 Status atualizado com sucesso!`, 'sucesso');
     carregarPedidos();
 }
 
@@ -241,11 +247,19 @@ function limparFormulario() {
     document.getElementById('categoria').value = '';
 }
 
-// =========================
-// 🚀 INICIALIZAÇÃO ÚNICA E SEGURA
-// =========================
+// ==========================================
+// 🚀 INICIALIZAÇÃO ÚNICA E SEGURA (CORRIGIDA)
+// ==========================================
 document.addEventListener("DOMContentLoaded", async () => {
-    await verificarAdmin();
+    // Adicionado async/await corretamente para segurar o carregamento da tela
+    const dutoLiberado = await verificarAdmin();
+    
+    // Se NÃO for admin, interrompe a execução aqui imediatamente e impede o carregamento dos dados
+    if (!dutoLiberado) {
+        return;
+    }
+    
+    // Só carrega os dados se passar na validação acima
     carregarProdutos();
     carregarPedidos();
 });
@@ -257,12 +271,10 @@ function mostrarAviso(msg, tipo = 'sucesso') {
     const aviso = document.createElement("div");
     aviso.innerText = msg;
 
-    // Configuração de cores dinâmica baseada no tipo do aviso
-    let corFundo = "#198754"; // Padrão Verde (Sucesso)
-    if (tipo === 'erro') corFundo = "#dc3545";   // Vermelho (Erro)
-    if (tipo === 'aviso') corFundo = "#ffc107";  // Amarelo (Atenção)
+    let corFundo = "#198754"; 
+    if (tipo === 'erro') corFundo = "#dc3545";   
+    if (tipo === 'aviso') corFundo = "#ffc107";  
 
-    // Ajusta o texto para ficar legível (preto no fundo amarelo, branco nos outros)
     let corTexto = tipo === 'aviso' ? '#212529' : 'white';
 
     aviso.style.cssText = `
@@ -284,13 +296,10 @@ function mostrarAviso(msg, tipo = 'sucesso') {
 
     document.body.appendChild(aviso);
 
-    // Efeito sutil de subida ao aparecer
     setTimeout(() => { aviso.style.transform = 'translateY(0)'; }, 50);
 
-    // Fade-out automático após 3.2 segundos
     setTimeout(() => { 
         aviso.style.opacity = '0'; 
         setTimeout(() => aviso.remove(), 300); 
     }, 3200);
 }
-    
