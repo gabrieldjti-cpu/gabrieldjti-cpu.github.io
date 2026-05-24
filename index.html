@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supermercado Online | Qualidade e Praticidade</title>
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -178,31 +178,7 @@
         </div>
     </div>
 
-    <div id="secao-perfil" class="modal">
-        <div class="perfil-box">
-            <div class="perfil-header">
-                <div class="perfil-avatar">👤</div>
-                <h2 id="perfil-nome">Usuário</h2>
-                <p id="perfil-email">email@gmail.com</p>
-            </div>
-
-            <h3 class="titulo-perfil">📍 Dados de Entrega</h3>
-            <input type="text" id="perf-tel" placeholder="Telefone" class="input-premium">
-            <input type="text" id="perf-rua" placeholder="Rua" class="input-premium">
-            <input type="text" id="perf-num" placeholder="Número" class="input-premium">
-            <input type="text" id="perf-bairro" placeholder="Bairro" class="input-premium">
-            <input type="text" id="perf-cidade" placeholder="Cidade" class="input-premium">
-
-            <h3 class="titulo-historico">🧾 Histórico de Compras</h3>
-            <div id="historico-compras"></div>
-
-            <button onclick="salvarPerfil()" class="btn-salvar">Salvar Endereço</button>
-            <button onclick="fazerLogout()" class="btn-logout">Sair da Minha Conta</button>
-            <button onclick="fecharPerfil()" class="btn-fechar-perfil">Fechar</button>
-        </div>
-    </div>
-
-    <script src="script.js?v=4"></script>
+    <script src="js/script.js?v=5"></script>
 
 </body>
 

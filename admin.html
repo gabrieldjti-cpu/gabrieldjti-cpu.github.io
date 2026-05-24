@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel ADM</title>
-    <link rel="stylesheet" href="admin.css">
+    
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <script type="module" src="componentes/MenuTopo.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <div class="topo" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
-        <h1>👑 Painel Administrativo</h1>
-        <a href="index.html" class="btn-voltar">🏠 Voltar ao Site</a>
-    </div>
+    <menu-topo></menu-topo>
 
     <div class="box">
         <h2>➕ Adicionar Produto</h2>
@@ -45,7 +46,7 @@
             </div>
     </div>
 
-    <script src="admin.js?v=4"></script>
+    <script src="js/admin.js?v=5"></script>
 
 </body>
 </html>

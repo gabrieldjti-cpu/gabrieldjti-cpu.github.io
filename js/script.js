@@ -305,12 +305,15 @@ async function fazerLogout() {
 // 📍 PERFIL, DADOS DE ENTREGA E HISTÓRICO
 // ===============================
 function abrirConta() {
+    // Busca se existe o objeto do usuário logado no localStorage
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+
     if (usuarioLogado) {
-        document.getElementById("secao-perfil").style.display = "flex";
-        carregarDadosPerfil();
+        // Se ele estiver logado, redireciona direto para a nova página limpa de perfil!
+        window.location.href = "perfil.html";
     } else {
-        abrirLogin();
+        // Se não estiver logado, abre o modal de login que já existia na index
+        document.getElementById("modal-login").style.display = "flex";
     }
 }
 

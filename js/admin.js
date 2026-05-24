@@ -40,6 +40,12 @@ async function verificarAdmin() {
 // =========================
 // ➕ SALVAR PRODUTO
 // =========================
+// VARIÁVEL GLOBAL (Coloque no topo do arquivo, logo após a configuração do Supabase)
+let idProdutoEmEdicao = null; 
+
+// ===================================
+// ➕ SALVAR / 🔄 ATUALIZAR PRODUTO
+// ===================================
 async function salvarProduto() {
     const nome = document.getElementById('nome').value.trim();
     const preco = document.getElementById('preco').value;
@@ -48,13 +54,12 @@ async function salvarProduto() {
     const img = document.getElementById('imagem').value.trim();
     const categoria = document.getElementById('categoria').value;
 
-    // Validação básica para não enviar dados quebrados ou vazios
     if (!nome || !preco || !img || !categoria || desconto === '') {
-        mostrarAviso('⚠️ Preencha os campos obrigatórios (Nome, Preço, Desconto, Imagem e Categoria).', 'aviso');
+        mostrarAviso('⚠️ Preencha os campos obrigatórios.', 'aviso');
         return;
     }
 
-    const produto = {
+    const dadosProduto = {
         nome: nome,
         preco: Number(preco),
         preco_antigo: preco_antigo ? Number(preco_antigo) : 0,
@@ -63,16 +68,39 @@ async function salvarProduto() {
         categoria: categoria
     };
 
-    const { error } = await supabaseClient
-        .from('produtos')
-        .insert([produto]);
+    // SE ESTIVER EM MODO DE EDIÇÃO
+    if (idProdutoEmEdicao) {
+        const { error } = await supabaseClient
+            .from('produtos')
+            .update(dadosProduto)
+            .eq('id', idProdutoEmEdicao);
 
-    if (error) {
-        mostrarAviso("❌ Erro ao salvar produto: " + error.message, "erro");
-        return;
+        if (error) {
+            mostrarAviso("❌ Erro ao atualizar produto: " + error.message, "erro");
+            return;
+        }
+
+        mostrarAviso('✏️ Produto atualizado com sucesso!', 'sucesso');
+        
+        // Reseta o botão para o modo de cadastro normal
+        idProdutoEmEdicao = null;
+        const btnSalvar = document.querySelector('.box .btn');
+        if (btnSalvar) btnSalvar.innerText = "Salvar Produto";
+
+    } else {
+        // MODO DE CADASTRO NORMAL (INSERIR NOVO)
+        const { error } = await supabaseClient
+            .from('produtos')
+            .insert([dadosProduto]);
+
+        if (error) {
+            mostrarAviso("❌ Erro ao salvar produto: " + error.message, "erro");
+            return;
+        }
+
+        mostrarAviso('✅ Produto cadastrado com sucesso!', 'sucesso');
     }
 
-    mostrarAviso('✅ Produto cadastrado com sucesso!', 'sucesso');
     limparFormulario();
     carregarProdutos();
 }
@@ -135,27 +163,41 @@ async function excluirProduto(id) {
     carregarProdutos();
 }
 
-// =========================
-// ✏️ EDITAR PRODUTO
-// =========================
+// ===================================
+// ✏️ PREPARAR EDIÇÃO DO PRODUTO (NOVA)
+// ===================================
 async function editarProduto(id) {
-    const novoNome = prompt('Novo nome do produto:');
-    if (!novoNome || novoNome.trim() === '') return;
-
-    const { error } = await supabaseClient
+    // 1. Busca os dados completos desse produto direto no Supabase
+    const { data: produto, error } = await supabaseClient
         .from('produtos')
-        .update({ nome: novoNome.trim() })
-        .eq('id', id);
+        .select('*')
+        .eq('id', id)
+        .single(); // Traz apenas um objeto em vez de uma lista
 
-    if (error) {
-        mostrarAviso("❌ Erro ao atualizar: " + error.message, "erro");
+    if (error || !produto) {
+        mostrarAviso("❌ Erro ao buscar dados do produto: " + error.message, "erro");
         return;
     }
 
-    mostrarAviso('✏️ Nome do produto atualizado!', 'sucesso');
-    carregarProdutos();
-}
+    // 2. Preenche os inputs lá do topo da página com os dados do banco
+    document.getElementById('nome').value = produto.nome;
+    document.getElementById('preco').value = produto.preco;
+    document.getElementById('preco_antigo').value = produto.preco_antigo;
+    document.getElementById('desconto').value = produto.desconto;
+    document.getElementById('imagem').value = produto.img;
+    document.getElementById('categoria').value = produto.categoria;
 
+    // 3. Salva o ID que estamos editando na nossa variável global
+    idProdutoEmEdicao = id;
+
+    // 4. Altera visualmente o botão principal para o usuário saber que está editando
+    const btnSalvar = document.querySelector('.box .btn');
+    if (btnSalvar) {
+        btnSalvar.innerText = "🔄 Atualizar Produto";
+        // Rola a página suavemente lá para o topo onde fica o formulário
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
 // =========================
 // 🛒 CARREGAR PEDIDOS
 // =========================
@@ -245,6 +287,11 @@ function limparFormulario() {
     document.getElementById('desconto').value = '';
     document.getElementById('imagem').value = '';
     document.getElementById('categoria').value = '';
+    
+    // Se o usuário limpar o formulário, cancela o modo de edição
+    idProdutoEmEdicao = null;
+    const btnSalvar = document.querySelector('.box .btn');
+    if (btnSalvar) btnSalvar.innerText = "Salvar Produto";
 }
 
 // ==========================================
