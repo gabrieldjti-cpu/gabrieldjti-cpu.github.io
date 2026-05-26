@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carnes</title>
   <link rel="stylesheet" href="css/style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-  <!-- TOPO -->
   <header class="topo">
     <div class="logo">🥩 Carnes</div>
 
     <div class="busca">
-     <input type="text" id="busca" placeholder="Buscar carnes..." onkeyup="filtrarProdutos('carnes')">
+      <input type="text" id="busca" placeholder="Buscar carnes..." onkeyup="filtrarProdutos()">
       <button>🔍</button>
     </div>
 
@@ -22,43 +23,34 @@
     </div>
   </header>
 
-  <!-- MENU -->
   <nav class="menu">
     <a href="index.html">Início</a>
     <a href="Hortifruti.html">Hortifruti</a>
     <a href="#">Bebidas</a>
-    <a href="limpeza.htmlS">Limpeza</a>
-  </nav>
+    <a href="limpeza.html">Limpeza</a> </nav>
 
-  <!-- TÍTULO -->
   <h1 style="text-align:center; margin-top:20px;">🥩 Açougue</h1>
 
-  <!-- PRODUTOS -->
   <main class="produtos" id="lista-carnes"></main>
 
-  <!-- SCRIPT -->
   <script src="js/script.js"></script>
 
-  <script>
-   mostrarProdutos(produtosData.carnes, 'lista-carnes');
-   atualizarContador();
-  </script>
-<div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
+  <div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
 
-<div id="carrinho-lateral" class="carrinho-lateral">
-    <div style="display:flex; justify-content: space-between; align-items: center;">
-        <h2>Meu Carrinho</h2>
-        <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
-    </div>
-    <hr>
-    <div id="lista-carrinho" style="flex-grow: 1; overflow-y: auto; margin-top: 20px;">
-        </div>
-    <div id="total" style="font-weight: bold; font-size: 20px; margin: 20px 0;"></div>
-    <button onclick="finalizarPedido()" style="width: 100%; padding: 15px; background: #198754; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-        Finalizar Pedido
-    </button>
-</div>
-<div id="modal-pagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
+  <div id="carrinho-lateral" class="carrinho-lateral">
+      <div style="display:flex; justify-content: space-between; align-items: center;">
+          <h2>Meu Carrinho</h2>
+          <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <hr>
+      <div id="lista-carrinho" style="flex-grow: 1; overflow-y: auto; margin-top: 20px;"></div>
+      <div id="total" style="font-weight: bold; font-size: 20px; margin: 20px 0;"></div>
+      <button onclick="finalizarPedido()" style="width: 100%; padding: 15px; background: #198754; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+          Finalizar Pedido
+      </button>
+  </div>
+
+  <div id="modal-pagamento" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
       <div style="background:white; padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%;">
           <h3 style="margin-top:0;">Como deseja pagar?</h3>
           <p>Escolha uma opção para finalizar no WhatsApp:</p>

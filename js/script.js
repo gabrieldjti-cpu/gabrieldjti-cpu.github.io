@@ -8,7 +8,7 @@ const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 // ===============================
-// 📦 CARREGAR PRODUTOS DO SUPABASE
+// 📦 CARREGAR PRODUTOS DO SUPABASE (VERSÃO COMPLETA)
 // ===============================
 async function carregarProdutosSupabase() {
     const { data, error } = await _supabase
@@ -19,17 +19,54 @@ async function carregarProdutosSupabase() {
         console.error("Erro ao carregar produtos:", error);
         return;
     } 
-    console.log(data)
+    console.log("Dados carregados do Supabase:", data);
 
-    // Filtros por categorias direto do banco
-    const index = data.filter(p => p.categoria === 'index');
+    // Identifica o nome do arquivo na URL (forçando letras minúsculas)
+    const urlAtual = window.location.pathname.toLowerCase();
+
+    // 🥦 Página Hortifruti
+    if (urlAtual.includes('hortifruti')) {
+        const horti = data.filter(p => p.categoria.toLowerCase() === 'hortifruti');
+        mostrarProdutosSupabase(horti, 'lista-hortifruti');
+        return;
+    }
+
+    // 🥩 Página Carnes
+    if (urlAtual.includes('carnes')) {
+        const carnes = data.filter(p => p.categoria.toLowerCase() === 'carnes');
+        mostrarProdutosSupabase(carnes, 'lista-carnes');
+        return;
+    }
+
+    // 🧼 Página Limpeza
+    if (urlAtual.includes('limpeza')) {
+        const limpeza = data.filter(p => p.categoria.toLowerCase() === 'limpeza');
+        mostrarProdutosSupabase(limpeza, 'lista-limpeza');
+        return;
+    }
+
+    // 🍹 Página Bebidas
+    if (urlAtual.includes('bebidas')) {
+        const bebidas = data.filter(p => p.categoria.toLowerCase() === 'bebidas');
+        mostrarProdutosSupabase(bebidas, 'lista-bebidas');
+        return;
+    }
+
+    // 🏠 Página Inicial (index.html)
+    const index = data.filter(p => p.categoria.toLowerCase() === 'index' || p.categoria.toLowerCase() === 'mais vendidos');
     mostrarProdutosSupabase(index, 'lista-produtos');
 
-    const horti = data.filter(p => p.categoria === 'hortifruti');
-    mostrarProdutosSupabase(horti, 'carrossel-horti');
+    const hortiCarrossel = data.filter(p => p.categoria.toLowerCase() === 'hortifruti');
+    mostrarProdutosSupabase(hortiCarrossel, 'carrossel-horti');
 
-    const carnes = data.filter(p => p.categoria === 'carnes');
-    mostrarProdutosSupabase(carnes, 'carrossel-carnes');
+    const carnesCarrossel = data.filter(p => p.categoria.toLowerCase() === 'carnes');
+    mostrarProdutosSupabase(carnesCarrossel, 'carrossel-carnes');
+
+    const limpezaCarrossel = data.filter(p => p.categoria.toLowerCase() === 'limpeza');
+    mostrarProdutosSupabase(limpezaCarrossel, 'carrossel-limpeza');
+
+    const bebidasCarrossel = data.filter(p => p.categoria.toLowerCase() === 'bebidas');
+    mostrarProdutosSupabase(bebidasCarrossel, 'carrossel-bebidas');
 }
 
 function mostrarProdutosSupabase(lista, idContainer) {
@@ -41,11 +78,18 @@ function mostrarProdutosSupabase(lista, idContainer) {
     lista.forEach(produto => {
         let badgeHTML = '';
 
-        if (produto.categoria === 'carnes') {
+        // Crachás visuais dinâmicos conforme a categoria do produto
+        if (produto.categoria.toLowerCase() === 'carnes') {
             badgeHTML = `<span class="badge badge-premium">Premium</span>`;
         }
-        if (produto.categoria === 'hortifruti') {
+        else if (produto.categoria.toLowerCase() === 'hortifruti') {
             badgeHTML = `<span class="badge badge-organico">Orgânico</span>`;
+        }
+        else if (produto.categoria.toLowerCase() === 'limpeza') {
+            badgeHTML = `<span class="badge badge-limpeza" style="background: #0dcefd; color: white;">Higiene</span>`;
+        }
+        else if (produto.categoria.toLowerCase() === 'bebidas') {
+            badgeHTML = `<span class="badge badge-bebidas" style="background: #ffc107; color: black;">Gelada</span>`;
         }
 
         container.innerHTML += `
@@ -72,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ===============================
-// 🔍 FILTRAR PRODUTOS (BUSCA)
+// 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA)
 // ===============================
 async function filtrarProdutos() {
     const termo = document.getElementById("busca").value.toLowerCase();
@@ -84,9 +128,15 @@ async function filtrarProdutos() {
 
     if (error) return;
 
-    const containerGeral = document.getElementById("lista-produtos");
-    if (containerGeral) {
-        mostrarProdutosSupabase(data, "lista-produtos");
+    // Identifica qual container principal está ativo para injetar o resultado da busca
+    const containerAlvo = document.getElementById("lista-produtos") || 
+                          document.getElementById("lista-hortifruti") || 
+                          document.getElementById("lista-carnes") ||
+                          document.getElementById("lista-limpeza") ||
+                          document.getElementById("lista-bebidas");
+
+    if (containerAlvo) {
+        mostrarProdutosSupabase(data, containerAlvo.id);
     }
 }
 
@@ -305,14 +355,11 @@ async function fazerLogout() {
 // 📍 PERFIL, DADOS DE ENTREGA E HISTÓRICO
 // ===============================
 function abrirConta() {
-    // Busca se existe o objeto do usuário logado no localStorage
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
 
     if (usuarioLogado) {
-        // Se ele estiver logado, redireciona direto para a nova página limpa de perfil!
         window.location.href = "perfil.html";
     } else {
-        // Se não estiver logado, abre o modal de login que já existia na index
         document.getElementById("modal-login").style.display = "flex";
     }
 }
@@ -360,7 +407,6 @@ async function carregarDadosPerfil() {
 
     containerHistorico.innerHTML = "<p style='font-size:12px; color:gray;'>Carregando histórico...</p>";
 
-    // ADAPTAÇÃO UUID: Busca os pedidos filtrando diretamente pelo ID (UUID) do usuário logado
     const { data: pedidos, errorPedidos } = await _supabase
         .from("pedidos")
         .select("*")
@@ -384,7 +430,6 @@ async function carregarDadosPerfil() {
         if (pedido.status === "Saiu para entrega") corStatus = "#0d6efd";
         if (pedido.status === "Cancelado") corStatus = "#dc3545";
 
-        // ADAPTAÇÃO UUID: Removida a conversão de tipo Number() para manter a string estável
         containerHistorico.innerHTML += `
             <div class="pedido-item" style="border: 1px solid #eee; padding: 10px; border-radius: 8px; margin-bottom: 10px; background: #fdfdfd;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -429,7 +474,6 @@ async function salvarPerfil() {
 
         if (error) throw error;
 
-        // Atualiza os dados também no cache local para sincronizar na mesma hora
         usuarioLogado.telefone = telefone;
         usuarioLogado.endereco = enderecoMontado;
         localStorage.setItem("usuario_logado", JSON.stringify(usuarioLogado));
@@ -483,7 +527,6 @@ async function escolherPagamento(tipo) {
 
     let total = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
 
-    // ADAPTAÇÃO UUID: Agora enviamos explicitamente a id (UUID) do perfil do usuário para amarrar na tabela de pedidos
     const { error } = await _supabase
         .from("pedidos")
         .insert([{
