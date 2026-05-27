@@ -10,13 +10,36 @@ const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 // Variáveis globais do ecossistema da loja
 let listaProdutosGeral = []; // Armazena a cópia dos produtos do Supabase
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-// 🗺️ Tabela de Taxas de Entrega por Bairro
+let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+// 🗺️ Tabela de Taxas de Entrega por Bairro (chaves em minúsculas, sem acento)
 const TAXAS_ENTREGA = {
     "centro": 5.00,
-    "Itaú Ferraz": 8.00,
-    "Amaralina": 6.00, // Exemplo de outro bairro se quiser adicionar
-    "Nossa Senhora ": 5.00     // Taxa usada caso o bairro não seja encontrado ou não esteja cadastrado
+    "itau ferraz": 8.00,
+    "amaralina": 6.00,
+    "nossa senhora": 5.00,
+    "padrao": 5.00
 };
+
+function normalizarBairro(nome) {
+    return nome.trim().toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
+function obterTaxaEntrega(endereco) {
+    const taxaPadrao = TAXAS_ENTREGA.padrao;
+    if (!endereco) {
+        return { taxa: taxaPadrao, bairro: "Padrão" };
+    }
+    try {
+        const bairro = endereco.split("Bairro: ")[1].split(",")[0].trim();
+        const chave = normalizarBairro(bairro);
+        const taxa = TAXAS_ENTREGA[chave] !== undefined ? TAXAS_ENTREGA[chave] : taxaPadrao;
+        return { taxa, bairro };
+    } catch (e) {
+        return { taxa: taxaPadrao, bairro: "Padrão" };
+    }
+}
 // =================================================================
 // 📦 CARREGAR PRODUTOS DO SUPABASE (VERSÃO COMPLETA)
 // =================================================================
@@ -73,6 +96,12 @@ function renderizarProdutos() {
         return;
     }
 
+    // ❤️ Página Meus Favoritos
+    if (urlAtual.includes('favoritos')) {
+        renderizarFavoritos();
+        return;
+    }
+
     // 🏠 Página Inicial (index.html)
     const index = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'index' || p.categoria.toLowerCase() === 'mais vendidos');
     mostrarProdutosSupabase(index, 'lista-produtos');
@@ -88,6 +117,75 @@ function renderizarProdutos() {
 
     const bebidasCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'bebidas');
     mostrarProdutosSupabase(bebidasCarrossel, 'carrossel-bebidas');
+}
+
+function salvarFavoritos() {
+    localStorage.setItem("favoritos", JSON.stringify(favoritos));
+}
+
+function ehFavorito(idProduto) {
+    return favoritos.includes(idProduto);
+}
+
+function atualizarContadorFavoritos() {
+    const contador = document.getElementById("contador-favoritos");
+    if (contador) contador.innerText = favoritos.length;
+}
+
+function botaoFavoritoHTML(idProduto) {
+    const ativo = ehFavorito(idProduto);
+    return `
+        <button type="button" class="btn-favorito ${ativo ? "ativo" : ""}"
+            onclick="toggleFavorito('${idProduto}', event)"
+            aria-label="${ativo ? "Remover dos favoritos" : "Adicionar aos favoritos"}"
+            title="${ativo ? "Remover dos favoritos" : "Salvar nos favoritos"}">
+            ${ativo ? "♥" : "♡"}
+        </button>
+    `;
+}
+
+function toggleFavorito(idProduto, event) {
+    if (event) event.stopPropagation();
+
+    const index = favoritos.indexOf(idProduto);
+    if (index === -1) {
+        favoritos.push(idProduto);
+        mostrarAviso("❤️ Adicionado aos favoritos!", "sucesso");
+    } else {
+        favoritos.splice(index, 1);
+        mostrarAviso("Removido dos favoritos", "sucesso");
+    }
+
+    salvarFavoritos();
+    atualizarContadorFavoritos();
+
+    const urlAtual = window.location.pathname.toLowerCase();
+    if (urlAtual.includes("favoritos")) {
+        renderizarFavoritos();
+    } else {
+        renderizarProdutos();
+    }
+}
+
+function renderizarFavoritos() {
+    const container = document.getElementById("lista-favoritos");
+    if (!container) return;
+
+    const lista = listaProdutosGeral.filter(p => favoritos.includes(p.id));
+
+    if (lista.length === 0) {
+        container.innerHTML = `
+            <div class="favoritos-vazio">
+                <span class="favoritos-vazio-icone">🤍</span>
+                <h2>Sua lista está vazia</h2>
+                <p>Toque no coração nos produtos para salvá-los aqui e comprar mais rápido.</p>
+                <a href="index.html" class="btn-ir-loja">Ir às compras</a>
+            </div>
+        `;
+        return;
+    }
+
+    mostrarProdutosSupabase(lista, "lista-favoritos");
 }
 
 function mostrarProdutosSupabase(lista, idContainer) {
@@ -143,7 +241,10 @@ function mostrarProdutosSupabase(lista, idContainer) {
                 <h3>${produto.nome}</h3>
                 <p class="preco-antigo">R$ ${Number(produto.preco_antigo).toFixed(2)}</p>
                 <p class="preco">R$ ${Number(produto.preco).toFixed(2)}</p>
-                ${botaoHTML}
+                <div class="card-acoes">
+                    <div class="card-acoes-principal">${botaoHTML}</div>
+                    ${botaoFavoritoHTML(produto.id)}
+                </div>
             </div>
         `;
     });
@@ -154,14 +255,36 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarProdutosSupabase();
     verificarUsuario();
     atualizarContador();
+    atualizarContadorFavoritos();
 });
 
 // =================================================================
 // 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA)
 // =================================================================
 async function filtrarProdutos() {
-    const termo = document.getElementById("busca").value.toLowerCase();
-    
+    const buscaEl = document.getElementById("busca");
+    if (!buscaEl) return;
+
+    const termo = buscaEl.value.toLowerCase();
+    const urlAtual = window.location.pathname.toLowerCase();
+
+    if (urlAtual.includes("favoritos")) {
+        const lista = listaProdutosGeral.filter(p =>
+            favoritos.includes(p.id) && p.nome.toLowerCase().includes(termo)
+        );
+        if (lista.length === 0 && termo === "") {
+            renderizarFavoritos();
+        } else if (lista.length === 0) {
+            const container = document.getElementById("lista-favoritos");
+            if (container) {
+                container.innerHTML = `<p class="favoritos-sem-resultado">Nenhum favorito encontrado para "${termo}".</p>`;
+            }
+        } else {
+            mostrarProdutosSupabase(lista, "lista-favoritos");
+        }
+        return;
+    }
+
     const { data, error } = await _supabase
         .from('produtos')
         .select('*')
@@ -232,8 +355,8 @@ function atualizarInterfaceGeral() {
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
     
-    // Se o carrinho lateral estiver aberto, atualiza a lista interna dele
-    if (document.getElementById("carrinho-lateral").classList.contains("ativo")) {
+    const carrinhoLateral = document.getElementById("carrinho-lateral");
+    if (carrinhoLateral && carrinhoLateral.classList.contains("ativo")) {
         carregarCarrinho();
     }
     
@@ -293,32 +416,18 @@ function carregarCarrinho() {
         container.appendChild(item);
     });
 
-    // 🚚 CÁLCULO DINÂMICO DA TAXA DE ENTREGA NO VISUAL DO CARRINHO
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
-    let taxaEntrega = 0;
-    let bairroDetectado = "Não cadastrado";
-
-    if (usuarioLogado && usuarioLogado.endereco) {
-        // Extrai o bairro do endereço montado ("... Bairro: Nome do Bairro, Cidade")
-        try {
-            const parteBairro = usuarioLogado.endereco.split("Bairro: ")[1].split(",")[0].trim().toLowerCase();
-            bairroDetectado = usuarioLogado.endereco.split("Bairro: ")[1].split(",")[0].trim();
-            taxaEntrega = TAXAS_ENTREGA[parteBairro] !== undefined ? TAXAS_ENTREGA[parteBairro] : TAXAS_ENTREGA["padrao"];
-        } catch (e) {
-            taxaEntrega = TAXAS_ENTREGA["padrao"];
-        }
-    } else {
-        taxaEntrega = TAXAS_ENTREGA["padrao"];
-    }
-
-    let totalGeral = subtotal + taxaEntrega;
+    const enderecoUsuario = usuarioLogado ? usuarioLogado.endereco : null;
+    const { taxa: taxaEntrega, bairro: bairroDetectado } = obterTaxaEntrega(enderecoUsuario);
+    const labelBairro = enderecoUsuario ? bairroDetectado : "Não cadastrado";
+    const totalGeral = subtotal + taxaEntrega;
 
     totalEl.innerHTML = `
         <div style="font-size: 14px; color: #555; display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: normal;">
             <span>Subtotal:</span> <span>R$ ${subtotal.toFixed(2)}</span>
         </div>
         <div style="font-size: 14px; color: #555; display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: normal; border-bottom: 1px solid #ddd; padding-bottom: 6px;">
-            <span>Entrega (${bairroDetectado}):</span> <span>R$ ${taxaEntrega.toFixed(2)}</span>
+            <span>Entrega (${labelBairro}):</span> <span>R$ ${taxaEntrega.toFixed(2)}</span>
         </div>
         <div style="display: flex; justify-content: space-between; font-weight: bold; color: #198754; font-size: 18px;">
             <span>Total:</span> <span>R$ ${totalGeral.toFixed(2)}</span>
@@ -340,6 +449,16 @@ function mudarQtdLateral(index, valor) {
 function removerItemLateral(index) {
     carrinho.splice(index, 1);
     atualizarInterfaceGeral();
+}
+
+function limparCarrinho() {
+    carrinho = [];
+    atualizarInterfaceGeral();
+    mostrarAviso("🗑️ Carrinho limpo!", "sucesso");
+}
+
+function voltar() {
+    window.location.href = "index.html";
 }
 
 // =================================================================
@@ -669,21 +788,8 @@ async function escolherPagamento(tipo) {
     // 1. Calcula o subtotal dos produtos
     let subtotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
 
-    // 2. Detecta o bairro do perfil e define a taxa correspondente
-    let taxaEntrega = TAXAS_ENTREGA["padrao"];
-    let nomeBairro = "Padrão";
-    try {
-        const parteBairro = perfil.endereco.split("Bairro: ")[1].split(",")[0].trim().toLowerCase();
-        nomeBairro = perfil.endereco.split("Bairro: ")[1].split(",")[0].trim();
-        if (TAXAS_ENTREGA[parteBairro] !== undefined) {
-            taxaEntrega = TAXAS_ENTREGA[parteBairro];
-        }
-    } catch (e) {
-        taxaEntrega = TAXAS_ENTREGA["padrao"];
-    }
-
-    // 3. Soma o subtotal com a taxa de entrega para obter o valor real final
-    let totalGeral = subtotal + taxaEntrega;
+    const { taxa: taxaEntrega, bairro: nomeBairro } = obterTaxaEntrega(perfil.endereco);
+    const totalGeral = subtotal + taxaEntrega;
 
     // Salva o pedido no banco com o valor total final (já com a taxa inclusa)
     const { error } = await _supabase
@@ -704,21 +810,20 @@ async function escolherPagamento(tipo) {
         return;
     }
 
-    // 4. Monta a mensagem detalhada para o WhatsApp incluindo os custos divididos
-    let mensagem = "🛒 *Novo Pedido - Supermercado*%0A%0A";
+    let mensagem = "🛒 *Novo Pedido - Supermercado*\n\n";
     carrinho.forEach(p => {
-        mensagem += `• ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}%0A`;
+        mensagem += `• ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}\n`;
     });
-    
-    mensagem += `%0A----------------------------%0A`;
-    mensagem += `📦 *Subtotal:* R$ ${subtotal.toFixed(2)}%0A`;
-    mensagem += `🚚 *Taxa de Entrega (${nomeBairro}):* R$ ${taxaEntrega.toFixed(2)}%0A`;
-    mensagem += `💰 *Total Geral:* R$ ${totalGeral.toFixed(2)}%0A`;
-    mensagem += `----------------------------%0A%0A`;
-    mensagem += `💳 *Pagamento:* ${tipo}%0A`;
+
+    mensagem += `\n----------------------------\n`;
+    mensagem += `📦 *Subtotal:* R$ ${subtotal.toFixed(2)}\n`;
+    mensagem += `🚚 *Taxa de Entrega (${nomeBairro}):* R$ ${taxaEntrega.toFixed(2)}\n`;
+    mensagem += `💰 *Total Geral:* R$ ${totalGeral.toFixed(2)}\n`;
+    mensagem += `----------------------------\n\n`;
+    mensagem += `💳 *Pagamento:* ${tipo}\n`;
     mensagem += `📍 *Entrega:* ${perfil.endereco}`;
 
-    window.open(`https://wa.me/5533988101944?text=${mensagem}`, "_blank");
+    window.open(`https://wa.me/5533988101944?text=${encodeURIComponent(mensagem)}`, "_blank");
 
     carrinho = [];
     atualizarInterfaceGeral();

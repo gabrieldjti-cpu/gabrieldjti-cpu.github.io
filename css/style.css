@@ -486,7 +486,7 @@ body {
     margin-bottom: 15px;
 }
 
-.card button {
+.card .btn-adicionar {
     width: 100%;
     padding: 14px;
     border: none;
@@ -498,8 +498,144 @@ body {
     transition: var(--transition);
 }
 
-.card button:hover {
+.card .btn-adicionar:hover {
     background: var(--primary-dark);
+}
+
+.card-acoes {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.card-acoes-principal {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-acoes-principal .btn-adicionar,
+.card-acoes-principal .controle-qtd-card {
+    width: 100%;
+}
+
+main.produtos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px 5% 50px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.btn-favorito {
+    flex-shrink: 0;
+    width: 46px;
+    min-height: 46px;
+    padding: 0;
+    border: 1px solid #e8e8e8;
+    border-radius: var(--radius-md);
+    background: #fafafa;
+    font-size: 20px;
+    line-height: 1;
+    color: #c4c4c4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.btn-favorito:hover {
+    color: #ff6b81;
+    background: #fff5f6;
+    border-color: #ffd6de;
+}
+
+.btn-favorito.ativo {
+    color: #ff4757;
+    background: #fff0f3;
+    border-color: #ffc9d0;
+}
+
+.link-favoritos {
+    position: relative;
+}
+
+.contador-favoritos {
+    display: inline-block;
+    min-width: 20px;
+    padding: 2px 7px;
+    margin-left: 4px;
+    background: #ff4757;
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: 12px;
+    vertical-align: middle;
+}
+
+.categoria-favoritos {
+    border-color: #ffccd5;
+    color: #c0392b;
+}
+
+.favoritos-vazio,
+.favoritos-sem-resultado {
+    width: 100%;
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+}
+
+.favoritos-vazio {
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.favoritos-vazio-icone {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.favoritos-vazio h2 {
+    color: var(--text-main);
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.favoritos-vazio p {
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.btn-ir-loja {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.btn-ir-loja:hover {
+    background: var(--primary-dark);
+}
+
+.pagina-favoritos .titulo-pagina {
+    text-align: center;
+    margin: 24px 5% 8px;
+    font-size: 1.6rem;
+}
+
+.pagina-favoritos .subtitulo-pagina {
+    text-align: center;
+    color: var(--text-muted);
+    margin: 0 5% 8px;
+    font-size: 14px;
 }
 
 /* ======================================================
@@ -937,7 +1073,7 @@ div[style*="position: fixed"] {
     border-radius: 6px;
     overflow: hidden;
     border: 1px solid #ddd;
-    margin-top: 10px;
+    min-height: 46px;
 }
 
 .controle-qtd-card button {
