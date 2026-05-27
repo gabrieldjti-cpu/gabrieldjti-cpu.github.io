@@ -884,3 +884,80 @@ div[style*="position: fixed"] {
         border-radius: 20px;
     }
 }
+/* =================================================================
+   🛒 MINI-CARRINHO FLUTUANTE & CONTROLES NO CARD
+   ================================================================= */
+
+/* Botão Flutuante */
+.cart-flutuante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #198754; /* Verde sucesso */
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 999;
+    transition: transform 0.2s ease;
+}
+
+.cart-flutuante:hover {
+    transform: scale(1.1);
+}
+
+.icone-flutuante {
+    font-size: 26px;
+}
+
+.contador-flutuante {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Container do Botão de Quantidade no Card */
+.controle-qtd-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f1f1f1;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+.controle-qtd-card button {
+    background: #e0e0e0;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.controle-qtd-card button:hover {
+    background: #d4d4d4;
+}
+
+.controle-qtd-card span {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}

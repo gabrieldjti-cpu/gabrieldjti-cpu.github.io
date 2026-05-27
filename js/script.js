@@ -1,15 +1,25 @@
-// ===============================
+// =================================================================
 // 🔗 CONFIGURAÇÃO SUPABASE
-// ===============================
+// =================================================================
 const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
 const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 
 // Variável padrão unificada para todo o sistema
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-// ===============================
+// Variáveis globais do ecossistema da loja
+let listaProdutosGeral = []; // Armazena a cópia dos produtos do Supabase
+let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+// 🗺️ Tabela de Taxas de Entrega por Bairro
+const TAXAS_ENTREGA = {
+    "centro": 5.00,
+    "Itaú Ferraz": 8.00,
+    "Amaralina": 6.00, // Exemplo de outro bairro se quiser adicionar
+    "Nossa Senhora ": 5.00     // Taxa usada caso o bairro não seja encontrado ou não esteja cadastrado
+};
+// =================================================================
 // 📦 CARREGAR PRODUTOS DO SUPABASE (VERSÃO COMPLETA)
-// ===============================
+// =================================================================
 async function carregarProdutosSupabase() {
     const { data, error } = await _supabase
         .from('produtos')
@@ -21,51 +31,62 @@ async function carregarProdutosSupabase() {
     } 
     console.log("Dados carregados do Supabase:", data);
 
+    // Guarda a lista globalmente para que os botões de adicionar saibam qual item foi clicado
+    listaProdutosGeral = data;
+
+    // Dispara a renderização inicial baseada na URL/Página
+    renderizarProdutos();
+}
+
+// Organiza a divisão das vitrines baseando-se na página atual
+function renderizarProdutos() {
+    if (listaProdutosGeral.length === 0) return;
+
     // Identifica o nome do arquivo na URL (forçando letras minúsculas)
     const urlAtual = window.location.pathname.toLowerCase();
 
     // 🥦 Página Hortifruti
     if (urlAtual.includes('hortifruti')) {
-        const horti = data.filter(p => p.categoria.toLowerCase() === 'hortifruti');
+        const horti = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'hortifruti');
         mostrarProdutosSupabase(horti, 'lista-hortifruti');
         return;
     }
 
     // 🥩 Página Carnes
     if (urlAtual.includes('carnes')) {
-        const carnes = data.filter(p => p.categoria.toLowerCase() === 'carnes');
+        const carnes = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'carnes');
         mostrarProdutosSupabase(carnes, 'lista-carnes');
         return;
     }
 
     // 🧼 Página Limpeza
     if (urlAtual.includes('limpeza')) {
-        const limpeza = data.filter(p => p.categoria.toLowerCase() === 'limpeza');
+        const limpeza = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'limpeza');
         mostrarProdutosSupabase(limpeza, 'lista-limpeza');
         return;
     }
 
     // 🍹 Página Bebidas
     if (urlAtual.includes('bebidas')) {
-        const bebidas = data.filter(p => p.categoria.toLowerCase() === 'bebidas');
+        const bebidas = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'bebidas');
         mostrarProdutosSupabase(bebidas, 'lista-bebidas');
         return;
     }
 
     // 🏠 Página Inicial (index.html)
-    const index = data.filter(p => p.categoria.toLowerCase() === 'index' || p.categoria.toLowerCase() === 'mais vendidos');
+    const index = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'index' || p.categoria.toLowerCase() === 'mais vendidos');
     mostrarProdutosSupabase(index, 'lista-produtos');
 
-    const hortiCarrossel = data.filter(p => p.categoria.toLowerCase() === 'hortifruti');
+    const hortiCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'hortifruti');
     mostrarProdutosSupabase(hortiCarrossel, 'carrossel-horti');
 
-    const carnesCarrossel = data.filter(p => p.categoria.toLowerCase() === 'carnes');
+    const carnesCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'carnes');
     mostrarProdutosSupabase(carnesCarrossel, 'carrossel-carnes');
 
-    const limpezaCarrossel = data.filter(p => p.categoria.toLowerCase() === 'limpeza');
+    const limpezaCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'limpeza');
     mostrarProdutosSupabase(limpezaCarrossel, 'carrossel-limpeza');
 
-    const bebidasCarrossel = data.filter(p => p.categoria.toLowerCase() === 'bebidas');
+    const bebidasCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'bebidas');
     mostrarProdutosSupabase(bebidasCarrossel, 'carrossel-bebidas');
 }
 
@@ -92,6 +113,28 @@ function mostrarProdutosSupabase(lista, idContainer) {
             badgeHTML = `<span class="badge badge-bebidas" style="background: #ffc107; color: black;">Gelada</span>`;
         }
 
+        // 🛒 LOGICA DO BOTÃO DINÂMICO DIRECT NO CARD
+        const itemNoCarrinho = carrinho.find(item => item.id === produto.id);
+        let botaoHTML = "";
+
+        if (itemNoCarrinho) {
+            // Se já estiver no carrinho, renderiza o seletor [-] Qtd [+]
+            botaoHTML = `
+                <div class="controle-qtd-card" id="btn-card-${produto.id}">
+                    <button onclick="alterarQtdCard('${produto.id}', -1)">-</button>
+                    <span>${itemNoCarrinho.quantidade}</span>
+                    <button onclick="alterarQtdCard('${produto.id}', 1)">+</button>
+                </div>
+            `;
+        } else {
+            // Se não estiver, renderiza o botão clássico de compra
+            botaoHTML = `
+                <button id="btn-card-${produto.id}" class="btn-adicionar" onclick="adicionarAoCarrinhoCard('${produto.id}')">
+                    🛒 Adicionar
+                </button>
+            `;
+        }
+
         container.innerHTML += `
             <div class="card">
                 <span class="desconto">-${produto.desconto}%</span>
@@ -100,9 +143,7 @@ function mostrarProdutosSupabase(lista, idContainer) {
                 <h3>${produto.nome}</h3>
                 <p class="preco-antigo">R$ ${Number(produto.preco_antigo).toFixed(2)}</p>
                 <p class="preco">R$ ${Number(produto.preco).toFixed(2)}</p>
-                <button onclick="adicionarCarrinho('${produto.nome}', ${produto.preco})">
-                    Adicionar
-                </button>
+                ${botaoHTML}
             </div>
         `;
     });
@@ -115,9 +156,9 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarContador();
 });
 
-// ===============================
+// =================================================================
 // 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA)
-// ===============================
+// =================================================================
 async function filtrarProdutos() {
     const termo = document.getElementById("busca").value.toLowerCase();
     
@@ -140,29 +181,64 @@ async function filtrarProdutos() {
     }
 }
 
-// ===============================
-// 🛒 GERENCIAMENTO DO CARRINHO
-// ===============================
-function adicionarCarrinho(nome, preco) {
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    const itemExistente = carrinho.find(item => item.nome === nome);
+// =================================================================
+// 🛒 GERENCIAMENTO DO CARRINHO (VITRINE, CONTADORES E LATERAL)
+// =================================================================
 
-    if (itemExistente) {
-        itemExistente.quantidade++;
-    } else {
-        carrinho.push({ nome, preco, grandmother: 1, quantity: 1, quantidade: 1 });
+// Função chamada ao clicar no botão "🛒 Adicionar" padrão da vitrine
+async function adicionarAoCarrinhoCard(idProduto) {
+    const produto = listaProdutosGeral.find(p => p.id === idProduto);
+    if (!produto) return;
+
+    carrinho.push({
+        id: produto.id,
+        nome: produto.nome,
+        preco: Number(produto.preco),
+        img: produto.img,
+        quantidade: 1
+    });
+
+    mostrarAviso(`✅ ${produto.nome} adicionado!`, 'sucesso');
+    atualizarInterfaceGeral();
+}
+
+// Função que controla os botões de [+] e [-] direto no card
+function alterarQtdCard(idProduto, mudanca) {
+    const index = carrinho.findIndex(item => item.id === idProduto);
+    if (index === -1) return;
+
+    carrinho[index].quantidade += mudanca;
+
+    if (carrinho[index].quantidade <= 0) {
+        carrinho.splice(index, 1);
     }
 
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    atualizarContador();
-    mostrarAviso(`✅ ${nome} adicionado!`, 'sucesso');
+    atualizarInterfaceGeral();
 }
 
 function atualizarContador() {
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     const totalItens = carrinho.reduce((soma, item) => soma + item.quantidade, 0);
-    const contador = document.getElementById("contador");
-    if (contador) contador.innerText = totalItens;
+    
+    // Atualiza o contador clássico do topo da página
+    const contadorTopo = document.getElementById("contador");
+    if (contadorTopo) contadorTopo.innerText = totalItens;
+
+    // Atualiza o contador do balão verde flutuante
+    const contadorFlutuante = document.getElementById("contador-flutuante");
+    if (contadorFlutuante) contadorFlutuante.innerText = totalItens;
+}
+
+function atualizarInterfaceGeral() {
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+    atualizarContador();
+    
+    // Se o carrinho lateral estiver aberto, atualiza a lista interna dele
+    if (document.getElementById("carrinho-lateral").classList.contains("ativo")) {
+        carregarCarrinho();
+    }
+    
+    // Atualiza os botões de comprar/quantidade na vitrine
+    renderizarProdutos();
 }
 
 function irCarrinho() {
@@ -181,22 +257,21 @@ function fecharCarrinho() {
 }
 
 function carregarCarrinho() {
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     const container = document.getElementById("lista-carrinho");
     const totalEl = document.getElementById("total");
 
     if (!container || !totalEl) return;
     container.innerHTML = "";
-    let total = 0;
+    let subtotal = 0;
 
     if (carrinho.length === 0) {
-        container.innerHTML = `<p style="text-align:center;">Carrinho vazio 🛒</p>`;
+        container.innerHTML = `<p style="text-align:center; padding: 20px 0;">Carrinho vazio 🛒</p>`;
         totalEl.innerText = "Total: R$ 0,00";
         return;
     }
 
     carrinho.forEach((produto, index) => {
-        total += produto.preco * produto.quantidade;
+        subtotal += produto.preco * produto.quantidade;
         const item = document.createElement("div");
         item.className = "item-carrinho";
         item.innerHTML = `
@@ -204,48 +279,72 @@ function carregarCarrinho() {
                 <div>
                     <strong>${produto.nome}</strong>
                     <div style="margin-top:8px;">
-                        <button onclick="mudarQtd(${index}, -1)">-</button>
+                        <button onclick="mudarQtdLateral(${index}, -1)">-</button>
                         <span style="margin:0 10px;">${produto.quantidade}</span>
-                        <button onclick="mudarQtd(${index}, 1)">+</button>
+                        <button onclick="mudarQtdLateral(${index}, 1)">+</button>
                     </div>
                 </div>
                 <div style="text-align:right;">
                     <div style="color:#198754; font-weight:bold;">R$ ${(produto.preco * produto.quantidade).toFixed(2)}</div>
-                    <button onclick="removerItem(${index})" style="border:none; background:none; color:red; cursor:pointer; margin-top:5px;">Remover</button>
+                    <button onclick="removerItemLateral(${index})" style="border:none; background:none; color:red; cursor:pointer; margin-top:5px;">Remover</button>
                 </div>
             </div>
         `;
         container.appendChild(item);
     });
 
-    totalEl.innerText = `Total: R$ ${total.toFixed(2)}`;
+    // 🚚 CÁLCULO DINÂMICO DA TAXA DE ENTREGA NO VISUAL DO CARRINHO
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    let taxaEntrega = 0;
+    let bairroDetectado = "Não cadastrado";
+
+    if (usuarioLogado && usuarioLogado.endereco) {
+        // Extrai o bairro do endereço montado ("... Bairro: Nome do Bairro, Cidade")
+        try {
+            const parteBairro = usuarioLogado.endereco.split("Bairro: ")[1].split(",")[0].trim().toLowerCase();
+            bairroDetectado = usuarioLogado.endereco.split("Bairro: ")[1].split(",")[0].trim();
+            taxaEntrega = TAXAS_ENTREGA[parteBairro] !== undefined ? TAXAS_ENTREGA[parteBairro] : TAXAS_ENTREGA["padrao"];
+        } catch (e) {
+            taxaEntrega = TAXAS_ENTREGA["padrao"];
+        }
+    } else {
+        taxaEntrega = TAXAS_ENTREGA["padrao"];
+    }
+
+    let totalGeral = subtotal + taxaEntrega;
+
+    totalEl.innerHTML = `
+        <div style="font-size: 14px; color: #555; display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: normal;">
+            <span>Subtotal:</span> <span>R$ ${subtotal.toFixed(2)}</span>
+        </div>
+        <div style="font-size: 14px; color: #555; display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: normal; border-bottom: 1px solid #ddd; padding-bottom: 6px;">
+            <span>Entrega (${bairroDetectado}):</span> <span>R$ ${taxaEntrega.toFixed(2)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-weight: bold; color: #198754; font-size: 18px;">
+            <span>Total:</span> <span>R$ ${totalGeral.toFixed(2)}</span>
+        </div>
+    `;
 }
 
-function mudarQtd(index, valor) {
-    let carrinho = JSON.parse(localStorage.getItem("carrinho"));
+// Sincroniza os botões internos do carrinho lateral com a lógica geral
+function mudarQtdLateral(index, valor) {
     carrinho[index].quantidade += valor;
 
     if (carrinho[index].quantidade <= 0) {
-        removerItem(index);
-        return;
+        carrinho.splice(index, 1);
     }
 
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    carregarCarrinho();
-    atualizarContador();
+    atualizarInterfaceGeral();
 }
 
-function removerItem(index) {
-    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+function removerItemLateral(index) {
     carrinho.splice(index, 1);
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    carregarCarrinho();
-    atualizarContador();
+    atualizarInterfaceGeral();
 }
 
-// ===============================
+// =================================================================
 // 👤 SISTEMA DE AUTENTICAÇÃO (TABELA COMUM)
-// ===============================
+// =================================================================
 async function verificarUsuario() {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
     const btnUser = document.getElementById("user-name");
@@ -351,9 +450,9 @@ async function fazerLogout() {
     window.location.reload();
 }
 
-// ===============================
+// =================================================================
 // 📍 PERFIL, DADOS DE ENTREGA E HISTÓRICO
-// ===============================
+// =================================================================
 function abrirConta() {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
 
@@ -424,23 +523,67 @@ async function carregarDadosPerfil() {
     }
 
     containerHistorico.innerHTML = "";
+    
     pedidos.forEach(pedido => {
         let corStatus = "#ffc107";
         if (pedido.status === "Entregue") corStatus = "#198754";
         if (pedido.status === "Saiu para entrega") corStatus = "#0d6efd";
         if (pedido.status === "Cancelado") corStatus = "#dc3545";
 
+        // 🛒 Monta a lista detalhada dos itens salvos na coluna 'produtos' deste pedido
+        let produtosHTML = "";
+        if (Array.isArray(pedido.produtos)) {
+            pedido.produtos.forEach(p => {
+                produtosHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px dashed #eee; font-size: 13px;">
+                        <span style="color: #333;">${p.quantidade}x ${p.nome}</span>
+                        <span style="font-weight: bold; color: #666;">R$ ${(p.preco * p.quantidade).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+        } else {
+            produtosHTML = "<p style='font-size:12px; color:gray;'>Detalhes dos produtos indisponíveis.</p>";
+        }
+
+        // Formata a data de criação do pedido para o padrão brasileiro
+        const dataPedido = new Date(pedido.created_at).toLocaleDateString('pt-BR');
+
         containerHistorico.innerHTML += `
-            <div class="pedido-item" style="border: 1px solid #eee; padding: 10px; border-radius: 8px; margin-bottom: 10px; background: #fdfdfd;">
+            <div class="pedido-item" onclick="toggleDetalhesPedido('${pedido.id}')" style="border: 1px solid #eee; padding: 12px; border-radius: 8px; margin-bottom: 12px; background: #fdfdfd; cursor: pointer; transition: background 0.2s;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="font-size: 11px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pedido: ${pedido.id}</strong>
-                    <span style="font-size: 11px; background: ${corStatus}; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">${pedido.status || 'Recebido'}</span>
+                    <strong style="font-size: 11px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #555;">
+                        📦 ID: ${pedido.id.substring(0, 8)}... <span style="color: #0d6efd; font-weight: normal;">(Clique para ver)</span>
+                    </strong>
+                    <span style="font-size: 11px; background: ${corStatus}; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">
+                        ${pedido.status || 'Recebido'}
+                    </span>
                 </div>
-                <p style="margin: 5px 0 0 0; font-size: 14px; color: #198754; font-weight: bold;">Total: R$ ${Number(pedido.total).toFixed(2)}</p>
-                <small style="color: gray; font-size: 11px;">Forma de Pág: ${pedido.pagamento}</small>
+                <p style="margin: 6px 0 2px 0; font-size: 15px; color: #198754; font-weight: bold;">Total: R$ ${Number(pedido.total).toFixed(2)}</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; color: gray; font-size: 11px; margin-top: 4px;">
+                    <span>Forma de Pág: ${pedido.pagamento}</span>
+                    <span>📅 ${dataPedido}</span>
+                </div>
+
+                <div id="detalhes-${pedido.id}" style="display: none; margin-top: 12px; padding: 10px; border-top: 1px solid #ddd; background: #ffffff; border-radius: 6px;">
+                    <strong style="font-size: 12px; display: block; margin-bottom: 8px; color: #198754;">🛒 Itens comprados:</strong>
+                    ${produtosHTML}
+                </div>
             </div>
         `;
     });
+}
+
+// ↕️ Copie e cole esta função auxiliar logo abaixo da carregarDadosPerfil()
+function toggleDetalhesPedido(idPedido) {
+    const painelDetalhes = document.getElementById(`detalhes-${idPedido}`);
+    if (!painelDetalhes) return;
+
+    if (painelDetalhes.style.display === "none") {
+        painelDetalhes.style.display = "block";
+    } else {
+        painelDetalhes.style.display = "none";
+    }
 }
 
 async function salvarPerfil() {
@@ -486,11 +629,10 @@ async function salvarPerfil() {
     }
 }
 
-// ===============================
-// 📦 FINALIZAR PEDIDO
-// ===============================
+// =================================================================
+// 📦 FINALIZAR PEDIDO (SALVAR NO SUPABASE E WHATSAPP)
+// =================================================================
 function finalizarPedido() {
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
     if (carrinho.length === 0) {
         mostrarAviso("⚠️ Seu carrinho está vazio!", "aviso");
         return;
@@ -501,9 +643,8 @@ function finalizarPedido() {
 function fecharModal() {
     document.getElementById("modal-pagamento").style.display = "none";
 }
-
 async function escolherPagamento(tipo) {
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    if (carrinho.length === 0) return;
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
 
     if (!usuarioLogado) {
@@ -525,8 +666,26 @@ async function escolherPagamento(tipo) {
         return;
     }
 
-    let total = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
+    // 1. Calcula o subtotal dos produtos
+    let subtotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
 
+    // 2. Detecta o bairro do perfil e define a taxa correspondente
+    let taxaEntrega = TAXAS_ENTREGA["padrao"];
+    let nomeBairro = "Padrão";
+    try {
+        const parteBairro = perfil.endereco.split("Bairro: ")[1].split(",")[0].trim().toLowerCase();
+        nomeBairro = perfil.endereco.split("Bairro: ")[1].split(",")[0].trim();
+        if (TAXAS_ENTREGA[parteBairro] !== undefined) {
+            taxaEntrega = TAXAS_ENTREGA[parteBairro];
+        }
+    } catch (e) {
+        taxaEntrega = TAXAS_ENTREGA["padrao"];
+    }
+
+    // 3. Soma o subtotal com a taxa de entrega para obter o valor real final
+    let totalGeral = subtotal + taxaEntrega;
+
+    // Salva o pedido no banco com o valor total final (já com a taxa inclusa)
     const { error } = await _supabase
         .from("pedidos")
         .insert([{
@@ -534,7 +693,7 @@ async function escolherPagamento(tipo) {
             telefone: perfil.telefone,
             endereco: perfil.endereco,
             produtos: carrinho,
-            total: total,
+            total: totalGeral, // Envia o total modificado para o Banco de Dados
             pagamento: tipo,
             status: 'Recebido',
             id_usuario: perfil.id 
@@ -545,24 +704,31 @@ async function escolherPagamento(tipo) {
         return;
     }
 
+    // 4. Monta a mensagem detalhada para o WhatsApp incluindo os custos divididos
     let mensagem = "🛒 *Novo Pedido - Supermercado*%0A%0A";
     carrinho.forEach(p => {
         mensagem += `• ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}%0A`;
     });
-    mensagem += `%0A💰 *Total:* R$ ${total.toFixed(2)}%0A💳 *Pagamento:* ${tipo}%0A📍 *Entrega:* ${perfil.endereco}`;
+    
+    mensagem += `%0A----------------------------%0A`;
+    mensagem += `📦 *Subtotal:* R$ ${subtotal.toFixed(2)}%0A`;
+    mensagem += `🚚 *Taxa de Entrega (${nomeBairro}):* R$ ${taxaEntrega.toFixed(2)}%0A`;
+    mensagem += `💰 *Total Geral:* R$ ${totalGeral.toFixed(2)}%0A`;
+    mensagem += `----------------------------%0A%0A`;
+    mensagem += `💳 *Pagamento:* ${tipo}%0A`;
+    mensagem += `📍 *Entrega:* ${perfil.endereco}`;
 
     window.open(`https://wa.me/5533988101944?text=${mensagem}`, "_blank");
 
-    localStorage.removeItem("carrinho");
-    atualizarContador();
+    carrinho = [];
+    atualizarInterfaceGeral();
     fecharCarrinhoLateral();
     fecharModal();
     mostrarAviso("✅ Pedido enviado com sucesso!", "sucesso");
 }
-
-// ===============================
-// 💬 MODAIS
-// ===============================
+// =================================================================
+// 💬 MODAIS & INTERFACES DE ACESSO
+// =================================================================
 function abrirLogin() { document.getElementById("modal-login").style.display = "flex"; }
 function fecharLogin() { 
     document.getElementById("modal-login").style.display = "none"; 
@@ -588,9 +754,9 @@ function alternarAba(tipo) {
     }
 }
 
-// ===============================================
-// ↕️ CONTROLE DOS CARROSSÉIS (EXIGIDO PELO HTML)
-// ===============================================
+// =================================================================
+// ↕️ CONTROLE DOS CARROSSÉIS
+// =================================================================
 function scrollCarrossel(idContainer, direcao) {
     const container = document.getElementById(idContainer);
     if (container) {
@@ -602,9 +768,9 @@ function scrollCarrossel(idContainer, direcao) {
     }
 }
 
-// ===============================================
+// =================================================================
 // 🔔 AVISOS CUSTOMIZADOS (VERDE, VERMELHO E AMARELO)
-// ===============================================
+// =================================================================
 function mostrarAviso(msg, tipo = 'sucesso') {
     const aviso = document.createElement("div");
     aviso.innerText = msg;
