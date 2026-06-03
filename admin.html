@@ -36,16 +36,47 @@
     </div>
 
     <div class="box">
-        <h2>📦 Produtos Cadastrados</h2>
-        <div class="produtos" id="lista-produtos"></div>
+        <div class="box-cabecalho">
+            <h2>📦 Produtos Cadastrados</h2>
+            <span id="contador-produtos" class="badge-contador">0</span>
+        </div>
+        <div class="barra-busca-admin">
+            <input type="search" id="busca-produto" placeholder="🔍 Buscar por nome ou categoria..." oninput="filtrarProdutosAdmin()">
+            <select id="filtro-categoria-produto" onchange="filtrarProdutosAdmin()">
+                <option value="">Todas as categorias</option>
+                <option value="index">Mais vendidos</option>
+                <option value="hortifruti">Hortifruti</option>
+                <option value="carnes">Carnes</option>
+                <option value="limpeza">Limpeza</option>
+                <option value="bebidas">Bebidas</option>
+            </select>
+        </div>
+        <div class="produtos-lista-admin" id="lista-produtos"></div>
     </div>
 
     <div class="box">
-        <h2>🛒 Pedidos Recebidos</h2>
-        <div id="lista-pedidos"></div>
+        <div class="box-cabecalho">
+            <h2>🛒 Pedidos Recebidos</h2>
+            <span id="contador-pedidos" class="badge-contador">0</span>
+        </div>
+
+        <div class="resumo-pedidos" id="resumo-pedidos"></div>
+
+        <div class="barra-busca-admin barra-pedidos">
+            <input type="search" id="busca-pedido" placeholder="🔍 Buscar cliente, telefone ou ID..." oninput="filtrarPedidosAdmin()">
+            <select id="filtro-status-pedido" onchange="filtrarPedidosAdmin()">
+                <option value="">Todos os status</option>
+                <option value="Recebido">Recebido</option>
+                <option value="Saiu para entrega">Saiu para entrega</option>
+                <option value="Entregue">Entregue</option>
+                <option value="Cancelado">Cancelado</option>
+            </select>
+        </div>
+
+        <div id="lista-pedidos" class="lista-pedidos-admin"></div>
     </div>
 
-    <script src="js/admin.js?v=5"></script>
+    <script src="js/admin.js?v=6"></script>
 
 </body>
 </html>

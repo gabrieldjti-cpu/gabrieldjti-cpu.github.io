@@ -49,14 +49,67 @@
         .status-Saiu { background: #007bff; color: white; }
         .status-Entregue { background: #28a745; color: white; }
 
-        /* Garante que os inputs não estourem o tamanho do modal */
         .input-modal {
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px;
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
             box-sizing: border-box;
-            margin-top: 5px;
+            margin-top: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .input-modal:focus {
+            outline: none;
+            border-color: #198754;
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+        }
+        .modal-perfil-box {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            width: 92%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+        .form-secao-titulo {
+            font-size: 13px;
+            font-weight: 700;
+            color: #198754;
+            margin: 20px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .form-secao-titulo:first-of-type { margin-top: 8px; }
+        .form-campo label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+        .form-linha-dupla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 400px) {
+            .form-linha-dupla { grid-template-columns: 1fr; }
+        }
+        .endereco-resumo {
+            margin-top: 6px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .endereco-resumo span {
+            display: block;
+        }
+        .endereco-resumo .vazio {
+            color: #6c757d;
+            font-style: italic;
         }
     </style>
 </head>
@@ -74,9 +127,10 @@
             <p>👤 <strong id="perf-nome">...</strong></p>
             <p>📧 <span id="perf-email">...</span></p>
             <p>📞 <strong>Telefone:</strong> <span id="perf-telefone">Não informado</span></p>
-            <p>📍 <strong>Endereço:</strong> <br>
-               <span id="perf-endereco-detalhado">Não informado</span>
-            </p>
+            <p>📍 <strong>Endereço de entrega:</strong></p>
+            <div id="perf-endereco-resumo" class="endereco-resumo">
+                <span class="vazio">Não informado</span>
+            </div>
             
             <button onclick="abrirModalEditar()" style="background: #198754; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px;">
                 ✏️ Editar Dados
@@ -97,25 +151,46 @@
     </div>
 
     <div id="modal-editar-perfil" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:30px; border-radius:15px; width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2); box-sizing: border-box;">
-            <h3 style="margin-top:0; color: #212529;">Editar meus dados</h3>
-            
-            <label style="display:block; margin-top:12px; font-size:12px; color:#666; font-weight: bold;">Nome Completo</label>
-            <input type="text" id="edit-nome" class="input-modal">
+        <div class="modal-perfil-box">
+            <h3 style="margin-top:0; color: #212529;">✏️ Editar meus dados</h3>
 
-            <label style="display:block; margin-top:12px; font-size:12px; color:#666; font-weight: bold;">Telefone/WhatsApp</label>
-            <input type="text" id="edit-telefone" class="input-modal">
+            <p class="form-secao-titulo">👤 Dados pessoais</p>
+            <div class="form-campo">
+                <label for="edit-nome">Nome completo</label>
+                <input type="text" id="edit-nome" class="input-modal" placeholder="Ex.: Maria Silva">
+            </div>
+            <div class="form-campo" style="margin-top: 12px;">
+                <label for="edit-telefone">Telefone / WhatsApp</label>
+                <input type="tel" id="edit-telefone" class="input-modal" placeholder="Ex.: (71) 99999-9999">
+            </div>
 
-            <label style="display:block; margin-top:12px; font-size:12px; color:#666; font-weight: bold;">Endereço Completo</label>
-            <textarea id="edit-endereco" class="input-modal" style="height:80px; resize: none;" placeholder="Rua, Número, Bairro, Cidade..."></textarea>
+            <p class="form-secao-titulo">📍 Endereço de entrega</p>
+            <div class="form-campo">
+                <label for="edit-rua">Rua / Avenida</label>
+                <input type="text" id="edit-rua" class="input-modal" placeholder="Ex.: Rua das Flores">
+            </div>
+            <div class="form-linha-dupla" style="margin-top: 12px;">
+                <div class="form-campo">
+                    <label for="edit-numero">Número</label>
+                    <input type="text" id="edit-numero" class="input-modal" placeholder="Ex.: 123">
+                </div>
+                <div class="form-campo">
+                    <label for="edit-bairro">Bairro</label>
+                    <input type="text" id="edit-bairro" class="input-modal" placeholder="Ex.: Centro">
+                </div>
+            </div>
+            <div class="form-campo" style="margin-top: 12px;">
+                <label for="edit-cidade">Cidade</label>
+                <input type="text" id="edit-cidade" class="input-modal" placeholder="Ex.: Salvador">
+            </div>
 
-            <div style="display:flex; gap:10px; margin-top:25px;">
-                <button onclick="fecharModalEditar()" style="flex:1; padding:12px; border:none; border-radius:5px; background:#6c757d; color:white; font-weight:bold; cursor:pointer;">Cancelar</button>
-                <button onclick="salvarEdicaoPerfil()" style="flex:1; padding:12px; border:none; border-radius:5px; background:#198754; color:white; font-weight:bold; cursor:pointer;">Salvar Alterações</button>
+            <div style="display:flex; gap:10px; margin-top:28px;">
+                <button type="button" onclick="fecharModalEditar()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#6c757d; color:white; font-weight:bold; cursor:pointer;">Cancelar</button>
+                <button type="button" onclick="salvarEdicaoPerfil()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#198754; color:white; font-weight:bold; cursor:pointer;">Salvar</button>
             </div>
         </div>
     </div>
 
-    <script src="js/perfil.js?v=2"></script>
+    <script src="js/perfil.js?v=3"></script>
 </body>
 </html>

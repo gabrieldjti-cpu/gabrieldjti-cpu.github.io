@@ -1,13 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
 }
 
 body {
-    background: #f5f5f5;
+    background: #f0f2f5;
     padding: 30px;
+    color: #1a1d1f;
 }
 
 .topo {
@@ -291,4 +294,422 @@ div[style*="position: fixed"] {
 
 .btn-voltar:active {
     transform: translateY(0);
+}
+
+/* =========================================
+   📊 CABEÇALHO DE SEÇÃO E BUSCA
+   ========================================= */
+.box-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.box-cabecalho h2 {
+    margin-bottom: 0;
+}
+
+.badge-contador {
+    background: #e8f5ee;
+    color: #198754;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.barra-busca-admin {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.barra-busca-admin input,
+.barra-busca-admin select {
+    padding: 12px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    font-size: 14px;
+    background: #fafbfc;
+    min-width: 0;
+}
+
+.barra-busca-admin input:focus,
+.barra-busca-admin select:focus {
+    outline: none;
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
+    background: white;
+}
+
+.barra-pedidos select {
+    min-width: 180px;
+}
+
+.admin-msg {
+    text-align: center;
+    color: #6c757d;
+    padding: 24px;
+    font-size: 14px;
+}
+
+.admin-erro {
+    color: #dc3545;
+}
+
+.btn.btn-editando {
+    background: #ffc107;
+    color: #212529;
+}
+
+/* =========================================
+   📦 LISTA DE PRODUTOS (ADMIN)
+   ========================================= */
+.produtos-lista-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.produto-admin-card {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: #fafbfc;
+    border: 1px solid #e9ecef;
+    border-radius: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.produto-admin-card:hover {
+    border-color: #198754;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.08);
+}
+
+.produto-admin-card img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.produto-admin-info h4 {
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #212529;
+}
+
+.tag-categoria {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #e9ecef;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.produto-admin-preco {
+    font-size: 14px;
+    font-weight: 800;
+    color: #198754;
+    margin-top: 4px;
+}
+
+.produto-admin-acoes {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.btn-mini {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    transition: transform 0.15s, opacity 0.15s;
+}
+
+.btn-mini:hover {
+    transform: translateY(-1px);
+}
+
+.btn-editar-mini {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.btn-excluir-mini {
+    background: #f8d7da;
+    color: #842029;
+    padding: 8px 10px;
+}
+
+/* =========================================
+   🛒 PEDIDOS — RESUMO E ACORDEÃO
+   ========================================= */
+.resumo-pedidos {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.chip-resumo {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+}
+
+.chip-num {
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    color: #212529;
+    line-height: 1.2;
+}
+
+.chip-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.chip-amarelo { background: #fff9e6; border-color: #ffe69c; }
+.chip-amarelo .chip-num { color: #997404; }
+.chip-azul { background: #e7f1ff; border-color: #b6d4fe; }
+.chip-azul .chip-num { color: #084298; }
+.chip-verde { background: #e8f5ee; border-color: #a3cfbb; }
+.chip-verde .chip-num { color: #146c43; }
+
+.lista-pedidos-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pedido-acordeao {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.pedido-acordeao[open] {
+    border-color: #198754;
+    box-shadow: 0 6px 20px rgba(25, 135, 84, 0.1);
+}
+
+.pedido-acordeao-cabecalho {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    user-select: none;
+}
+
+.pedido-acordeao-cabecalho::-webkit-details-marker {
+    display: none;
+}
+
+.pedido-acordeao-cabecalho::after {
+    content: "▼";
+    float: right;
+    font-size: 10px;
+    color: #adb5bd;
+    margin-top: 4px;
+    transition: transform 0.2s;
+}
+
+.pedido-acordeao[open] .pedido-acordeao-cabecalho::after {
+    transform: rotate(180deg);
+    color: #198754;
+}
+
+.pedido-linha-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.pedido-info-breve {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.pedido-id {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6c757d;
+    letter-spacing: 0.05em;
+}
+
+.pedido-cliente {
+    font-size: 15px;
+    color: #212529;
+}
+
+.pedido-meta {
+    font-size: 12px;
+    color: #868e96;
+}
+
+.pedido-linha-direita {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.status-pill {
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.pedido-total-breve {
+    font-size: 16px;
+    font-weight: 800;
+    color: #198754;
+}
+
+.pedido-resumo-itens {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #868e96;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 24px;
+}
+
+.pedido-acordeao-corpo {
+    padding: 0 16px 16px;
+    border-top: 1px solid #f1f3f5;
+}
+
+.pedido-detalhes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 14px 0;
+}
+
+.pedido-endereco-full {
+    grid-column: 1 / -1;
+}
+
+.label-detalhe {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #868e96;
+    margin-bottom: 2px;
+}
+
+.pedido-detalhes-grid p {
+    font-size: 13px;
+    color: #495057;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.pedido-itens-lista {
+    list-style: none;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+}
+
+.pedido-itens-lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #dee2e6;
+    color: #495057;
+}
+
+.pedido-itens-lista li:last-child {
+    border-bottom: none;
+}
+
+.pedido-itens-lista li strong {
+    color: #198754;
+    font-size: 12px;
+}
+
+.acoes-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn-status {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-status:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.btn-entrega { background: #0d6efd; }
+.btn-ok { background: #198754; }
+.btn-cancelar { background: #dc3545; }
+
+@media (max-width: 768px) {
+    .barra-busca-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .resumo-pedidos {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pedido-detalhes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-resumo-itens {
+        white-space: normal;
+    }
 }

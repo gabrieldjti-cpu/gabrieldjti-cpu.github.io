@@ -24,8 +24,9 @@
         </div>
 
         <div class="acoes-topo">
-            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;">
-                👑 ADM
+            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;" title="Painel administrativo">
+                <span aria-hidden="true">👑</span>
+                <span>Painel ADM</span>
             </a>
 
             <div class="usuario-box" onclick="abrirConta()">
@@ -65,11 +66,12 @@
     </section>
 
     <section class="beneficios">
-        <div class="beneficio">
+        <a href="entrega-rapida.html" class="beneficio beneficio-link" title="Acompanhar minha encomenda">
             <div class="icone">🚚</div>
             <h3>Entrega Rápida</h3>
             <p>Receba suas compras rapidamente na sua casa.</p>
-        </div>
+            <span class="beneficio-cta">Acompanhar pedido →</span>
+        </a>
         <div class="beneficio">
             <div class="icone">💳</div>
             <h3>Pagamento Fácil</h3>

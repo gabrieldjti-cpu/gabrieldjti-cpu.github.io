@@ -4,14 +4,56 @@
 const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
 const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+let enderecoUsuarioAtual = "";
 
-// Executa assim que a página carrega
+// Mesmo formato usado no checkout (script.js)
+function parseEndereco(endereco) {
+    const vazio = { rua: "", numero: "", bairro: "", cidade: "" };
+    if (!endereco || endereco === "Não informado") return vazio;
+
+    try {
+        const partes = endereco.split(", ");
+        const rua = partes[0] || "";
+        const numBairro = partes[1] ? partes[1].split(" - Bairro: ") : [];
+        const numero = numBairro[0] ? numBairro[0].replace("Nº ", "").trim() : "";
+        const bairroCidade = numBairro[1] ? numBairro[1].split(", ") : [];
+        return {
+            rua,
+            numero,
+            bairro: bairroCidade[0] || "",
+            cidade: bairroCidade[1] || ""
+        };
+    } catch (e) {
+        return { rua: endereco, numero: "", bairro: "", cidade: "" };
+    }
+}
+
+function montarEndereco(rua, numero, bairro, cidade) {
+    return `${rua}, Nº ${numero} - Bairro: ${bairro}, ${cidade}`;
+}
+
+function atualizarResumoEndereco(enderecoStr) {
+    const container = document.getElementById("perf-endereco-resumo");
+    const partes = parseEndereco(enderecoStr);
+
+    if (!partes.rua && !partes.numero && !partes.bairro && !partes.cidade) {
+        container.innerHTML = '<span class="vazio">Não informado</span>';
+        return;
+    }
+
+    container.innerHTML = `
+        <span><strong>Rua:</strong> ${partes.rua || "—"}</span>
+        <span><strong>Nº:</strong> ${partes.numero || "—"}</span>
+        <span><strong>Bairro:</strong> ${partes.bairro || "—"}</span>
+        <span><strong>Cidade:</strong> ${partes.cidade || "—"}</span>
+    `;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     carregarDadosEHistorico();
 });
 
 async function carregarDadosEHistorico() {
-    // 1. Pega o usuário logado no localStorage do navegador
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
 
     if (!usuarioLogado) {
@@ -20,7 +62,6 @@ async function carregarDadosEHistorico() {
         return;
     }
 
-    // 2. BUSCA DADOS ATUALIZADOS DO USUÁRIO DIRECTO DA TABELA 'USUARIOS'
     const { data: userDB, error: userError } = await supabaseClient
         .from("usuarios")
         .select("*")
@@ -28,19 +69,16 @@ async function carregarDadosEHistorico() {
         .single();
 
     if (!userError && userDB) {
-        // Alimenta a tela com as informações oficiais do cadastro
         document.getElementById("perf-nome").innerText = userDB.nome || "Cliente";
         document.getElementById("perf-email").innerText = userDB.email || "";
         document.getElementById("perf-telefone").innerText = userDB.telefone || "Não informado";
-        document.getElementById("perf-endereco-detalhado").innerText = userDB.endereco || "Não informado";
+        enderecoUsuarioAtual = userDB.endereco || "";
+        atualizarResumoEndereco(enderecoUsuarioAtual);
     } else {
-        // Caso ocorra erro ou falha na tabela de usuários, usa o localStorage como contingência inicial
         document.getElementById("perf-nome").innerText = usuarioLogado.nome || "Cliente";
         document.getElementById("perf-email").innerText = usuarioLogado.email || "";
     }
 
-    // 3. BUSCAR HISTÓRICO DE PEDIDOS NO SUPABASE
-    // Filtramos os pedidos onde o 'id_usuario' pertence a quem está logado
     const { data: pedidos, error } = await supabaseClient
         .from("pedidos")
         .select("*")
@@ -59,21 +97,17 @@ async function carregarDadosEHistorico() {
         return;
     }
 
-    // Limpa o texto de "Carregando..."
     containerPedidos.innerHTML = "";
 
-    // 4. RENDERIZAR OS PEDIDOS NA TELA
     pedidos.forEach(pedido => {
-        // Formata a data de criação para o padrão brasileiro
-        const dataFormatada = new Date(pedido.created_at).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+        const dataFormatada = new Date(pedido.created_at).toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
         });
 
-        // Monta a listagem dos produtos comprados nesse loop
         let produtosHTML = "";
         if (pedido.produtos && Array.isArray(pedido.produtos)) {
             pedido.produtos.forEach(prod => {
@@ -81,21 +115,21 @@ async function carregarDadosEHistorico() {
             });
         }
 
-        // Caso o usuário não tenha telefone/endereço no cadastro, tenta puxar do histórico como alternativa
         const telTela = document.getElementById("perf-telefone").innerText;
-        const endTela = document.getElementById("perf-endereco-detalhado").innerText;
+        const resumoEnd = document.getElementById("perf-endereco-resumo");
+        const enderecoVazio = resumoEnd.querySelector(".vazio");
 
         if (telTela === "Não informado" && pedido.telefone) {
             document.getElementById("perf-telefone").innerText = pedido.telefone;
         }
-        if (endTela === "Não informado" && pedido.endereco) {
-            document.getElementById("perf-endereco-detalhado").innerText = pedido.endereco;
+        if (enderecoVazio && pedido.endereco) {
+            enderecoUsuarioAtual = pedido.endereco;
+            atualizarResumoEndereco(enderecoUsuarioAtual);
         }
 
-        // Injeta o bloco visual de cada pedido no histórico
         containerPedidos.innerHTML += `
             <div class="pedido-historico">
-                <span class="status-badge status-${pedido.status?.replace(/ /g, '')}">${pedido.status || 'Recebido'}</span>
+                <span class="status-badge status-${pedido.status?.replace(/ /g, "")}">${pedido.status || "Recebido"}</span>
                 <strong style="color: #198754;">Pedido Realizado em: ${dataFormatada}</strong>
                 <p style="font-size: 12px; color: #6c757d; margin: 5px 0;">Código: ${pedido.id}</p>
                 
@@ -111,21 +145,23 @@ async function carregarDadosEHistorico() {
     });
 }
 
-// Função de Logout
 function fazerLogout() {
     localStorage.removeItem("usuario_logado");
     alert("🚪 Conta desconectada com sucesso!");
     window.location.href = "index.html";
 }
-// Funções de Controle do Modal
+
 function abrirModalEditar() {
     const nomeAtual = document.getElementById("perf-nome").innerText;
     const telAtual = document.getElementById("perf-telefone").innerText;
-    const endAtual = document.getElementById("perf-endereco-detalhado").innerText;
+    const partes = parseEndereco(enderecoUsuarioAtual);
 
-    document.getElementById("edit-nome").value = nomeAtual;
+    document.getElementById("edit-nome").value = nomeAtual === "Cliente" ? "" : nomeAtual;
     document.getElementById("edit-telefone").value = telAtual === "Não informado" ? "" : telAtual;
-    document.getElementById("edit-endereco").value = endAtual === "Não informado" ? "" : endAtual;
+    document.getElementById("edit-rua").value = partes.rua;
+    document.getElementById("edit-numero").value = partes.numero;
+    document.getElementById("edit-bairro").value = partes.bairro;
+    document.getElementById("edit-cidade").value = partes.cidade;
 
     document.getElementById("modal-editar-perfil").style.display = "flex";
 }
@@ -134,26 +170,37 @@ function fecharModalEditar() {
     document.getElementById("modal-editar-perfil").style.display = "none";
 }
 
-// FUNÇÃO PARA SALVAR NO BANCO DE DADOS
 async function salvarEdicaoPerfil() {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
-    
+
     const novoNome = document.getElementById("edit-nome").value.trim();
     const novoTel = document.getElementById("edit-telefone").value.trim();
-    const novoEnd = document.getElementById("edit-endereco").value.trim();
+    const rua = document.getElementById("edit-rua").value.trim();
+    const numero = document.getElementById("edit-numero").value.trim();
+    const bairro = document.getElementById("edit-bairro").value.trim();
+    const cidade = document.getElementById("edit-cidade").value.trim();
 
     if (!novoNome) {
-        alert("⚠️ O nome é obrigatório.");
+        alert("⚠️ Informe seu nome completo.");
         return;
     }
 
-    // 1. Atualiza no Supabase (Tabela usuarios)
+    const temAlgumEndereco = rua || numero || bairro || cidade;
+    const temEnderecoCompleto = rua && numero && bairro && cidade;
+
+    if (temAlgumEndereco && !temEnderecoCompleto) {
+        alert("⚠️ Preencha todos os campos do endereço (rua, número, bairro e cidade).");
+        return;
+    }
+
+    const novoEnd = temEnderecoCompleto ? montarEndereco(rua, numero, bairro, cidade) : "";
+
     const { error } = await supabaseClient
         .from("usuarios")
-        .update({ 
+        .update({
             nome: novoNome,
             telefone: novoTel,
-            endereco: novoEnd 
+            endereco: novoEnd
         })
         .eq("id", usuarioLogado.id);
 
@@ -162,15 +209,14 @@ async function salvarEdicaoPerfil() {
         return;
     }
 
-    // 2. Atualiza o LocalStorage para refletir a mudança no site todo imediatamente
     usuarioLogado.nome = novoNome;
-    // Opcional: se salvar telefone e endereço no localStorage também
+    if (novoEnd) usuarioLogado.endereco = novoEnd;
     localStorage.setItem("usuario_logado", JSON.stringify(usuarioLogado));
 
-    // 3. Atualiza a tela sem precisar dar F5
+    enderecoUsuarioAtual = novoEnd;
     document.getElementById("perf-nome").innerText = novoNome;
     document.getElementById("perf-telefone").innerText = novoTel || "Não informado";
-    document.getElementById("perf-endereco-detalhado").innerText = novoEnd || "Não informado";
+    atualizarResumoEndereco(novoEnd);
 
     alert("✅ Perfil atualizado com sucesso!");
     fecharModalEditar();
