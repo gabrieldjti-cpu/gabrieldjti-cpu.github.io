@@ -19,6 +19,28 @@ const TAXAS_ENTREGA = {
     "nossa senhora": 5.00,
     "padrao": 5.00
 };
+// Captura os parâmetros da URL da página atual
+const urlParams = new URLSearchParams(window.location.search);
+const idLojaAtual = urlParams.get('loja'); // Pega o valor do '?loja='
+
+// Na sua função que busca os produtos do Supabase (ex: carregarProdutos):
+async function carregarProdutos() {
+    let query = _supabase.from('produtos').select('*');
+
+    // Se houver um ID de loja na URL, filtra para trazer apenas os produtos dela!
+    if (idLojaAtual) {
+        query = query.eq('id_estabelecimento', idLojaAtual);
+    }
+
+    const { data: produtos, error } = await query;
+    // ... restante do seu código para renderizar os produtos na tela
+}
+
+// 🎯 CAPTURAR ID DO ESTABELECIMENTO PARADOS NA URL (?loja=UUID)
+function obterIdEstabelecimentoDaURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('loja');
+}
 
 function normalizarBairro(nome) {
     return nome.trim().toLowerCase()
@@ -40,25 +62,32 @@ function obterTaxaEntrega(endereco) {
         return { taxa: taxaPadrao, bairro: "Padrão" };
     }
 }
+
 // =================================================================
-// 📦 CARREGAR PRODUTOS DO SUPABASE (VERSÃO COMPLETA)
+// 📦 CARREGAR PRODUTOS DO SUPABASE (VERSÃO COMPLETA ATUALIZADA)
 // =================================================================
 async function carregarProdutosSupabase() {
-    const { data, error } = await _supabase
+    const idLoja = obterIdEstabelecimentoDaURL();
+    
+    if (!idLoja) {
+        console.warn("Nenhum estabelecimento selecionado na URL.");
+        return;
+    }
+
+    // Busca apenas os produtos que pertencem à loja aberta pelo cliente
+    const { data: produtos, error } = await _supabase
         .from('produtos')
-        .select('*');
+        .select('*')
+        .eq('id_estabelecimento', idLoja);
 
     if (error) {
-        console.error("Erro ao carregar produtos:", error);
+        console.error("Erro ao carregar produtos:", error.message);
         return;
-    } 
-    console.log("Dados carregados do Supabase:", data);
+    }
 
-    // Guarda a lista globalmente para que os botões de adicionar saibam qual item foi clicado
-    listaProdutosGeral = data;
-
-    // Dispara a renderização inicial baseada na URL/Página
-    renderizarProdutos();
+    // Alimenta a lista global do ecossistema e distribui nas vitrines da página
+    listaProdutosGeral = produtos || [];
+    renderizarProdutos(); 
 }
 
 // Organiza a divisão das vitrines baseando-se na página atual
@@ -197,7 +226,6 @@ function mostrarProdutosSupabase(lista, idContainer) {
     lista.forEach(produto => {
         let badgeHTML = '';
 
-        // Crachás visuais dinâmicos conforme a categoria do produto
         if (produto.categoria.toLowerCase() === 'carnes') {
             badgeHTML = `<span class="badge badge-premium">Premium</span>`;
         }
@@ -211,12 +239,10 @@ function mostrarProdutosSupabase(lista, idContainer) {
             badgeHTML = `<span class="badge badge-bebidas" style="background: #ffc107; color: black;">Gelada</span>`;
         }
 
-        // 🛒 LOGICA DO BOTÃO DINÂMICO DIRECT NO CARD
         const itemNoCarrinho = carrinho.find(item => item.id === produto.id);
         let botaoHTML = "";
 
         if (itemNoCarrinho) {
-            // Se já estiver no carrinho, renderiza o seletor [-] Qtd [+]
             botaoHTML = `
                 <div class="controle-qtd-card" id="btn-card-${produto.id}">
                     <button onclick="alterarQtdCard('${produto.id}', -1)">-</button>
@@ -225,7 +251,6 @@ function mostrarProdutosSupabase(lista, idContainer) {
                 </div>
             `;
         } else {
-            // Se não estiver, renderiza o botão clássico de compra
             botaoHTML = `
                 <button id="btn-card-${produto.id}" class="btn-adicionar" onclick="adicionarAoCarrinhoCard('${produto.id}')">
                     🛒 Adicionar
@@ -259,14 +284,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =================================================================
-// 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA)
+// 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA FILTRADA POR LOJA)
 // =================================================================
-async function filtrarProdutos() {
+async function filtrarProdutos(categoriaPagina = null) {
     const buscaEl = document.getElementById("busca");
     if (!buscaEl) return;
 
     const termo = buscaEl.value.toLowerCase();
     const urlAtual = window.location.pathname.toLowerCase();
+    const idLoja = obterIdEstabelecimentoDaURL();
 
     if (urlAtual.includes("favoritos")) {
         const lista = listaProdutosGeral.filter(p =>
@@ -285,14 +311,17 @@ async function filtrarProdutos() {
         return;
     }
 
+    if (!idLoja) return;
+
+    // Realiza a busca no banco limitando rigorosamente ao id_estabelecimento corrente
     const { data, error } = await _supabase
         .from('produtos')
         .select('*')
+        .eq('id_estabelecimento', idLoja)
         .ilike('nome', `%${termo}%`);
 
     if (error) return;
 
-    // Identifica qual container principal está ativo para injetar o resultado da busca
     const containerAlvo = document.getElementById("lista-produtos") || 
                           document.getElementById("lista-hortifruti") || 
                           document.getElementById("lista-carnes") ||
@@ -307,8 +336,6 @@ async function filtrarProdutos() {
 // =================================================================
 // 🛒 GERENCIAMENTO DO CARRINHO (VITRINE, CONTADORES E LATERAL)
 // =================================================================
-
-// Função chamada ao clicar no botão "🛒 Adicionar" padrão da vitrine
 async function adicionarAoCarrinhoCard(idProduto) {
     const produto = listaProdutosGeral.find(p => p.id === idProduto);
     if (!produto) return;
@@ -325,9 +352,8 @@ async function adicionarAoCarrinhoCard(idProduto) {
     atualizarInterfaceGeral();
 }
 
-// Função que controla os botões de [+] e [-] direto no card
 function alterarQtdCard(idProduto, mudanca) {
-    const index = carrinho.findIndex(item => item.id === idProduto);
+    const index = !carrinho ? -1 : carrinho.findIndex(item => item.id === idProduto);
     if (index === -1) return;
 
     carrinho[index].quantidade += mudanca;
@@ -342,11 +368,9 @@ function alterarQtdCard(idProduto, mudanca) {
 function atualizarContador() {
     const totalItens = carrinho.reduce((soma, item) => soma + item.quantidade, 0);
     
-    // Atualiza o contador clássico do topo da página
     const contadorTopo = document.getElementById("contador");
     if (contadorTopo) contadorTopo.innerText = totalItens;
 
-    // Atualiza o contador do balão verde flutuante
     const contadorFlutuante = document.getElementById("contador-flutuante");
     if (contadorFlutuante) contadorFlutuante.innerText = totalItens;
 }
@@ -360,7 +384,6 @@ function atualizarInterfaceGeral() {
         carregarCarrinho();
     }
     
-    // Atualiza os botões de comprar/quantidade na vitrine
     renderizarProdutos();
 }
 
@@ -435,7 +458,6 @@ function carregarCarrinho() {
     `;
 }
 
-// Sincroniza os botões internos do carrinho lateral com a lógica geral
 function mudarQtdLateral(index, valor) {
     carrinho[index].quantidade += valor;
 
@@ -462,7 +484,7 @@ function voltar() {
 }
 
 // =================================================================
-// 👤 SISTEMA DE AUTENTICAÇÃO (TABELA COMUM)
+// 👤 SISTEMA DE AUTENTICAÇÃO (SUPORTE AO MULTI-TENANT MARKETPLACE)
 // =================================================================
 async function verificarUsuario() {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
@@ -474,7 +496,6 @@ async function verificarUsuario() {
 
     if (usuarioLogado) {
         const nome = usuarioLogado.nome;
-
         if (btnUser) btnUser.innerText = nome;
 
         const perfilNome = document.getElementById("perfil-nome");
@@ -484,7 +505,8 @@ async function verificarUsuario() {
 
         const adminEmail = 'gabrieldj.ti@gmail.com';
         
-        if (usuarioLogado.email === adminEmail) {
+        // Válido se for o SuperAdmin global OU se o usuário possuir um id_estabelecimento vinculado
+        if (usuarioLogado.email === adminEmail || usuarioLogado.id_estabelecimento) {
             if (adminBtn) adminBtn.style.display = "flex";
         } else {
             if (adminBtn) adminBtn.style.display = "none";
@@ -649,7 +671,6 @@ async function carregarDadosPerfil() {
         if (pedido.status === "Saiu para entrega") corStatus = "#0d6efd";
         if (pedido.status === "Cancelado") corStatus = "#dc3545";
 
-        // 🛒 Monta a lista detalhada dos itens salvos na coluna 'produtos' deste pedido
         let produtosHTML = "";
         if (Array.isArray(pedido.produtos)) {
             pedido.produtos.forEach(p => {
@@ -664,7 +685,6 @@ async function carregarDadosPerfil() {
             produtosHTML = "<p style='font-size:12px; color:gray;'>Detalhes dos produtos indisponíveis.</p>";
         }
 
-        // Formata a data de criação do pedido para o padrão brasileiro
         const dataPedido = new Date(pedido.created_at).toLocaleDateString('pt-BR');
 
         containerHistorico.innerHTML += `
@@ -693,7 +713,6 @@ async function carregarDadosPerfil() {
     });
 }
 
-// ↕️ Copie e cole esta função auxiliar logo abaixo da carregarDadosPerfil()
 function toggleDetalhesPedido(idPedido) {
     const painelDetalhes = document.getElementById(`detalhes-${idPedido}`);
     if (!painelDetalhes) return;
@@ -749,7 +768,7 @@ async function salvarPerfil() {
 }
 
 // =================================================================
-// 📦 FINALIZAR PEDIDO (SALVAR NO SUPABASE E WHATSAPP)
+// 📦 FINALIZAR PEDIDO (SALVAR COM ID DO ESTABELECIMENTO)
 // =================================================================
 function finalizarPedido() {
     if (carrinho.length === 0) {
@@ -762,9 +781,11 @@ function finalizarPedido() {
 function fecharModal() {
     document.getElementById("modal-pagamento").style.display = "none";
 }
+
 async function escolherPagamento(tipo) {
     if (carrinho.length === 0) return;
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const idLojaAtual = obterIdEstabelecimentoDaURL(); // Identifica de qual comércio o cliente está comprando
 
     if (!usuarioLogado) {
         mostrarAviso("⚠️ Entre na sua conta para finalizar a compra.", "aviso");
@@ -785,13 +806,11 @@ async function escolherPagamento(tipo) {
         return;
     }
 
-    // 1. Calcula o subtotal dos produtos
     let subtotal = carrinho.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
-
     const { taxa: taxaEntrega, bairro: nomeBairro } = obterTaxaEntrega(perfil.endereco);
     const totalGeral = subtotal + taxaEntrega;
 
-    // Salva o pedido no banco com o valor total final (já com a taxa inclusa)
+    // Salva o pedido no banco vinculando-o diretamente ao ID do estabelecimento correto
     const { error } = await _supabase
         .from("pedidos")
         .insert([{
@@ -799,10 +818,11 @@ async function escolherPagamento(tipo) {
             telefone: perfil.telefone,
             endereco: perfil.endereco,
             produtos: carrinho,
-            total: totalGeral, // Envia o total modificado para o Banco de Dados
+            total: totalGeral,
             pagamento: tipo,
             status: 'Recebido',
-            id_usuario: perfil.id 
+            id_usuario: perfil.id,
+            id_estabelecimento: idLojaAtual // 👈 REGISTRA A QUEM PERTENCE ESTE PEDIDO NO MARKETPLACE
         }]);
 
     if (error) {
@@ -810,7 +830,7 @@ async function escolherPagamento(tipo) {
         return;
     }
 
-    let mensagem = "🛒 *Novo Pedido - Supermercado*\n\n";
+    let mensagem = "🛒 *Novo Pedido - Marketplace*\n\n";
     carrinho.forEach(p => {
         mensagem += `• ${p.nome} (${p.quantidade}x) - R$ ${(p.preco * p.quantidade).toFixed(2)}\n`;
     });
@@ -831,6 +851,7 @@ async function escolherPagamento(tipo) {
     fecharModal();
     mostrarAviso("✅ Pedido enviado com sucesso!", "sucesso");
 }
+
 // =================================================================
 // 💬 MODAIS & INTERFACES DE ACESSO
 // =================================================================
@@ -845,70 +866,58 @@ function alternarAba(tipo) {
     const tabLogin = document.getElementById("tab-login");
     const tabCadastro = document.getElementById("tab-cadastro");
 
-    tabLogin.classList.remove("ativa");
-    tabCadastro.classList.remove("ativa");
+    if (!login || !cadastro || !tabLogin || !tabCadastro) return;
 
-    if (tipo === "login") {
-        login.style.display = "block";
-        cadastro.style.display = "none";
-        tabLogin.classList.add("ativa");
+    if (tipo === 'cadastro') {
+        login.style.display = 'none';
+        cadastro.style.display = 'block';
+        tabLogin.classList.remove('ativa');
+        tabCadastro.classList.add('ativa');
     } else {
-        login.style.display = "none";
-        cadastro.style.display = "block";
-        tabCadastro.classList.add("ativa");
+        login.style.display = 'block';
+        cadastro.style.display = 'none';
+        tabLogin.classList.add('ativa');
+        tabCadastro.classList.remove('ativa');
     }
 }
 
-// =================================================================
-// ↕️ CONTROLE DOS CARROSSÉIS
-// =================================================================
-function scrollCarrossel(idContainer, direcao) {
-    const container = document.getElementById(idContainer);
-    if (container) {
-        const quantidadeScroll = 300; 
-        container.scrollBy({
-            left: direcao * quantidadeScroll,
-            behavior: 'smooth'
-        });
+function mostrarAviso(mensagem, tipo = 'info') {
+    const aviso = document.createElement('div');
+    aviso.className = `aviso-flutuante aviso-${tipo}`;
+    aviso.innerText = mensagem;
+    aviso.style.position = 'fixed';
+    aviso.style.bottom = '20px';
+    aviso.style.left = '50%';
+    aviso.style.transform = 'translateX(-50%) translateY(0)';
+    aviso.style.padding = '14px 18px';
+    aviso.style.borderRadius = '14px';
+    aviso.style.zIndex = '9999';
+    aviso.style.color = tipo === 'aviso' ? '#000' : '#fff';
+    aviso.style.fontWeight = '700';
+    aviso.style.textAlign = 'center';
+    aviso.style.maxWidth = 'calc(100% - 40px)';
+    aviso.style.opacity = '0';
+    aviso.style.transition = 'opacity .3s ease, transform .3s ease';
+
+    if (tipo === 'sucesso') {
+        aviso.style.background = '#198754';
+    } else if (tipo === 'erro') {
+        aviso.style.background = '#dc3545';
+    } else if (tipo === 'aviso') {
+        aviso.style.background = '#ffc107';
+    } else {
+        aviso.style.background = '#333';
     }
-}
-
-// =================================================================
-// 🔔 AVISOS CUSTOMIZADOS (VERDE, VERMELHO E AMARELO)
-// =================================================================
-function mostrarAviso(msg, tipo = 'sucesso') {
-    const aviso = document.createElement("div");
-    aviso.innerText = msg;
-
-    let corFundo = "#198754"; 
-    if (tipo === 'erro') corFundo = "#dc3545";   
-    if (tipo === 'aviso') corFundo = "#ffc107";  
-
-    let corTexto = tipo === 'aviso' ? '#212529' : 'white';
-
-    aviso.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: ${corFundo};
-        color: ${corTexto};
-        padding: 14px 28px;
-        border-radius: 10px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        font-size: 15px;
-        z-index: 10000;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        transform: translateY(10px);
-    `;
 
     document.body.appendChild(aviso);
+    requestAnimationFrame(() => {
+        aviso.style.opacity = '1';
+        aviso.style.transform = 'translateX(-50%) translateY(-8px)';
+    });
 
-    setTimeout(() => { aviso.style.transform = 'translateY(0)'; }, 50);
-
-    setTimeout(() => { 
-        aviso.style.opacity = '0'; 
-        setTimeout(() => aviso.remove(), 300); 
-    }, 3200);
+    setTimeout(() => {
+        aviso.style.opacity = '0';
+        aviso.style.transform = 'translateX(-50%) translateY(0)';
+        aviso.addEventListener('transitionend', () => aviso.remove(), { once: true });
+    }, 2800);
 }

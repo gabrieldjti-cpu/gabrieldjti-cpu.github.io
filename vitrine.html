@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace | Escolha uma Loja</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Estilos rápidos inline para organizar os cards de seleção de lojas */
+        .container-lojas {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .card-loja {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #eee;
+        }
+        .card-loja:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .card-loja .logo-comercio {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+        .card-loja h3 {
+            margin: 10px 0 5px 0;
+            font-size: 20px;
+            color: #198754;
+        }
+        .card-loja p {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+        .btn-entrar-loja {
+            display: inline-block;
+            background: #198754;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .titulo-home {
+            text-align: center;
+            margin-top: 5px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topo">
+        <div class="logo">
+            🛍️ Marketplace Local
+        </div>
+
+        <div class="acoes-topo">
+            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;">
+                <span>👑 Painel ADM</span>
+            </a>
+
+            <div class="usuario-box" onclick="abrirConta()">
+                <div class="avatar-user">👤</div>
+                <div class="usuario-info">
+                    <span id="user-name">Entrar</span>
+                    <small>Minha Conta</small>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="banner" style="height: 220px;">
+        <div class="banner-texto">
+            <h1>Bem-vindo ao Marketplace</h1>
+            <p>Selecione um dos nossos estabelecimentos parceiros abaixo para fazer suas compras.</p>
+        </div>
+    </section>
+
+    <h2 class="titulo-home" style="margin-top: 40px;">📍 Lojas Disponíveis na Sua Região</h2>
+
+    <div class="container-lojas">
+
+        <a href="index.html?loja=loja-qualidade" class="card-loja">
+            <div class="logo-comercio">🛒</div>
+            <h3>Supermercado Qualidade</h3>
+            <p>Frutas fresquinhas, carnes nobres e itens de limpeza.</p>
+            <span class="btn-entrar-loja">Fazer Compras →</span>
+        </a>
+
+        <a href="index.html?loja=farmacia-central" class="card-loja">
+            <div class="logo-comercio">💊</div>
+            <h3>Farmácia Central</h3>
+            <p>Medicamentos, perfumaria, higiene e cuidados pessoais.</p>
+            <span class="btn-entrar-loja">Fazer Compras →</span>
+        </a>
+
+        <a href="index.html?loja=disk-bebidas" class="card-loja">
+            <div class="logo-comercio">🍺</div>
+            <h3>Disk Bebidas Express</h3>
+            <p>Cervejas geladas, refrigerantes, sucos e gelo.</p>
+            <span class="btn-entrar-loja">Fazer Compras →</span>
+        </a>
+
+    </div>
+
+    <footer class="footer" style="margin-top: 100px;">
+        <p>© 2026 Marketplace Online | 📍 Conectando Comércios Locais</p>
+    </footer>
+
+    <div id="modal-login" class="modal">
+        <div class="modal-login-box">
+            <div class="abas-login">
+                <div id="tab-login" onclick="alternarAba('login')" class="aba ativa">Entrar</div>
+                <div id="tab-cadastro" onclick="alternarAba('cadastro')" class="aba">Cadastrar</div>
+            </div>
+            <div id="form-login">
+                <input type="email" id="login-email" placeholder="Seu e-mail" class="input-premium">
+                <input type="password" id="login-senha" placeholder="Sua senha" class="input-premium">
+                <button onclick="fazerLogin()" class="btn-acesso-principal">Entrar na Conta</button>
+            </div>
+            <div id="form-cadastro" style="display:none;">
+                <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
+                <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
+                <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
+                <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
+            </div>
+            <div class="fechar-login">
+                <button onclick="fecharLogin()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js?v=5"></script>
+</body>
+</html>

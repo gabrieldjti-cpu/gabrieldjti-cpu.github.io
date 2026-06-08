@@ -4,18 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supermercado Online | Qualidade e Praticidade</title>
+    <title>Vitrine de Produtos | Compre Online</title>
     
     <link rel="stylesheet" href="css/style.css">
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
     <header class="topo">
-        <div class="logo">
-            🛒 Supermercado
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='index.html'">
+            🛒 Marketplace
         </div>
 
         <div class="busca">
@@ -47,8 +46,8 @@
         </div>
     </header>
 
-    <nav class="menu">
-        <a href="index.html">Início</a>
+    <nav class="menu" id="menu-categorias">
+        <a href="index.html">Início / Lojas</a>
         <a href="hortifruti.html">Hortifruti</a>
         <a href="carnes.html">Carnes</a>
         <a href="limpeza.html">Limpeza</a>
@@ -89,8 +88,8 @@
         </div>
     </section>
 
-    <section class="categorias">
-        <a href="Hortifruti.html" class="categoria">🥦 Hortifruti</a>
+    <section class="categorias" id="cards-categorias">
+        <a href="hortifruti.html" class="categoria">🥦 Hortifruti</a>
         <a href="carnes.html" class="categoria">🥩 Carnes</a>
         <a href="limpeza.html" class="categoria">🧴 Limpeza</a>
         <a href="bebidas.html" class="categoria">🥤 Bebidas</a>
@@ -153,7 +152,7 @@
     </section>
 
     <footer class="footer">
-        <p>© 2026 Supermercado Online | 📍 Atendimento Local</p>
+        <p>© 2026 Marketplace Online | 📍 Atendimento Local</p>
     </footer>
 
     <div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
@@ -211,6 +210,34 @@
       <span id="contador-flutuante" class="contador-flutuante">0</span>
     </div>
 
-</body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Captura o parâmetro '?loja=' contido na URL atual
+            const params = new URLSearchParams(window.location.search);
+            const idLoja = params.get('loja');
 
+            if (idLoja) {
+                // Modifica dinamicamente os links da barra de navegação para passar adiante o ID da loja
+                const linksMenu = document.querySelectorAll("#menu-categorias a");
+                linksMenu.forEach(link => {
+                    const hrefOriginal = link.getAttribute("href");
+                    // Ignora links externos, a página principal ou links vazios
+                    if (hrefOriginal && hrefOriginal !== "index.html" && hrefOriginal !== "#") {
+                        link.setAttribute("href", `${hrefOriginal}?loja=${idLoja}`);
+                    }
+                });
+
+                // Modifica dinamicamente os links dos blocos de categorias centrais
+                const linksCategorias = document.querySelectorAll("#cards-categorias a");
+                linksCategorias.forEach(link => {
+                    const hrefOriginal = link.getAttribute("href");
+                    if (hrefOriginal) {
+                        link.setAttribute("href", `${hrefOriginal}?loja=${idLoja}`);
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
 </html>
