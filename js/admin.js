@@ -8,6 +8,8 @@ const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 let idProdutoEmEdicao = null;
 let todosProdutos = [];
 let todosPedidos = [];
+let lojistaAtual = null; // Guarda os dados da sessão do usuário logado
+let ehAdminMaster = false; // Flag para identificar você no sistema
 
 const CORES_STATUS = {
     Recebido: "#ffc107",
@@ -17,10 +19,54 @@ const CORES_STATUS = {
     Preparando: "#17a2b8"
 };
 
+// Carregamento e validação da sessão
 document.addEventListener("DOMContentLoaded", () => {
+    lojistaAtual = JSON.parse(localStorage.getItem("usuario_logado"));
+
+    // 👑 VERIFICAÇÃO MASTER: Dá acesso total ao seu e-mail de administrador geral
+    if (lojistaAtual && lojistaAtual.email === "gabrieldj.ti@gmail.com") {
+        ehAdminMaster = true;
+        console.log("👑 Modo Administrador Master Ativo - Acesso total concedido.");
+    } 
+    // 🔒 VALIDAÇÃO PADRÃO: Se não for você, exige obrigatoriamente um vínculo com lojista
+    else if (!lojistaAtual || !lojistaAtual.id_lojista) {
+        alert("⚠️ Acesso restrito. Faça login como lojista para acessar o painel.");
+        window.location.href = "login.html"; 
+        return;
+    }
+
+    console.log("🏪 Painel carregado para:", ehAdminMaster ? "Todas as Lojas (Master)" : lojistaAtual.id_lojista);
+
     carregarPedidosAdmin();
     carregarProdutosAdmin();
+    gerarLinkDivulgacao();
 });
+
+// Link dinâmico para os lojistas compartilharem suas respectivas lojas
+function gerarLinkDivulgacao() {
+    const inputLink = document.getElementById("link-loja-input");
+    if (inputLink) {
+        if (ehAdminMaster) {
+            inputLink.value = "Visão Master - Sem link específico";
+            inputLink.disabled = true;
+            return;
+        }
+        const urlBase = window.location.origin; 
+        inputLink.value = `${urlBase}/index.html?id=${lojistaAtual.id_lojista}`;
+    }
+}
+
+// Copiar o link gerado com um clique
+function copiarLinkLoja() {
+    if (ehAdminMaster) return;
+    const inputLink = document.getElementById("link-loja-input");
+    if (inputLink) {
+        inputLink.select();
+        inputLink.setSelectionRange(0, 99999); 
+        navigator.clipboard.writeText(inputLink.value);
+        alert("🚀 Link copiado! Agora você pode colar nas suas redes sociais.");
+    }
+}
 
 function escaparHtml(texto) {
     if (texto == null) return "";
@@ -41,10 +87,14 @@ async function carregarPedidosAdmin() {
 
     container.innerHTML = '<p class="admin-msg">Carregando pedidos...</p>';
 
-    const { data: pedidos, error } = await _supabase
-        .from("pedidos")
-        .select("*")
-        .order("created_at", { ascending: false });
+    // Se for você (Admin Master), traz TODOS os pedidos do banco. Se for lojista comum, filtra os dele.
+    let query = _supabase.from("pedidos").select("*");
+    
+    if (!ehAdminMaster) {
+        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+    }
+
+    const { data: pedidos, error } = await query.order("created_at", { ascending: false });
 
     if (error) {
         container.innerHTML = '<p class="admin-msg admin-erro">Erro ao carregar pedidos.</p>';
@@ -164,10 +214,14 @@ function renderizarPedidos(pedidos, container) {
 }
 
 async function atualizarStatusPedido(idPedido, novoStatus) {
-    const { error } = await _supabase
-        .from("pedidos")
-        .update({ status: novoStatus })
-        .eq("id", idPedido);
+    let query = _supabase.from("pedidos").update({ status: novoStatus }).eq("id", idPedido);
+
+    // Se for lojista comum, adiciona trava de segurança no update
+    if (!ehAdminMaster) {
+        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+    }
+
+    const { error } = await query;
 
     if (error) {
         alert("Erro ao atualizar status: " + error.message);
@@ -187,10 +241,14 @@ async function carregarProdutosAdmin() {
 
     container.innerHTML = '<p class="admin-msg">Carregando estoque...</p>';
 
-    const { data: produtos, error } = await _supabase
-        .from("produtos")
-        .select("*")
-        .order("nome", { ascending: true });
+    // Se for Admin Master, exibe os produtos de todas as lojas cadastrados no banco
+    let query = _supabase.from("produtos").select("*");
+
+    if (!ehAdminMaster) {
+        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+    }
+
+    const { data: produtos, error } = await query.order("nome", { ascending: true });
 
     if (error) {
         container.innerHTML = '<p class="admin-msg admin-erro">Erro ao carregar estoque.</p>';
@@ -204,12 +262,12 @@ async function carregarProdutosAdmin() {
 
 function filtrarProdutosAdmin() {
     const termo = (document.getElementById("busca-produto")?.value || "").trim().toLowerCase();
-    const categoria = document.getElementById("filtro-categoria-produto")?.value || "";
+    const category = document.getElementById("filtro-categoria-produto")?.value || "";
 
     let filtrados = [...todosProdutos];
 
-    if (categoria) {
-        filtrados = filtrados.filter(p => p.categoria === categoria);
+    if (category) {
+        filtrados = filtrados.filter(p => p.categoria === category);
     }
 
     if (termo) {
@@ -283,10 +341,13 @@ async function excluirProdutoAdmin(idProduto) {
     const nome = produto?.nome || "este produto";
     if (!confirm(`Tem certeza que deseja apagar "${nome}"?`)) return;
 
-    const { error } = await _supabase
-        .from("produtos")
-        .delete()
-        .eq("id", idProduto);
+    let query = _supabase.from("produtos").delete().eq("id", idProduto);
+
+    if (!ehAdminMaster) {
+        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+    }
+
+    const { error } = await query;
 
     if (error) {
         alert("Erro ao excluir produto: " + error.message);
@@ -309,26 +370,33 @@ async function salvarProduto() {
         return;
     }
 
+    // Se você for o Master adicionando produto, ele usará um ID padrão de testes ou nulo se a tabela permitir
+    const lojistaIdFinal = ehAdminMaster ? "00000000-0000-0000-0000-000000000000" : lojistaAtual.id_lojista;
+
     const dadosProduto = {
         nome,
         preco: Number(preco),
         preco_antigo: preco_antigo ? Number(preco_antigo) : 0,
         desconto: desconto ? Number(desconto) : 0,
         img: imagem,
-        categoria
+        categoria,
+        id_lojista: lojistaIdFinal // Mudado para refletir a alteração do banco
     };
 
     if (idProdutoEmEdicao) {
-        const { error } = await _supabase
-            .from("produtos")
-            .update(dadosProduto)
-            .eq("id", idProdutoEmEdicao);
+        let query = _supabase.from("produtos").update(dadosProduto).eq("id", idProdutoEmEdicao);
+
+        if (!ehAdminMaster) {
+            query = query.eq("id_lojista", lojistaAtual.id_lojista);
+        }
+
+        const { error } = await query;
 
         if (error) {
             alert("❌ Erro ao atualizar: " + error.message);
             return;
         }
-        alert("✅ Produto atualizado!");
+        alert("✅ Produto updated!");
     } else {
         const { error } = await _supabase
             .from("produtos")

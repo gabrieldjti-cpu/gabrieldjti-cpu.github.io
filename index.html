@@ -23,7 +23,7 @@
         </div>
 
         <div class="acoes-topo">
-            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;" title="Painel administrativo">
+            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;" title="Painel administrative">
                 <span aria-hidden="true">👑</span>
                 <span>Painel ADM</span>
             </a>
@@ -196,7 +196,24 @@
                 <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
                 <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
                 <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
-                <input type="text" id="cad-codigo-lojista" placeholder="Possui um código de lojista? (opcional)" class="input-premium">
+                
+                <div style="margin: 15px 0; text-align: left; display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="cad-e-empresa" onchange="toggleCamposEmpresa()" style="width: auto; cursor: pointer;">
+                    <label for="cad-e-empresa" style="cursor: pointer; font-weight: bold; color: #198754; font-size: 14px;">Quero cadastrar minha empresa / loja</label>
+                </div>
+
+                <div id="campos-empresa" style="display: none; border-left: 3px solid #198754; padding-left: 10px; margin-bottom: 15px;">
+                    <h4 style="margin: 0 0 10px 0; color: #333; text-align: left;">Dados da Loja:</h4>
+                    <input type="text" id="loja-nome" placeholder="Nome da Loja (ex: Supermercado Central)" class="input-premium">
+                    <input type="text" id="loja-descricao" placeholder="Breve descrição do seu comércio" class="input-premium">
+                    <select id="loja-segmento" class="input-premium" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; background: white;">
+                        <option value="mercado">🛒 Supermercado / Mercearia</option>
+                        <option value="farmacia">💊 Farmácia / Drogaria</option>
+                        <option value="bebidas">🍺 Distribuidora de Bebidas</option>
+                        <option value="outros">🏪 Outro Segmento</option>
+                    </select>
+                </div>
+
                 <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
             </div>
 
@@ -239,6 +256,16 @@
                 });
             }
         });
+
+        // 👇 Nova função adicionada para controlar a exibição dos campos da empresa
+        function toggleCamposEmpresa() {
+            const checkbox = document.getElementById("cad-e-empresa");
+            const blocoEmpresa = document.getElementById("campos-empresa");
+            
+            if (checkbox && blocoEmpresa) {
+                blocoEmpresa.style.display = checkbox.checked ? "block" : "none";
+            }
+        }
     </script>
 
 </body>

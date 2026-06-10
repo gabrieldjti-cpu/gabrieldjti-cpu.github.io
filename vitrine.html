@@ -28,6 +28,10 @@
             color: #333;
             transition: transform 0.2s, box-shadow 0.2s;
             border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
         .card-loja:hover {
             transform: translateY(-5px);
@@ -95,29 +99,8 @@
 
     <h2 class="titulo-home" style="margin-top: 40px;">📍 Lojas Disponíveis na Sua Região</h2>
 
-    <div class="container-lojas">
-
-        <a href="index.html?loja=loja-qualidade" class="card-loja">
-            <div class="logo-comercio">🛒</div>
-            <h3>Supermercado Qualidade</h3>
-            <p>Frutas fresquinhas, carnes nobres e itens de limpeza.</p>
-            <span class="btn-entrar-loja">Fazer Compras →</span>
-        </a>
-
-        <a href="index.html?loja=farmacia-central" class="card-loja">
-            <div class="logo-comercio">💊</div>
-            <h3>Farmácia Central</h3>
-            <p>Medicamentos, perfumaria, higiene e cuidados pessoais.</p>
-            <span class="btn-entrar-loja">Fazer Compras →</span>
-        </a>
-
-        <a href="index.html?loja=disk-bebidas" class="card-loja">
-            <div class="logo-comercio">🍺</div>
-            <h3>Disk Bebidas Express</h3>
-            <p>Cervejas geladas, refrigerantes, sucos e gelo.</p>
-            <span class="btn-entrar-loja">Fazer Compras →</span>
-        </a>
-
+    <div class="container-lojas" id="lista-lojas-marketplace">
+        <p style="text-align: center; color: #777; grid-column: 1/-1;">Procurando lojas parceiras...</p>
     </div>
 
     <footer class="footer" style="margin-top: 100px;">
@@ -130,18 +113,38 @@
                 <div id="tab-login" onclick="alternarAba('login')" class="aba ativa">Entrar</div>
                 <div id="tab-cadastro" onclick="alternarAba('cadastro')" class="aba">Cadastrar</div>
             </div>
+            
             <div id="form-login">
                 <input type="email" id="login-email" placeholder="Seu e-mail" class="input-premium">
                 <input type="password" id="login-senha" placeholder="Sua senha" class="input-premium">
                 <button onclick="fazerLogin()" class="btn-acesso-principal">Entrar na Conta</button>
             </div>
+            
             <div id="form-cadastro" style="display:none;">
                 <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
                 <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
                 <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
-                <input type="text" id="cad-codigo-lojista" placeholder="Possui um código de lojista? (opcional)" class="input-premium">
+                
+                <div style="margin: 15px 0; text-align: left; display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="cad-e-empresa" onchange="toggleCamposEmpresa()" style="width: auto; cursor: pointer;">
+                    <label for="cad-e-empresa" style="cursor: pointer; font-weight: bold; color: #198754; font-size: 14px;">Quero cadastrar minha empresa / loja</label>
+                </div>
+
+                <div id="campos-empresa" style="display: none; border-left: 3px solid #198754; padding-left: 10px; margin-bottom: 15px;">
+                    <h4 style="margin: 0 0 10px 0; color: #333; text-align: left;">Dados da Empresa:</h4>
+                    <input type="text" id="loja-nome" placeholder="Nome da Loja (ex: Mercado Central)" class="input-premium">
+                    <input type="text" id="loja-descricao" placeholder="Breve descrição da loja" class="input-premium">
+                    <select id="loja-segmento" class="input-premium" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; background: white;">
+                        <option value="mercado">🛒 Supermercado / Mercearia</option>
+                        <option value="farmacia">💊 Farmácia / Drogaria</option>
+                        <option value="bebidas">🍺 Distribuidora de Bebidas</option>
+                        <option value="outros">🏪 Outro Segmento</option>
+                    </select>
+                </div>
+
                 <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
             </div>
+            
             <div class="fechar-login">
                 <button onclick="fecharLogin()">Fechar</button>
             </div>
@@ -149,5 +152,64 @@
     </div>
 
     <script src="js/script.js?v=5"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            carregarLojasDoSupabase();
+        });
+
+        // Mostra ou esconde os campos extras caso seja uma empresa
+        function toggleCamposEmpresa() {
+            const checkbox = document.getElementById("cad-e-empresa");
+            const blocoEmpresa = document.getElementById("campos-empresa");
+            if (checkbox && blocoEmpresa) {
+                blocoEmpresa.style.display = checkbox.checked ? "block" : "none";
+            }
+        }
+
+        // Carrega os dados direto da tabela 'estabelecimentos' do seu banco
+        async function carregarLojasDoSupabase() {
+            const container = document.getElementById("lista-lojas-marketplace");
+            
+            try {
+                // _supabase deve estar iniciado no seu js/script.js
+                const { data: lojas, error } = await _supabase
+                    .from('estabelecimentos') 
+                    .select('id, nome, descricao, segmento');
+
+                if (error) throw error;
+
+                if (!lojas || lojas.length === 0) {
+                    container.innerHTML = "<p style='text-align: center; grid-column: 1/-1;'>Nenhum estabelecimento cadastrado ainda.</p>";
+                    return;
+                }
+
+                container.innerHTML = "";
+
+                lojas.forEach(loja => {
+                    let emoji = "🏪";
+                    if (loja.segmento === "mercado") emoji = "🛒";
+                    if (loja.segmento === "farmacia") emoji = "💊";
+                    if (loja.segmento === "bebidas") emoji = "🍺";
+
+                    // Altera a rota para redirecionar para a página correta onde você exibe os produtos de cada loja
+                    // Mude o 'index.html' se a sua página de produtos tiver outro nome (ex: produtos.html)
+                    const cardHTML = `
+                        <a href="index.html?loja=${loja.id}" class="card-loja">
+                            <div class="logo-comercio">${emoji}</div>
+                            <h3>${loja.nome}</h3>
+                            <p>${loja.descricao || 'Confira nossos produtos!'}</p>
+                            <span class="btn-entrar-loja">Fazer Compras →</span>
+                        </a>
+                    `;
+                    container.innerHTML += cardHTML;
+                });
+
+            } catch (err) {
+                console.error("Erro ao conectar com o banco:", err);
+                container.innerHTML = "<p style='text-align: center; color: red; grid-column: 1/-1;'>Erro ao carregar os estabelecimentos.</p>";
+            }
+        }
+    </script>
 </body>
 </html>
