@@ -570,20 +570,48 @@ async function fazerCadastro() {
         return;
     }
 
+    const codigoLojista = document.getElementById("cad-codigo-lojista").value.trim();
+    let idEstabelecimento = null;
+
+    if (codigoLojista) {
+        idEstabelecimento = await validarCodigoLojista(codigoLojista);
+        if (!idEstabelecimento) {
+            mostrarAviso("❌ Código de lojista inválido. Peça seu código ao dono do marketplace.", "erro");
+            return;
+        }
+    }
+
     const { error } = await _supabase
         .from('usuarios')
         .insert([{
             nome: nome,
             email: email,
-            senha: senha
-        }]);
+            senha: senha,
+            id_estabelecimento: idEstabelecimento
+        }] );
 
     if (error) {
         mostrarAviso("❌ Erro ao criar conta: " + error.message, "erro");
     } else {
-        mostrarAviso("✅ Conta criada com sucesso! Faça login.", "sucesso");
+        const mensagemSucesso = idEstabelecimento
+            ? "✅ Conta de lojista criada com sucesso! Faça login."
+            : "✅ Conta criada com sucesso! Faça login.";
+
+        mostrarAviso(mensagemSucesso, "sucesso");
         alternarAba('login');
     }
+}
+
+async function validarCodigoLojista(codigo) {
+    if (!codigo) return null;
+
+    const codigoNormalizado = codigo.trim().toUpperCase();
+    const CODIGOS_LOJISTAS = {
+        "LOJA_FARMACIA_123": "farmacia-central",
+        "LOJA_QUALIDADE_321": "loja-qualidade"
+    };
+
+    return CODIGOS_LOJISTAS[codigoNormalizado] || null;
 }
 
 async function fazerLogout() {
