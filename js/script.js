@@ -169,7 +169,7 @@ function toggleFavorito(idProduto, event) {
 
     const index = favoritos.indexOf(idProduto);
     if (index === -1) {
-        favoritos.push(idProduto); // 🌟 CORRIGIDO: Modificado de 'favorites.push' para 'favoritos.push'
+        favoritos.push(idProduto); 
         mostrarAviso("❤️ Adicionado aos favoritos!", "sucesso");
     } else {
         favoritos.splice(index, 1);
@@ -417,6 +417,7 @@ async function verificarUsuario() {
     }
 }
 
+// 🔐 FUNÇÃO DE CADASTRO UNIFICADA E COMPATÍVEL COM LOJISTAS
 async function fazerCadastro() {
     const nomeEl = document.getElementById("cad-nome");
     const emailEl = document.getElementById("cad-email");
@@ -437,8 +438,25 @@ async function fazerCadastro() {
         return;
     }
 
-    let idEstabelecimentoGerado = null;
+    // 1️⃣ Criar o usuário base na tabela 'usuarios'
+    const { data: novoUsuario, error: erroUsuario } = await _supabase
+        .from('usuarios')
+        .insert([{
+            nome: nome,
+            email: email,
+            senha: senha
+        }])
+        .select();
 
+    if (erroUsuario) {
+        alert("❌ Erro ao criar sua conta de usuário: " + erroUsuario.message);
+        console.error(erroUsuario);
+        return;
+    }
+
+    const idUsuarioGerado = novoUsuario[0].id;
+
+    // 2️⃣ Se for lojista, cria na tabela 'lojistas'
     if (querCadastrarEmpresa) {
         const nomeLoja = document.getElementById("loja-nome")?.value.trim();
         const descLoja = document.getElementById("loja-descricao")?.value.trim();
@@ -449,52 +467,123 @@ async function fazerCadastro() {
             return;
         }
 
-        const { data: novaLoja, error: erroLoja } = await _supabase
-            .from('estabelecimentos')
+        const slugLoja = nomeLoja.toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)+/g, '');
+
+        const { data: novoLojista, error: erroLojista } = await _supabase
+            .from('lojistas')
             .insert([{ 
-                nome: nomeLoja, 
+                nome_loja: nomeLoja, 
                 descricao: descLoja, 
-                tipo: segmentoLoja 
+                segmento: segmentoLoja,
+                slug: slugLoja
             }])
             .select();
 
-        if (erroLoja) {
-            alert("❌ Erro ao registrar estabelecimento: " + erroLoja.message);
-            console.error(erroLoja);
+        if (erroLojista) {
+            alert("❌ Erro ao registrar empresa na tabela lojistas: " + erroLojista.message);
+            console.error(erroLojista);
             return;
         }
 
-        if (novaLoja && novaLoja.length > 0) {
-            idEstabelecimentoGerado = novaLoja[0].id; 
+        if (novoLojista && novoLojista.length > 0) {
+            const idLojistaGerado = novoLojista[0].id; 
+
+            // 3️⃣ Tentar vincular na tabela pivô 'usuario_loja'
+            const { error: erroPivo } = await _supabase
+                .from('usuario_loja')
+                .insert([{
+                    id_usuario: idUsuarioGerado,
+                    id_lojista: idLojistaGerado,
+                    funcao: 'Dono'
+                }]);
+
+            // Contingência se a política de RLS barrar inserção anônima direta na tabela pivô
+            if (erroPivo) {
+                console.warn("⚠️ Vinculando id_lojista diretamente na coluna de backup do usuário.");
+                await _supabase
+                    .from('usuarios')
+                    .update({ id_lojista: idLojistaGerado })
+                    .eq('id', idUsuarioGerado);
+            }
         }
     }
 
-    const { error: erroUsuario } = await _supabase
+    const mensagemSucesso = querCadastrarEmpresa
+        ? "✅ Empresa e Conta criadas com sucesso! Agora você pode fazer login."
+        : "✅ Conta de cliente criada com sucesso! Faça login.";
+
+    alert(mensagemSucesso);
+    
+    nomeEl.value = "";
+    emailEl.value = "";
+    senhaEl.value = "";
+    if(document.getElementById("loja-nome")) document.getElementById("loja-nome").value = "";
+    if(document.getElementById("loja-descricao")) document.getElementById("loja-descricao").value = "";
+    
+    alternarAba('login');
+}
+
+// 🔐 NOVA FUNÇÃO DE LOGIN INTELIGENTE INTEGRADA
+async function fazerLogin() {
+    const emailEl = document.getElementById("login-email");
+    const senhaEl = document.getElementById("login-senha");
+
+    if (!emailEl || !senhaEl) return;
+
+    const email = emailEl.value.trim();
+    const senha = senhaEl.value.trim();
+
+    if (!email || !senha) {
+        alert("⚠️ Preencha e-mail e senha para entrar.");
+        return;
+    }
+
+    // Busca o usuário na tabela local
+    const { data: usuarios, error } = await _supabase
         .from('usuarios')
-        .insert([{
-            nome: nome,
-            email: email,
-            senha: senha,
-            id_estabelecimento: idEstabelecimentoGerado
-        }]);
+        .select('*')
+        .eq('email', email)
+        .eq('senha', senha);
 
-    if (erroUsuario) {
-        alert("❌ Erro ao criar sua conta de usuário: " + erroUsuario.message);
-        console.error(erroUsuario);
-    } else {
-        const mensagemSucesso = idEstabelecimentoGerado
-            ? "✅ Empresa e Conta criadas com sucesso! Faça login para começar."
-            : "✅ Conta de cliente criada com sucesso! Faça login.";
+    if (error) {
+        alert("❌ Erro ao realizar login: " + error.message);
+        return;
+    }
 
-        alert(mensagemSucesso);
+    if (!usuarios || usuarios.length === 0) {
+        alert("❌ E-mail ou senha incorretos.");
+        return;
+    }
+
+    let usuarioLogado = usuarios[0];
+
+    // Se o usuário não tiver id_lojista direto na linha, procura na tabela pivô usuario_loja
+    if (!usuarioLogado.id_lojista) {
+        const { data: vinculo } = await _supabase
+            .from('usuario_loja')
+            .select('id_lojista')
+            .eq('id_usuario', usuarioLogado.id)
+            .maybeSingle();
         
-        nomeEl.value = "";
-        emailEl.value = "";
-        senhaEl.value = "";
-        if(document.getElementById("loja-nome")) document.getElementById("loja-nome").value = "";
-        if(document.getElementById("loja-descricao")) document.getElementById("loja-descricao").value = "";
-        
-        alternarAba('login');
+        if (vinculo) {
+            usuarioLogado.id_lojista = vinculo.id_lojista;
+        }
+    }
+
+    // Salva a sessão localmente
+    localStorage.setItem("usuario_logado", JSON.stringify(usuarioLogado));
+    
+    alert(`👋 Bem-vindo de volta, ${usuarioLogado.nome}!`);
+    fecharModal();
+    verificarUsuario();
+    
+    // Se for administrador/lojista, pode redirecionar se estiver na página de login dedicada
+    if (usuarioLogado.id_lojista && window.location.pathname.includes('index')) {
+         // Opcional: window.location.href = 'painel.html';
     }
 }
 
