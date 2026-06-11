@@ -1,9 +1,9 @@
 // ==========================================
-// 🔥 CONFIGURAÇÃO DO SUPABASE
+// 🔗 CONFIGURAÇÃO DO SUPABASE (UNIFICADA)
 // ==========================================
 const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
 const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 let enderecoUsuarioAtual = "";
 
 // Mesmo formato usado no checkout (script.js)
@@ -62,7 +62,8 @@ async function carregarDadosEHistorico() {
         return;
     }
 
-    const { data: userDB, error: userError } = await supabaseClient
+    // Busca atualizada na tabela 'usuarios'
+    const { data: userDB, error: userError } = await _supabase
         .from("usuarios")
         .select("*")
         .eq("id", usuarioLogado.id)
@@ -79,7 +80,8 @@ async function carregarDadosEHistorico() {
         document.getElementById("perf-email").innerText = usuarioLogado.email || "";
     }
 
-    const { data: pedidos, error } = await supabaseClient
+    // Histórico de pedidos do cliente
+    const { data: pedidos, error } = await _supabase
         .from("pedidos")
         .select("*")
         .eq("id_usuario", usuarioLogado.id)
@@ -193,9 +195,9 @@ async function salvarEdicaoPerfil() {
         return;
     }
 
-    const novoEnd = temEnderecoCompleto ? montarEndereco(rua, numero, bairro, cidade) : "";
+    const novoEnd = temEnderecoCompleto ? montarEndereco(rua, numero, bairro, city) : "";
 
-    const { error } = await supabaseClient
+    const { error } = await _supabase
         .from("usuarios")
         .update({
             nome: novoNome,
@@ -218,6 +220,6 @@ async function salvarEdicaoPerfil() {
     document.getElementById("perf-telefone").innerText = novoTel || "Não informado";
     atualizarResumoEndereco(novoEnd);
 
-    alert("✅ Perfil atualizado com sucesso!");
+    alert("✅ Perfil updated com sucesso!");
     fecharModalEditar();
 }

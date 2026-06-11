@@ -1,6 +1,9 @@
+// =================================================================
+// 🔗 CONFIGURAÇÃO DO SUPABASE (UNIFICADA)
+// =================================================================
 const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
 const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 const ETAPAS_ENTREGA = [
     { status: 'Recebido', icone: '📋', titulo: 'Pedido recebido', descricao: 'Recebemos seu pedido e estamos organizando.' },
@@ -137,12 +140,14 @@ async function carregarRastreamento() {
     const container = document.getElementById('rastreamento-conteudo');
     const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado'));
 
+    if (!container) return;
+
     if (!usuarioLogado) {
         mostrarLoginNecessario(container);
         return;
     }
 
-    const { data: pedidos, error } = await supabaseClient
+    const { data: pedidos, error } = await _supabase
         .from('pedidos')
         .select('*')
         .eq('id_usuario', usuarioLogado.id)

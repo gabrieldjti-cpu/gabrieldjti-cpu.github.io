@@ -22,25 +22,9 @@ const TAXAS_ENTREGA = {
 };
 
 // 🎯 CAPTURAR ID DO LOJISTA PARADO NA URL (?id=UUID ou ?loja=UUID)
-// Ajustado para aceitar tanto '?id=' (gerado pelo admin.js) quanto '?loja='
 function obterIdLojistaDaURL() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('id') || urlParams.get('loja');
-}
-
-// Na sua função que busca os produtos do Supabase (ex: carregarProdutos):
-async function carregarProdutos() {
-    let query = _supabase.from('produtos').select('*');
-    const idLojaAtual = obterIdLojistaDaURL();
-
-    // 🔄 ATUALIZADO: Se houver um ID de loja na URL, filtra pela nova coluna 'id_lojista'
-    if (idLojaAtual) {
-        query = query.eq('id_lojista', idLojaAtual);
-    }
-
-    const { data: produtos, error } = await query;
-    listaProdutosGeral = produtos || [];
-    renderizarProdutos();
 }
 
 function normalizarBairro(nome) {
@@ -65,7 +49,7 @@ function obterTaxaEntrega(endereco) {
 }
 
 // =================================================================
-// 📦 CARREGAR PRODUTOS DO SUPABASE (VERSÃO COMPLETA ATUALIZADA)
+// 📦 CARREGAR PRODUTOS DO SUPABASE
 // =================================================================
 async function carregarProdutosSupabase() {
     const idLoja = obterIdLojistaDaURL();
@@ -75,7 +59,6 @@ async function carregarProdutosSupabase() {
         return;
     }
 
-    // 🔄 ATUALIZADO: Busca os produtos apontando para 'id_lojista'
     const { data: produtos, error } = await _supabase
         .from('produtos')
         .select('*')
@@ -86,7 +69,6 @@ async function carregarProdutosSupabase() {
         return;
     }
 
-    // Alimenta a lista global do ecossistema e distribui nas vitrines da página
     listaProdutosGeral = produtos || [];
     renderizarProdutos(); 
 }
@@ -95,33 +77,32 @@ async function carregarProdutosSupabase() {
 function renderizarProdutos() {
     if (listaProdutosGeral.length === 0) return;
 
-    // Identifica o nome do arquivo na URL (forçando letras minúsculas)
     const urlAtual = window.location.pathname.toLowerCase();
 
     // 🥦 Página Hortifruti
     if (urlAtual.includes('hortifruti')) {
-        const horti = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'hortifruti');
+        const horti = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'hortifruti');
         mostrarProdutosSupabase(horti, 'lista-hortifruti');
         return;
     }
 
     // 🥩 Página Carnes
     if (urlAtual.includes('carnes')) {
-        const carnes = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'carnes');
+        const carnes = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'carnes');
         mostrarProdutosSupabase(carnes, 'lista-carnes');
         return;
     }
 
     // 🧼 Página Limpeza
     if (urlAtual.includes('limpeza')) {
-        const limpeza = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'limpeza');
+        const limpeza = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'limpeza');
         mostrarProdutosSupabase(limpeza, 'lista-limpeza');
         return;
     }
 
     // 🍹 Página Bebidas
     if (urlAtual.includes('bebidas')) {
-        const bebidas = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'bebidas');
+        const bebidas = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'bebidas');
         mostrarProdutosSupabase(bebidas, 'lista-bebidas');
         return;
     }
@@ -132,23 +113,26 @@ function renderizarProdutos() {
         return;
     }
 
-    // 🏠 Página Inicial (index.html)
-    const index = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'index' || p.categoria.toLowerCase() === 'mais vendidos');
+    // 🏠 Página Inicial (index.html / vitrine.html)
+    const index = listaProdutosGeral.filter(p => p.categoria && (p.categoria.toLowerCase() === 'index' || p.categoria.toLowerCase() === 'mais vendidos'));
     mostrarProdutosSupabase(index, 'lista-produtos');
 
-    const hortiCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'hortifruti');
+    const hortiCarrossel = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'hortifruti');
     mostrarProdutosSupabase(hortiCarrossel, 'carrossel-horti');
 
-    const carnesCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'carnes');
+    const carnesCarrossel = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'carnes');
     mostrarProdutosSupabase(carnesCarrossel, 'carrossel-carnes');
 
-    const limpezaCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'limpeza');
+    const limpezaCarrossel = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'limpeza');
     mostrarProdutosSupabase(limpezaCarrossel, 'carrossel-limpeza');
 
-    const bebidasCarrossel = listaProdutosGeral.filter(p => p.categoria.toLowerCase() === 'bebidas');
+    const bebidasCarrossel = listaProdutosGeral.filter(p => p.categoria && p.categoria.toLowerCase() === 'bebidas');
     mostrarProdutosSupabase(bebidasCarrossel, 'carrossel-bebidas');
 }
 
+// =================================================================
+// ❤️ GERENCIAMENTO DE FAVORITOS
+// =================================================================
 function salvarFavoritos() {
     localStorage.setItem("favoritos", JSON.stringify(favoritos));
 }
@@ -174,12 +158,18 @@ function botaoFavoritoHTML(idProduto) {
     `;
 }
 
+function mostrarAviso(mensagem, tipo = "sucesso") {
+    if (typeof alert !== "undefined") {
+        console.log(`[${tipo.toUpperCase()}] ${mensagem}`);
+    }
+}
+
 function toggleFavorito(idProduto, event) {
     if (event) event.stopPropagation();
 
     const index = favoritos.indexOf(idProduto);
     if (index === -1) {
-        favoritos.push(idProduto); // 🛠️ Corrigido de 'favorites' para 'favoritos'
+        favoritos.push(idProduto); // 🌟 CORRIGIDO: Modificado de 'favorites.push' para 'favoritos.push'
         mostrarAviso("❤️ Adicionado aos favoritos!", "sucesso");
     } else {
         favoritos.splice(index, 1);
@@ -187,7 +177,6 @@ function toggleFavorito(idProduto, event) {
     }
 
     salvarFavoritos();
-    atualidorFavoritos(); // Atualiza contador
     atualizarContadorFavoritos();
 
     const urlAtual = window.location.pathname.toLowerCase();
@@ -210,7 +199,7 @@ function renderizarFavoritos() {
                 <span class="favoritos-vazio-icone">🤍</span>
                 <h2>Sua lista está vazia</h2>
                 <p>Toque no coração nos produtos para salvá-los aqui e comprar mais rápido.</p>
-                <a href="index.html" class="btn-ir-loja">Ir às compras</a>
+                <a href="index.html${window.location.search}" class="btn-ir-loja">Ir às compras</a>
             </div>
         `;
         return;
@@ -219,6 +208,9 @@ function renderizarFavoritos() {
     mostrarProdutosSupabase(lista, "lista-favoritos");
 }
 
+// =================================================================
+// 🎨 RENDERIZADOR DOS CARDS DE PRODUTO
+// =================================================================
 function mostrarProdutosSupabase(lista, idContainer) {
     const container = document.getElementById(idContainer);
     if (!container) return;
@@ -227,17 +219,18 @@ function mostrarProdutosSupabase(lista, idContainer) {
 
     lista.forEach(produto => {
         let badgeHTML = '';
+        const categoriaLimpa = produto.categoria ? produto.categoria.toLowerCase() : '';
 
-        if (produto.categoria.toLowerCase() === 'carnes') {
+        if (categoriaLimpa === 'carnes') {
             badgeHTML = `<span class="badge badge-premium">Premium</span>`;
         }
-        else if (produto.categoria.toLowerCase() === 'hortifruti') {
+        else if (categoriaLimpa === 'hortifruti') {
             badgeHTML = `<span class="badge badge-organico">Orgânico</span>`;
         }
-        else if (produto.categoria.toLowerCase() === 'limpeza') {
+        else if (categoriaLimpa === 'limpeza') {
             badgeHTML = `<span class="badge badge-limpeza" style="background: #0dcefd; color: white;">Higiene</span>`;
         }
-        else if (produto.categoria.toLowerCase() === 'bebidas') {
+        else if (categoriaLimpa === 'bebidas') {
             badgeHTML = `<span class="badge badge-bebidas" style="background: #ffc107; color: black;">Gelada</span>`;
         }
 
@@ -277,16 +270,8 @@ function mostrarProdutosSupabase(lista, idContainer) {
     });
 }
 
-// Inicialização automática ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-    carregarProdutosSupabase();
-    verificarUsuario();
-    atualizarContador();
-    atualizarContadorFavoritos();
-});
-
 // =================================================================
-// 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA FILTRADA POR LOJA)
+// 🔍 FILTRAR PRODUTOS (BUSCA DINÂMICA)
 // =================================================================
 async function filtrarProdutos(categoriaPagina = null) {
     const buscaEl = document.getElementById("busca");
@@ -315,7 +300,6 @@ async function filtrarProdutos(categoriaPagina = null) {
 
     if (!idLoja) return;
 
-    // 🔄 ATUALIZADO: Busca por texto filtrando pelo 'id_lojista' correto
     const { data, error } = await _supabase
         .from('produtos')
         .select('*')
@@ -336,7 +320,7 @@ async function filtrarProdutos(categoriaPagina = null) {
 }
 
 // =================================================================
-// 🛒 GERENCIAMENTO DO CARRINHO (VITRINE, CONTADORES E LATERAL)
+// 🛒 GERENCIAMENTO DO CARRINHO
 // =================================================================
 async function adicionarAoCarrinhoCard(idProduto) {
     const produto = listaProdutosGeral.find(p => p.id === idProduto);
@@ -383,16 +367,14 @@ function atualizarInterfaceGeral() {
     
     const carrinhoLateral = document.getElementById("carrinho-lateral");
     if (carrinhoLateral && carrinhoLateral.classList.contains("ativo")) {
-        carregarCarrinho();
+        if (typeof carregarCarrinho === "function") carregarCarrinho();
     }
     
     renderizarProdutos();
 }
 
-// [Mantive as funções complementares ocultas para focar nas mudanças estruturais...]
-
 // =================================================================
-// 👤 SISTEMA DE AUTENTICAÇÃO (MODELO AUTÔNOMO ATUALIZADO)
+// 👤 SISTEMA DE AUTENTICAÇÃO E CADASTRO
 // =================================================================
 async function verificarUsuario() {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
@@ -413,8 +395,7 @@ async function verificarUsuario() {
 
         const adminEmail = 'gabrieldj.ti@gmail.com';
         
-        // 🔄 ATUALIZADO: Verificação condizente com 'id_lojista'
-        if (usuarioLogado.email === adminEmail || usuarioLogado.id_lojista) {
+        if (usuarioLogado.email === adminEmail || usuarioLogado.id_lojista || usuarioLogado.id_estabelecimento) {
             if (adminBtn) adminBtn.style.display = "flex";
         } else {
             if (adminBtn) adminBtn.style.display = "none";
@@ -436,72 +417,89 @@ async function verificarUsuario() {
     }
 }
 
-// [fazerLogin ocultado por brevidade...]
-
-// 🔄 ATUALIZADO: Função de cadastro inteligente apontando para 'lojistas' e 'id_lojista'
 async function fazerCadastro() {
-    const nome = document.getElementById("cad-nome").value.trim();
-    const email = document.getElementById("cad-email").value.trim();
-    const senha = document.getElementById("cad-senha").value.trim();
-    const querCadastrarEmpresa = document.getElementById("cad-e-empresa")?.checked;
-
-    if (!nome || !email || !senha) {
-        mostrarAviso("⚠️ Preencha todos os campos para criar a conta.", "aviso");
+    const nomeEl = document.getElementById("cad-nome");
+    const emailEl = document.getElementById("cad-email");
+    const senhaEl = document.getElementById("cad-senha");
+    
+    if (!nomeEl || !emailEl || !senhaEl) {
+        alert("❌ Erro interno: Campos de cadastro não foram encontrados no HTML.");
         return;
     }
 
-    let idLojistaGerado = null;
+    const nome = nomeEl.value.trim();
+    const email = emailEl.value.trim();
+    const senha = senhaEl.value.trim();
+    const querCadastrarEmpresa = document.getElementById("cad-e-empresa")?.checked;
+
+    if (!nome || !email || !senha) {
+        alert("⚠️ Por favor, preencha todos os campos (Nome, E-mail e Senha).");
+        return;
+    }
+
+    let idEstabelecimentoGerado = null;
 
     if (querCadastrarEmpresa) {
-        const nomeLoja = document.getElementById("loja-nome").value.trim();
-        const descLoja = document.getElementById("loja-descricao").value.trim();
-        const segmentoLoja = document.getElementById("loja-segmento").value;
+        const nomeLoja = document.getElementById("loja-nome")?.value.trim();
+        const descLoja = document.getElementById("loja-descricao")?.value.trim();
+        const segmentoLoja = document.getElementById("loja-segmento")?.value;
 
         if (!nomeLoja) {
-            mostrarAviso("⚠️ Por favor, digite o nome da sua empresa/loja.", "aviso");
+            alert("⚠️ Você marcou a opção de empresa. Por favor, digite o Nome da Loja.");
             return;
         }
 
-        // 1. Cria o estabelecimento na tabela REPROJETADA 'lojistas'
         const { data: novaLoja, error: erroLoja } = await _supabase
-            .from('lojistas')
-            .insert([{ nome_loja: nomeLoja, descricao: descLoja, segmento: segmentoLoja }])
+            .from('estabelecimentos')
+            .insert([{ 
+                nome: nomeLoja, 
+                descricao: descLoja, 
+                tipo: segmentoLoja 
+            }])
             .select();
 
         if (erroLoja) {
-            mostrarAviso("❌ Erro ao registrar empresa: " + erroLoja.message, "erro");
+            alert("❌ Erro ao registrar estabelecimento: " + erroLoja.message);
+            console.error(erroLoja);
             return;
         }
 
         if (novaLoja && novaLoja.length > 0) {
-            idLojistaGerado = novaLoja[0].id; 
+            idEstabelecimentoGerado = novaLoja[0].id; 
         }
     }
 
-    // 2. Insere na tabela de usuários salvando o UUID em 'id_lojista'
     const { error: erroUsuario } = await _supabase
         .from('usuarios')
         .insert([{
             nome: nome,
             email: email,
             senha: senha,
-            id_lojista: idLojistaGerado
+            id_estabelecimento: idEstabelecimentoGerado
         }]);
 
     if (erroUsuario) {
-        mostrarAviso("❌ Erro ao criar conta: " + erroUsuario.message, "erro");
+        alert("❌ Erro ao criar sua conta de usuário: " + erroUsuario.message);
+        console.error(erroUsuario);
     } else {
-        const mensagemSucesso = idLojistaGerado
-            ? "✅ Empresa e Conta criadas com sucesso! Faça login para gerenciar."
+        const mensagemSucesso = idEstabelecimentoGerado
+            ? "✅ Empresa e Conta criadas com sucesso! Faça login para começar."
             : "✅ Conta de cliente criada com sucesso! Faça login.";
 
-        mostrarAviso(mensagemSucesso, "sucesso");
+        alert(mensagemSucesso);
+        
+        nomeEl.value = "";
+        emailEl.value = "";
+        senhaEl.value = "";
+        if(document.getElementById("loja-nome")) document.getElementById("loja-nome").value = "";
+        if(document.getElementById("loja-descricao")) document.getElementById("loja-descricao").value = "";
+        
         alternarAba('login');
     }
 }
 
 // =================================================================
-// 📦 FINALIZAR PEDIDO (COMPLETADO E CORRIGIDO)
+// 📦 FINALIZAR PEDIDO
 // =================================================================
 async function escolherPagamento(tipo) {
     if (carrinho.length === 0) return;
@@ -523,11 +521,11 @@ async function escolherPagamento(tipo) {
         cliente: usuarioLogado ? usuarioLogado.nome : "Cliente Anonimo",
         telefone: usuarioLogado ? usuarioLogado.telefone : "Não informado",
         endereco: enderecoUsuario,
-        produtos: carrinho, // Envia o JSON estruturado das compras
+        produtos: carrinho, 
         total: totalGeral,
         pagamento: tipo,
         status: "Recebido",
-        id_lojista: idLojaAtual // 🔒 Envia amarrado à nova coluna mapeada do banco
+        id_lojista: idLojaAtual 
     };
 
     const { error } = await _supabase
@@ -540,26 +538,25 @@ async function escolherPagamento(tipo) {
     }
 
     mostrarAviso("🚀 Pedido registrado com sucesso!", "sucesso");
-    limparCarrinho();
+    if (typeof limparCarrinho === "function") limparCarrinho();
     fecharModal();
-    fecharCarrinhoLateral();
+    if (typeof fecharCarrinhoLateral === "function") fecharCarrinhoLateral();
 }
+
 // =================================================================
 // 🧭 REDIRECIONAMENTO E NAVEGAÇÃO DE CONTA
 // =================================================================
 function abrirConta() {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
-    const idLojaAtual = obterIdLojistaDaURL(); // Reaproveita sua função da linha 25
+    const idLojaAtual = obterIdLojistaDaURL();
 
     if (usuarioLogado) {
-        // Se houver um ID de loja na URL atual, leva ele junto para não quebrar a vitrine ao voltar
         if (idLojaAtual) {
             window.location.href = `perfil.html?id=${idLojaAtual}`;
         } else {
             window.location.href = "perfil.html";
         }
     } else {
-        // Se não estiver logado, força a abertura do modal de login
         const modalLogin = document.getElementById("modal-login");
         if (modalLogin) {
             modalLogin.style.display = "flex";
@@ -567,4 +564,54 @@ function abrirConta() {
             mostrarAviso("⚠️ Por favor, faça login para acessar sua conta.", "aviso");
         }
     }
+}
+
+// =================================================================
+// 🚀 INICIALIZAÇÃO AUTOMÁTICA
+// =================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    carregarProdutosSupabase();
+    verificarUsuario();
+    atualizarContador();
+    atualizarContadorFavoritos();
+});
+
+// =================================================================
+// 🔀 CONTROLE DE ABAS DO MODAL (LOGIN VS CADASTRO)
+// =================================================================
+function alternarAba(aba) {
+    const formLogin = document.getElementById("form-login");
+    const formCadastro = document.getElementById("form-cadastro");
+    const btnAbaEntrar = document.getElementById("aba-entrar");
+    const btnAbaCadastrar = document.getElementById("aba-cadastrar");
+
+    if (aba === 'cadastro') {
+        if (formLogin) formLogin.style.display = "none";
+        if (formCadastro) formCadastro.style.display = "block";
+        if (btnAbaCadastrar) btnAbaCadastrar.classList.add("ativa");
+        if (btnAbaEntrar) btnAbaEntrar.classList.remove("ativa");
+    } else {
+        if (formLogin) formLogin.style.display = "block";
+        if (formCadastro) formCadastro.style.display = "none";
+        if (btnAbaEntrar) btnAbaEntrar.classList.add("ativa");
+        if (btnAbaCadastrar) btnAbaCadastrar.classList.remove("ativa");
+    }
+}
+
+function fecharModal() {
+    const modal = document.getElementById("modal-login");
+    if (modal) modal.style.display = "none";
+}
+
+function toggleCamposEmpresa() {
+    const checkbox = document.getElementById("cad-e-empresa");
+    const camposLoja = document.getElementById("campos-empresa") || document.getElementById("campos-loja");
+    
+    if (checkbox && camposLoja) {
+        camposLoja.style.display = checkbox.checked ? "block" : "none";
+    }
+}
+
+function toggleCamposLoja() {
+    toggleCamposEmpresa();
 }

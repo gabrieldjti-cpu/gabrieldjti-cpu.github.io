@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Estilos rápidos inline para organizar os cards de seleção de lojas */
+        /* Estilos inline para organizar os cards de seleção de lojas */
         .container-lojas {
             max-width: 1200px;
             margin: 40px auto;
@@ -65,6 +65,23 @@
             margin-top: 5px;
             color: #333;
         }
+        /* Estilos para o Modal sincronizarem com o CSS Premium */
+        .abas-login {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        .aba {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #777;
+        }
+        .aba.ativa {
+            color: #198754;
+            border-bottom: 3px solid #198754;
+        }
     </style>
 </head>
 
@@ -76,9 +93,9 @@
         </div>
 
         <div class="acoes-topo">
-            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;">
+            <button id="btn-admin" class="btn-admin-topo" style="display:none; border:none; background:none;">
                 <span>👑 Painel ADM</span>
-            </a>
+            </button>
 
             <div class="usuario-box" onclick="abrirConta()">
                 <div class="avatar-user">👤</div>
@@ -107,11 +124,11 @@
         <p>© 2026 Marketplace Online | 📍 Conectando Comércios Locais</p>
     </footer>
 
-    <div id="modal-login" class="modal">
+    <div id="modal-login" class="modal" style="display: none;">
         <div class="modal-login-box">
             <div class="abas-login">
-                <div id="tab-login" onclick="alternarAba('login')" class="aba ativa">Entrar</div>
-                <div id="tab-cadastro" onclick="alternarAba('cadastro')" class="aba">Cadastrar</div>
+                <div id="aba-entrar" onclick="alternarAba('login')" class="aba ativa">Entrar</div>
+                <div id="aba-cadastrar" onclick="alternarAba('cadastro')" class="aba">Cadastrar</div>
             </div>
             
             <div id="form-login">
@@ -121,32 +138,32 @@
             </div>
             
             <div id="form-cadastro" style="display:none;">
-                <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
-                <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
-                <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
-                
-                <div style="margin: 15px 0; text-align: left; display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="cad-e-empresa" onchange="toggleCamposEmpresa()" style="width: auto; cursor: pointer;">
-                    <label for="cad-e-empresa" style="cursor: pointer; font-weight: bold; color: #198754; font-size: 14px;">Quero cadastrar minha empresa / loja</label>
-                </div>
+    <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
+    <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
+    <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
+    
+    <div style="margin: 15px 0; text-align: left; display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" id="cad-e-empresa" onchange="toggleCamposEmpresa()" style="width: auto; cursor: pointer;">
+        <label for="cad-e-empresa" style="cursor: pointer; font-weight: bold; color: #198754; font-size: 14px;">Quero cadastrar minha empresa / loja</label>
+    </div>
 
-                <div id="campos-empresa" style="display: none; border-left: 3px solid #198754; padding-left: 10px; margin-bottom: 15px;">
-                    <h4 style="margin: 0 0 10px 0; color: #333; text-align: left;">Dados da Empresa:</h4>
-                    <input type="text" id="loja-nome" placeholder="Nome da Loja (ex: Mercado Central)" class="input-premium">
-                    <input type="text" id="loja-descricao" placeholder="Breve descrição da loja" class="input-premium">
-                    <select id="loja-segmento" class="input-premium" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; background: white;">
-                        <option value="mercado">🛒 Supermercado / Mercearia</option>
-                        <option value="farmacia">💊 Farmácia / Drogaria</option>
-                        <option value="bebidas">🍺 Distribuidora de Bebidas</option>
-                        <option value="outros">🏪 Outro Segmento</option>
-                    </select>
-                </div>
+    <div id="campos-empresa" style="display: none; border-left: 3px solid #198754; padding-left: 10px; margin-bottom: 15px;">
+        <h4 style="margin: 0 0 10px 0; color: #333; text-align: left;">Dados da Empresa:</h4>
+        <input type="text" id="loja-nome" placeholder="Nome da Loja (ex: Mercado Central)" class="input-premium">
+        <input type="text" id="loja-descricao" placeholder="Breve descrição da loja" class="input-premium">
+        <select id="loja-segmento" class="input-premium" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; background: white;">
+            <option value="mercado">🛒 Supermercado / Mercearia</option>
+            <option value="farmacia">💊 Farmácia / Drogaria</option>
+            <option value="bebidas">🍺 Distribuidora de Bebidas</option>
+            <option value="outros">🏪 Outro Segmento</option>
+        </select>
+    </div>
 
-                <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
-            </div>
+    <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
+</div>
             
             <div class="fechar-login">
-                <button onclick="fecharLogin()">Fechar</button>
+                <button onclick="fecharModal()">Fechar</button>
             </div>
         </div>
     </div>
@@ -155,10 +172,13 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            carregarLojasDoSupabase();
+            // Pequena pausa para garantir que o cliente Supabase inicializou no script.js
+            setTimeout(() => {
+                carregarLojasDoSupabase();
+            }, 300);
         });
 
-        // Mostra ou esconde os campos extras caso seja uma empresa
+        // Controla a exibição dos campos extras de empresa
         function toggleCamposEmpresa() {
             const checkbox = document.getElementById("cad-e-empresa");
             const blocoEmpresa = document.getElementById("campos-empresa");
@@ -167,15 +187,16 @@
             }
         }
 
-        // Carrega os dados direto da tabela 'estabelecimentos' do seu banco
+        // Busca os lojistas cadastrados diretamente na tabela correta do banco
         async function carregarLojasDoSupabase() {
             const container = document.getElementById("lista-lojas-marketplace");
+            if (!container) return;
             
             try {
-                // _supabase deve estar iniciado no seu js/script.js
+                // Aponta para a tabela 'lojistas' reestruturada no seu script principal
                 const { data: lojas, error } = await _supabase
-                    .from('estabelecimentos') 
-                    .select('id, nome, descricao, segmento');
+                    .from('lojistas') 
+                    .select('id, nome_loja, descricao, segmento');
 
                 if (error) throw error;
 
@@ -192,12 +213,11 @@
                     if (loja.segmento === "farmacia") emoji = "💊";
                     if (loja.segmento === "bebidas") emoji = "🍺";
 
-                    // Altera a rota para redirecionar para a página correta onde você exibe os produtos de cada loja
-                    // Mude o 'index.html' se a sua página de produtos tiver outro nome (ex: produtos.html)
+                    // Redireciona para index.html passando o ID gerado na URL (?loja=UUID)
                     const cardHTML = `
                         <a href="index.html?loja=${loja.id}" class="card-loja">
                             <div class="logo-comercio">${emoji}</div>
-                            <h3>${loja.nome}</h3>
+                            <h3>${loja.nome_loja}</h3>
                             <p>${loja.descricao || 'Confira nossos produtos!'}</p>
                             <span class="btn-entrar-loja">Fazer Compras →</span>
                         </a>

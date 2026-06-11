@@ -28,14 +28,17 @@ document.addEventListener("DOMContentLoaded", () => {
         ehAdminMaster = true;
         console.log("👑 Modo Administrador Master Ativo - Acesso total concedido.");
     } 
-    // 🔒 VALIDAÇÃO PADRÃO: Se não for você, exige obrigatoriamente um vínculo com lojista
-    else if (!lojistaAtual || !lojistaAtual.id_lojista) {
+    // 🔒 VALIDAÇÃO PADRÃO: Se não for você, exige obrigatoriamente um vínculo com lojista/estabelecimento
+    else if (!lojistaAtual || (!lojistaAtual.id_lojista && !lojistaAtual.id_estabelecimento)) {
         alert("⚠️ Acesso restrito. Faça login como lojista para acessar o painel.");
         window.location.href = "login.html"; 
         return;
     }
 
-    console.log("🏪 Painel carregado para:", ehAdminMaster ? "Todas as Lojas (Master)" : lojistaAtual.id_lojista);
+    // Normaliza o ID da loja para uso uniforme no script
+    lojistaAtual.id_loja_ativa = lojistaAtual.id_estabelecimento || lojistaAtual.id_lojista;
+
+    console.log("🏪 Painel carregado para:", ehAdminMaster ? "Todas as Lojas (Master)" : lojistaAtual.id_loja_ativa);
 
     carregarPedidosAdmin();
     carregarProdutosAdmin();
@@ -52,7 +55,7 @@ function gerarLinkDivulgacao() {
             return;
         }
         const urlBase = window.location.origin; 
-        inputLink.value = `${urlBase}/index.html?id=${lojistaAtual.id_lojista}`;
+        inputLink.value = `${urlBase}/index.html?id=${lojistaAtual.id_loja_ativa}`;
     }
 }
 
@@ -74,7 +77,8 @@ function escaparHtml(texto) {
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 // =================================================================
@@ -91,7 +95,7 @@ async function carregarPedidosAdmin() {
     let query = _supabase.from("pedidos").select("*");
     
     if (!ehAdminMaster) {
-        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+        query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
     }
 
     const { data: pedidos, error } = await query.order("created_at", { ascending: false });
@@ -170,9 +174,9 @@ function renderizarPedidos(pedidos, container) {
             ? pedido.produtos.map(p => `${p.quantidade}x ${p.nome}`).join(" · ")
             : "Sem detalhes";
 
-        let itensHTML = "";
+        let itemsHTML = "";
         if (Array.isArray(pedido.produtos)) {
-            itensHTML = pedido.produtos.map(p =>
+            itemsHTML = pedido.produtos.map(p =>
                 `<li><span>${escaparHtml(p.quantidade)}x ${escaparHtml(p.nome)}</span><strong>R$ ${(p.preco * p.quantidade).toFixed(2)}</strong></li>`
             ).join("");
         }
@@ -201,7 +205,7 @@ function renderizarPedidos(pedidos, container) {
                         <div><span class="label-detalhe">Pagamento</span><p>${escaparHtml(pedido.pagamento)}</p></div>
                         <div class="pedido-endereco-full"><span class="label-detalhe">Endereço</span><p>${escaparHtml(pedido.endereco)}</p></div>
                     </div>
-                    <ul class="pedido-itens-lista">${itensHTML}</ul>
+                    <ul class="pedido-itens-lista">${itemsHTML}</ul>
                     <div class="acoes-status">
                         <button type="button" class="btn-status btn-entrega" onclick="atualizarStatusPedido('${pedido.id}', 'Saiu para entrega')">🚚 Saiu para entrega</button>
                         <button type="button" class="btn-status btn-ok" onclick="atualizarStatusPedido('${pedido.id}', 'Entregue')">✅ Entregue</button>
@@ -216,9 +220,8 @@ function renderizarPedidos(pedidos, container) {
 async function atualizarStatusPedido(idPedido, novoStatus) {
     let query = _supabase.from("pedidos").update({ status: novoStatus }).eq("id", idPedido);
 
-    // Se for lojista comum, adiciona trava de segurança no update
     if (!ehAdminMaster) {
-        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+        query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
     }
 
     const { error } = await query;
@@ -241,11 +244,10 @@ async function carregarProdutosAdmin() {
 
     container.innerHTML = '<p class="admin-msg">Carregando estoque...</p>';
 
-    // Se for Admin Master, exibe os produtos de todas as lojas cadastrados no banco
     let query = _supabase.from("produtos").select("*");
 
     if (!ehAdminMaster) {
-        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+        query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
     }
 
     const { data: produtos, error } = await query.order("nome", { ascending: true });
@@ -297,8 +299,9 @@ function renderizarProdutos(produtos) {
     }
 
     container.innerHTML = produtos.map(produto => {
-        const produtoJSON = JSON.stringify(produto).replace(/'/g, "\\'");
         const nomeEsc = escaparHtml(produto.nome);
+        // Escapa de forma segura a string JSON para colocar no atributo inline HTML
+        const produtoAtributo = btoa(unescape(encodeURIComponent(JSON.stringify(produto))));
 
         return `
             <article class="produto-admin-card">
@@ -309,12 +312,23 @@ function renderizarProdutos(produtos) {
                     <p class="produto-admin-preco">R$ ${Number(produto.preco).toFixed(2)}</p>
                 </div>
                 <div class="produto-admin-acoes">
-                    <button type="button" class="btn-mini btn-editar-mini" onclick='prepararEdicao(${produtoJSON})'>✏️ Editar</button>
+                    <button type="button" class="btn-mini btn-editar-mini" onclick="prepararEdicaoDecodificada('${produtoAtributo}')">✏️ Editar</button>
                     <button type="button" class="btn-mini btn-excluir-mini" onclick="excluirProdutoAdmin('${produto.id}')">🗑️</button>
                 </div>
             </article>
         `;
     }).join("");
+}
+
+// Decodifica o objeto empacotado evitando erros de aspas quebradas no HTML
+function prepararEdicaoDecodificada(base64String) {
+    try {
+        const objJson = decodeURIComponent(escape(atob(base64String)));
+        const produto = JSON.parse(objJson);
+        prepararEdicao(produto);
+    } catch(e) {
+        console.error("Erro ao decodificar produto para edição", e);
+    }
 }
 
 function prepararEdicao(produto) {
@@ -344,7 +358,7 @@ async function excluirProdutoAdmin(idProduto) {
     let query = _supabase.from("produtos").delete().eq("id", idProduto);
 
     if (!ehAdminMaster) {
-        query = query.eq("id_lojista", lojistaAtual.id_lojista);
+        query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
     }
 
     const { error } = await query;
@@ -370,8 +384,14 @@ async function salvarProduto() {
         return;
     }
 
-    // Se você for o Master adicionando produto, ele usará um ID padrão de testes ou nulo se a tabela permitir
-    const lojistaIdFinal = ehAdminMaster ? "00000000-0000-0000-0000-000000000000" : lojistaAtual.id_lojista;
+    // Se for o Admin Master incluindo produto, puxa de forma inteligente o ID do primeiro estabelecimento da tabela para evitar quebra de Foreign Key
+    let lojistaIdFinal = lojistaAtual.id_loja_ativa;
+    if (ehAdminMaster && !lojistaIdFinal) {
+        const { data: ests } = await _supabase.from("estabelecimentos").select("id").limit(1);
+        if (ests && ests.length > 0) {
+            lojistaIdFinal = ests[0].id;
+        }
+    }
 
     const dadosProduto = {
         nome,
@@ -380,14 +400,14 @@ async function salvarProduto() {
         desconto: desconto ? Number(desconto) : 0,
         img: imagem,
         categoria,
-        id_lojista: lojistaIdFinal // Mudado para refletir a alteração do banco
+        id_lojista: lojistaIdFinal
     };
 
     if (idProdutoEmEdicao) {
         let query = _supabase.from("produtos").update(dadosProduto).eq("id", idProdutoEmEdicao);
 
         if (!ehAdminMaster) {
-            query = query.eq("id_lojista", lojistaAtual.id_lojista);
+            query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
         }
 
         const { error } = await query;
@@ -396,7 +416,7 @@ async function salvarProduto() {
             alert("❌ Erro ao atualizar: " + error.message);
             return;
         }
-        alert("✅ Produto updated!");
+        alert("✅ Produto atualizado!");
     } else {
         const { error } = await _supabase
             .from("produtos")
