@@ -1,7 +1,7 @@
 /* ======================================================
    💎 FONTES E VARIÁVEIS
 ====================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
     --primary: #198754;
@@ -264,7 +264,7 @@ body {
     letter-spacing: 1px;
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 10px 20px rgba(255,193,7,0.3);
+    box-shadow: 0 10px 20px rgba(257,193,7,0.3);
 }
 
 .banner button:hover {
@@ -1084,7 +1084,6 @@ main.produtos {
     padding: 20px;
 }
 
-/* Estrutura Higienizada dos Containers Internos */
 .modal-box, 
 .modal-login-box, 
 .perfil-box {
@@ -1108,7 +1107,6 @@ main.produtos {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* Customização Perfeita de Scrollbar interna dos modais */
 .perfil-box::-webkit-scrollbar,
 .modal-login-box::-webkit-scrollbar {
     width: 6px;
@@ -1294,7 +1292,7 @@ main.produtos {
 .btn-dinheiro { background: #28a745; }
 
 /* ======================================================
-   🦶 FOOTER
+   Footers e Toasts
 ====================================================== */
 .footer {
     margin-top: 50px;
@@ -1304,9 +1302,6 @@ main.produtos {
     color: white;
 }
 
-/* ======================================================
-   ⚠️ ESTILIZAÇÃO DOS TOASTS / AVISOS FLUTUANTES
-====================================================== */
 div[style*="background: #ffc107"], 
 div[style*="background:#ffc107"] {
     color: #212529 !important; 
@@ -1375,16 +1370,15 @@ div[style*="position: fixed"] {
         border-radius: 20px;
     }
 }
+
 /* =================================================================
    🛒 MINI-CARRINHO FLUTUANTE & CONTROLES NO CARD
-   ================================================================= */
-
-/* Botão Flutuante */
+================================================================= */
 .cart-flutuante {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #198754; /* Verde sucesso */
+    background-color: #198754;
     color: white;
     width: 60px;
     height: 60px;
@@ -1410,7 +1404,7 @@ div[style*="position: fixed"] {
     position: absolute;
     top: -5px;
     right: -5px;
-    background-color: #dc3545; /* Vermelho */
+    background-color: #dc3545;
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -1419,7 +1413,6 @@ div[style*="position: fixed"] {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Container do Botão de Quantidade no Card */
 .controle-qtd-card {
     display: flex;
     align-items: center;

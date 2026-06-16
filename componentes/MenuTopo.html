@@ -1,4 +1,20 @@
 <div class="topo" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #198754; color: white; border-radius: 10px; margin-bottom: 20px;">
-    <h1>👑 Painel Administrativo</h1>
-    <a href="index.html" class="btn-voltar" style="color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 16px; border-radius: 5px;">🏠 Voltar ao Site</a>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <h1>🛒 Marketplace Local</h1>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 15px;">
+        
+        <a href="admin.html" id="btn-admin" style="display: none; color: white; text-decoration: none; font-weight: bold; background: #ffc107; color: #000; padding: 8px 16px; border-radius: 5px;">
+            ⚙️ Painel Admin
+        </a>
+
+        <div id="user-profile" onclick="abrirConta()" style="cursor: pointer; display: flex; align-items: center; gap: 8px; background: rgba(21, 115, 71, 0.8); padding: 8px 16px; border-radius: 5px;">
+            <span id="user-name" style="font-weight: bold; color: white;">Entrar</span>
+        </div>
+
+        <a href="index.html" class="btn-voltar" style="color: white; text-decoration: none; font-weight: bold; background: rgba(0,0,0,0.2); padding: 8px 16px; border-radius: 5px;">
+            🏠 Voltar ao Site
+        </a>
+    </div>
 </div>

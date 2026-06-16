@@ -25,6 +25,7 @@ body {
     font-size: 28px;
 }
 
+/* Painel de Indicadores Numéricos */
 .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -66,6 +67,7 @@ body {
     letter-spacing: 0.03em;
 }
 
+/* Blocos de Conteúdo Unificados */
 .box {
     background: white;
     padding: 25px;
@@ -160,7 +162,6 @@ body {
     margin-top: 5px;
 }
 
-/* CORREÇÃO: Estilização do preço antigo que estava faltando */
 .preco-antigo {
     color: #999;
     font-size: 14px;
@@ -168,7 +169,6 @@ body {
     margin-top: 2px;
 }
 
-/* CORREÇÃO: Estilização da tag de desconto que estava faltando */
 .desconto {
     display: inline-block;
     background: #fff3cd;
@@ -234,7 +234,6 @@ body {
     color: #444;
 }
 
-/* CORREÇÃO: Estilização para a tag de status dinâmica do pedido */
 .status-tag {
     background: #e2e3e5;
     color: #383d41;
@@ -247,7 +246,6 @@ body {
 
 .pedido-card ul {
     margin-top: 12px;
-    padding-left: 20px;
     background: #f9f9f9;
     padding: 15px 15px 15px 30px;
     border-radius: 10px;
@@ -272,7 +270,7 @@ body {
 }
 
 /* =========================================
-   📱 RESPONSIVIDADE (TELA CELULAR)
+   📱 RESPONSIVIDADE E ADAPTAÇÕES
    ========================================= */
 @media(max-width: 700px) {
     .form-grid {
@@ -287,12 +285,11 @@ body {
         font-size: 22px;
     }
 }
-/* ==========================================
-   🔔 ESTILIZAÇÃO COMPLEMENTAR DOS AVISOS
-   ========================================== */
+
+/* Avisos Fixos Dinâmicos */
 div[style*="background: #ffc107"], 
 div[style*="background:#ffc107"] {
-    color: #212529 !important; /* Força o texto a ficar preto no fundo amarelo de atenção */
+    color: #212529 !important;
 }
 
 div[style*="position: fixed"] {
@@ -300,7 +297,6 @@ div[style*="position: fixed"] {
     animation: surgindoAviso 0.3s ease-out;
 }
 
-/* Animação suave para o balão subir na tela */
 @keyframes surgindoAviso {
     from {
         opacity: 0;
@@ -311,12 +307,13 @@ div[style*="position: fixed"] {
         transform: translateY(0);
     }
 }
-/* Estilo do Botão Voltar */
+
+/* Componente do Botão de Voltar à Vitrine */
 .btn-voltar {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background-color: #6c757d; /* Cor cinza elegante */
+    background-color: #6c757d;
     color: white;
     text-decoration: none;
     padding: 10px 20px;
@@ -329,8 +326,8 @@ div[style*="position: fixed"] {
 }
 
 .btn-voltar:hover {
-    background-color: #5a6268; /* Escurece um pouco ao passar o mouse */
-    transform: translateY(-2px); /* Efeito sutil de flutuar */
+    background-color: #5a6268;
+    transform: translateY(-2px);
 }
 
 .btn-voltar:active {
@@ -737,6 +734,7 @@ div[style*="position: fixed"] {
 .btn-ok { background: #198754; }
 .btn-cancelar { background: #dc3545; }
 
+/* Media Queries para Telas Médias e Pequenas */
 @media (max-width: 768px) {
     .barra-busca-admin {
         grid-template-columns: 1fr;

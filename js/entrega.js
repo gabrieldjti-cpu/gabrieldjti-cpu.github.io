@@ -16,13 +16,14 @@ const ORDEM_STATUS = {
     'Recebido': 0,
     'Preparando': 1,
     'Saiu para entrega': 2,
+    'Saiu': 2, // 🚚 Normaliza caso o painel use a versão curta
     'Entregue': 3,
     'Cancelado': -1
 };
 
 function corDoStatus(status) {
     if (status === 'Entregue') return '#198754';
-    if (status === 'Saiu para entrega') return '#0d6efd';
+    if (status === 'Saiu para entrega' || status === 'Saiu') return '#0d6efd';
     if (status === 'Preparando') return '#17a2b8';
     if (status === 'Cancelado') return '#dc3545';
     return '#ffc107';
@@ -54,6 +55,7 @@ function montarTimeline(statusAtual) {
                 let classe = '';
                 if (i < indiceAtual) classe = 'concluida';
                 else if (i === indiceAtual) classe = 'atual';
+                
                 return `
                     <li class="${classe}">
                         <span class="etapa-icone">${etapa.icone}</span>
@@ -91,7 +93,7 @@ function renderizarPedido(pedido, ehAtivo) {
         hour: '2-digit',
         minute: '2-digit'
     });
-    const idCurto = pedido.id.substring(0, 8).toUpperCase();
+    const idCurto = (pedido.id || "").substring(0, 8).toUpperCase();
 
     return `
         <article class="pedido-rastreio${ehAtivo ? ' ativo' : ''}">
@@ -99,13 +101,13 @@ function renderizarPedido(pedido, ehAtivo) {
                 <div class="pedido-rastreio-id">
                     Pedido
                     <strong>#${idCurto}</strong>
-                    <span style="font-size: 12px;">📅 ${dataPedido}</span>
+                    <span style="font-size: 12px; display: block; margin-top: 4px; color: #666;">📅 ${dataPedido}</span>
                 </div>
                 <div style="text-align: right;">
-                    <span class="status-rastreio-badge" style="background: ${corDoStatus(status)};">
+                    <span class="status-rastreio-badge" style="background: ${corDoStatus(status)}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 13px;">
                         ${status}
                     </span>
-                    <div class="pedido-rastreio-total" style="margin-top: 8px;">
+                    <div class="pedido-rastreio-total" style="margin-top: 8px; font-weight: bold;">
                         R$ ${Number(pedido.total).toFixed(2)}
                     </div>
                 </div>
@@ -118,20 +120,20 @@ function renderizarPedido(pedido, ehAtivo) {
 
 function mostrarLoginNecessario(container) {
     container.innerHTML = `
-        <div class="rastreamento-aviso">
+        <div class="rastreamento-aviso" style="text-align: center; padding: 4px 20px;">
             <h2>🔒 Faça login para rastrear</h2>
             <p>Entre na sua conta para ver o andamento das suas encomendas em tempo real.</p>
-            <a href="index.html" class="btn-rastreamento-login">Ir para o Início e Entrar</a>
+            <a href="index.html?abrirLogin=true" class="btn-rastreamento-login" style="display: inline-block; background: #198754; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px;">Ir para o Início e Entrar</a>
         </div>
     `;
 }
 
 function mostrarSemPedidos(container) {
     container.innerHTML = `
-        <div class="rastreamento-aviso rastreamento-vazio">
+        <div class="rastreamento-aviso rastreamento-vazio" style="text-align: center; padding: 40px 20px;">
             <h2>📭 Nenhum pedido ainda</h2>
             <p>Quando você finalizar uma compra, ela aparecerá aqui para acompanhamento.</p>
-            <a href="index.html">Fazer compras agora →</a>
+            <a href="index.html" style="color: #198754; font-weight: bold; text-decoration: none;">Fazer compras agora →</a>
         </div>
     `;
 }
@@ -158,6 +160,7 @@ async function carregarRastreamento() {
         return;
     }
 
+    // Busca apenas os pedidos feitos pelo ID do usuário da sessão atual
     const { data: pedidos, error } = await _supabase
         .from('pedidos')
         .select('*')
@@ -166,7 +169,7 @@ async function carregarRastreamento() {
 
     if (error) {
         container.innerHTML = `
-            <div class="rastreamento-aviso">
+            <div class="rastreamento-aviso" style="text-align: center; color: red;">
                 <h2>❌ Erro ao carregar</h2>
                 <p>Não foi possível buscar seus pedidos. Tente novamente em instantes.</p>
             </div>
@@ -179,6 +182,7 @@ async function carregarRastreamento() {
         return;
     }
 
+    // Define qual pedido deve abrir expandido por padrão (o mais recente que não foi finalizado)
     const pedidoEmAndamento = pedidos.find(p => {
         const s = p.status || 'Recebido';
         return s !== 'Entregue' && s !== 'Cancelado';

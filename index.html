@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
     <header class="topo">
@@ -19,11 +17,11 @@
 
         <div class="busca">
             <input type="text" id="busca" placeholder="O que você procura hoje?" onkeyup="filtrarProdutos()">
-            <button>🔍</button>
+            <button aria-label="Buscar">🔍</button>
         </div>
 
         <div class="acoes-topo">
-            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;" title="Painel administrative">
+            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;" title="Painel administrativo">
                 <span aria-hidden="true">👑</span>
                 <span>Painel ADM</span>
             </a>
@@ -223,11 +221,12 @@
         </div>
     </div>
 
-    <script src="js/script.js?v=5"></script>
     <div id="cart-flutuante" class="cart-flutuante" onclick="irCarrinho()">
-      <span class="icone-flutuante">🛍️</span>
-      <span id="contador-flutuante" class="contador-flutuante">0</span>
+        <span class="icone-flutuante">🛍️</span>
+        <span id="contador-flutuante" class="contador-flutuante">0</span>
     </div>
+
+    <script src="js/script.js?v=5"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -257,7 +256,7 @@
             }
         });
 
-        // 👇 Nova função adicionada para controlar a exibição dos campos da empresa
+        // Controla a exibição dos campos adicionais para cadastro de Lojista
         function toggleCamposEmpresa() {
             const checkbox = document.getElementById("cad-e-empresa");
             const blocoEmpresa = document.getElementById("campos-empresa");
@@ -267,6 +266,5 @@
             }
         }
     </script>
-
 </body>
 </html>

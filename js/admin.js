@@ -1,24 +1,27 @@
 // =================================================================
-// 🔗 CONFIGURAÇÃO SUPABASE
+// 🔗 CONFIGURAÇÃO SUPABASE UNIFICADA
 // =================================================================
 const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
 const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+// Variáveis de estado globais
 let idProdutoEmEdicao = null;
 let todosProdutos = [];
 let todosPedidos = [];
-let lojistaAtual = null; // Guarda os dados da sessão do usuário logado
-let ehAdminMaster = false; // Flag para identificar você no sistema
+let lojistaAtual = null; 
+let ehAdminMaster = false; 
 
 const CORES_STATUS = {
     Recebido: "#ffc107",
+    Preparando: "#17a2b8",
     "Saiu para entrega": "#0d6efd",
+    Saiu: "#0d6efd",
     Entregue: "#198754",
-    Cancelado: "#dc3545",
-    Preparando: "#17a2b8"
+    Cancelado: "#dc3545"
 };
 
+// Recupera a sessão com tratamento de erros
 function obterUsuarioLogado() {
     try {
         const raw = localStorage.getItem("usuario_logado");
@@ -30,33 +33,62 @@ function obterUsuarioLogado() {
     }
 }
 
-// Carregamento e validação da sessão
+// =================================================================
+// 🚀 INICIALIZAÇÃO E SEGURANÇA
+// =================================================================
 document.addEventListener("DOMContentLoaded", () => {
     lojistaAtual = obterUsuarioLogado();
 
-    // 👑 VERIFICAÇÃO MASTER: Dá acesso total ao seu e-mail de administrador geral
+    // 1️⃣ VERIFICAÇÃO MASTER: Dá acesso total ao e-mail do admin geral
     if (lojistaAtual && lojistaAtual.email === "gabrieldj.ti@gmail.com") {
         ehAdminMaster = true;
         console.log("👑 Modo Administrador Master Ativo - Acesso total concedido.");
     } 
-    // 🔒 VALIDAÇÃO PADRÃO: Se não for você, exige obrigatoriamente um vínculo com lojista/estabelecimento
+    // 2️⃣ VALIDAÇÃO DE ACESSO: Se não for lojista e nem master, barra a entrada
     else if (!lojistaAtual || (!lojistaAtual.id_lojista && !lojistaAtual.id_estabelecimento)) {
         alert("⚠️ Acesso restrito. Faça login como lojista para acessar o painel.");
-        window.location.href = "login.html"; 
+        window.location.href = "index.html?abrirLogin=true"; 
         return;
     }
 
-    // Normaliza o ID da loja para uso uniforme no script
-    lojistaAtual.id_loja_ativa = lojistaAtual.id_estabelecimento || lojistaAtual.id_lojista;
+    // Normaliza o ID da loja ativa de forma uniforme baseado na sua modelagem
+    if (!ehAdminMaster) {
+        lojistaAtual.id_loja_ativa = lojistaAtual.id_estabelecimento || lojistaAtual.id_lojista;
+    }
+
+    // Define textualmente o título do painel baseado em quem logou
+    const tituloPainel = document.getElementById("nome-loja-titulo");
+    if (tituloPainel) {
+        tituloPainel.innerText = ehAdminMaster ? "Painel Master Geral" : (lojistaAtual.nome_loja || lojistaAtual.nome || "Minha Loja");
+    }
 
     console.log("🏪 Painel carregado para:", ehAdminMaster ? "Todas as Lojas (Master)" : lojistaAtual.id_loja_ativa);
 
+    // Carrega a carga de dados inicial da tela
     carregarPedidosAdmin();
     carregarProdutosAdmin();
     gerarLinkDivulgacao();
 });
 
-// Link dinâmico para os lojistas compartilharem suas respectivas lojas
+// Controle dinâmico das abas laterais do painel
+function mudarAbaAdmin(idAba, botaoClicado) {
+    document.querySelectorAll('.aba-painel').forEach(aba => aba.classList.remove('ativa'));
+    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('ativo'));
+    
+    const abaAlvo = document.getElementById(idAba);
+    if (abaAlvo) abaAlvo.classList.add('ativa');
+    if (botaoClicado) botaoClicado.classList.add('ativo');
+
+    if (idAba === 'aba-pedidos') carregarPedidosAdmin();
+    if (idAba === 'aba-produtos') carregarProdutosAdmin();
+}
+
+function deslogarLojista() {
+    localStorage.removeItem("usuario_logado");
+    window.location.href = 'index.html';
+}
+
+// Link de divulgação rápido do estabelecimento
 function gerarLinkDivulgacao() {
     const inputLink = document.getElementById("link-loja-input");
     if (inputLink) {
@@ -66,11 +98,10 @@ function gerarLinkDivulgacao() {
             return;
         }
         const urlBase = window.location.origin; 
-        inputLink.value = `${urlBase}/index.html?id=${lojistaAtual.id_loja_ativa}`;
+        inputLink.value = `${urlBase}/index.html?loja=${lojistaAtual.id_loja_ativa}`;
     }
 }
 
-// Copiar o link gerado com um clique
 function copiarLinkLoja() {
     if (ehAdminMaster) return;
     const inputLink = document.getElementById("link-loja-input");
@@ -86,6 +117,7 @@ function atualizarDashboard() {
     const contadorProdutosDash = document.getElementById("contador-produtos-dashboard");
     const contadorPedidosDash = document.getElementById("contador-pedidos-dashboard");
     const faturamentoDash = document.getElementById("faturamento-total");
+    
     const totalProdutos = todosProdutos.length;
     const totalPedidos = todosPedidos.length;
     const faturamentoTotal = todosPedidos.reduce((soma, pedido) => {
@@ -109,16 +141,18 @@ function escaparHtml(texto) {
 }
 
 // =================================================================
-// 🛒 PEDIDOS
+// 🛒 GERENCIAMENTO DE PEDIDOS
 // =================================================================
-
 async function carregarPedidosAdmin() {
-    const container = document.getElementById("lista-pedidos");
+    const container = document.getElementById("lista-pedidos") || document.getElementById("tabela-pedidos-corpo");
     if (!container) return;
 
-    container.innerHTML = '<p class="admin-msg">Carregando pedidos...</p>';
+    if (container.tagName === "TBODY") {
+        container.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando pedidos...</td></tr>';
+    } else {
+        container.innerHTML = '<p class="admin-msg">Carregando pedidos...</p>';
+    }
 
-    // Se for você (Admin Master), traz TODOS os pedidos do banco. Se for lojista comum, filtra os dele.
     let query = _supabase.from("pedidos").select("*");
     
     if (!ehAdminMaster) {
@@ -128,7 +162,11 @@ async function carregarPedidosAdmin() {
     const { data: pedidos, error } = await query.order("created_at", { ascending: false });
 
     if (error) {
-        container.innerHTML = '<p class="admin-msg admin-erro">Erro ao carregar pedidos.</p>';
+        if (container.tagName === "TBODY") {
+            container.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Erro ao carregar pedidos.</td></tr>';
+        } else {
+            container.innerHTML = '<p class="admin-msg admin-erro">Erro ao carregar pedidos.</p>';
+        }
         return;
     }
 
@@ -140,11 +178,14 @@ async function carregarPedidosAdmin() {
 function atualizarResumoPedidos() {
     const resumo = document.getElementById("resumo-pedidos");
     const contador = document.getElementById("contador-pedidos");
-    if (!resumo) return;
+    if (!resumo) {
+        atualizarDashboard();
+        return;
+    }
 
     const total = todosPedidos.length;
     const recebidos = todosPedidos.filter(p => (p.status || "Recebido") === "Recebido").length;
-    const emEntrega = todosPedidos.filter(p => p.status === "Saiu para entrega").length;
+    const emEntrega = todosPedidos.filter(p => p.status === "Saiu para entrega" || p.status === "Saiu").length;
     const entregues = todosPedidos.filter(p => p.status === "Entregue").length;
 
     if (contador) contador.textContent = total;
@@ -159,7 +200,9 @@ function atualizarResumoPedidos() {
 }
 
 function filtrarPedidosAdmin() {
-    const container = document.getElementById("lista-pedidos");
+    const container = document.getElementById("lista-pedidos") || document.getElementById("tabela-pedidos-corpo");
+    if (!container) return;
+
     const termo = (document.getElementById("busca-pedido")?.value || "").trim().toLowerCase();
     const statusFiltro = document.getElementById("filtro-status-pedido")?.value || "";
 
@@ -185,16 +228,49 @@ function renderizarPedidos(pedidos, container) {
     if (!container) return;
 
     if (pedidos.length === 0) {
-        container.innerHTML = '<p class="admin-msg">Nenhum pedido encontrado com esses filtros.</p>';
+        if (container.tagName === "TBODY") {
+            container.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #999;">Nenhum pedido localizado com estes filtros.</td></tr>`;
+        } else {
+            container.innerHTML = '<p class="admin-msg">Nenhum pedido encontrado com esses filtros.</p>';
+        }
         return;
     }
 
+    // Suporta renderização em formato Tabela Tradicional (Se o elemento HTML for um TBODY)
+    if (container.tagName === "TBODY") {
+        container.innerHTML = pedidos.map(pedido => {
+            const resumoProdutos = Array.isArray(pedido.produtos) 
+                ? pedido.produtos.map(p => `${p.quantidade}x ${p.nome}`).join("<br>")
+                : "Lista indisponível";
+
+            return `
+                <tr>
+                    <td><strong>${escaparHtml(pedido.cliente || "Anônimo")}</strong><br><small>${escaparHtml(pedido.telefone || "")}</small></td>
+                    <td>${resumoProdutos}</td>
+                    <td><small>${escaparHtml(pedido.endereco || "Balcão")}</small></td>
+                    <td><strong>R$ ${Number(pedido.total).toFixed(2)}</strong></td>
+                    <td><span style="text-transform: capitalize">${escaparHtml(pedido.pagamento || "Não informado")}</span></td>
+                    <td>
+                        <select class="select-status status-${pedido.status}" onchange="atualizarStatusPedido('${pedido.id}', this.value)" style="padding: 5px; border-radius: 4px;">
+                            <option value="Recebido" ${pedido.status === 'Recebido' ? 'selected' : ''}>🟡 Recebido</option>
+                            <option value="Preparando" ${pedido.status === 'Preparando' ? 'selected' : ''}>🔵 Preparando</option>
+                            <option value="Saiu para entrega" ${pedido.status === 'Saiu para entrega' || pedido.status === 'Saiu' ? 'selected' : ''}>🚚 Saiu p/ Entrega</option>
+                            <option value="Entregue" ${pedido.status === 'Entregue' ? 'selected' : ''}>🟢 Entregue</option>
+                            <option value="Cancelado" ${pedido.status === 'Cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+                        </select>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+        return;
+    }
+
+    // Suporta renderização em formato de Cards Expansíveis (Se for uma DIV genérica)
     container.innerHTML = pedidos.map(pedido => {
         const status = pedido.status || "Recebido";
         const corStatus = CORES_STATUS[status] || "#6c757d";
         const dataPedido = new Date(pedido.created_at).toLocaleString("pt-BR", {
-            day: "2-digit", month: "2-digit", year: "numeric",
-            hour: "2-digit", minute: "2-digit"
+            day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"
         });
         const idCurto = (pedido.id || "").substring(0, 8).toUpperCase();
         const qtdItens = Array.isArray(pedido.produtos) ? pedido.produtos.length : 0;
@@ -209,10 +285,10 @@ function renderizarPedidos(pedidos, container) {
             ).join("");
         }
 
-        const aberto = status === "Recebido" || status === "Saiu para entrega" ? " open" : "";
+        const aberto = status === "Recebido" || status === "Preparando" ? " open" : "";
 
         return `
-            <details class="pedido-acordeao"${aberto}>
+            <details class="pedido-acordeao"${abento}>
                 <summary class="pedido-acordeao-cabecalho">
                     <div class="pedido-linha-principal">
                         <div class="pedido-info-breve">
@@ -222,7 +298,7 @@ function renderizarPedidos(pedidos, container) {
                         </div>
                         <div class="pedido-linha-direita">
                             <span class="status-pill" style="background:${corStatus}">${escaparHtml(status)}</span>
-                            <span class="pedido-total-breve">R$ ${Number(pedido.total).toFixed(2)}</span>
+                            <strong class="pedido-total-breve">R$ ${Number(pedido.total).toFixed(2)}</strong>
                         </div>
                     </div>
                     <p class="pedido-resumo-itens">${escaparHtml(resumoItens)}</p>
@@ -235,6 +311,7 @@ function renderizarPedidos(pedidos, container) {
                     </div>
                     <ul class="pedido-itens-lista">${itemsHTML}</ul>
                     <div class="acoes-status">
+                        <button type="button" class="btn-status btn-preparar" onclick="atualizarStatusPedido('${pedido.id}', 'Preparando')">🔵 Preparando</button>
                         <button type="button" class="btn-status btn-entrega" onclick="atualizarStatusPedido('${pedido.id}', 'Saiu para entrega')">🚚 Saiu para entrega</button>
                         <button type="button" class="btn-status btn-ok" onclick="atualizarStatusPedido('${pedido.id}', 'Entregue')">✅ Entregue</button>
                         <button type="button" class="btn-status btn-cancelar" onclick="atualizarStatusPedido('${pedido.id}', 'Cancelado')">❌ Cancelar</button>
@@ -255,7 +332,7 @@ async function atualizarStatusPedido(idPedido, novoStatus) {
     const { error } = await query;
 
     if (error) {
-        alert("Erro ao atualizar status: " + error.message);
+        alert("❌ Erro ao atualizar status: " + error.message);
         return;
     }
 
@@ -263,14 +340,17 @@ async function atualizarStatusPedido(idPedido, novoStatus) {
 }
 
 // =================================================================
-// 📦 PRODUTOS
+// 📦 GERENCIAMENTO DE PRODUTOS
 // =================================================================
-
 async function carregarProdutosAdmin() {
-    const container = document.getElementById("lista-produtos");
+    const container = document.getElementById("lista-produtos") || document.getElementById("tabela-produtos-corpo");
     if (!container) return;
 
-    container.innerHTML = '<p class="admin-msg">Carregando estoque...</p>';
+    if (container.tagName === "TBODY") {
+        container.innerHTML = '<tr><td colspan="5" style="text-align:center;">Carregando estoque...</td></tr>';
+    } else {
+        container.innerHTML = '<p class="admin-msg">Carregando estoque...</p>';
+    }
 
     let query = _supabase.from("produtos").select("*");
 
@@ -281,7 +361,11 @@ async function carregarProdutosAdmin() {
     const { data: produtos, error } = await query.order("nome", { ascending: true });
 
     if (error) {
-        container.innerHTML = '<p class="admin-msg admin-erro">Erro ao carregar estoque.</p>';
+        if (container.tagName === "TBODY") {
+            container.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Erro ao carregar catálogo.</td></tr>';
+        } else {
+            container.innerHTML = '<p class="admin-msg admin-erro">Erro ao carregar estoque.</p>';
+        }
         return;
     }
 
@@ -314,10 +398,10 @@ function filtrarProdutosAdmin() {
 }
 
 function renderizarProdutos(produtos) {
-    const container = document.getElementById("lista-produtos");
+    const container = document.getElementById("lista-produtos") || document.getElementById("tabela-produtos-corpo");
     if (!container) return;
+    
     const contador = document.getElementById("contador-produtos");
-
     if (contador) {
         contador.textContent = produtos.length === todosProdutos.length
             ? todosProdutos.length
@@ -325,18 +409,43 @@ function renderizarProdutos(produtos) {
     }
 
     if (produtos.length === 0) {
-        container.innerHTML = '<p class="admin-msg">Nenhum produto encontrado.</p>';
+        if (container.tagName === "TBODY") {
+            container.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#999;">Nenhum item localizado na vitrine.</td></tr>`;
+        } else {
+            container.innerHTML = '<p class="admin-msg">Nenhum produto encontrado.</p>';
+        }
         return;
     }
 
+    // Suporta tabela clássica estruturada
+    if (container.tagName === "TBODY") {
+        container.innerHTML = produtos.map(prod => {
+            const urlImagem = prod.img || prod.imagem || '';
+            return `
+                <tr>
+                    <td><img src="${escaparHtml(urlImagem)}" width="40" height="40" style="object-fit:cover; border-radius:4px;"></td>
+                    <td><strong>${escaparHtml(prod.nome)}</strong></td>
+                    <td>R$ ${Number(prod.preco).toFixed(2)}</td>
+                    <td style="text-transform: capitalize;">${escaparHtml(prod.categoria)}</td>
+                    <td>
+                        <button type="button" onclick="prepararEdicaoDireta('${prod.id}')" style="background:none; border:none; color:#0d6efd; cursor:pointer; font-weight:bold; margin-right:10px;">✏️ Editar</button>
+                        <button type="button" onclick="excluirProdutoAdmin('${prod.id}')" style="background:none; border:none; color:#dc3545; cursor:pointer; font-weight:bold;">🗑️ Excluir</button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+        return;
+    }
+
+    // Suporta cards visuais para interfaces responsivas
     container.innerHTML = produtos.map(produto => {
         const nomeEsc = escaparHtml(produto.nome);
-        // Escapa de forma segura a string JSON para colocar no atributo inline HTML
+        const urlImagem = produto.imagem || produto.img || '';
         const produtoAtributo = btoa(unescape(encodeURIComponent(JSON.stringify(produto))));
 
         return `
             <article class="produto-admin-card">
-                <img src="${escaparHtml(produto.img)}" alt="${nomeEsc}" loading="lazy">
+                <img src="${escaparHtml(urlImagem)}" alt="${nomeEsc}" loading="lazy" style="width:70px; height:70px; object-fit:cover; border-radius:6px;">
                 <div class="produto-admin-info">
                     <h4>${nomeEsc}</h4>
                     <span class="tag-categoria">${escaparHtml(produto.categoria)}</span>
@@ -351,7 +460,6 @@ function renderizarProdutos(produtos) {
     }).join("");
 }
 
-// Decodifica o objeto empacotado evitando erros de aspas quebradas no HTML
 function prepararEdicaoDecodificada(base64String) {
     try {
         const objJson = decodeURIComponent(escape(atob(base64String)));
@@ -362,29 +470,78 @@ function prepararEdicaoDecodificada(base64String) {
     }
 }
 
+function prepararEdicaoDireta(idProduto) {
+    const produto = todosProdutos.find(p => p.id === idProduto);
+    if (produto) prepararEdicao(produto);
+}
+
 function prepararEdicao(produto) {
     idProdutoEmEdicao = produto.id;
 
-    document.getElementById("nome").value = produto.nome || "";
-    document.getElementById("preco").value = produto.preco || "";
-    document.getElementById("preco_antigo").value = produto.preco_antigo || "";
-    document.getElementById("desconto").value = produto.desconto || "";
-    document.getElementById("imagem").value = produto.img || "";
-    document.getElementById("categoria").value = produto.categoria || "";
+    // Preenche os inputs se eles existirem no formulário (suporta ambos formatos de IDs do HTML)
+    const inputs = {
+        nome: ["nome", "prod-nome"],
+        preco: ["preco", "prod-preco"],
+        preco_antigo: ["preco_antigo", "prod-preco-antigo"],
+        desconto: ["desconto", "prod-desconto"],
+        imagem: ["imagem", "prod-img"],
+        categoria: ["categoria", "prod-categoria"]
+    };
 
-    const btnSalvar = document.querySelector("button[onclick='salvarProduto()']");
-    if (btnSalvar) {
-        btnSalvar.innerText = "🔄 Atualizar Produto";
-        btnSalvar.classList.add("btn-editando");
+    for (const chave in inputs) {
+        inputs[chave].forEach(idHTML => {
+            const el = document.getElementById(idHTML);
+            if (el) {
+                if (chave === "imagem") el.value = produto.imagem || produto.img || "";
+                else el.value = produto[chave] || "";
+            }
+        });
     }
 
+    const tituloForm = document.getElementById("titulo-form-produto");
+    if(tituloForm) tituloForm.innerHTML = "🔄 Editar Produto";
+
+    const btnSalvar = document.getElementById("btn-salvar") || document.querySelector("button[onclick='salvarProduto()']");
+    if (btnSalvar) {
+        btnSalvar.innerText = "🔄 Atualizar Produto";
+        btnSalvar.style.background = "#0d6efd";
+    }
+
+    const btnCancelar = document.getElementById("btn-cancelar-edicao");
+    if(btnCancelar) btnCancelar.style.display = "inline-block";
+
     window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function cancelarEdicao() {
+    idProdutoEmEdicao = null;
+    
+    const idsParaLimpar = ["nome", "prod-nome", "preco", "prod-preco", "preco_antigo", "prod-preco-antigo", "desconto", "prod-desconto", "imagem", "prod-img"];
+    idsParaLimpar.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+    });
+
+    const cat1 = document.getElementById("categoria"); if(cat1) cat1.value = "index";
+    const cat2 = document.getElementById("prod-categoria"); if(cat2) cat2.value = "";
+
+    const tituloForm = document.getElementById("titulo-form-produto");
+    if(tituloForm) tituloForm.innerHTML = "➕ Adicionar Produto";
+
+    const btnSalvar = document.getElementById("btn-salvar") || document.querySelector("button[onclick='salvarProduto()']");
+    if (btnSalvar) {
+        btnSalvar.innerText = "Salvar Produto";
+        btnSalvar.style.background = ""; 
+    }
+
+    const btnCancelar = document.getElementById("btn-cancelar-edicao");
+    if(btnCancelar) btnCancelar.style.display = "none";
 }
 
 async function excluirProdutoAdmin(idProduto) {
     const produto = todosProdutos.find(p => p.id === idProduto);
     const nome = produto?.nome || "este produto";
-    if (!confirm(`Tem certeza que deseja apagar "${nome}"?`)) return;
+    if (!confirm(`Tem certeza que deseja apagar "${nome}" da sua vitrine?`)) return;
 
     let query = _supabase.from("produtos").delete().eq("id", idProduto);
 
@@ -395,7 +552,7 @@ async function excluirProdutoAdmin(idProduto) {
     const { error } = await query;
 
     if (error) {
-        alert("Erro ao excluir produto: " + error.message);
+        alert("❌ Erro ao excluir produto: " + error.message);
         return;
     }
 
@@ -403,21 +560,22 @@ async function excluirProdutoAdmin(idProduto) {
 }
 
 async function salvarProduto() {
-    const nome = document.getElementById("nome").value.trim();
-    const preco = document.getElementById("preco").value;
-    const preco_antigo = document.getElementById("preco_antigo").value;
-    const desconto = document.getElementById("desconto").value.trim();
-    const imagem = document.getElementById("imagem").value.trim();
-    const categoria = document.getElementById("categoria").value;
+    // Captura os valores aceitando os dois padrões de ID de formulário do seu HTML
+    const nome = (document.getElementById("nome")?.value || document.getElementById("prod-nome")?.value || "").trim();
+    const preco = document.getElementById("preco")?.value || document.getElementById("prod-preco")?.value;
+    const preco_antigo = document.getElementById("preco_antigo")?.value || document.getElementById("prod-preco-antigo")?.value;
+    const desconto = (document.getElementById("desconto")?.value || document.getElementById("prod-desconto")?.value || "").trim();
+    const imagem = (document.getElementById("imagem")?.value || document.getElementById("prod-img")?.value || "").trim();
+    const categoria = document.getElementById("categoria")?.value || document.getElementById("prod-categoria")?.value;
 
     if (!nome || !preco || !imagem) {
         alert("⚠️ Preencha pelo menos Nome, Preço e URL da imagem.");
         return;
     }
 
-    // Se for o Admin Master incluindo produto, puxa de forma inteligente o ID do primeiro estabelecimento da tabela para evitar quebra de Foreign Key
-    let lojistaIdFinal = lojistaAtual.id_loja_ativa;
-    if (ehAdminMaster && !lojistaIdFinal) {
+    let lojistaIdFinal = ehAdminMaster ? null : lojistaAtual.id_loja_ativa;
+    
+    if (ehAdminMaster && !idProdutoEmEdicao) {
         const { data: ests } = await _supabase.from("estabelecimentos").select("id").limit(1);
         if (ests && ests.length > 0) {
             lojistaIdFinal = ests[0].id;
@@ -430,9 +588,13 @@ async function salvarProduto() {
         preco_antigo: preco_antigo ? Number(preco_antigo) : 0,
         desconto: desconto ? Number(desconto) : 0,
         img: imagem,
-        categoria,
-        id_lojista: lojistaIdFinal
+        imagem: imagem,
+        categoria
     };
+
+    if (!idProdutoEmEdicao) {
+        dadosProduto.id_lojista = lojistaIdFinal;
+    }
 
     if (idProdutoEmEdicao) {
         let query = _supabase.from("produtos").update(dadosProduto).eq("id", idProdutoEmEdicao);
@@ -449,9 +611,7 @@ async function salvarProduto() {
         }
         alert("✅ Produto atualizado!");
     } else {
-        const { error } = await _supabase
-            .from("produtos")
-            .insert([dadosProduto]);
+        const { error } = await _supabase.from("produtos").insert([dadosProduto]);
 
         if (error) {
             alert("❌ Erro ao salvar: " + error.message);
@@ -460,20 +620,17 @@ async function salvarProduto() {
         alert("✅ Produto adicionado!");
     }
 
-    idProdutoEmEdicao = null;
-    document.getElementById("nome").value = "";
-    document.getElementById("preco").value = "";
-    document.getElementById("preco_antigo").value = "";
-    document.getElementById("desconto").value = "";
-    document.getElementById("imagem").value = "";
-    const categoriaEl = document.getElementById("categoria");
-    if (categoriaEl) categoriaEl.selectedIndex = 0;
-
-    const btnSalvar = document.querySelector("button[onclick='salvarProduto()']");
-    if (btnSalvar) {
-        btnSalvar.innerText = "Salvar Produto";
-        btnSalvar.classList.remove("btn-editando");
-    }
-
+    cancelarEdicao();
     carregarProdutosAdmin();
 }
+
+// Vincula o evento de submit se houver um formulário HTML estruturado na página
+document.addEventListener("DOMContentLoaded", () => {
+    const formNovoProd = document.getElementById("form-novo-produto");
+    if (formNovoProd) {
+        formNovoProd.addEventListener("submit", (e) => {
+            e.preventDefault();
+            salvarProduto();
+        });
+    }
+});

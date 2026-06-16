@@ -8,7 +8,7 @@ const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 // Variáveis globais do ecossistema da loja
-let listaProdutosGeral = []; // Armazena a cópia dos produtos do Supabase
+let listaProdutosGeral = []; 
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
 
@@ -27,7 +27,19 @@ function obterIdLojistaDaURL() {
     return urlParams.get('id') || urlParams.get('loja');
 }
 
+function obterUsuarioLogado() {
+    try {
+        const raw = localStorage.getItem("usuario_logado");
+        return raw ? JSON.parse(raw) : null;
+    } catch (erro) {
+        console.warn("Sessão inválida no localStorage:", erro);
+        localStorage.removeItem("usuario_logado");
+        return null;
+    }
+}
+
 function normalizarBairro(nome) {
+    if (!nome) return "padrao";
     return nome.trim().toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
@@ -35,11 +47,13 @@ function normalizarBairro(nome) {
 
 function obterTaxaEntrega(endereco) {
     const taxaPadrao = TAXAS_ENTREGA.padrao;
-    if (!endereco) {
+    if (!endereco || endereco === "Retirada no balcão" || !endereco.includes("Bairro:")) {
         return { taxa: taxaPadrao, bairro: "Padrão" };
     }
     try {
-        const bairro = endereco.split("Bairro: ")[1].split(",")[0].trim();
+        // Separação robusta baseada na string montada no perfil.js
+        const parteBairro = endereco.split("Bairro: ")[1];
+        const bairro = parteBairro ? parteBairro.split(",")[0].trim() : "Padrão";
         const chave = normalizarBairro(bairro);
         const taxa = TAXAS_ENTREGA[chave] !== undefined ? TAXAS_ENTREGA[chave] : taxaPadrao;
         return { taxa, bairro };
@@ -159,9 +173,7 @@ function botaoFavoritoHTML(idProduto) {
 }
 
 function mostrarAviso(mensagem, tipo = "sucesso") {
-    if (typeof alert !== "undefined") {
-        console.log(`[${tipo.toUpperCase()}] ${mensagem}`);
-    }
+    console.log(`[${tipo.toUpperCase()}] ${mensagem}`);
 }
 
 function toggleFavorito(idProduto, event) {
@@ -172,7 +184,9 @@ function toggleFavorito(idProduto, event) {
         favoritos.push(idProduto); 
         mostrarAviso("❤️ Adicionado aos favoritos!", "sucesso");
     } else {
-        favoritos.splice(index, 1);
+        favorites = favoritos.filter(id => id !== idProduto); // Garante a remoção limpa
+        const idx = favoritos.indexOf(idProduto);
+        if(idx !== -1) favoritos.splice(idx, 1);
         mostrarAviso("Removido dos favoritos", "sucesso");
     }
 
@@ -195,11 +209,11 @@ function renderizarFavoritos() {
 
     if (lista.length === 0) {
         container.innerHTML = `
-            <div class="favoritos-vazio">
-                <span class="favoritos-vazio-icone">🤍</span>
+            <div class="favoritos-vazio" style="text-align: center; padding: 40px 20px;">
+                <span class="favoritos-vazio-icone" style="font-size: 48px;">🤍</span>
                 <h2>Sua lista está vazia</h2>
                 <p>Toque no coração nos produtos para salvá-los aqui e comprar mais rápido.</p>
-                <a href="index.html${window.location.search}" class="btn-ir-loja">Ir às compras</a>
+                <a href="index.html${window.location.search}" class="btn-ir-loja" style="display: inline-block; background: #198754; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 15px; font-weight: bold;">Ir às compras</a>
             </div>
         `;
         return;
@@ -257,7 +271,7 @@ function mostrarProdutosSupabase(lista, idContainer) {
             <div class="card">
                 <span class="desconto">-${produto.desconto}%</span>
                 ${badgeHTML}
-                <img src="${produto.img}" alt="${produto.nome}">
+                <img src="${produto.imagem || produto.img}" alt="${produto.nome}">
                 <h3>${produto.nome}</h3>
                 <p class="preco-antigo">R$ ${Number(produto.preco_antigo).toFixed(2)}</p>
                 <p class="preco">R$ ${Number(produto.preco).toFixed(2)}</p>
@@ -290,7 +304,7 @@ async function filtrarProdutos(categoriaPagina = null) {
         } else if (lista.length === 0) {
             const container = document.getElementById("lista-favoritos");
             if (container) {
-                container.innerHTML = `<p class="favoritos-sem-resultado">Nenhum favorito encontrado para "${termo}".</p>`;
+                container.innerHTML = `<p class="favoritos-sem-resultado" style="padding: 20px; color: #666;">Nenhum favorito encontrado para "${termo}".</p>`;
             }
         } else {
             mostrarProdutosSupabase(lista, "lista-favoritos");
@@ -330,7 +344,7 @@ async function adicionarAoCarrinhoCard(idProduto) {
         id: produto.id,
         nome: produto.nome,
         preco: Number(produto.preco),
-        img: produto.img,
+        img: produto.imagem || produto.img,
         quantidade: 1
     });
 
@@ -367,370 +381,28 @@ function atualizarInterfaceGeral() {
     
     const carrinhoLateral = document.getElementById("carrinho-lateral");
     if (carrinhoLateral && carrinhoLateral.classList.contains("ativo")) {
-        if (typeof carregarCarrinho === "function") carregarCarrinho();
+        carregarCarrinho();
     }
     
     renderizarProdutos();
-}
-
-// =================================================================
-// 👤 SISTEMA DE AUTENTICAÇÃO E CADASTRO
-// =================================================================
-async function verificarUsuario() {
-    const usuarioLogado = obterUsuarioLogado();
-    const btnUser = document.getElementById("user-name");
-    const adminBtn = document.getElementById("btn-admin");
-
-    const urlAtual = window.location.pathname.toLowerCase();
-    const ehPaginaAdmin = urlAtual.includes('adm') || urlAtual.includes('painel');
-
-    if (usuarioLogado) {
-        const nome = usuarioLogado.nome;
-        if (btnUser) btnUser.innerText = nome;
-
-        const perfilNome = document.getElementById("perfil-nome");
-        const perfilEmail = document.getElementById("perfil-email");
-        if (perfilNome) perfilNome.innerText = nome;
-        if (perfilEmail) perfilEmail.innerText = usuarioLogado.email;
-
-        const adminEmail = 'gabrieldj.ti@gmail.com';
-        
-        if (usuarioLogado.email === adminEmail || usuarioLogado.id_lojista || usuarioLogado.id_estabelecimento) {
-            if (adminBtn) adminBtn.style.display = "flex";
-        } else {
-            if (adminBtn) adminBtn.style.display = "none";
-            
-            if (ehPaginaAdmin) {
-                mostrarAviso("⚠️ Acesso restrito para administradores.", "aviso");
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1500);
-            }
-        }
-    } else {
-        if (btnUser) btnUser.innerText = "Entrar";
-        if (adminBtn) adminBtn.style.display = "none";
-
-        if (ehPaginaAdmin) {
-            window.location.href = 'index.html';
-        }
-    }
-}
-
-// 🔐 FUNÇÃO DE CADASTRO UNIFICADA E COMPATÍVEL COM LOJISTAS
-async function fazerCadastro() {
-    const nomeEl = document.getElementById("cad-nome");
-    const emailEl = document.getElementById("cad-email");
-    const senhaEl = document.getElementById("cad-senha");
-    
-    if (!nomeEl || !emailEl || !senhaEl) {
-        alert("❌ Erro interno: Campos de cadastro não foram encontrados no HTML.");
-        return;
-    }
-
-    const nome = nomeEl.value.trim();
-    const email = emailEl.value.trim();
-    const senha = senhaEl.value.trim();
-    const querCadastrarEmpresa = document.getElementById("cad-e-empresa")?.checked;
-
-    if (!nome || !email || !senha) {
-        alert("⚠️ Por favor, preencha todos os campos (Nome, E-mail e Senha).");
-        return;
-    }
-
-    // 1️⃣ Criar o usuário base na tabela 'usuarios'
-    const { data: novoUsuario, error: erroUsuario } = await _supabase
-        .from('usuarios')
-        .insert([{
-            nome: nome,
-            email: email,
-            senha: senha
-        }])
-        .select();
-
-    if (erroUsuario) {
-        alert("❌ Erro ao criar sua conta de usuário: " + erroUsuario.message);
-        console.error(erroUsuario);
-        return;
-    }
-
-    const idUsuarioGerado = novoUsuario[0].id;
-
-    // 2️⃣ Se for lojista, cria na tabela 'lojistas'
-    if (querCadastrarEmpresa) {
-        const nomeLoja = document.getElementById("loja-nome")?.value.trim();
-        const descLoja = document.getElementById("loja-descricao")?.value.trim();
-        const segmentoLoja = document.getElementById("loja-segmento")?.value;
-
-        if (!nomeLoja) {
-            alert("⚠️ Você marcou a opção de empresa. Por favor, digite o Nome da Loja.");
-            return;
-        }
-
-        const slugLoja = nomeLoja.toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)+/g, '');
-
-        const { data: novoLojista, error: erroLojista } = await _supabase
-            .from('lojistas')
-            .insert([{ 
-                nome_loja: nomeLoja, 
-                descricao: descLoja, 
-                segmento: segmentoLoja,
-                slug: slugLoja
-            }])
-            .select();
-
-        if (erroLojista) {
-            alert("❌ Erro ao registrar empresa na tabela lojistas: " + erroLojista.message);
-            console.error(erroLojista);
-            return;
-        }
-
-        if (novoLojista && novoLojista.length > 0) {
-            const idLojistaGerado = novoLojista[0].id; 
-
-            // 3️⃣ Tentar vincular na tabela pivô 'usuario_loja'
-            const { error: erroPivo } = await _supabase
-                .from('usuario_loja')
-                .insert([{
-                    id_usuario: idUsuarioGerado,
-                    id_lojista: idLojistaGerado,
-                    funcao: 'Dono'
-                }]);
-
-            // Contingência se a política de RLS barrar inserção anônima direta na tabela pivô
-            if (erroPivo) {
-                console.warn("⚠️ Vinculando id_lojista diretamente na coluna de backup do usuário.");
-                await _supabase
-                    .from('usuarios')
-                    .update({ id_lojista: idLojistaGerado })
-                    .eq('id', idUsuarioGerado);
-            }
-        }
-    }
-
-    const mensagemSucesso = querCadastrarEmpresa
-        ? "✅ Empresa e Conta criadas com sucesso! Agora você pode fazer login."
-        : "✅ Conta de cliente criada com sucesso! Faça login.";
-
-    alert(mensagemSucesso);
-    
-    nomeEl.value = "";
-    emailEl.value = "";
-    senhaEl.value = "";
-    if(document.getElementById("loja-nome")) document.getElementById("loja-nome").value = "";
-    if(document.getElementById("loja-descricao")) document.getElementById("loja-descricao").value = "";
-    
-    alternarAba('login');
-}
-
-// 🔐 NOVA FUNÇÃO DE LOGIN INTELIGENTE INTEGRADA
-async function fazerLogin() {
-    const emailEl = document.getElementById("login-email");
-    const senhaEl = document.getElementById("login-senha");
-
-    if (!emailEl || !senhaEl) return;
-
-    const email = emailEl.value.trim();
-    const senha = senhaEl.value.trim();
-
-    if (!email || !senha) {
-        alert("⚠️ Preencha e-mail e senha para entrar.");
-        return;
-    }
-
-    // Busca o usuário na tabela local
-    const { data: usuarios, error } = await _supabase
-        .from('usuarios')
-        .select('*')
-        .eq('email', email)
-        .eq('senha', senha);
-
-    if (error) {
-        alert("❌ Erro ao realizar login: " + error.message);
-        return;
-    }
-
-    if (!usuarios || usuarios.length === 0) {
-        alert("❌ E-mail ou senha incorretos.");
-        return;
-    }
-
-    let usuarioLogado = usuarios[0];
-
-    // Se o usuário não tiver id_lojista direto na linha, procura na tabela pivô usuario_loja
-    if (!usuarioLogado.id_lojista) {
-        const { data: vinculo } = await _supabase
-            .from('usuario_loja')
-            .select('id_lojista')
-            .eq('id_usuario', usuarioLogado.id)
-            .maybeSingle();
-        
-        if (vinculo) {
-            usuarioLogado.id_lojista = vinculo.id_lojista;
-        }
-    }
-
-    // Salva a sessão localmente
-    localStorage.setItem("usuario_logado", JSON.stringify(usuarioLogado));
-    
-    alert(`👋 Bem-vindo de volta, ${usuarioLogado.nome}!`);
-    fecharModal();
-    verificarUsuario();
-    
-    const possuiAcessoAdm = !!usuarioLogado.id_lojista || !!usuarioLogado.id_estabelecimento;
-    if (possuiAcessoAdm) {
-        window.location.href = "admin.html";
-        return;
-    }
-
-    window.location.href = "index.html";
-}
-
-// =================================================================
-// 📦 FINALIZAR PEDIDO
-// =================================================================
-async function escolherPagamento(tipo) {
-    if (carrinho.length === 0) return;
-    const usuarioLogado = obterUsuarioLogado();
-    const idLojaAtual = obterIdLojistaDaURL();
-
-    if (!idLojaAtual) {
-        mostrarAviso("❌ Erro: Link da loja inválido.", "erro");
-        return;
-    }
-
-    const subtotal = carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
-    const enderecoUsuario = usuarioLogado ? usuarioLogado.endereco : "Retirada no balcão";
-    const { taxa: taxaEntrega } = obterTaxaEntrega(enderecoUsuario);
-    const totalGeral = subtotal + taxaEntrega;
-
-    const dadosPedido = {
-        id_usuario: usuarioLogado ? usuarioLogado.id : null,
-        cliente: usuarioLogado ? usuarioLogado.nome : "Cliente Anonimo",
-        telefone: usuarioLogado ? usuarioLogado.telefone : "Não informado",
-        endereco: enderecoUsuario,
-        produtos: carrinho, 
-        total: totalGeral,
-        pagamento: tipo,
-        status: "Recebido",
-        id_lojista: idLojaAtual 
-    };
-
-    const { error } = await _supabase
-        .from("pedidos")
-        .insert([dadosPedido]);
-
-    if (error) {
-        mostrarAviso("❌ Erro ao fechar compra: " + error.message, "erro");
-        return;
-    }
-
-    mostrarAviso("🚀 Pedido registrado com sucesso!", "sucesso");
-    if (typeof limparCarrinho === "function") limparCarrinho();
-    fecharModal();
-    if (typeof fecharCarrinhoLateral === "function") fecharCarrinhoLateral();
-}
-
-// =================================================================
-// 🧭 REDIRECIONAMENTO E NAVEGAÇÃO DE CONTA
-// =================================================================
-function abrirConta() {
-    const usuarioLogado = obterUsuarioLogado();
-    const idLojaAtual = obterIdLojistaDaURL();
-
-    if (usuarioLogado) {
-        if (idLojaAtual) {
-            window.location.href = `perfil.html?id=${idLojaAtual}`;
-        } else {
-            window.location.href = "perfil.html";
-        }
-    } else {
-        alternarAba('login');
-        const modalLogin = document.getElementById("modal-login");
-        if (modalLogin) {
-            modalLogin.style.display = "flex";
-        } else {
-            mostrarAviso("⚠️ Por favor, faça login para acessar sua conta.", "aviso");
-        }
-    }
-}
-
-// =================================================================
-// 🚀 INICIALIZAÇÃO AUTOMÁTICA
-// =================================================================
-document.addEventListener("DOMContentLoaded", () => {
-    carregarProdutosSupabase();
-    verificarUsuario();
-    atualizarContador();
-    atualizarContadorFavoritos();
-});
-
-// =================================================================
-// 🔀 CONTROLE DE ABAS DO MODAL (LOGIN VS CADASTRO)
-// =================================================================
-function alternarAba(aba) {
-    const formLogin = document.getElementById("form-login");
-    const formCadastro = document.getElementById("form-cadastro");
-    const btnAbaEntrar = document.getElementById("aba-entrar");
-    const btnAbaCadastrar = document.getElementById("aba-cadastrar");
-
-    if (aba === 'cadastro') {
-        if (formLogin) formLogin.style.display = "none";
-        if (formCadastro) formCadastro.style.display = "block";
-        if (btnAbaCadastrar) btnAbaCadastrar.classList.add("ativa");
-        if (btnAbaEntrar) btnAbaEntrar.classList.remove("ativa");
-    } else {
-        if (formLogin) formLogin.style.display = "block";
-        if (formCadastro) formCadastro.style.display = "none";
-        if (btnAbaEntrar) btnAbaEntrar.classList.add("ativa");
-        if (btnAbaCadastrar) btnAbaCadastrar.classList.remove("ativa");
-    }
-}
-
-function fecharModal() {
-    const modalLogin = document.getElementById("modal-login");
-    const modalPagamento = document.getElementById("modal-pagamento");
-    const overlay = document.getElementById("overlay");
-
-    if (modalLogin) modalLogin.style.display = "none";
-    if (modalPagamento) modalPagamento.style.display = "none";
-    if (overlay) overlay.style.display = "none";
-}
-
-function fecharLogin() {
-    fecharModal();
 }
 
 function irCarrinho() {
     const carrinhoLateral = document.getElementById("carrinho-lateral");
     const overlay = document.getElementById("overlay");
 
-    if (carrinhoLateral) {
-        carrinhoLateral.classList.add("ativo");
-    }
-    if (overlay) {
-        overlay.style.display = "block";
-    }
+    if (carrinhoLateral) carrinhoLateral.classList.add("ativo");
+    if (overlay) overlay.style.display = "block";
 
-    if (typeof carregarCarrinho === "function") {
-        carregarCarrinho();
-    }
+    carregarCarrinho();
 }
 
 function fecharCarrinho() {
     const carrinhoLateral = document.getElementById("carrinho-lateral");
     const overlay = document.getElementById("overlay");
 
-    if (carrinhoLateral) {
-        carrinhoLateral.classList.remove("ativo");
-    }
-    if (overlay) {
-        overlay.style.display = "none";
-    }
+    if (carrinhoLateral) carrinhoLateral.classList.remove("ativo");
+    if (overlay) overlay.style.display = "none";
 }
 
 function carregarCarrinho() {
@@ -793,10 +465,269 @@ function finalizarPedido() {
     }
 }
 
+async function escolherPagamento(tipo) {
+    if (carrinho.length === 0) return;
+    const usuarioLogado = obterUsuarioLogado();
+    const idLojaAtual = obterIdLojistaDaURL();
+
+    if (!idLojaAtual) {
+        alert("❌ Erro: Link da loja inválido.");
+        return;
+    }
+
+    const subtotal = carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
+    const enderecoUsuario = usuarioLogado ? usuarioLogado.endereco : "Retirada no balcão";
+    const { taxa: taxaEntrega } = obterTaxaEntrega(enderecoUsuario);
+    const totalGeral = subtotal + taxaEntrega;
+
+    const dadosPedido = {
+        id_usuario: usuarioLogado ? usuarioLogado.id : null,
+        cliente: usuarioLogado ? usuarioLogado.nome : "Cliente Anonimo",
+        telefone: usuarioLogado ? usuarioLogado.telefone : "Não informado",
+        endereco: enderecoUsuario,
+        produtos: carrinho, 
+        total: totalGeral,
+        pagamento: tipo,
+        status: "Recebido",
+        id_lojista: idLojaAtual 
+    };
+
+    const { error } = await _supabase
+        .from("pedidos")
+        .insert([dadosPedido]);
+
+    if (error) {
+        alert("❌ Erro ao fechar compra: " + error.message);
+        return;
+    }
+
+    alert("🚀 Pedido registrado com sucesso!");
+    carrinho = [];
+    atualizarInterfaceGeral();
+    fecharModal();
+    fecharCarrinho();
+}
+
+// =================================================================
+// 👤 SISTEMA DE AUTENTICAÇÃO E LOGIN INTELIGENTE
+// =================================================================
+async function verificarUsuario() {
+    const usuarioLogado = obterUsuarioLogado();
+    const btnUser = document.getElementById("user-name");
+    const adminBtn = document.getElementById("btn-admin");
+
+    if (usuarioLogado) {
+        const nome = usuarioLogado.nome;
+        if (btnUser) btnUser.innerText = nome;
+
+        const perfilNome = document.getElementById("perfil-nome");
+        const perfilEmail = document.getElementById("perfil-email");
+        if (perfilNome) perfilNome.innerText = nome;
+        if (perfilEmail) perfilEmail.innerText = usuarioLogado.email;
+
+        // 🔍 Checagem inteligente de privilégios
+        const adminEmail = 'gabrieldj.ti@gmail.com';
+        const ehAdminGeral = usuarioLogado.email === adminEmail;
+        
+        const ehLojista = usuarioLogado.tipo === 'lojista' || 
+                          usuarioLogado.id_lojista || 
+                          usuarioLogado.id_estabelecimento;
+
+        if (ehAdminGeral || ehLojista) {
+            if (adminBtn) adminBtn.style.display = "flex"; 
+        } else {
+            if (adminBtn) adminBtn.style.display = "none";
+        }
+    } else {
+        if (btnUser) btnUser.innerText = "Entrar";
+        if (adminBtn) adminBtn.style.display = "none";
+    }
+}
+
+async function fazerLogin() {
+    const email = document.getElementById("login-email").value.trim();
+    const senha = document.getElementById("login-senha").value.trim();
+
+    if (!email || !senha) {
+        alert("⚠️ Por favor, preencha todos os campos.");
+        return;
+    }
+
+    try {
+        const { data: usuario, error } = await _supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .eq('senha', senha)
+            .maybeSingle();
+
+        if (error || !usuario) {
+            alert("❌ E-mail ou senha incorretos.");
+            return;
+        }
+
+        const adminEmail = 'gabrieldj.ti@gmail.com';
+        if (usuario.email === adminEmail) {
+            usuario.tipo = 'admin';
+            localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+            alert("👑 Bem-vindo, Administrador Geral!");
+            window.location.href = 'admin.html';
+            return;
+        }
+
+        const { data: vinculo } = await _supabase
+            .from('usuario_loja')
+            .select('id_lojista, funcao')
+            .eq('id_usuario', usuario.id)
+            .maybeSingle();
+
+        if (vinculo) {
+            usuario.tipo = 'lojista';
+            usuario.id_lojista = vinculo.id_lojista;
+            usuario.id_estabelecimento = vinculo.id_lojista;
+            usuario.funcao = vinculo.funcao;
+
+            localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+            alert(`🏪 Bem-vindo ao painel da sua loja!`);
+            fecharModal();
+            window.location.href = 'admin.html'; 
+            return;
+        }
+
+        usuario.tipo = 'cliente';
+        localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+        alert(`👋 Bem-vindo de volta, ${usuario.nome}!`);
+        fecharModal();
+        window.location.reload(); 
+
+    } catch (err) {
+        console.error("Erro no processo de login:", err);
+        alert("⚠️ Ocorreu um erro ao tentar fazer login.");
+    }
+}
+
+async function fazerCadastro() {
+    const nomeEl = document.getElementById("cad-nome");
+    const emailEl = document.getElementById("cad-email");
+    const senhaEl = document.getElementById("cad-senha");
+    
+    if (!nomeEl || !emailEl || !senhaEl) {
+        alert("❌ Erro interno: Campos de cadastro não foram encontrados no HTML.");
+        return;
+    }
+
+    const nome = nomeEl.value.trim();
+    const email = emailEl.value.trim();
+    const senha = senhaEl.value.trim();
+    const querCadastrarEmpresa = document.getElementById("cad-e-empresa")?.checked;
+
+    if (!nome || !email || !senha) {
+        alert("⚠️ Por favor, preencha todos os campos (Nome, E-mail e Senha).");
+        return;
+    }
+
+    // 1️⃣ PASSO: Cria o usuário na tabela 'usuarios' e retorna o registro criado (.select())
+    const { data: novoUsuario, error: erroUsuario } = await _supabase
+        .from('usuarios')
+        .insert([{ nome, email, senha }])
+        .select();
+
+    if (erroUsuario) {
+        alert("❌ Erro ao criar sua conta de usuário: " + erroUsuario.message);
+        return;
+    }
+
+    // 2️⃣ PASSO: Se for empresa, vincula o id_usuario recém-criado na tabela lojistas
+    if (querCadastrarEmpresa && novoUsuario && novoUsuario.length > 0) {
+        const nomeLoja = document.getElementById("loja-nome")?.value.trim();
+        const descLoja = document.getElementById("loja-descricao")?.value.trim();
+        const segmentoLoja = document.getElementById("loja-segmento")?.value;
+
+        if (!nomeLoja) {
+            alert("⚠️ Você marcou a opção de empresa. Por favor, digite o Nome da Loja.");
+            return;
+        }
+
+        const slugLoja = nomeLoja.toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)+/g, '');
+
+        // 🌟 CORREÇÃO DE INTEGRIDADE: Injeta o id do usuário para que o Banco associe o lojista corretamente!
+        const { error: erroLojista } = await _supabase
+            .from('lojistas')
+            .insert([{ 
+                nome_loja: nomeLoja, 
+                descricao: descLoja, 
+                segmento: segmentoLoja, 
+                slug: slugLoja,
+                id_usuario_dono: novoUsuario[0].id // Garante o mapeamento do dono
+            }]);
+
+        if (erroLojista) {
+            console.error("Erro lojistas:", erroLojista);
+        }
+    }
+
+    alert(querCadastrarEmpresa ? "✅ Empresa e Conta criadas com sucesso! Faça login." : "✅ Conta de cliente criada! Faça login.");
+    
+    nomeEl.value = "";
+    emailEl.value = "";
+    senhaEl.value = "";
+    if(document.getElementById("loja-nome")) document.getElementById("loja-nome").value = "";
+    if(document.getElementById("loja-descricao")) document.getElementById("loja-descricao").value = "";
+    
+    alternarAba('login');
+}
+
+// =================================================================
+// 🧭 CONTROLE DE INTERFACE E MODAIS
+// =================================================================
+function abrirConta() {
+    const modal = document.getElementById("modal-login");
+    if (modal) {
+        modal.style.display = "flex";
+        alternarAba('login'); 
+    }
+}
+
+function fecharModal() {
+    const modalLogin = document.getElementById("modal-login");
+    const modalPagamento = document.getElementById("modal-pagamento");
+    const overlay = document.getElementById("overlay");
+
+    if (modalLogin) modalLogin.style.display = "none";
+    if (modalPagamento) modalPagamento.style.display = "none";
+    if (overlay) overlay.style.display = "none";
+}
+
+function fecharLogin() {
+    fecharModal();
+}
+
+function alternarAba(aba) {
+    const formLogin = document.getElementById("form-login");
+    const formCadastro = document.getElementById("form-cadastro");
+    const btnAbaEntrar = document.getElementById("aba-entrar") || document.getElementById("tab-login");
+    const btnAbaCadastrar = document.getElementById("aba-cadastrar") || document.getElementById("tab-cadastro");
+
+    if (aba === 'cadastro') {
+        if (formLogin) formLogin.style.display = "none";
+        if (formCadastro) formCadastro.style.display = "block";
+        if (btnAbaCadastrar) btnAbaCadastrar.classList.add("ativa");
+        if (btnAbaEntrar) btnAbaEntrar.classList.remove("ativa");
+    } else {
+        if (formLogin) formLogin.style.display = "block";
+        if (formCadastro) formCadastro.style.display = "none";
+        if (btnAbaEntrar) btnAbaEntrar.classList.add("ativa");
+        if (btnAbaCadastrar) btnAbaCadastrar.classList.remove("ativa");
+    }
+}
+
 function toggleCamposEmpresa() {
     const checkbox = document.getElementById("cad-e-empresa");
     const camposLoja = document.getElementById("campos-empresa") || document.getElementById("campos-loja");
-    
     if (checkbox && camposLoja) {
         camposLoja.style.display = checkbox.checked ? "block" : "none";
     }
@@ -805,3 +736,18 @@ function toggleCamposEmpresa() {
 function toggleCamposLoja() {
     toggleCamposEmpresa();
 }
+
+// =================================================================
+// 🚀 INICIALIZAÇÃO AUTOMÁTICA
+// =================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    carregarProdutosSupabase();
+    verificarUsuario();
+    atualizarContador();
+    atualizarContadorFavoritos();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('abrirLogin') === 'true') {
+        abrirConta();
+    }
+});

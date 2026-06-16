@@ -3,100 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel ADM</title>
+    <title>Painel Administrativo - Lojista</title>
     
-    <link rel="stylesheet" href="css/admin.css">
-    
-    <script type="module" src="componentes/MenuTopo.js"></script>
+    <link rel="stylesheet" href="css/style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #198754;
+            --primary-dark: #146c43;
+            --danger: #dc3545;
+            --gray-light: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Topbar de Navegação */
+        .admin-header {
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-voltar {
+            text-decoration: none;
+            color: #6c757d;
+            font-weight: bold;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .btn-voltar:hover { color: #333; }
+
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #bb2d3b; }
+
+        /* Container Principal (Abas Laterais + Conteúdo) */
+        .admin-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container { grid-template-columns: 1fr; }
+        }
+
+        /* Sidebar de Menu */
+        .admin-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            height: fit-content;
+        }
+
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: bold;
+            color: #495057;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+        }
+
+        .menu-btn:hover {
+            background-color: var(--gray-light);
+            color: var(--primary);
+        }
+
+        .menu-btn.ativo {
+            background-color: #e8f5e9;
+            color: var(--primary);
+        }
+
+        /* Painéis de Conteúdo */
+        .admin-content-box {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .aba-painel { display: none; }
+        .aba-painel.ativa { display: block; }
+
+        /* Formulários e Inputs */
+        .form-grupo {
+            margin-bottom: 15px;
+        }
+
+        .form-grupo label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .input-admin {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .input-admin:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+        }
+
+        .btn-salvar {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+        .btn-salvar:hover { background: var(--primary-dark); }
+
+        /* Tabelas Dinâmicas */
+        .tabela-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: var(--gray-light);
+            color: #495057;
+            font-weight: 700;
+        }
+
+        /* Miniaturas de Fotos dos Produtos na Tabela */
+        .img-tabela-produto {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Status dos Pedidos */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .status-Recebido { background: #ffc107; color: #212529; }
+        .status-Preparando { background: #17a2b8; color: white; }
+        .status-Saiu { background: #007bff; color: white; }
+        .status-Entregue { background: #28a745; color: white; }
+
+        .select-status {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 13px;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .btn-remover-prod {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .btn-remover-prod:hover { background: #bb2d3b; }
+    </style>
 </head>
 <body>
 
-    <menu-topo></menu-topo>
+    <header class="admin-header">
+        <h1>⚙️ Painel de Controle - <span id="nome-loja-titulo">Carregando estabelecimento...</span></h1>
+        <div class="user-actions">
+            <a href="index.html" id="link-voltar-vitrine" class="btn-voltar">⬅️ Ir para a Vitrine</a>
+            <button onclick="deslogarLojista()" class="btn-logout">🚪 Sair</button>
+        </div>
+    </header>
 
-    <div class="dashboard-cards">
-        <div class="card-info">
-            <h3 id="contador-produtos-dashboard">0</h3>
-            <p>Produtos</p>
-        </div>
-        <div class="card-info">
-            <h3 id="contador-pedidos-dashboard">0</h3>
-            <p>Pedidos</p>
-        </div>
-        <div class="card-info">
-            <h3 id="faturamento-total">R$ 0,00</h3>
-            <p>Faturamento</p>
-        </div>
-    </div>
+    <div class="admin-container">
+        
+        <aside class="admin-sidebar">
+            <button class="menu-btn ativo" onclick="mudarAbaAdmin('aba-pedidos', this)">📦 Pedidos Recebidos</button>
+            <button class="menu-btn" onclick="mudarAbaAdmin('aba-produtos', this)">🍎 Meus Produtos</button>
+            <button class="menu-btn" onclick="mudarAbaAdmin('aba-add-produto', this)">➕ Novo Produto</button>
+        </aside>
 
-    <div class="box">
-        <h2>➕ Adicionar Produto</h2>
-        <div class="form-grid">
-            <input type="text" id="nome" placeholder="Nome do produto">
-            <input type="number" id="preco" placeholder="Preço">
-            <input type="number" id="preco_antigo" placeholder="Preço antigo">
-            <input type="text" id="desconto" placeholder="Desconto (Ex: 10)">
-            <input type="text" id="imagem" placeholder="URL da imagem">
+        <main class="admin-content-box">
             
-            <select id="categoria">
-                <option value="index">Mais vendidos</option>
-                <option value="hortifruti">Hortifruti</option>
-                <option value="carnes">Carnes</option>
-                <option value="limpeza">Limpeza</option>
-                <option value="bebidas">Bebidas</option>
-            </select>
-        </div>
-        <button class="btn" onclick="salvarProduto()">Salvar Produto</button>
+            <section id="aba-pedidos" class="aba-painel ativa">
+                <h2>📦 Pedidos Clientes</h2>
+                <p>Monitore e altere o status de entrega das compras em tempo real.</p>
+                <div class="tabela-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Produtos</th>
+                                <th>Endereço de Entrega</th>
+                                <th>Total</th>
+                                <th>Forma de Pagamento</th>
+                                <th>Status do Pedido</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-pedidos-corpo">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #777; padding: 30px;">Buscando pedidos no banco de dados...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="aba-produtos" class="aba-painel">
+                <h2>🍎 Produtos Cadastrados</h2>
+                <p>Gerencie os itens visíveis na sua vitrine virtual.</p>
+                <div class="tabela-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>Nome do Item</th>
+                                <th>Preço de Venda</th>
+                                <th>Categoria</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-produtos-corpo">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #777; padding: 30px;">Buscando produtos cadastrados...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="aba-add-produto" class="aba-painel">
+                <h2>➕ Adicionar Novo Produto à Vitrine</h2>
+                <p>Insira as informações básicas para publicar o item na loja instantaneamente.</p>
+                <form id="form-novo-produto" onsubmit="salvarProdutoSupabase(event)">
+                    <div class="form-grupo">
+                        <label for="prod-nome">Nome do Produto</label>
+                        <input type="text" id="prod-nome" class="input-admin" placeholder="Ex: Maçã Gala Kg" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-grupo">
+                            <label for="prod-preco">Preço Atual (R$)</label>
+                            <input type="number" step="0.01" id="prod-preco" class="input-admin" placeholder="Ex: 8.99" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="prod-preco-antigo">Preço Antigo / Riscado (R$)</label>
+                            <input type="number" step="0.01" id="prod-preco-antigo" class="input-admin" placeholder="Ex: 10.99">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-grupo">
+                            <label for="prod-categoria">Categoria</label>
+                            <select id="prod-categoria" class="input-admin" required>
+                                <option value="hortifruti">🥬 Hortifruti</option>
+                                <option value="carnes">🥩 Carnes</option>
+                                <option value="limpeza">🧼 Limpeza / Higiene</option>
+                                <option value="bebidas">🍹 Bebidas</option>
+                                <option value="index">🏠 Destaques da Home</option>
+                            </select>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="prod-desconto">Porcentagem de Desconto (%)</label>
+                            <input type="number" id="prod-desconto" class="input-admin" value="0" min="0" max="100">
+                        </div>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="prod-img">URL da Imagem do Produto</label>
+                        <input type="url" id="prod-img" class="input-admin" placeholder="https://exemplo.com/imagem.jpg" required>
+                    </div>
+
+                    <button type="submit" class="btn-salvar">🚀 Cadastrar Produto</button>
+                </form>
+            </section>
+
+        </main>
     </div>
-    <div class="compartilhar-loja">
-         <h3>🔗 Link da sua Loja</h3>
-        <input type="text" id="link-loja-input" readonly style="width: 70%; padding: 8px;">
-        <button type="button" onclick="copiarLinkLoja()" style="padding: 8px 12px; cursor: pointer;">📋 Copiar Link</button>
-    </div>
 
-    <div class="box">
-        <div class="box-cabecalho">
-            <h2>📦 Produtos Cadastrados</h2>
-            <span id="contador-produtos" class="badge-contador">0</span>
-        </div>
-        <div class="barra-busca-admin">
-            <input type="search" id="busca-produto" placeholder="🔍 Buscar por nome ou categoria..." oninput="filtrarProdutosAdmin()">
-            <select id="filtro-categoria-produto" onchange="filtrarProdutosAdmin()">
-                <option value="">Todas as categorias</option>
-                <option value="index">Mais vendidos</option>
-                <option value="hortifruti">Hortifruti</option>
-                <option value="carnes">Carnes</option>
-                <option value="limpeza">Limpeza</option>
-                <option value="bebidas">Bebidas</option>
-            </select>
-        </div>
-        <div class="produtos-lista-admin" id="lista-produtos"></div>
-    </div>
-
-    <div class="box">
-        <div class="box-cabecalho">
-            <h2>🛒 Pedidos Recebidos</h2>
-            <span id="contador-pedidos" class="badge-contador">0</span>
-        </div>
-
-        <div class="resumo-pedidos" id="resumo-pedidos"></div>
-
-        <div class="barra-busca-admin barra-pedidos">
-            <input type="search" id="busca-pedido" placeholder="🔍 Buscar cliente, telefone ou ID..." oninput="filtrarPedidosAdmin()">
-            <select id="filtro-status-pedido" onchange="filtrarPedidosAdmin()">
-                <option value="">Todos os status</option>
-                <option value="Recebido">Recebido</option>
-                <option value="Saiu para entrega">Saiu para entrega</option>
-                <option value="Entregue">Entregue</option>
-                <option value="Cancelado">Cancelado</option>
-            </select>
-        </div>
-
-        <div id="lista-pedidos" class="lista-pedidos-admin"></div>
-    </div>
-
-    <script src="js/admin.js?v=6"></script>
-
+    <script src="js/admin.js?v=2"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
-// ==========================================
+// =================================================================
 // 🔗 CONFIGURAÇÃO DO SUPABASE (UNIFICADA)
-// ==========================================
+// =================================================================
 const supabaseUrl = 'https://ikrsxmjrdnhyecjchjju.supabase.co';
 const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -45,6 +45,8 @@ function montarEndereco(rua, numero, bairro, cidade) {
 
 function atualizarResumoEndereco(enderecoStr) {
     const container = document.getElementById("perf-endereco-resumo");
+    if (!container) return;
+    
     const partes = parseEndereco(enderecoStr);
 
     if (!partes.rua && !partes.numero && !partes.bairro && !partes.cidade) {
@@ -105,12 +107,14 @@ async function carregarDadosEHistorico() {
     }
 
     const containerPedidos = document.getElementById("historico-compras");
-    if (pedidos.length === 0) {
+    if (!containerPedidos) return;
+
+    if (!pedidos || pedidos.length === 0) {
         containerPedidos.innerHTML = "<p style='color: #6c757d;'>Você ainda não fez nenhuma compra no nosso mercado. 🛒</p>";
         return;
     }
 
-    containerPedidos.innerHTML = "";
+    let htmlAcumulado = "";
 
     pedidos.forEach(pedido => {
         const dataFormatada = new Date(pedido.created_at).toLocaleDateString("pt-BR", {
@@ -130,7 +134,7 @@ async function carregarDadosEHistorico() {
 
         const telTela = document.getElementById("perf-telefone").innerText;
         const resumoEnd = document.getElementById("perf-endereco-resumo");
-        const enderecoVazio = resumoEnd.querySelector(".vazio");
+        const enderecoVazio = resumoEnd ? resumoEnd.querySelector(".vazio") : null;
 
         if (telTela === "Não informado" && pedido.telefone) {
             document.getElementById("perf-telefone").innerText = pedido.telefone;
@@ -140,9 +144,11 @@ async function carregarDadosEHistorico() {
             atualizarResumoEndereco(enderecoUsuarioAtual);
         }
 
-        containerPedidos.innerHTML += `
-            <div class="pedido-historico">
-                <span class="status-badge status-${pedido.status?.replace(/ /g, "")}">${pedido.status || "Recebido"}</span>
+        htmlAcumulado += `
+            <div class="pedido-historico" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <span class="status-badge status-${pedido.status?.replace(/ /g, "") || 'Recebido'}" style="float: right; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">
+                    ${pedido.status || "Recebido"}
+                </span>
                 <strong style="color: #198754;">Pedido Realizado em: ${dataFormatada}</strong>
                 <p style="font-size: 12px; color: #6c757d; margin: 5px 0;">Código: ${pedido.id}</p>
                 
@@ -156,6 +162,8 @@ async function carregarDadosEHistorico() {
             </div>
         `;
     });
+
+    containerPedidos.innerHTML = htmlAcumulado;
 }
 
 function fazerLogout() {
@@ -185,6 +193,7 @@ function fecharModalEditar() {
 
 async function salvarEdicaoPerfil() {
     const usuarioLogado = obterUsuarioLogado();
+    if (!usuarioLogado) return;
 
     const novoNome = document.getElementById("edit-nome").value.trim();
     const novoTel = document.getElementById("edit-telefone").value.trim();
@@ -206,7 +215,8 @@ async function salvarEdicaoPerfil() {
         return;
     }
 
-    const novoEnd = temEnderecoCompleto ? montarEndereco(rua, numero, bairro, city) : "";
+    // 🌟 CORREÇÃO AQUI: Mudado de "city" para "cidade" para bater com a variável declarada acima
+    const novoEnd = temEnderecoCompleto ? montarEndereco(rua, numero, bairro, cidade) : "";
 
     const { error } = await _supabase
         .from("usuarios")
@@ -223,7 +233,7 @@ async function salvarEdicaoPerfil() {
     }
 
     usuarioLogado.nome = novoNome;
-    if (novoEnd) usuarioLogado.endereco = novoEnd;
+    usuarioLogado.endereco = novoEnd;
     localStorage.setItem("usuario_logado", JSON.stringify(usuarioLogado));
 
     enderecoUsuarioAtual = novoEnd;
@@ -231,6 +241,6 @@ async function salvarEdicaoPerfil() {
     document.getElementById("perf-telefone").innerText = novoTel || "Não informado";
     atualizarResumoEndereco(novoEnd);
 
-    alert("✅ Perfil updated com sucesso!");
+    alert("✅ Perfil atualizado com sucesso!");
     fecharModalEditar();
 }
