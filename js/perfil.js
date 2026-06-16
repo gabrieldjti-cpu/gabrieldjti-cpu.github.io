@@ -6,6 +6,17 @@ const supabaseKey = 'sb_publishable_kmt3zA_tzThnXJ4EIukJpg_cQ3q9BET';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 let enderecoUsuarioAtual = "";
 
+function obterUsuarioLogado() {
+    try {
+        const raw = localStorage.getItem("usuario_logado");
+        return raw ? JSON.parse(raw) : null;
+    } catch (erro) {
+        console.warn("Sessão inválida no perfil:", erro);
+        localStorage.removeItem("usuario_logado");
+        return null;
+    }
+}
+
 // Mesmo formato usado no checkout (script.js)
 function parseEndereco(endereco) {
     const vazio = { rua: "", numero: "", bairro: "", cidade: "" };
@@ -54,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function carregarDadosEHistorico() {
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const usuarioLogado = obterUsuarioLogado();
 
     if (!usuarioLogado) {
         alert("🔒 Você precisa estar logado para ver seu perfil.");
@@ -173,7 +184,7 @@ function fecharModalEditar() {
 }
 
 async function salvarEdicaoPerfil() {
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const usuarioLogado = obterUsuarioLogado();
 
     const novoNome = document.getElementById("edit-nome").value.trim();
     const novoTel = document.getElementById("edit-telefone").value.trim();

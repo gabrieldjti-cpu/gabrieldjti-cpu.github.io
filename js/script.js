@@ -377,7 +377,7 @@ function atualizarInterfaceGeral() {
 // 👤 SISTEMA DE AUTENTICAÇÃO E CADASTRO
 // =================================================================
 async function verificarUsuario() {
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const usuarioLogado = obterUsuarioLogado();
     const btnUser = document.getElementById("user-name");
     const adminBtn = document.getElementById("btn-admin");
 
@@ -581,10 +581,13 @@ async function fazerLogin() {
     fecharModal();
     verificarUsuario();
     
-    // Se for administrador/lojista, pode redirecionar se estiver na página de login dedicada
-    if (usuarioLogado.id_lojista && window.location.pathname.includes('index')) {
-         // Opcional: window.location.href = 'painel.html';
+    const possuiAcessoAdm = !!usuarioLogado.id_lojista || !!usuarioLogado.id_estabelecimento;
+    if (possuiAcessoAdm) {
+        window.location.href = "admin.html";
+        return;
     }
+
+    window.location.href = "index.html";
 }
 
 // =================================================================
@@ -592,7 +595,7 @@ async function fazerLogin() {
 // =================================================================
 async function escolherPagamento(tipo) {
     if (carrinho.length === 0) return;
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const usuarioLogado = obterUsuarioLogado();
     const idLojaAtual = obterIdLojistaDaURL();
 
     if (!idLojaAtual) {
@@ -636,7 +639,7 @@ async function escolherPagamento(tipo) {
 // 🧭 REDIRECIONAMENTO E NAVEGAÇÃO DE CONTA
 // =================================================================
 function abrirConta() {
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuario_logado"));
+    const usuarioLogado = obterUsuarioLogado();
     const idLojaAtual = obterIdLojistaDaURL();
 
     if (usuarioLogado) {
@@ -646,6 +649,7 @@ function abrirConta() {
             window.location.href = "perfil.html";
         }
     } else {
+        alternarAba('login');
         const modalLogin = document.getElementById("modal-login");
         if (modalLogin) {
             modalLogin.style.display = "flex";
@@ -688,8 +692,105 @@ function alternarAba(aba) {
 }
 
 function fecharModal() {
-    const modal = document.getElementById("modal-login");
-    if (modal) modal.style.display = "none";
+    const modalLogin = document.getElementById("modal-login");
+    const modalPagamento = document.getElementById("modal-pagamento");
+    const overlay = document.getElementById("overlay");
+
+    if (modalLogin) modalLogin.style.display = "none";
+    if (modalPagamento) modalPagamento.style.display = "none";
+    if (overlay) overlay.style.display = "none";
+}
+
+function fecharLogin() {
+    fecharModal();
+}
+
+function irCarrinho() {
+    const carrinhoLateral = document.getElementById("carrinho-lateral");
+    const overlay = document.getElementById("overlay");
+
+    if (carrinhoLateral) {
+        carrinhoLateral.classList.add("ativo");
+    }
+    if (overlay) {
+        overlay.style.display = "block";
+    }
+
+    if (typeof carregarCarrinho === "function") {
+        carregarCarrinho();
+    }
+}
+
+function fecharCarrinho() {
+    const carrinhoLateral = document.getElementById("carrinho-lateral");
+    const overlay = document.getElementById("overlay");
+
+    if (carrinhoLateral) {
+        carrinhoLateral.classList.remove("ativo");
+    }
+    if (overlay) {
+        overlay.style.display = "none";
+    }
+}
+
+function carregarCarrinho() {
+    const container = document.getElementById("lista-carrinho");
+    const totalEl = document.getElementById("total");
+
+    if (!container || !totalEl) return;
+
+    if (!carrinho || carrinho.length === 0) {
+        container.innerHTML = '<p class="carrinho-vazio">Seu carrinho está vazio.</p>';
+        totalEl.innerText = "Total: R$ 0,00";
+        return;
+    }
+
+    let valorTotal = 0;
+    container.innerHTML = carrinho.map(item => {
+        const subtot = Number(item.preco || 0) * Number(item.quantidade || 1);
+        valorTotal += subtot;
+        return `
+            <div class="item-carrinho">
+                <img src="${item.img || '#'}" alt="${item.nome || ''}" class="item-carrinho-img" />
+                <div class="item-info">
+                    <div class="item-info-top">
+                        <strong>${item.nome || 'Produto'}</strong>
+                        <button type="button" class="item-remover" onclick="removerItemCarrinho('${item.id}')">✕</button>
+                    </div>
+                    <span class="item-quantidade">${item.quantidade} x R$ ${Number(item.preco || 0).toFixed(2)}</span>
+                    <span class="item-subtotal">R$ ${subtot.toFixed(2)}</span>
+                    <div class="item-controles">
+                        <button type="button" class="controle-btn" onclick="alterarQtdCard('${item.id}', -1)">-</button>
+                        <span class="controle-quantidade">${item.quantidade}</span>
+                        <button type="button" class="controle-btn" onclick="alterarQtdCard('${item.id}', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    totalEl.innerText = `Total: R$ ${valorTotal.toFixed(2)}`;
+}
+
+function removerItemCarrinho(idProduto) {
+    const index = carrinho.findIndex(item => item.id === idProduto);
+    if (index === -1) return;
+
+    carrinho.splice(index, 1);
+    atualizarInterfaceGeral();
+    carregarCarrinho();
+}
+
+function finalizarPedido() {
+    if (!carrinho || carrinho.length === 0) {
+        alert("Seu carrinho está vazio.");
+        return;
+    }
+
+    const modalPagamento = document.getElementById("modal-pagamento");
+    if (modalPagamento) {
+        modalPagamento.style.display = "flex";
+    }
 }
 
 function toggleCamposEmpresa() {

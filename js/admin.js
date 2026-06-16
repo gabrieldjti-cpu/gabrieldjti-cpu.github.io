@@ -19,9 +19,20 @@ const CORES_STATUS = {
     Preparando: "#17a2b8"
 };
 
+function obterUsuarioLogado() {
+    try {
+        const raw = localStorage.getItem("usuario_logado");
+        return raw ? JSON.parse(raw) : null;
+    } catch (erro) {
+        console.warn("Sessão inválida no localStorage:", erro);
+        localStorage.removeItem("usuario_logado");
+        return null;
+    }
+}
+
 // Carregamento e validação da sessão
 document.addEventListener("DOMContentLoaded", () => {
-    lojistaAtual = JSON.parse(localStorage.getItem("usuario_logado"));
+    lojistaAtual = obterUsuarioLogado();
 
     // 👑 VERIFICAÇÃO MASTER: Dá acesso total ao seu e-mail de administrador geral
     if (lojistaAtual && lojistaAtual.email === "gabrieldj.ti@gmail.com") {
@@ -69,6 +80,22 @@ function copiarLinkLoja() {
         navigator.clipboard.writeText(inputLink.value);
         alert("🚀 Link copiado! Agora você pode colar nas suas redes sociais.");
     }
+}
+
+function atualizarDashboard() {
+    const contadorProdutosDash = document.getElementById("contador-produtos-dashboard");
+    const contadorPedidosDash = document.getElementById("contador-pedidos-dashboard");
+    const faturamentoDash = document.getElementById("faturamento-total");
+    const totalProdutos = todosProdutos.length;
+    const totalPedidos = todosPedidos.length;
+    const faturamentoTotal = todosPedidos.reduce((soma, pedido) => {
+        const total = Number(pedido.total || 0);
+        return soma + (Number.isNaN(total) ? 0 : total);
+    }, 0);
+
+    if (contadorProdutosDash) contadorProdutosDash.textContent = totalProdutos;
+    if (contadorPedidosDash) contadorPedidosDash.textContent = totalPedidos;
+    if (faturamentoDash) faturamentoDash.textContent = `R$ ${faturamentoTotal.toFixed(2)}`;
 }
 
 function escaparHtml(texto) {
@@ -121,6 +148,7 @@ function atualizarResumoPedidos() {
     const entregues = todosPedidos.filter(p => p.status === "Entregue").length;
 
     if (contador) contador.textContent = total;
+    atualizarDashboard();
 
     resumo.innerHTML = `
         <div class="chip-resumo"><span class="chip-num">${total}</span><span class="chip-label">Total</span></div>
@@ -258,7 +286,9 @@ async function carregarProdutosAdmin() {
     }
 
     todosProdutos = produtos || [];
-    document.getElementById("contador-produtos").textContent = todosProdutos.length;
+    const contadorProdutos = document.getElementById("contador-produtos");
+    if (contadorProdutos) contadorProdutos.textContent = todosProdutos.length;
+    atualizarDashboard();
     filtrarProdutosAdmin();
 }
 
@@ -285,6 +315,7 @@ function filtrarProdutosAdmin() {
 
 function renderizarProdutos(produtos) {
     const container = document.getElementById("lista-produtos");
+    if (!container) return;
     const contador = document.getElementById("contador-produtos");
 
     if (contador) {
@@ -435,6 +466,8 @@ async function salvarProduto() {
     document.getElementById("preco_antigo").value = "";
     document.getElementById("desconto").value = "";
     document.getElementById("imagem").value = "";
+    const categoriaEl = document.getElementById("categoria");
+    if (categoriaEl) categoriaEl.selectedIndex = 0;
 
     const btnSalvar = document.querySelector("button[onclick='salvarProduto()']");
     if (btnSalvar) {

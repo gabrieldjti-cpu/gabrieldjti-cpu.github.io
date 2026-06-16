@@ -136,9 +136,20 @@ function mostrarSemPedidos(container) {
     `;
 }
 
+function obterUsuarioLogado() {
+    try {
+        const raw = localStorage.getItem('usuario_logado');
+        return raw ? JSON.parse(raw) : null;
+    } catch (erro) {
+        console.warn('Sessão inválida no rastreamento:', erro);
+        localStorage.removeItem('usuario_logado');
+        return null;
+    }
+}
+
 async function carregarRastreamento() {
     const container = document.getElementById('rastreamento-conteudo');
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado'));
+    const usuarioLogado = obterUsuarioLogado();
 
     if (!container) return;
 
