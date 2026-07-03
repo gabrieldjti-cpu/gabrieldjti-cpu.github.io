@@ -194,8 +194,8 @@
             try {
                 // Aponta para a tabela 'lojistas' reestruturada no seu script principal
                 const { data: lojas, error } = await _supabase
-                    .from('lojistas') 
-                    .select('id, nome_loja, descricao, segmento');
+                    .from('estabelecimentos')
+                    .select('id, nome, descricao, segmento');
 
                 if (error) throw error;
 
@@ -216,7 +216,7 @@
                     const cardHTML = `
                         <a href="index.html?loja=${loja.id}" class="card-loja">
                             <div class="logo-comercio">${emoji}</div>
-                            <h3>${loja.nome_loja}</h3>
+                            <h3>${loja.nome}</h3>
                             <p>${loja.descricao || 'Confira nossos produtos!'}</p>
                             <span class="btn-entrar-loja">Fazer Compras →</span>
                         </a>

@@ -44,25 +44,32 @@ document.addEventListener("DOMContentLoaded", () => {
         ehAdminMaster = true;
         console.log("👑 Modo Administrador Master Ativo - Acesso total concedido.");
     } 
-    // 2️⃣ VALIDAÇÃO DE ACESSO: Se não for lojista e nem master, barra a entrada
-    else if (!lojistaAtual || (!lojistaAtual.id_lojista && !lojistaAtual.id_estabelecimento)) {
+    // 2️⃣ VALIDAÇÃO DE ACESSO: exige que exista um id de estabelecimento/lojista (ou seja master)
+    if (!lojistaAtual) {
         alert("⚠️ Acesso restrito. Faça login como lojista para acessar o painel.");
         window.location.href = "index.html?abrirLogin=true"; 
         return;
     }
 
-    // Normaliza o ID da loja ativa de forma uniforme baseado na sua modelagem
-    if (!ehAdminMaster) {
-        lojistaAtual.id_loja_ativa = lojistaAtual.id_estabelecimento || lojistaAtual.id_lojista;
+    // Define se é master com base no e-mail
+    if (!ehAdminMaster && (!lojistaAtual.id_lojista && !lojistaAtual.id_estabelecimento && !lojistaAtual.id_loja_ativa)) {
+        alert("⚠️ Acesso restrito. Faça login como lojista para acessar o painel.");
+        window.location.href = "index.html?abrirLogin=true"; 
+        return;
+    }
+
+    // Normaliza o ID da loja ativa de forma uniforme baseado na sua modelagem (prioriza id_loja_ativa se já presente)
+    if (!ehAdminMaster && lojistaAtual) {
+        lojistaAtual.id_loja_ativa = lojistaAtual.id_loja_ativa || lojistaAtual.id_estabelecimento || lojistaAtual.id_lojista;
     }
 
     // Define textualmente o título do painel baseado em quem logou
     const tituloPainel = document.getElementById("nome-loja-titulo");
-    if (tituloPainel) {
+    if (tituloPainel && lojistaAtual) {
         tituloPainel.innerText = ehAdminMaster ? "Painel Master Geral" : (lojistaAtual.nome_loja || lojistaAtual.nome || "Minha Loja");
     }
 
-    console.log("🏪 Painel carregado para:", ehAdminMaster ? "Todas as Lojas (Master)" : lojistaAtual.id_loja_ativa);
+    console.log("🏪 Painel carregado para:", ehAdminMaster ? "Todas as Lojas (Master)" : (lojistaAtual ? lojistaAtual.id_loja_ativa : "Nenhuma"));
 
     // Carrega a carga de dados inicial da tela
     carregarPedidosAdmin();
@@ -288,7 +295,7 @@ function renderizarPedidos(pedidos, container) {
         const aberto = status === "Recebido" || status === "Preparando" ? " open" : "";
 
         return `
-            <details class="pedido-acordeao"${abento}>
+            <details class="pedido-acordeao"${aberto}>
                 <summary class="pedido-acordeao-cabecalho">
                     <div class="pedido-linha-principal">
                         <div class="pedido-info-breve">
@@ -354,8 +361,18 @@ async function carregarProdutosAdmin() {
 
     let query = _supabase.from("produtos").select("*");
 
-    if (!ehAdminMaster) {
+    // 🎯 FILTRO POR LOJA: Se não for o Admin Geral, filtra estritamente pelos produtos desta loja
+    if (!ehAdminMaster && lojistaAtual && lojistaAtual.id_loja_ativa) {
         query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
+    } else if (!ehAdminMaster) {
+        // Proteção caso o ID por algum motivo não esteja carregado no localStorage
+        console.warn("⚠️ ID da loja ativa não encontrado para filtrar os produtos.");
+        if (container.tagName === "TBODY") {
+            container.innerHTML = '<tr><td colspan="5" style="text-align:center; color:orange;">Faça login novamente para carregar seus produtos.</td></tr>';
+        } else {
+            container.innerHTML = '<p class="admin-msg">Faça login novamente para carregar seus produtos.</p>';
+        }
+        return;
     }
 
     const { data: produtos, error } = await query.order("nome", { ascending: true });
@@ -573,25 +590,33 @@ async function salvarProduto() {
         return;
     }
 
-    let lojistaIdFinal = ehAdminMaster ? null : lojistaAtual.id_loja_ativa;
-    
-    if (ehAdminMaster && !idProdutoEmEdicao) {
+    // Define qual ID de lojista será associado ao produto
+    const sess = obterUsuarioLogado();
+    let lojistaIdFinal = null;
+    if (!ehAdminMaster) {
+        lojistaIdFinal = sess?.id_loja_ativa || sess?.id_estabelecimento || sess?.id_lojista || null;
+        if (!lojistaIdFinal) {
+            alert('❌ Não foi possível identificar a loja associada. Faça login novamente.');
+            return;
+        }
+    } else if (ehAdminMaster && !idProdutoEmEdicao) {
         const { data: ests } = await _supabase.from("estabelecimentos").select("id").limit(1);
         if (ests && ests.length > 0) {
             lojistaIdFinal = ests[0].id;
         }
     }
 
+    // Objeto limpo apenas com as colunas que existem no seu banco (evitando erro de cache do 'imagem')
     const dadosProduto = {
         nome,
         preco: Number(preco),
         preco_antigo: preco_antigo ? Number(preco_antigo) : 0,
         desconto: desconto ? Number(desconto) : 0,
-        img: imagem,
-        imagem: imagem,
+        img: imagem, // Usa a coluna correta do seu banco de dados
         categoria
     };
 
+    // Vincula o ID da loja se for um produto novo
     if (!idProdutoEmEdicao) {
         dadosProduto.id_lojista = lojistaIdFinal;
     }
@@ -599,7 +624,7 @@ async function salvarProduto() {
     if (idProdutoEmEdicao) {
         let query = _supabase.from("produtos").update(dadosProduto).eq("id", idProdutoEmEdicao);
 
-        if (!ehAdminMaster) {
+        if (!ehAdminMaster && lojistaAtual) {
             query = query.eq("id_lojista", lojistaAtual.id_loja_ativa);
         }
 
@@ -609,7 +634,7 @@ async function salvarProduto() {
             alert("❌ Erro ao atualizar: " + error.message);
             return;
         }
-        alert("✅ Produto atualizado!");
+        alert("✅ Produto atualizado com sucesso!");
     } else {
         const { error } = await _supabase.from("produtos").insert([dadosProduto]);
 
@@ -617,7 +642,7 @@ async function salvarProduto() {
             alert("❌ Erro ao salvar: " + error.message);
             return;
         }
-        alert("✅ Produto adicionado!");
+        alert("✅ Produto adicionado à sua loja!");
     }
 
     cancelarEdicao();

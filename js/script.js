@@ -68,15 +68,13 @@ function obterTaxaEntrega(endereco) {
 async function carregarProdutosSupabase() {
     const idLoja = obterIdLojistaDaURL();
     
-    if (!idLoja) {
-        console.warn("Nenhum lojista selecionado na URL.");
-        return;
-    }
+        // Se não houver lojista na URL, carregamos o catálogo geral (para a home)
+        let query = _supabase.from('produtos').select('*');
+        if (idLoja) {
+            query = query.eq('id_lojista', idLoja);
+        }
 
-    const { data: produtos, error } = await _supabase
-        .from('produtos')
-        .select('*')
-        .eq('id_lojista', idLoja);
+        const { data: produtos, error } = await query.order('nome', { ascending: true });
 
     if (error) {
         console.error("Erro ao carregar produtos:", error.message);
@@ -181,12 +179,10 @@ function toggleFavorito(idProduto, event) {
 
     const index = favoritos.indexOf(idProduto);
     if (index === -1) {
-        favoritos.push(idProduto); 
+        favoritos.push(idProduto);
         mostrarAviso("❤️ Adicionado aos favoritos!", "sucesso");
     } else {
-        favorites = favoritos.filter(id => id !== idProduto); // Garante a remoção limpa
-        const idx = favoritos.indexOf(idProduto);
-        if(idx !== -1) favoritos.splice(idx, 1);
+        favoritos.splice(index, 1);
         mostrarAviso("Removido dos favoritos", "sucesso");
     }
 
@@ -546,150 +542,184 @@ async function verificarUsuario() {
 
 async function fazerLogin() {
     const email = document.getElementById("login-email").value.trim();
-    const senha = document.getElementById("login-senha").value.trim();
+    const senha = document.getElementById("login-senha").value;
 
     if (!email || !senha) {
-        alert("⚠️ Por favor, preencha todos os campos.");
+        alert("⚠️ Por favor, digite seu e-mail e senha.");
+        return;
+    }
+
+    console.log("Tentando login para:", email);
+
+    // 1. Busca usuário básico
+    const { data: usuarios, error: erroUser } = await _supabase
+        .from("usuarios")
+        .select("*")
+        .eq("email", email)
+        .eq("senha", senha);
+
+    if (erroUser) {
+        alert("❌ Erro ao buscar usuário: " + erroUser.message);
+        return;
+    }
+
+    if (!usuarios || usuarios.length === 0) {
+        alert("❌ Credenciais incorretas ou usuário inexistente.");
+        return;
+    }
+
+    const usuario = usuarios[0]; // Pega o primeiro encontrado de forma segura
+
+    // 2. Busca estabelecimento associado
+    const { data: estabs, error: erroEstab } = await _supabase
+        .from("estabelecimentos")
+        .select("*")
+        .eq("id_usuario", usuario.id);
+
+    if (erroEstab) {
+        console.error("Erro ao checar estabelecimentos no login:", erroEstab.message);
+    }
+
+    const estabelecimento = (estabs && estabs.length > 0) ? estabs[0] : null;
+
+    // Constrói os dados da sessão com prioridade para o vínculo do banco
+    const sessionData = {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        tipo: estabelecimento ? "lojista" : (usuario.tipo || "cliente"),
+        id_lojista: estabelecimento ? estabelecimento.id : null,
+        id_estabelecimento: estabelecimento ? estabelecimento.id : null,
+        nome_loja: estabelecimento ? estabelecimento.nome : null,
+        id_loja_ativa: estabelecimento ? estabelecimento.id : null
+    };
+
+    localStorage.setItem("usuario_logado", JSON.stringify(sessionData));
+    alert(`👋 Bem-vindo de volta, ${usuario.nome}!`);
+    fecharModal();
+    verificarUsuario();
+}
+
+async function fazerCadastro() {
+    const nome = document.getElementById("cad-nome").value.trim();
+    const email = document.getElementById("cad-email").value.trim();
+    const senha = document.getElementById("cad-senha").value;
+    const ehEmpresa = document.getElementById("cad-e-empresa").checked;
+
+    if (!nome || !email || !senha) {
+        alert("⚠️ Preencha todos os campos obrigatórios.");
         return;
     }
 
     try {
-        const { data: usuario, error } = await _supabase
-            .from('usuarios')
-            .select('*')
-            .eq('email', email)
-            .eq('senha', senha)
-            .maybeSingle();
+        // Monta os dados iniciais do usuário
+        let dadosParaInserir = { nome, email, senha };
+        
+        // Tenta enviar o tipo (envelopado para não quebrar se a coluna sumir)
+        try {
+            dadosParaInserir.tipo = ehEmpresa ? "lojista" : "cliente";
+        } catch(e) {}
 
-        if (error || !usuario) {
-            alert("❌ E-mail ou senha incorretos.");
+        // 1. Insere o usuário na tabela
+        const { data: resultadoUser, error: erroUser } = await _supabase
+            .from("usuarios")
+            .insert([dadosParaInserir])
+            .select();
+
+        // Se der erro de schema cache por causa da coluna 'tipo', tentamos salvar SEM ela
+        if (erroUser && erroUser.message.includes("tipo")) {
+            console.warn("Coluna 'tipo' não encontrada. Tentando salvar sem ela...");
+            delete dadosParaInserir.tipo;
+            
+            const retry = await _supabase.from("usuarios").insert([dadosParaInserir]).select();
+            if (retry.error) {
+                alert("❌ Erro ao criar usuário: " + retry.error.message);
+                return;
+            }
+            var usuarioFinal = retry.data[0];
+        } else if (erroUser) {
+            alert("❌ Erro do Supabase ao criar usuário: " + erroUser.message);
             return;
+        } else {
+            var usuarioFinal = resultadoUser[0];
         }
 
-        const adminEmail = 'gabrieldj.ti@gmail.com';
-        if (usuario.email === adminEmail) {
-            usuario.tipo = 'admin';
-            localStorage.setItem("usuario_logado", JSON.stringify(usuario));
-            alert("👑 Bem-vindo, Administrador Geral!");
-            window.location.href = 'admin.html';
-            return;
+        console.log("Usuário resolvido com sucesso. ID:", usuarioFinal.id);
+
+        let idEstabelecimento = null;
+        let nomeLoja = null;
+
+        // 2. Se for empresa, realiza a gravação na tabela estabelecimentos
+        if (ehEmpresa) {
+            nomeLoja = document.getElementById("loja-nome").value.trim() || `Loja de ${nome}`;
+            const descricaoLoja = document.getElementById("loja-descricao").value.trim();
+            const segmentoLoja = document.getElementById("loja-segmento").value;
+
+            const { data: resultadoEstab, error: erroEstab } = await _supabase
+                .from("estabelecimentos")
+                .insert([{
+                    id_usuario: usuarioFinal.id,
+                    nome: nomeLoja,
+                    descricao: descricaoLoja,
+                    segmento: segmentoLoja
+                }])
+                .select();
+
+            if (erroEstab) {
+                // Se não conseguimos criar a loja, não devemos prosseguir como lojista
+                alert("❌ Erro ao salvar a loja (estabelecimento). Cadastro interrompido:\n" + erroEstab.message);
+                console.error(erroEstab);
+                return; // interrompe fluxo de cadastro para evitar sessão inválida
+            } else if (resultadoEstab && resultadoEstab.length > 0) {
+                idEstabelecimento = resultadoEstab[0].id;
+            }
         }
 
-        const { data: vinculo } = await _supabase
-            .from('usuario_loja')
-            .select('id_lojista, funcao')
-            .eq('id_usuario', usuario.id)
-            .maybeSingle();
+        // 3. Monta a sessão local com as propriedades necessárias
+        const dadosSessao = {
+            id: usuarioFinal.id,
+            nome: usuarioFinal.nome,
+            email: usuarioFinal.email,
+            tipo: ehEmpresa ? "lojista" : "cliente",
+            id_lojista: idEstabelecimento,
+            id_estabelecimento: idEstabelecimento,
+            nome_loja: nomeLoja,
+            id_loja_ativa: idEstabelecimento // conveniência para uso no admin
+        };
 
-        if (vinculo) {
-            usuario.tipo = 'lojista';
-            usuario.id_lojista = vinculo.id_lojista;
-            usuario.id_estabelecimento = vinculo.id_lojista;
-            usuario.funcao = vinculo.funcao;
-
-            localStorage.setItem("usuario_logado", JSON.stringify(usuario));
-            alert(`🏪 Bem-vindo ao painel da sua loja!`);
-            fecharModal();
-            window.location.href = 'admin.html'; 
-            return;
-        }
-
-        usuario.tipo = 'cliente';
-        localStorage.setItem("usuario_logado", JSON.stringify(usuario));
-        alert(`👋 Bem-vindo de volta, ${usuario.nome}!`);
+        localStorage.setItem("usuario_logado", JSON.stringify(dadosSessao));
+        alert("🚀 Conta criada com sucesso!");
         fecharModal();
-        window.location.reload(); 
+        verificarUsuario();
 
     } catch (err) {
-        console.error("Erro no processo de login:", err);
-        alert("⚠️ Ocorreu um erro ao tentar fazer login.");
+        alert("❌ Erro inesperado: " + err.message);
     }
-}
-
-async function fazerCadastro() {
-    const nomeEl = document.getElementById("cad-nome");
-    const emailEl = document.getElementById("cad-email");
-    const senhaEl = document.getElementById("cad-senha");
-    
-    if (!nomeEl || !emailEl || !senhaEl) {
-        alert("❌ Erro interno: Campos de cadastro não foram encontrados no HTML.");
-        return;
-    }
-
-    const nome = nomeEl.value.trim();
-    const email = emailEl.value.trim();
-    const senha = senhaEl.value.trim();
-    const querCadastrarEmpresa = document.getElementById("cad-e-empresa")?.checked;
-
-    if (!nome || !email || !senha) {
-        alert("⚠️ Por favor, preencha todos os campos (Nome, E-mail e Senha).");
-        return;
-    }
-
-    // 1️⃣ PASSO: Cria o usuário na tabela 'usuarios' e retorna o registro criado (.select())
-    const { data: novoUsuario, error: erroUsuario } = await _supabase
-        .from('usuarios')
-        .insert([{ nome, email, senha }])
-        .select();
-
-    if (erroUsuario) {
-        alert("❌ Erro ao criar sua conta de usuário: " + erroUsuario.message);
-        return;
-    }
-
-    // 2️⃣ PASSO: Se for empresa, vincula o id_usuario recém-criado na tabela lojistas
-    if (querCadastrarEmpresa && novoUsuario && novoUsuario.length > 0) {
-        const nomeLoja = document.getElementById("loja-nome")?.value.trim();
-        const descLoja = document.getElementById("loja-descricao")?.value.trim();
-        const segmentoLoja = document.getElementById("loja-segmento")?.value;
-
-        if (!nomeLoja) {
-            alert("⚠️ Você marcou a opção de empresa. Por favor, digite o Nome da Loja.");
-            return;
-        }
-
-        const slugLoja = nomeLoja.toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)+/g, '');
-
-        // 🌟 CORREÇÃO DE INTEGRIDADE: Injeta o id do usuário para que o Banco associe o lojista corretamente!
-        const { error: erroLojista } = await _supabase
-            .from('lojistas')
-            .insert([{ 
-                nome_loja: nomeLoja, 
-                descricao: descLoja, 
-                segmento: segmentoLoja, 
-                slug: slugLoja,
-                id_usuario_dono: novoUsuario[0].id // Garante o mapeamento do dono
-            }]);
-
-        if (erroLojista) {
-            console.error("Erro lojistas:", erroLojista);
-        }
-    }
-
-    alert(querCadastrarEmpresa ? "✅ Empresa e Conta criadas com sucesso! Faça login." : "✅ Conta de cliente criada! Faça login.");
-    
-    nomeEl.value = "";
-    emailEl.value = "";
-    senhaEl.value = "";
-    if(document.getElementById("loja-nome")) document.getElementById("loja-nome").value = "";
-    if(document.getElementById("loja-descricao")) document.getElementById("loja-descricao").value = "";
-    
-    alternarAba('login');
 }
 
 // =================================================================
 // 🧭 CONTROLE DE INTERFACE E MODAIS
 // =================================================================
 function abrirConta() {
+    const usuarioLogado = obterUsuarioLogado();
+    // Se já está logado, leva para a página de perfil
+    if (usuarioLogado) {
+        window.location.href = 'perfil.html';
+        return;
+    }
+
     const modal = document.getElementById("modal-login");
     if (modal) {
         modal.style.display = "flex";
         alternarAba('login'); 
     }
+}
+
+function fazerLogout() {
+    localStorage.removeItem('usuario_logado');
+    // atualiza UI imediatamente
+    verificarUsuario();
+    window.location.href = 'index.html';
 }
 
 function fecharModal() {
