@@ -1,0 +1,359 @@
+/* ===========================
+   RESET
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#2b7cff,#4da3ff);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px 20px;
+}
+
+/* ===========================
+   CONTAINER
+=========================== */
+
+.container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.cadastro-card{
+
+    width:100%;
+    max-width:500px;
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+
+    animation:fade .5s ease;
+
+}
+
+@keyframes fade{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.logo{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.logo i{
+
+    font-size:55px;
+
+    color:#2b7cff;
+
+    margin-bottom:15px;
+
+}
+
+.logo h1{
+
+    font-size:28px;
+
+    color:#222;
+
+    margin-bottom:8px;
+
+}
+
+.logo p{
+
+    color:#777;
+
+}
+
+/* ===========================
+   INPUTS
+=========================== */
+
+.input-group{
+
+    margin-bottom:20px;
+
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:500;
+
+}
+
+.input{
+
+    display:flex;
+
+    align-items:center;
+
+    border:2px solid #ddd;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    transition:.3s;
+
+}
+
+.input:focus-within{
+
+    border-color:#2b7cff;
+
+}
+
+.input i{
+
+    padding:15px;
+
+    color:#666;
+
+}
+
+.input input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    padding:15px 10px;
+
+    font-size:15px;
+
+    background:none;
+
+}
+
+.mostrar-senha{
+
+    border:none;
+
+    background:none;
+
+    padding:15px;
+
+    cursor:pointer;
+
+    color:#666;
+
+    transition:.3s;
+
+}
+
+.mostrar-senha:hover{
+
+    color:#2b7cff;
+
+}
+
+/* ===========================
+   TERMOS
+=========================== */
+
+.termos{
+
+    margin:25px 0;
+
+    font-size:14px;
+
+    color:#555;
+
+}
+
+.termos label{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    line-height:1.5;
+
+}
+
+.termos input{
+
+    margin-top:4px;
+
+}
+
+/* ===========================
+   MENSAGEM
+=========================== */
+
+#mensagem{
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+}
+
+/* ===========================
+   BOTÃO
+=========================== */
+
+.btn-cadastro{
+
+    width:100%;
+
+    border:none;
+
+    background:#2b7cff;
+
+    color:#fff;
+
+    padding:16px;
+
+    border-radius:12px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.btn-cadastro:hover{
+
+    background:#1e63d6;
+
+    transform:translateY(-2px);
+
+}
+
+/* ===========================
+   LOGIN
+=========================== */
+
+.login{
+
+    margin-top:30px;
+
+    text-align:center;
+
+}
+
+.login p{
+
+    color:#666;
+
+    margin-bottom:8px;
+
+}
+
+.login a{
+
+    color:#2b7cff;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+}
+
+.login a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ===========================
+   VOLTAR
+=========================== */
+
+.voltar{
+
+    display:block;
+
+    text-align:center;
+
+    margin-top:25px;
+
+    color:#555;
+
+    text-decoration:none;
+
+    transition:.3s;
+
+}
+
+.voltar:hover{
+
+    color:#2b7cff;
+
+}
+
+/* ===========================
+   RESPONSIVO
+=========================== */
+
+@media(max-width:600px){
+
+    body{
+
+        padding:15px;
+
+    }
+
+    .cadastro-card{
+
+        padding:30px 25px;
+
+    }
+
+    .logo h1{
+
+        font-size:24px;
+
+    }
+
+}
