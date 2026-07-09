@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Criar Conta | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="cadastro.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="cadastro-card">
+
+            <div class="logo">
+
+                <i class="fa-solid fa-store"></i>
+
+                <h1>Comércio da Cidade</h1>
+
+                <p>Crie sua conta gratuitamente.</p>
+
+            </div>
+
+            <form id="cadastroForm">
+
+                <!-- Nome -->
+
+                <div class="input-group">
+
+                    <label for="nome">Nome completo</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="nome"
+                            placeholder="Digite seu nome"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <!-- Email -->
+
+                <div class="input-group">
+
+                    <label for="email">E-mail</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Digite seu e-mail"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <!-- Telefone -->
+
+                <div class="input-group">
+
+                    <label for="telefone">Telefone</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-phone"></i>
+
+                        <input
+                            type="tel"
+                            id="telefone"
+                            placeholder="(00) 00000-0000">
+
+                    </div>
+
+                </div>
+
+                <!-- Senha -->
+
+                <div class="input-group">
+
+                    <label for="senha">Senha</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            placeholder="Crie uma senha"
+                            required>
+
+                        <button
+                            type="button"
+                            id="toggleSenha"
+                            class="mostrar-senha">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Confirmar Senha -->
+
+                <div class="input-group">
+
+                    <label for="confirmarSenha">Confirmar senha</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="confirmarSenha"
+                            placeholder="Digite novamente"
+                            required>
+
+                        <button
+                            type="button"
+                            id="toggleConfirmarSenha"
+                            class="mostrar-senha">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Termos -->
+
+                <div class="termos">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            id="termos"
+                            required>
+
+                        Li e aceito os Termos de Uso e a Política de Privacidade.
+
+                    </label>
+
+                </div>
+
+                <!-- Mensagem -->
+
+                <div id="mensagem"></div>
+
+                <!-- Botão -->
+
+                <button
+                    type="submit"
+                    class="btn-cadastro">
+
+                    Criar Conta
+
+                </button>
+
+            </form>
+
+            <div class="login">
+
+                <p>Já possui uma conta?</p>
+
+                <a href="login.html">
+
+                    Entrar
+
+                </a>
+
+            </div>
+
+            <a
+                href="index.html"
+                class="voltar">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Voltar para o início
+
+            </a>
+
+        </div>
+
+    </main>
+
+    <!-- Supabase -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+    <script src="js/cadastro.js"></script>
+
+</body>
+
+</html>
