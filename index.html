@@ -1,270 +1,152 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitrine de Produtos | Compre Online</title>
-    
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+
 </head>
+
 <body>
 
-    <header class="topo">
-        <div class="logo" style="cursor: pointer;" onclick="window.location.href='index.html'">
-            🛒 Marketpllace
-        </div>
+<header>
 
-        <div class="busca">
-            <input type="text" id="busca" placeholder="O que você procura hoje?" onkeyup="filtrarProdutos()">
-            <button aria-label="Buscar">🔍</button>
-        </div>
+<div class="logo">
+<h2>Comércio da Cidade</h2>
+</div>
 
-        <div class="acoes-topo">
-            <a href="admin.html" id="btn-admin" class="btn-admin-topo" style="display:none;" title="Painel administrativo">
-                <span aria-hidden="true">👑</span>
-                <span>Painel ADM</span>
-            </a>
+<nav>
 
-            <div class="usuario-box" onclick="abrirConta()">
-                <div class="avatar-user">👤</div>
-                <div class="usuario-info">
-                    <span id="user-name">Entrar</span>
-                    <small>Minha Conta</small>
-                </div>
-            </div>
+<a href="#">Início</a>
 
-            <div class="carrinho-topo" onclick="irCarrinho()">
-                <span class="icone-cart">🛍️</span>
-                <div class="cart-info">
-                    <span>Carrinho</span>
-                    <small><span id="contador">0</span> itens</small>
-                </div>
-            </div>
-        </div>
-    </header>
+<a href="#">Categorias</a>
 
-    <nav class="menu" id="menu-categorias">
-        <a href="index.html">Início</a>
-        <a href="vitrine.html">Lojas</a>
-        <a href="hortifruti.html">Hortifruti</a>
-        <a href="carnes.html">Carnes</a>
-        <a href="limpeza.html">Limpeza</a>
-        <a href="bebidas.html">Bebidas</a>
-        <a href="favoritos.html" class="link-favoritos">❤️ Favoritos <span id="contador-favoritos" class="contador-favoritos">0</span></a>
-        <a href="#">Promoções</a>
-    </nav>
+<a href="#">Lojas</a>
 
-    <section class="banner">
-        <div class="banner-texto">
-            <h1>Ofertas Imperdíveis</h1>
-            <p>Os melhores preços da sua cidade sem sair de casa.</p>
-            <button>Ver Promoções</button>
-        </div>
-    </section>
+<a href="login.html" class="login">Entrar</a>
 
-    <section class="beneficios">
-        <a href="entrega-rapida.html" class="beneficio beneficio-link" title="Acompanhar minha encomenda">
-            <div class="icone">🚚</div>
-            <h3>Entrega Rápida</h3>
-            <p>Receba suas compras rapidamente na sua casa.</p>
-            <span class="beneficio-cta">Acompanhar pedido →</span>
-        </a>
-        <div class="beneficio">
-            <div class="icone">💳</div>
-            <h3>Pagamento Fácil</h3>
-            <p>Pix, cartão ou dinheiro na entrega.</p>
-        </div>
-        <div class="beneficio">
-            <div class="icone">🥬</div>
-            <h3>Produtos Frescos</h3>
-            <p>Qualidade garantida todos os dias.</p>
-        </div>
-        <div class="beneficio">
-            <div class="icone">🛡️</div>
-            <h3>Compra Segura</h3>
-            <p>Seus dados protegidos com segurança.</p>
-        </div>
-    </section>
+</nav>
 
-    <section class="categorias" id="cards-categorias">
-        <a href="hortifruti.html" class="categoria">🥦 Hortifruti</a>
-        <a href="carnes.html" class="categoria">🥩 Carnes</a>
-        <a href="limpeza.html" class="categoria">🧴 Limpeza</a>
-        <a href="bebidas.html" class="categoria">🥤 Bebidas</a>
-        <a href="favoritos.html" class="categoria categoria-favoritos">❤️ Meus Favoritos</a>
-    </section>
+</header>
 
-    <section class="secao-produtos">
-        <div class="titulo-secao">
-            <h2>🔥 Mais Vendidos</h2>
-            <div class="acoes-carrossel">
-                <button onclick="scrollCarrossel('lista-produtos', -1)">◀</button>
-                <button onclick="scrollCarrossel('lista-produtos', 1)">▶</button>
-            </div>
-        </div>
-        <div class="carrossel" id="lista-produtos"></div>
-    </section>
+<section class="banner">
 
-    <section class="secao-produtos">
-        <div class="titulo-secao">
-            <h2>🥦 Hortifruti Fresquinho</h2>
-            <div class="acoes-carrossel">
-                <button onclick="scrollCarrossel('carrossel-horti', -1)">◀</button>
-                <button onclick="scrollCarrossel('carrossel-horti', 1)">▶</button>
-            </div>
-        </div>
-        <div class="carrossel" id="carrossel-horti"></div>
-    </section>
+<h1>Encontre tudo o que precisa na sua cidade.</h1>
 
-    <section class="secao-produtos">
-        <div class="titulo-secao">
-            <h2>🧼 Produtos de Limpeza</h2>
-            <div class="acoes-carrossel">
-                <button onclick="scrollCarrossel('carrossel-limpeza', -1)">◀</button>
-                <button onclick="scrollCarrossel('carrossel-limpeza', 1)">▶</button>
-            </div>
-        </div>
-        <div class="carrossel" id="carrossel-limpeza"></div>
-    </section>
+<p>Compre dos comerciantes locais sem sair de casa.</p>
 
-    <section class="secao-produtos">
-        <div class="titulo-secao">
-            <h2>🍹 Bebidas e Refrescos</h2>
-            <div class="acoes-carrossel">
-                <button onclick="scrollCarrossel('carrossel-bebidas', -1)">◀</button>
-                <button onclick="scrollCarrossel('carrossel-bebidas', 1)">▶</button>
-            </div>
-        </div>
-        <div class="carrossel" id="carrossel-bebidas"></div>
-    </section>
+<div class="pesquisa">
 
-    <section class="secao-produtos">
-        <div class="titulo-secao">
-            <h2>🥩 Carnes Premium</h2>
-            <div class="acoes-carrossel">
-                <button onclick="scrollCarrossel('carrossel-carnes', -1)">◀</button>
-                <button onclick="scrollCarrossel('carrossel-carnes', 1)">▶</button>
-            </div>
-        </div>
-        <div class="carrossel" id="carrossel-carnes"></div>
-    </section>
+<input type="text" placeholder="Pesquisar lojas...">
 
-    <footer class="footer">
-        <p>© 2026 Marketplace Online | 📍 Atendimento Local</p>
-    </footer>
+<button>Pesquisar</button>
 
-    <div id="overlay" class="overlay" onclick="fecharCarrinho()"></div>
+</div>
 
-    <div id="carrinho-lateral" class="carrinho-lateral">
-        <div class="topo-carrinho">
-            <h2>Meu Carrinho</h2>
-            <button onclick="fecharCarrinho()" class="btn-fechar">&times;</button>
-        </div>
-        <hr>
-        <div id="lista-carrinho" class="lista-carrinho"></div>
-        <div id="total" class="total-carrinho">Total: R$ 0,00</div>
-        <button onclick="finalizarPedido()" class="btn-finalizar">Finalizar Pedido</button>
-    </div>
+</section>
 
-    <div id="modal-pagamento" class="modal">
-        <div class="modal-box">
-            <h3>Como deseja pagar?</h3>
-            <button onclick="escolherPagamento('Cartão')" class="btn-cartao">💳 Cartão</button>
-            <button onclick="escolherPagamento('Pix')" class="btn-pix">📱 Pix</button>
-            <button onclick="escolherPagamento('Dinheiro')" class="btn-dinheiro">💵 Dinheiro</button>
-            <button onclick="fecharModal()" class="btn-voltar">Voltar</button>
-        </div>
-    </div>
+<section class="categorias">
 
-    <div id="modal-login" class="modal">
-        <div class="modal-login-box">
-            <div class="abas-login">
-                <div id="tab-login" onclick="alternarAba('login')" class="aba ativa">Entrar</div>
-                <div id="tab-cadastro" onclick="alternarAba('cadastro')" class="aba">Cadastrar</div>
-            </div>
+<h2>Categorias</h2>
 
-            <div id="form-login">
-                <input type="email" id="login-email" placeholder="Seu e-mail" class="input-premium">
-                <input type="password" id="login-senha" placeholder="Sua senha" class="input-premium">
-                <button onclick="fazerLogin()" class="btn-acesso-principal">Entrar na Conta</button>
-            </div>
+<div class="lista-categorias">
 
-            <div id="form-cadastro" style="display:none;">
-                <input type="text" id="cad-nome" placeholder="Nome Completo" class="input-premium">
-                <input type="email" id="cad-email" placeholder="Seu melhor e-mail" class="input-premium">
-                <input type="password" id="cad-senha" placeholder="Crie uma senha" class="input-premium">
-                
-                <div style="margin: 15px 0; text-align: left; display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="cad-e-empresa" onchange="toggleCamposEmpresa()" style="width: auto; cursor: pointer;">
-                    <label for="cad-e-empresa" style="cursor: pointer; font-weight: bold; color: #198754; font-size: 14px;">Quero cadastrar minha empresa / loja</label>
-                </div>
+<div class="categoria">🛒 Mercados</div>
 
-                <div id="campos-empresa" style="display: none; border-left: 3px solid #198754; padding-left: 10px; margin-bottom: 15px;">
-                    <h4 style="margin: 0 0 10px 0; color: #333; text-align: left;">Dados da Loja:</h4>
-                    <input type="text" id="loja-nome" placeholder="Nome da Loja (ex: Supermercado Central)" class="input-premium">
-                    <input type="text" id="loja-descricao" placeholder="Breve descrição do seu comércio" class="input-premium">
-                    <select id="loja-segmento" class="input-premium" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; background: white;">
-                        <option value="mercado">🛒 Supermercado / Mercearia</option>
-                        <option value="farmacia">💊 Farmácia / Drogaria</option>
-                        <option value="bebidas">🍺 Distribuidora de Bebidas</option>
-                        <option value="outros">🏪 Outro Segmento</option>
-                    </select>
-                </div>
+<div class="categoria">💊 Farmácias</div>
 
-                <button onclick="fazerCadastro()" class="btn-acesso-principal">Criar minha Conta</button>
-            </div>
+<div class="categoria">🍕 Restaurantes</div>
 
-            <div class="fechar-login">
-                <button onclick="fecharModal()">Fechar</button>
-            </div>
-        </div>
-    </div>
+<div class="categoria">👕 Roupas</div>
 
-    <div id="cart-flutuante" class="cart-flutuante" onclick="irCarrinho()">
-        <span class="icone-flutuante">🛍️</span>
-        <span id="contador-flutuante" class="contador-flutuante">0</span>
-    </div>
+<div class="categoria">🥩 Açougues</div>
 
-    <script src="js/script.js?v=5"></script>
+<div class="categoria">🍞 Padarias</div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Captura o parâmetro '?loja=' contido na URL atual
-            const params = new URLSearchParams(window.location.search);
-            const idLoja = params.get('loja');
+</div>
 
-            if (idLoja) {
-                // Modifica dinamicamente os links da barra de navegação para passar adiante o ID da loja
-                const linksMenu = document.querySelectorAll("#menu-categorias a");
-                linksMenu.forEach(link => {
-                    const hrefOriginal = link.getAttribute("href");
-                    // Ignora links externos, a página principal ou links vazios
-                    if (hrefOriginal && hrefOriginal !== "index.html" && hrefOriginal !== "#") {
-                        link.setAttribute("href", `${hrefOriginal}?loja=${idLoja}`);
-                    }
-                });
+</section>
 
-                // Modifica dinamicamente os links dos blocos de categorias centrais
-                const linksCategorias = document.querySelectorAll("#cards-categorias a");
-                linksCategorias.forEach(link => {
-                    const hrefOriginal = link.getAttribute("href");
-                    if (hrefOriginal) {
-                        link.setAttribute("href", `${hrefOriginal}?loja=${idLoja}`);
-                    }
-                });
-            }
-        });
+<section class="lojas">
 
-        // Controla a exibição dos campos adicionais para cadastro de Lojista
-        function toggleCamposEmpresa() {
-            const checkbox = document.getElementById("cad-e-empresa");
-            const blocoEmpresa = document.getElementById("campos-empresa");
-            
-            if (checkbox && blocoEmpresa) {
-                blocoEmpresa.style.display = checkbox.checked ? "block" : "none";
-            }
-        }
-    </script>
+<h2>Lojas em Destaque</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<img src="img/farmacia.png">
+
+<h3>Farmácia Vida</h3>
+
+<p>💊 Farmácia</p>
+
+<span>⭐ 4.9</span>
+
+<button>Ver Loja</button>
+
+</div>
+
+<div class="card">
+
+<img src="img/mercado.png">
+
+<h3>Supermercado Boa Compra</h3>
+
+<p>🛒 Mercado</p>
+
+<span>⭐ 4.8</span>
+
+<button>Ver Loja</button>
+
+</div>
+
+<div class="card">
+
+<img src="img/acougue.png">
+
+<h3>Açougue do João</h3>
+
+<p>🥩 Açougue</p>
+
+<span>⭐ 4.7</span>
+
+<button>Ver Loja</button>
+
+</div>
+
+<div class="card">
+
+<img src="img/padaria.png">
+
+<h3>Padaria Pão Quente</h3>
+
+<p>🍞 Padaria</p>
+
+<span>⭐ 4.9</span>
+
+<button>Ver Loja</button>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
+
+</footer>
+
 </body>
+
 </html>
