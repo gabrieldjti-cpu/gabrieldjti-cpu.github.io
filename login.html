@@ -1,59 +1,153 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conectando ao Marketplace...</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #333;
-        }
 
-        .loader-container {
-            text-align: center;
-        }
+    <title>Entrar | Comércio da Cidade</title>
 
-        /* Animação simples de carregamento (Spinner) */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #198754; /* Cor padrão do seu ecossistema verde */
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-        }
+    <link rel="stylesheet" href="login.css">
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-        p {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 </head>
+
 <body>
 
-    <div class="loader-container">
-        <div class="spinner"></div>
-        <p>Autenticando e redirecionando para a vitrine...</p>
-    </div>
+    <main class="container">
 
-    <script>
-        // Executa o redirecionamento imediato assim que a página é interpretada
-        window.location.href = 'index.html';
-    </script>
+        <div class="login-card">
+
+            <div class="logo">
+
+                <i class="fa-solid fa-store"></i>
+
+                <h1>Comércio da Cidade</h1>
+
+                <p>Entre na sua conta para continuar.</p>
+
+            </div>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+
+                    <label for="email">E-mail</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Digite seu e-mail"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label for="senha">Senha</label>
+
+                    <div class="input">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            placeholder="Digite sua senha"
+                            required>
+
+                        <button
+                            type="button"
+                            id="toggleSenha"
+                            class="mostrar-senha">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="opcoes">
+
+                    <label>
+
+                        <input type="checkbox">
+
+                        Lembrar de mim
+
+                    </label>
+
+                    <a href="recuperar-senha.html">
+
+                        Esqueci minha senha
+
+                    </a>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-login">
+
+                    Entrar
+
+                </button>
+
+            </form>
+
+            <div class="cadastro">
+
+                <p>
+
+                    Ainda não possui uma conta?
+
+                </p>
+
+                <a href="cadastro.html">
+
+                    Criar Conta
+
+                </a>
+
+            </div>
+
+            <a
+                href="index.html"
+                class="voltar">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Voltar para o início
+
+            </a>
+
+        </div>
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase.js"></script>
+
+    <script src="login.js"></script>
+
 </body>
+
 </html>
