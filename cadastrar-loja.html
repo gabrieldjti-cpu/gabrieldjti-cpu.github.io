@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastrar Loja | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="css/cadastrar-loja.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="container">
+
+            <a href="index.html" class="logo">
+
+                <i class="fa-solid fa-store"></i>
+
+                <span>Comércio da Cidade</span>
+
+            </a>
+
+            <nav>
+
+                <a href="perfil.html">
+                    Meu Perfil
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+    <!-- CONTEÚDO -->
+
+    <main class="container-form">
+
+        <div class="card">
+
+            <div class="topo">
+
+                <i class="fa-solid fa-shop"></i>
+
+                <h1>Cadastrar Minha Loja</h1>
+
+                <p>
+                    Preencha as informações abaixo para começar a vender.
+                </p>
+
+            </div>
+
+            <form id="formLoja">
+
+                <!-- Nome -->
+
+                <div class="campo">
+
+                    <label for="nome">
+                        Nome da Loja
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        placeholder="Ex.: Mercado Central"
+                        required>
+
+                </div>
+
+                <!-- Categoria -->
+
+                <div class="campo">
+
+                    <label for="categoria">
+                        Categoria
+                    </label>
+
+                    <select id="categoria" required>
+
+                        <option value="">
+                            Selecione uma categoria
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Telefone -->
+
+                <div class="campo">
+
+                    <label for="telefone">
+                        Telefone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="telefone"
+                        placeholder="(00) 00000-0000">
+
+                </div>
+
+                <!-- WhatsApp -->
+
+                <div class="campo">
+
+                    <label for="whatsapp">
+                        WhatsApp
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="whatsapp"
+                        placeholder="(00) 00000-0000">
+
+                </div>
+
+                <!-- Descrição -->
+
+                <div class="campo">
+
+                    <label for="descricao">
+                        Descrição da Loja
+                    </label>
+
+                    <textarea
+                        id="descricao"
+                        rows="4"
+                        placeholder="Conte um pouco sobre sua loja..."></textarea>
+
+                </div>
+
+                <!-- Endereço -->
+
+                <div class="campo">
+
+                    <label for="endereco">
+                        Endereço
+                    </label>
+
+                    <input
+                        type="text"
+                        id="endereco"
+                        placeholder="Rua, número, bairro">
+
+                </div>
+
+                <!-- Cidade -->
+
+                <div class="campo">
+
+                    <label for="cidade">
+                        Cidade
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cidade"
+                        placeholder="Sua cidade">
+
+                </div>
+
+                <!-- Horário -->
+
+                <div class="linha">
+
+                    <div class="campo">
+
+                        <label for="abertura">
+                            Abre às
+                        </label>
+
+                        <input
+                            type="time"
+                            id="abertura">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label for="fechamento">
+                            Fecha às
+                        </label>
+
+                        <input
+                            type="time"
+                            id="fechamento">
+
+                    </div>
+
+                </div>
+
+                <!-- Foto -->
+
+                <div class="campo">
+
+                    <label for="foto">
+                        Logo da Loja
+                    </label>
+
+                    <input
+                        type="file"
+                        id="foto"
+                        accept="image/*">
+
+                </div>
+
+                <!-- Mensagem -->
+
+                <div id="mensagem"></div>
+
+                <!-- Botão -->
+
+                <button
+                    type="submit"
+                    class="btn">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Cadastrar Loja
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+    <script src="js/cadastrar-loja.js"></script>
+
+</body>
+
+</html>
