@@ -1,196 +1,300 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - Supermercado</title>
-    
-    <link rel="stylesheet" href="css/style.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <style>
-        /* Estilos rápidos para organizar a página de perfil */
-        .perfil-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-            font-family: Arial, sans-serif;
-        }
-        @media (max-width: 768px) {
-            .perfil-container { grid-template-columns: 1fr; }
-        }
-        .box-perfil {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            height: fit-content;
-        }
-        .pedido-historico {
-            background: white;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 12px;
-            float: right;
-        }
-        .status-Recebido { background: #ffc107; color: #212529; }
-        .status-Preparando { background: #17a2b8; color: white; }
-        .status-Saiu { background: #007bff; color: white; }
-        .status-Entregue { background: #28a745; color: white; }
 
-        .input-modal {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            box-sizing: border-box;
-            margin-top: 6px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        .input-modal:focus {
-            outline: none;
-            border-color: #198754;
-            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
-        }
-        .modal-perfil-box {
-            background: white;
-            padding: 28px;
-            border-radius: 16px;
-            width: 92%;
-            max-width: 480px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            box-sizing: border-box;
-        }
-        .form-secao-titulo {
-            font-size: 13px;
-            font-weight: 700;
-            color: #198754;
-            margin: 20px 0 10px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #e9ecef;
-        }
-        .form-secao-titulo:first-of-type { margin-top: 8px; }
-        .form-campo label {
-            display: block;
-            font-size: 12px;
-            color: #666;
-            font-weight: 600;
-        }
-        .form-linha-dupla {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        @media (max-width: 400px) {
-            .form-linha-dupla { grid-template-columns: 1fr; }
-        }
-        .endereco-resumo {
-            margin-top: 6px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #444;
-        }
-        .endereco-resumo span {
-            display: block;
-        }
-        .endereco-resumo .vazio {
-            color: #6c757d;
-            font-style: italic;
-        }
-    </style>
+    <title>Meu Perfil | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="css/perfil.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 </head>
+
 <body>
 
-    <div style="padding: 20px; max-width: 1000px; margin: 0 auto;">
-        <a href="index.html" style="text-decoration: none; color: #198754; font-weight: bold;">⬅️ Voltar para o Início</a>
-    </div>
+    <!-- HEADER -->
 
-    <div class="perfil-container">
-        
-        <div class="box-perfil">
-            <h2>Meu Perfil</h2>
-            <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
-            <p>👤 <strong id="perf-nome">...</strong></p>
-            <p>📧 <span id="perf-email">...</span></p>
-            <p>📞 <strong>Telefone:</strong> <span id="perf-telefone">Não informado</span></p>
-            <p>📍 <strong>Endereço de entrega:</strong></p>
-            <div id="perf-endereco-resumo" class="endereco-resumo">
-                <span class="vazio">Não informado</span>
-            </div>
-            
-            <button onclick="abrirModalEditar()" style="background: #198754; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px;">
-                ✏️ Editar Dados
-            </button>
+    <header class="header">
 
-            <button onclick="fazerLogout()" style="background: #dc3545; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px;">
-                🚪 Sair da Conta
-            </button>
+        <div class="container">
+
+            <a href="index.html" class="logo">
+
+                <i class="fa-solid fa-store"></i>
+
+                <span>Comércio da Cidade</span>
+
+            </a>
+
+            <nav>
+
+                <a href="index.html">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    Início
+
+                </a>
+
+            </nav>
+
         </div>
 
-        <div class="box-perfil" style="background: white;">
-            <h2>🛍️ Meu Histórico de Compras</h2>
-            <div id="historico-compras" style="margin-top: 20px;">
-                <p>Carregando seus pedidos...</p>
-            </div>
-        </div>
+    </header>
 
-    </div>
+    <!-- PERFIL -->
 
-    <div id="modal-editar-perfil" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-        <div class="modal-perfil-box">
-            <h3 style="margin-top:0; color: #212529;">✏️ Editar meus dados</h3>
+    <main class="perfil">
 
-            <p class="form-secao-titulo">👤 Dados pessoais</p>
-            <div class="form-campo">
-                <label for="edit-nome">Nome completo</label>
-                <input type="text" id="edit-nome" class="input-modal" placeholder="Ex.: Maria Silva">
-            </div>
-            <div class="form-campo" style="margin-top: 12px;">
-                <label for="edit-telefone">Telefone / WhatsApp</label>
-                <input type="tel" id="edit-telefone" class="input-modal" placeholder="Ex.: (71) 99999-9999">
-            </div>
+        <div class="container-perfil">
 
-            <p class="form-secao-titulo">📍 Endereço de entrega</p>
-            <div class="form-campo">
-                <label for="edit-rua">Rua / Avenida</label>
-                <input type="text" id="edit-rua" class="input-modal" placeholder="Ex.: Rua das Flores">
-            </div>
-            <div class="form-linha-dupla" style="margin-top: 12px;">
-                <div class="form-campo">
-                    <label for="edit-numero">Número</label>
-                    <input type="text" id="edit-numero" class="input-modal" placeholder="Ex.: 123">
+            <!-- CARD DO USUÁRIO -->
+
+            <aside class="perfil-card">
+
+                <div class="avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
                 </div>
-                <div class="form-campo">
-                    <label for="edit-bairro">Bairro</label>
-                    <input type="text" id="edit-bairro" class="input-modal" placeholder="Ex.: Centro">
+
+                <h2 id="perf-nome">Carregando...</h2>
+
+                <p id="perf-email">email@email.com</p>
+
+                <hr>
+
+                <div class="info">
+
+                    <p>
+
+                        <i class="fa-solid fa-phone"></i>
+
+                        <span id="perf-telefone">Não informado</span>
+
+                    </p>
+
+                    <p>
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                    </p>
+
+                    <div id="perf-endereco-resumo" class="endereco">
+
+                        Não informado
+
+                    </div>
+
                 </div>
-            </div>
-            <div class="form-campo" style="margin-top: 12px;">
-                <label for="edit-cidade">Cidade</label>
-                <input type="text" id="edit-cidade" class="input-modal" placeholder="Ex.: Salvador">
+
+                <button class="btn verde" onclick="abrirModalEditar()">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Editar Perfil
+
+                </button>
+
+                <button class="btn vermelho" onclick="fazerLogout()">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Sair
+
+                </button>
+
+            </aside>
+
+            <!-- CONTEÚDO -->
+
+            <section class="conteudo">
+
+                <!-- MINHA LOJA -->
+
+                <div class="card">
+
+                    <div class="titulo">
+
+                        <h2>
+
+                            <i class="fa-solid fa-shop"></i>
+
+                            Minha Loja
+
+                        </h2>
+
+                    </div>
+
+                    <div id="minha-loja">
+
+                        <div class="sem-loja">
+
+                            <i class="fa-solid fa-store-slash"></i>
+
+                            <h3>Você ainda não possui uma loja.</h3>
+
+                            <p>
+
+                                Cadastre sua loja gratuitamente e comece a vender seus produtos.
+
+                            </p>
+
+                            <a href="cadastro-loja.html" class="btn verde">
+
+                                <i class="fa-solid fa-plus"></i>
+
+                                Cadastrar Loja
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- HISTÓRICO -->
+
+                <div class="card">
+
+                    <div class="titulo">
+
+                        <h2>
+
+                            <i class="fa-solid fa-bag-shopping"></i>
+
+                            Histórico de Compras
+
+                        </h2>
+
+                    </div>
+
+                    <div id="historico-compras">
+
+                        <div class="pedido">
+
+                            <p>Carregando pedidos...</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL -->
+
+    <div id="modal-editar-perfil" class="modal">
+
+        <div class="modal-box">
+
+            <div class="modal-topo">
+
+                <h2>
+
+                    <i class="fa-solid fa-user-pen"></i>
+
+                    Editar Perfil
+
+                </h2>
+
             </div>
 
-            <div style="display:flex; gap:10px; margin-top:28px;">
-                <button type="button" onclick="fecharModalEditar()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#6c757d; color:white; font-weight:bold; cursor:pointer;">Cancelar</button>
-                <button type="button" onclick="salvarEdicaoPerfil()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#198754; color:white; font-weight:bold; cursor:pointer;">Salvar</button>
+            <div class="campo">
+
+                <label>Nome</label>
+
+                <input type="text" id="edit-nome">
+
             </div>
+
+            <div class="campo">
+
+                <label>Telefone</label>
+
+                <input type="text" id="edit-telefone">
+
+            </div>
+
+            <div class="campo">
+
+                <label>Rua</label>
+
+                <input type="text" id="edit-rua">
+
+            </div>
+
+            <div class="linha">
+
+                <div class="campo">
+
+                    <label>Número</label>
+
+                    <input type="text" id="edit-numero">
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Bairro</label>
+
+                    <input type="text" id="edit-bairro">
+
+                </div>
+
+            </div>
+
+            <div class="campo">
+
+                <label>Cidade</label>
+
+                <input type="text" id="edit-cidade">
+
+            </div>
+
+            <div class="botoes">
+
+                <button class="btn cinza" onclick="fecharModalEditar()">
+
+                    Cancelar
+
+                </button>
+
+                <button class="btn verde" onclick="salvarEdicaoPerfil()">
+
+                    Salvar Alterações
+
+                </button>
+
+            </div>
+
         </div>
+
     </div>
 
-    <script src="js/perfil.js?v=3"></script>
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+    <script src="js/perfil.js"></script>
+
 </body>
+
 </html>
