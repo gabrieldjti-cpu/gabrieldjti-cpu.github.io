@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel da Loja | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="css/painel-loja.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <i class="fa-solid fa-store"></i>
+
+        <h2>Painel da Loja</h2>
+
+    </div>
+
+    <nav>
+
+        <a href="index.html">
+            <i class="fa-solid fa-house"></i>
+            Início
+        </a>
+
+        <a href="perfil.html">
+            <i class="fa-solid fa-user"></i>
+            Perfil
+        </a>
+
+        <button onclick="fazerLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sair
+        </button>
+
+    </nav>
+
+</header>
+
+<main class="container">
+
+    <!-- DADOS DA LOJA -->
+
+    <section class="card">
+
+        <h2>
+
+            <i class="fa-solid fa-shop"></i>
+
+            Minha Loja
+
+        </h2>
+
+        <div class="info-loja">
+
+            <p><strong>Nome:</strong> <span id="nome-loja">Carregando...</span></p>
+
+            <p><strong>Categoria:</strong> <span id="categoria-loja">...</span></p>
+
+            <p><strong>Cidade:</strong> <span id="cidade-loja">...</span></p>
+
+            <p><strong>Telefone:</strong> <span id="telefone-loja">...</span></p>
+
+            <p><strong>Status:</strong>
+
+                <span id="status-loja">
+                    🟢 Ativa
+                </span>
+
+            </p>
+
+        </div>
+
+        <button class="btn">
+
+            <i class="fa-solid fa-pen"></i>
+
+            Editar Loja
+
+        </button>
+
+    </section>
+
+    <!-- PRODUTOS -->
+
+    <section class="card">
+
+        <div class="topo-card">
+
+            <h2>
+
+                <i class="fa-solid fa-box"></i>
+
+                Produtos
+
+            </h2>
+
+            <button class="btn">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Novo Produto
+
+            </button>
+
+        </div>
+
+        <div id="lista-produtos">
+
+            <p>Nenhum produto cadastrado.</p>
+
+        </div>
+
+    </section>
+
+    <!-- PEDIDOS -->
+
+    <section class="card">
+
+        <h2>
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            Pedidos
+
+        </h2>
+
+        <div id="lista-pedidos">
+
+            <p>Nenhum pedido recebido.</p>
+
+        </div>
+
+    </section>
+
+    <!-- ESTATÍSTICAS -->
+
+    <section class="card">
+
+        <h2>
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            Estatísticas
+
+        </h2>
+
+        <div class="estatisticas">
+
+            <div class="box">
+
+                <h3 id="total-produtos">0</h3>
+
+                <p>Produtos</p>
+
+            </div>
+
+            <div class="box">
+
+                <h3 id="total-pedidos">0</h3>
+
+                <p>Pedidos</p>
+
+            </div>
+
+            <div class="box">
+
+                <h3 id="total-vendas">R$ 0,00</h3>
+
+                <p>Vendas</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/painel-loja.js"></script>
+
+</body>
+
+</html>
