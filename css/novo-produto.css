@@ -1,0 +1,181 @@
+/* Variáveis de Paleta de Cores (Baseado no seu Painel) */
+:root {
+    --primary-color: #157A4C;
+    --primary-hover: #11623C;
+    --bg-color: #F4F6F8;
+    --card-bg: #FFFFFF;
+    --text-color: #333333;
+    --border-color: #E2E8F0;
+}
+
+/* Reset Geral */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Topbar / Header */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav a, nav button {
+    background: none;
+    border: none;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-sair {
+    background-color: #E53E3E;
+    padding: 5px 12px;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.btn-sair:hover {
+    background-color: #C53030;
+}
+
+/* Container Central */
+main {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+/* Cartão do Formulário */
+.card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.card-title {
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--bg-color);
+    padding-bottom: 10px;
+}
+
+/* Campos do Formulário */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #4A5568;
+}
+
+.input-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #F8FAFC;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.input-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: #FFF;
+}
+
+textarea.input-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Layout de Duas Colunas (Responsivo) */
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+@media (max-width: 480px) {
+    .row {
+        grid-template-columns: 1fr;
+        gap: 0px;
+    }
+}
+
+/* Botões de Ação */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-submit {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-cancel {
+    background-color: #EDF2F7;
+    color: #4A5568;
+}
+
+.btn-cancel:hover {
+    background-color: #E2E8F0;
+}

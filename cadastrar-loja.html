@@ -3,256 +3,214 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel da Loja</title>
 
-    <title>Cadastrar Loja | Comércio da Cidade</title>
+<link rel="stylesheet" href="css/painel-loja.css">
 
-    <link rel="stylesheet" href="css/cadastrar-loja.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 </head>
 
 <body>
 
-    <!-- HEADER -->
+<header>
 
-    <header class="header">
+<div class="logo">
 
-        <div class="container">
+<i class="fa-solid fa-store"></i>
 
-            <a href="index.html" class="logo">
+<h2>Painel da Loja</h2>
 
-                <i class="fa-solid fa-store"></i>
+</div>
 
-                <span>Comércio da Cidade</span>
+<nav>
 
-            </a>
+<a href="painel-loja.html" class="ativo">
 
-            <nav>
+<i class="fa-solid fa-chart-line"></i>
 
-                <a href="perfil.html">
-                    Meu Perfil
-                </a>
+Dashboard
 
-            </nav>
+</a>
 
-        </div>
+<a href="produtos.html">
 
-    </header>
+<i class="fa-solid fa-box"></i>
 
-    <!-- CONTEÚDO -->
+Produtos
 
-    <main class="container-form">
+</a>
 
-        <div class="card">
+<a href="pedidos.html">
 
-            <div class="topo">
+<i class="fa-solid fa-cart-shopping"></i>
 
-                <i class="fa-solid fa-shop"></i>
+Pedidos
 
-                <h1>Cadastrar Minha Loja</h1>
+</a>
 
-                <p>
-                    Preencha as informações abaixo para começar a vender.
-                </p>
+<a href="perfil.html">
 
-            </div>
+<i class="fa-solid fa-user"></i>
 
-            <form id="formLoja">
+Perfil
 
-                <!-- Nome -->
+</a>
 
-                <div class="campo">
+<button onclick="fazerLogout()">
 
-                    <label for="nome">
-                        Nome da Loja
-                    </label>
+<i class="fa-solid fa-right-from-bracket"></i>
 
-                    <input
-                        type="text"
-                        id="nome"
-                        placeholder="Ex.: Mercado Central"
-                        required>
+Sair
 
-                </div>
+</button>
 
-                <!-- Categoria -->
+</nav>
 
-                <div class="campo">
+</header>
 
-                    <label for="categoria">
-                        Categoria
-                    </label>
+<main class="container">
 
-                    <select id="categoria" required>
+<section class="card">
 
-                        <option value="">
-                            Selecione uma categoria
-                        </option>
+<h2>
 
-                    </select>
+<i class="fa-solid fa-shop"></i>
 
-                </div>
+Minha Loja
 
-                <!-- Telefone -->
+</h2>
 
-                <div class="campo">
+<div class="info-loja">
 
-                    <label for="telefone">
-                        Telefone
-                    </label>
+<p><strong>Nome:</strong> <span id="nome-loja">Carregando...</span></p>
 
-                    <input
-                        type="tel"
-                        id="telefone"
-                        placeholder="(00) 00000-0000">
+<p><strong>Categoria:</strong> <span id="categoria-loja">...</span></p>
 
-                </div>
+<p><strong>Cidade:</strong> <span id="cidade-loja">...</span></p>
 
-                <!-- WhatsApp -->
+<p><strong>Telefone:</strong> <span id="telefone-loja">...</span></p>
 
-                <div class="campo">
+<p><strong>Status:</strong>
 
-                    <label for="whatsapp">
-                        WhatsApp
-                    </label>
+<span id="status-loja">🟢 Ativa</span>
 
-                    <input
-                        type="tel"
-                        id="whatsapp"
-                        placeholder="(00) 00000-0000">
+</p>
 
-                </div>
+</div>
 
-                <!-- Descrição -->
+<button class="btn">
 
-                <div class="campo">
+<i class="fa-solid fa-pen"></i>
 
-                    <label for="descricao">
-                        Descrição da Loja
-                    </label>
+Editar Loja
 
-                    <textarea
-                        id="descricao"
-                        rows="4"
-                        placeholder="Conte um pouco sobre sua loja..."></textarea>
+</button>
 
-                </div>
+</section>
 
-                <!-- Endereço -->
+<section class="card">
 
-                <div class="campo">
+<h2>
 
-                    <label for="endereco">
-                        Endereço
-                    </label>
+<i class="fa-solid fa-bolt"></i>
 
-                    <input
-                        type="text"
-                        id="endereco"
-                        placeholder="Rua, número, bairro">
+Ações Rápidas
 
-                </div>
+</h2>
 
-                <!-- Cidade -->
+<div class="atalhos">
 
-                <div class="campo">
+<a href="produtos.html" class="atalho">
 
-                    <label for="cidade">
-                        Cidade
-                    </label>
+<i class="fa-solid fa-box"></i>
 
-                    <input
-                        type="text"
-                        id="cidade"
-                        placeholder="Sua cidade">
+<span>Gerenciar Produtos</span>
 
-                </div>
+</a>
 
-                <!-- Horário -->
+<a href="novo-produto.html" class="atalho">
 
-                <div class="linha">
+<i class="fa-solid fa-plus"></i>
 
-                    <div class="campo">
+<span>Novo Produto</span>
 
-                        <label for="abertura">
-                            Abre às
-                        </label>
+</a>
 
-                        <input
-                            type="time"
-                            id="abertura">
+<a href="pedidos.html" class="atalho">
 
-                    </div>
+<i class="fa-solid fa-cart-shopping"></i>
 
-                    <div class="campo">
+<span>Pedidos</span>
 
-                        <label for="fechamento">
-                            Fecha às
-                        </label>
+</a>
 
-                        <input
-                            type="time"
-                            id="fechamento">
+<a href="configuracoes-loja.html" class="atalho">
 
-                    </div>
+<i class="fa-solid fa-gear"></i>
 
-                </div>
+<span>Configurações</span>
 
-                <!-- Foto -->
+</a>
 
-                <div class="campo">
+</div>
 
-                    <label for="foto">
-                        Logo da Loja
-                    </label>
+</section>
 
-                    <input
-                        type="file"
-                        id="foto"
-                        accept="image/*">
+<section class="card">
 
-                </div>
+<h2>
 
-                <!-- Mensagem -->
+<i class="fa-solid fa-chart-column"></i>
 
-                <div id="mensagem"></div>
+Estatísticas
 
-                <!-- Botão -->
+</h2>
 
-                <button
-                    type="submit"
-                    class="btn">
+<div class="estatisticas">
 
-                    <i class="fa-solid fa-floppy-disk"></i>
+<div class="box">
 
-                    Cadastrar Loja
+<h3 id="total-produtos">0</h3>
 
-                </button>
+<p>Produtos</p>
 
-            </form>
+</div>
 
-        </div>
+<div class="box">
 
-    </main>
+<h3 id="total-pedidos">0</h3>
 
-    <!-- SCRIPTS -->
+<p>Pedidos</p>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</div>
 
-    <script src="js/supabase.js"></script>
+<div class="box">
 
-    <script src="js/cadastrar-loja.js"></script>
+<h3 id="total-vendas">R$ 0,00</h3>
+
+<p>Vendas</p>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/painel-loja.js"></script>
 
 </body>
 

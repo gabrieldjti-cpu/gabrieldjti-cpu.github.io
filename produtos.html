@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Produtos | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="css/produtos.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <i class="fa-solid fa-store"></i>
+
+        <h2>Minha Loja</h2>
+
+    </div>
+
+    <nav>
+
+        <a href="painel-loja.html">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            Dashboard
+
+        </a>
+
+        <a href="produtos.html" class="ativo">
+
+            <i class="fa-solid fa-box"></i>
+
+            Produtos
+
+        </a>
+
+        <a href="pedidos.html">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            Pedidos
+
+        </a>
+
+        <a href="perfil.html">
+
+            <i class="fa-solid fa-user"></i>
+
+            Perfil
+
+        </a>
+
+        <button onclick="fazerLogout()">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Sair
+
+        </button>
+
+    </nav>
+
+</header>
+
+<main class="container">
+
+    <div class="topo">
+
+        <div>
+
+            <h1>
+
+                <i class="fa-solid fa-box"></i>
+
+                Meus Produtos
+
+            </h1>
+
+            <p>
+
+                Gerencie todos os produtos cadastrados na sua loja.
+
+            </p>
+
+        </div>
+
+        <a href="novo-produto.html" class="btn">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Novo Produto
+
+        </a>
+
+    </div>
+
+    <div class="barra-pesquisa">
+
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="Pesquisar produto..."
+        >
+
+        <button>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+        </button>
+
+    </div>
+
+    <div id="lista-produtos" class="lista-produtos">
+
+        <div class="sem-produtos">
+
+            <i class="fa-solid fa-box-open"></i>
+
+            <h2>Nenhum produto cadastrado.</h2>
+
+            <p>
+
+                Clique em <strong>Novo Produto</strong> para cadastrar o primeiro produto da sua loja.
+
+            </p>
+
+            <a href="novo-produto.html" class="btn">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Cadastrar Produto
+
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/produtos.js"></script>
+
+</body>
+
+</html>

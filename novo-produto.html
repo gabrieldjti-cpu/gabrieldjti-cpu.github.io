@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel da Loja | Novo Produto</title>
+    
+    <link rel="stylesheet" href="css/novo-produto.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <i class="fa-solid fa-store"></i> Painel da Loja
+        </div>
+        <nav>
+            <a href="produtos.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="#"><i class="fa-solid fa-user"></i> Perfil</a>
+            <button class="btn-sair"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fa-solid fa-box-open"></i> Cadastrar Novo Produto
+            </h2>
+
+            <form id="form-produto">
+                <input type="hidden" id="loja_id" name="loja_id">
+
+                <div class="form-group">
+                    <label for="img_produto"><i class="fa-solid fa-camera"></i> URL da Imagem do Produto</label>
+                    <input type="url" id="img_produto" name="img_produto" class="input-control" placeholder="https://exemplo.com/imagem.jpg" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nome_produto"><i class="fa-solid fa-box"></i> Nome do Produto</label>
+                    <input type="text" id="nome_produto" name="nome_produto" class="input-control" placeholder="Ex: Tapete de Crochê Oval" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="descricao_produto"><i class="fa-solid fa-pen-to-square"></i> Descrição</label>
+                    <textarea id="descricao_produto" name="descricao_produto" class="input-control" placeholder="Detalhes sobre o produto, tamanho, material..." required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="preco_produto"><i class="fa-solid fa-dollar-sign"></i> Preço (R$)</label>
+                        <input type="number" id="preco_produto" name="preco_produto" class="input-control" step="0.01" placeholder="0,00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estoque_produto"><i class="fa-solid fa-chart-simple"></i> Estoque Mínimo</label>
+                        <input type="number" id="estoque_produto" name="estoque_produto" class="input-control" placeholder="0" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="categoria_produto"><i class="fa-solid fa-tag"></i> Categoria</label>
+                        <select id="categoria_produto" name="categoria_produto" class="input-control" required>
+                            <option value="">Selecione...</option>
+                            <option value="20">Crochê (ID: 20)</option>
+                            <option value="artesanato">Artesanato Geral</option>
+                            <option value="decoracao">Decoração</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status_produto"><i class="fa-solid fa-circle-check"></i> Status</label>
+                        <select id="status_produto" name="status_produto" class="input-control" required>
+                            <option value="Ativa" selected>Ativo</option>
+                            <option value="Inativa">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="produtos.html" class="btn btn-cancel">Cancelar</a>
+                    <button type="submit" class="btn btn-submit">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Exemplo: ID fictício da loja logada
+        const idLojaLogada = "biel_croche_123"; 
+        document.getElementById('loja_id').value = idLojaLogada;
+
+        document.getElementById('form-produto').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const dadosProduto = {
+                loja_id: document.getElementById('loja_id').value,
+                imagem: document.getElementById('img_produto').value,
+                nome: document.getElementById('nome_produto').value,
+                descricao: document.getElementById('descricao_produto').value,
+                preco: document.getElementById('preco_produto').value,
+                estoque: document.getElementById('estoque_produto').value,
+                categoria: document.getElementById('categoria_produto').value,
+                status: document.getElementById('status_produto').value
+            };
+
+            console.log("Enviando produto...", dadosProduto);
+
+            // Simulação de salvamento no LocalStorage para teste
+            let produtos = JSON.parse(localStorage.getItem('produtos_cadastrados')) || [];
+            produtos.push(dadosProduto);
+            localStorage.setItem('produtos_cadastrados', JSON.stringify(produtos));
+
+            alert("Produto cadastrado com sucesso!");
+            window.location.href = "produtos.html";
+        });
+    </script>
+</body>
+</html>
