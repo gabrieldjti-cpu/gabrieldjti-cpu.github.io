@@ -1,181 +1,404 @@
-/* Variáveis de Paleta de Cores (Baseado no seu Painel) */
-:root {
-    --primary-color: #157A4C;
-    --primary-hover: #11623C;
-    --bg-color: #F4F6F8;
-    --card-bg: #FFFFFF;
-    --text-color: #333333;
-    --border-color: #E2E8F0;
+/* ===================================
+   PALETA
+=================================== */
+
+:root{
+
+    --primary:#198754;
+    --primary-dark:#146c43;
+    --danger:#dc3545;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --text:#333;
+    --shadow:0 10px 25px rgba(0,0,0,.08);
+
 }
 
-/* Reset Geral */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* ===================================
+   RESET
+=================================== */
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
+body{
+
+    background:var(--bg);
+    color:var(--text);
+
 }
 
-/* Topbar / Header */
-header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 15px;
-    text-align: center;
+/* ===================================
+   HEADER
+=================================== */
+
+header{
+
+    background:var(--primary);
+    color:white;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 40px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+
 }
 
-.header-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 15px;
+.logo{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
 }
 
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+.logo i{
+
+    font-size:28px;
+
 }
 
-nav a, nav button {
-    background: none;
-    border: none;
-    color: white;
-    text-decoration: none;
-    font-size: 0.95rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+nav{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
 }
 
-.btn-sair {
-    background-color: #E53E3E;
-    padding: 5px 12px;
-    border-radius: 5px;
-    transition: background 0.2s;
+nav a{
+
+    color:white;
+    text-decoration:none;
+    transition:.3s;
+
 }
 
-.btn-sair:hover {
-    background-color: #C53030;
+nav a:hover{
+
+    opacity:.8;
+
 }
 
-/* Container Central */
-main {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 0 15px;
+nav button{
+
+    background:var(--danger);
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
 }
 
-/* Cartão do Formulário */
-.card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+/* ===================================
+   CONTAINER
+=================================== */
+
+.container{
+
+    width:95%;
+    max-width:1200px;
+
+    margin:35px auto;
+
 }
 
-.card-title {
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.3rem;
-    margin-bottom: 25px;
-    border-bottom: 2px solid var(--bg-color);
-    padding-bottom: 10px;
+/* ===================================
+   BREADCRUMB
+=================================== */
+
+.breadcrumb{
+
+    margin-bottom:20px;
+
+    color:#666;
+
+    font-size:14px;
+
 }
 
-/* Campos do Formulário */
-.form-group {
-    margin-bottom: 20px;
+.breadcrumb a{
+
+    text-decoration:none;
+
+    color:var(--primary);
+
 }
 
-.form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    color: #4A5568;
+/* ===================================
+   CARD
+=================================== */
+
+.card{
+
+    background:var(--card);
+
+    border-radius:16px;
+
+    padding:35px;
+
+    box-shadow:var(--shadow);
+
 }
 
-.input-control {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: #F8FAFC;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+.card h1{
+
+    color:var(--primary);
+
+    margin-bottom:30px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
 }
 
-.input-control:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background-color: #FFF;
+/* ===================================
+   GRID
+=================================== */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:30px;
+
 }
 
-textarea.input-control {
-    resize: vertical;
-    min-height: 100px;
+/* ===================================
+   CAMPOS
+=================================== */
+
+.campo{
+
+    margin-bottom:22px;
+
 }
 
-/* Layout de Duas Colunas (Responsivo) */
-.row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.campo label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
 }
 
-@media (max-width: 480px) {
-    .row {
-        grid-template-columns: 1fr;
-        gap: 0px;
+.campo input,
+.campo textarea,
+.campo select{
+
+    width:100%;
+
+    padding:14px;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.campo input:focus,
+.campo textarea:focus,
+.campo select:focus{
+
+    outline:none;
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(25,135,84,.15);
+
+}
+
+textarea{
+
+    resize:vertical;
+
+}
+
+.linha{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+/* ===================================
+   PREVIEW
+=================================== */
+
+.preview{
+
+    width:100%;
+
+    height:280px;
+
+    border:2px dashed #d1d5db;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#fafafa;
+
+}
+
+.preview img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+/* ===================================
+   BOTÕES
+=================================== */
+
+.botoes{
+
+    margin-top:30px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+}
+
+.btn-cancelar{
+
+    background:#e9ecef;
+
+    color:#333;
+
+    text-decoration:none;
+
+    padding:14px 24px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+}
+
+.btn-salvar{
+
+    background:var(--primary);
+
+    color:white;
+
+    border:none;
+
+    padding:14px 30px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-salvar:hover{
+
+    background:var(--primary-dark);
+
+}
+
+/* ===================================
+   RESPONSIVO
+=================================== */
+
+@media(max-width:900px){
+
+    header{
+
+        flex-direction:column;
+
+        gap:20px;
+
     }
+
+    nav{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+    }
+
+    .grid{
+
+        grid-template-columns:1fr;
+
+    }
+
 }
 
-/* Botões de Ação */
-.form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 30px;
-}
+@media(max-width:600px){
 
-.btn {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: background 0.2s;
-}
+    .linha{
 
-.btn-submit {
-    background-color: var(--primary-color);
-    color: white;
-}
+        grid-template-columns:1fr;
 
-.btn-submit:hover {
-    background-color: var(--primary-hover);
-}
+    }
 
-.btn-cancel {
-    background-color: #EDF2F7;
-    color: #4A5568;
-}
+    .botoes{
 
-.btn-cancel:hover {
-    background-color: #E2E8F0;
+        flex-direction:column;
+
+    }
+
+    .btn-cancelar,
+    .btn-salvar{
+
+        width:100%;
+        text-align:center;
+
+    }
+
 }

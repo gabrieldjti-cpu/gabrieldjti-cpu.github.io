@@ -23,11 +23,8 @@
 <header>
 
     <div class="logo">
-
         <i class="fa-solid fa-store"></i>
-
         <h2>Painel da Loja</h2>
-
     </div>
 
     <nav>
@@ -58,11 +55,8 @@
     <section class="card">
 
         <h2>
-
             <i class="fa-solid fa-shop"></i>
-
             Minha Loja
-
         </h2>
 
         <div class="info-loja">
@@ -75,22 +69,16 @@
 
             <p><strong>Telefone:</strong> <span id="telefone-loja">...</span></p>
 
-            <p><strong>Status:</strong>
-
-                <span id="status-loja">
-                    🟢 Ativa
-                </span>
-
+            <p>
+                <strong>Status:</strong>
+                <span id="status-loja">🟢 Ativa</span>
             </p>
 
         </div>
 
         <button class="btn">
-
             <i class="fa-solid fa-pen"></i>
-
             Editar Loja
-
         </button>
 
     </section>
@@ -101,27 +89,45 @@
 
         <div class="topo-card">
 
-            <h2>
+            <div class="titulo-card">
 
-                <i class="fa-solid fa-box"></i>
+                <h2>
+                    <i class="fa-solid fa-box"></i>
+                    Produtos
+                </h2>
 
-                Produtos
+                <a href="produtos.html" class="link-ver">
+                    Ver todos →
+                </a>
 
-            </h2>
+            </div>
 
-            <button class="btn">
-
+            <a href="novo-produto.html" class="btn">
                 <i class="fa-solid fa-plus"></i>
-
                 Novo Produto
-
-            </button>
+            </a>
 
         </div>
 
         <div id="lista-produtos">
 
-            <p>Nenhum produto cadastrado.</p>
+            <div class="sem-produtos">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h3>Nenhum produto cadastrado</h3>
+
+                <p>
+                    Clique em <strong>Novo Produto</strong> para cadastrar
+                    o primeiro produto da sua loja.
+                </p>
+
+                <a href="novo-produto.html" class="btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Cadastrar Produto
+                </a>
+
+            </div>
 
         </div>
 
@@ -132,11 +138,8 @@
     <section class="card">
 
         <h2>
-
             <i class="fa-solid fa-cart-shopping"></i>
-
             Pedidos
-
         </h2>
 
         <div id="lista-pedidos">
@@ -152,37 +155,25 @@
     <section class="card">
 
         <h2>
-
             <i class="fa-solid fa-chart-column"></i>
-
             Estatísticas
-
         </h2>
 
         <div class="estatisticas">
 
             <div class="box">
-
                 <h3 id="total-produtos">0</h3>
-
                 <p>Produtos</p>
-
             </div>
 
             <div class="box">
-
                 <h3 id="total-pedidos">0</h3>
-
                 <p>Pedidos</p>
-
             </div>
 
             <div class="box">
-
                 <h3 id="total-vendas">R$ 0,00</h3>
-
                 <p>Vendas</p>
-
             </div>
 
         </div>
@@ -194,7 +185,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
-
 <script src="js/painel-loja.js"></script>
 
 </body>

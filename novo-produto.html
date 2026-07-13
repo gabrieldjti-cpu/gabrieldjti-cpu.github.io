@@ -1,120 +1,278 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel da Loja | Novo Produto</title>
-    
-    <link rel="stylesheet" href="css/novo-produto.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Novo Produto | Comércio da Cidade</title>
+
+<link rel="stylesheet" href="css/novo-produto.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 </head>
+
 <body>
 
-    <header>
-        <div class="header-title">
-            <i class="fa-solid fa-store"></i> Painel da Loja
-        </div>
-        <nav>
-            <a href="produtos.html"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="#"><i class="fa-solid fa-user"></i> Perfil</a>
-            <button class="btn-sair"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
-        </nav>
-    </header>
+<header>
 
-    <main>
-        <div class="card">
-            <h2 class="card-title">
-                <i class="fa-solid fa-box-open"></i> Cadastrar Novo Produto
-            </h2>
+<div class="logo">
 
-            <form id="form-produto">
-                <input type="hidden" id="loja_id" name="loja_id">
+<i class="fa-solid fa-store"></i>
 
-                <div class="form-group">
-                    <label for="img_produto"><i class="fa-solid fa-camera"></i> URL da Imagem do Produto</label>
-                    <input type="url" id="img_produto" name="img_produto" class="input-control" placeholder="https://exemplo.com/imagem.jpg" required>
-                </div>
+<h2>Painel da Loja</h2>
 
-                <div class="form-group">
-                    <label for="nome_produto"><i class="fa-solid fa-box"></i> Nome do Produto</label>
-                    <input type="text" id="nome_produto" name="nome_produto" class="input-control" placeholder="Ex: Tapete de Crochê Oval" required>
-                </div>
+</div>
 
-                <div class="form-group">
-                    <label for="descricao_produto"><i class="fa-solid fa-pen-to-square"></i> Descrição</label>
-                    <textarea id="descricao_produto" name="descricao_produto" class="input-control" placeholder="Detalhes sobre o produto, tamanho, material..." required></textarea>
-                </div>
+<nav>
 
-                <div class="row">
-                    <div class="form-group">
-                        <label for="preco_produto"><i class="fa-solid fa-dollar-sign"></i> Preço (R$)</label>
-                        <input type="number" id="preco_produto" name="preco_produto" class="input-control" step="0.01" placeholder="0,00" required>
-                    </div>
+<a href="painel-loja.html">
 
-                    <div class="form-group">
-                        <label for="estoque_produto"><i class="fa-solid fa-chart-simple"></i> Estoque Mínimo</label>
-                        <input type="number" id="estoque_produto" name="estoque_produto" class="input-control" placeholder="0" required>
-                    </div>
-                </div>
+<i class="fa-solid fa-chart-line"></i>
 
-                <div class="row">
-                    <div class="form-group">
-                        <label for="categoria_produto"><i class="fa-solid fa-tag"></i> Categoria</label>
-                        <select id="categoria_produto" name="categoria_produto" class="input-control" required>
-                            <option value="">Selecione...</option>
-                            <option value="20">Crochê (ID: 20)</option>
-                            <option value="artesanato">Artesanato Geral</option>
-                            <option value="decoracao">Decoração</option>
-                        </select>
-                    </div>
+Dashboard
 
-                    <div class="form-group">
-                        <label for="status_produto"><i class="fa-solid fa-circle-check"></i> Status</label>
-                        <select id="status_produto" name="status_produto" class="input-control" required>
-                            <option value="Ativa" selected>Ativo</option>
-                            <option value="Inativa">Inativo</option>
-                        </select>
-                    </div>
-                </div>
+</a>
 
-                <div class="form-actions">
-                    <a href="produtos.html" class="btn btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn btn-submit">Salvar Produto</button>
-                </div>
-            </form>
-        </div>
-    </main>
+<a href="produtos.html">
 
-    <script>
-        // Exemplo: ID fictício da loja logada
-        const idLojaLogada = "biel_croche_123"; 
-        document.getElementById('loja_id').value = idLojaLogada;
+<i class="fa-solid fa-box"></i>
 
-        document.getElementById('form-produto').addEventListener('submit', function(event) {
-            event.preventDefault();
+Produtos
 
-            const dadosProduto = {
-                loja_id: document.getElementById('loja_id').value,
-                imagem: document.getElementById('img_produto').value,
-                nome: document.getElementById('nome_produto').value,
-                descricao: document.getElementById('descricao_produto').value,
-                preco: document.getElementById('preco_produto').value,
-                estoque: document.getElementById('estoque_produto').value,
-                categoria: document.getElementById('categoria_produto').value,
-                status: document.getElementById('status_produto').value
-            };
+</a>
 
-            console.log("Enviando produto...", dadosProduto);
+<a href="perfil.html">
 
-            // Simulação de salvamento no LocalStorage para teste
-            let produtos = JSON.parse(localStorage.getItem('produtos_cadastrados')) || [];
-            produtos.push(dadosProduto);
-            localStorage.setItem('produtos_cadastrados', JSON.stringify(produtos));
+<i class="fa-solid fa-user"></i>
 
-            alert("Produto cadastrado com sucesso!");
-            window.location.href = "produtos.html";
-        });
-    </script>
+Perfil
+
+</a>
+
+<button onclick="fazerLogout()">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Sair
+
+</button>
+
+</nav>
+
+</header>
+
+<main class="container">
+
+<div class="breadcrumb">
+
+<a href="painel-loja.html">Dashboard</a>
+
+>
+
+<a href="produtos.html">Produtos</a>
+
+>
+
+<strong>Novo Produto</strong>
+
+</div>
+
+<div class="card">
+
+<h1>
+
+<i class="fa-solid fa-plus"></i>
+
+Novo Produto
+
+</h1>
+
+<form id="form-produto">
+
+<div class="grid">
+
+<div class="col-esquerda">
+
+<div class="campo">
+
+<label>Nome do Produto</label>
+
+<input
+type="text"
+id="nome"
+required>
+
+</div>
+
+<div class="campo">
+
+<label>Descrição</label>
+
+<textarea
+id="descricao"
+rows="5"></textarea>
+
+</div>
+
+<div class="linha">
+
+<div class="campo">
+
+<label>Categoria</label>
+
+<select id="categoria"></select>
+
+</div>
+
+<div class="campo">
+
+<label>Preço</label>
+
+<input
+type="number"
+step="0.01"
+id="preco"
+required>
+
+</div>
+
+</div>
+
+<div class="linha">
+
+<div class="campo">
+
+<label>Preço Promocional</label>
+
+<input
+type="number"
+step="0.01"
+id="preco-promocao">
+
+</div>
+
+<div class="campo">
+
+<label>Quantidade em Estoque</label>
+
+<input
+type="number"
+id="estoque"
+required>
+
+</div>
+
+</div>
+
+<div class="campo">
+
+<label>
+
+<input
+type="checkbox"
+id="ativo"
+checked>
+
+Produto Ativo
+
+</label>
+
+</div>
+
+<div class="campo">
+
+<label>
+
+<input
+type="checkbox"
+id="destaque">
+
+Produto em Destaque
+
+</label>
+
+</div>
+
+</div>
+
+<div class="col-direita">
+
+<div class="preview">
+
+<img
+id="preview"
+src="img/sem-imagem.png"
+alt="Prévia da imagem">
+
+</div>
+
+<div class="campo">
+
+<label>Imagem do Produto</label>
+
+<input
+type="file"
+id="imagem"
+accept="image/*">
+
+</div>
+
+<div class="campo">
+
+<label>Minha Loja</label>
+
+<input
+type="text"
+id="nomeLoja"
+disabled>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="botoes">
+
+<a
+href="produtos.html"
+class="btn-cancelar">
+
+Cancelar
+
+</a>
+
+<button
+type="submit"
+class="btn-salvar">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Salvar Produto
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/novo-produto.js"></script>
+
 </body>
+
 </html>

@@ -415,3 +415,42 @@ nav button:hover{
     }
 
 }
+.titulo-card{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.link-ver{
+    color:#198754;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+}
+
+.link-ver:hover{
+    text-decoration:underline;
+}
+
+.sem-produtos{
+    width:100%;
+    text-align:center;
+    padding:40px 20px;
+    border:2px dashed #dcdcdc;
+    border-radius:12px;
+}
+
+.sem-produtos i{
+    font-size:60px;
+    color:#198754;
+    margin-bottom:20px;
+}
+
+.sem-produtos h3{
+    margin-bottom:10px;
+}
+
+.sem-produtos p{
+    color:#666;
+    margin-bottom:20px;
+}
