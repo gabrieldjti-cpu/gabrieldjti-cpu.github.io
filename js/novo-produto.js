@@ -10,17 +10,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     await verificarUsuario();
     await carregarCategorias();
 
-    const imagem = document.getElementById("imagem");
+    const campoImagem = document.getElementById("imagem_url");
 
-    if (imagem) {
-        imagem.addEventListener("change", mostrarPreview);
-    }
+if (campoImagem) {
+    campoImagem.addEventListener("input", mostrarPreview);
+}
 
-    const form = document.getElementById("form-produto");
+const form = document.getElementById("formProduto");
 
-    if (form) {
-        form.addEventListener("submit", salvarProduto);
-    }
+if (form) {
+    form.addEventListener("submit", salvarProduto);
+}
 
 });
 
@@ -102,25 +102,19 @@ async function carregarCategorias() {
 // =========================
 // PREVIEW DA IMAGEM
 // =========================
-function mostrarPreview(event) {
+function mostrarPreview() {
 
-    const arquivo = event.target.files[0];
+    const preview = document.getElementById("preview");
 
-    if (!arquivo) return;
+    const url = document.getElementById("imagem_url").value.trim();
 
-    const leitor = new FileReader();
+    if (!preview) return;
 
-    leitor.onload = function (e) {
-
-        const preview = document.getElementById("preview");
-
-        if (preview) {
-            preview.src = e.target.result;
-        }
-
-    };
-
-    leitor.readAsDataURL(arquivo);
+    if (url !== "") {
+        preview.src = url;
+    } else {
+        preview.src = "img/sem-imagem.png";
+    }
 
 }
 
@@ -133,36 +127,63 @@ async function salvarProduto(e) {
 
     try {
 
+        if (!lojaId) {
+            alert("Loja não encontrada.");
+            return;
+        }
+
         const nome = document.getElementById("nome").value.trim();
         const descricao = document.getElementById("descricao").value.trim();
         const categoria = document.getElementById("categoria").value;
-        const preco = Number(document.getElementById("preco").value);
+        const preco = parseFloat(document.getElementById("preco").value);
+        const estoque = parseInt(document.getElementById("estoque").value) || 0;
 
-        const precoPromocional = document.getElementById("preco-promocao")
-            ? Number(document.getElementById("preco-promocao").value) || null
+        const precoPromocionalCampo = document.getElementById("preco-promocao");
+        const precoPromocional = precoPromocionalCampo
+            ? parseFloat(precoPromocionalCampo.value) || null
             : null;
 
-        const estoque = Number(document.getElementById("estoque").value);
+        const ativoCampo = document.getElementById("ativo");
+        const ativo = ativoCampo
+            ? ativoCampo.value === "true"
+            : true;
 
-        const ativo = document.getElementById("ativo").value === "true";
-
-        const destaque = document.getElementById("destaque")
-            ? document.getElementById("destaque").checked
+        const destaqueCampo = document.getElementById("destaque");
+        const destaque = destaqueCampo
+            ? destaqueCampo.checked
             : false;
 
-        const arquivo = document.getElementById("imagem")?.files[0];
+        if (!nome) {
+            alert("Informe o nome do produto.");
+            return;
+        }
+
+        if (!categoria) {
+            alert("Selecione uma categoria.");
+            return;
+        }
+
+        if (isNaN(preco)) {
+            alert("Informe um preço válido.");
+            return;
+        }
 
         let imagemUrl = "";
 
         // =========================
-        // UPLOAD DA IMAGEM
+        // Upload da imagem
         // =========================
 
-        if (arquivo) {
+        const inputImagem = document.getElementById("imagem");
+
+        if (inputImagem && inputImagem.files.length > 0) {
+
+            const arquivo = inputImagem.files[0];
 
             const extensao = arquivo.name.split(".").pop();
 
-            const nomeArquivo = `${Date.now()}_${Math.random().toString(36).substring(2)}.${extensao}`;
+            const nomeArquivo =
+                `${Date.now()}_${Math.random().toString(36).substring(2)}.${extensao}`;
 
             const { error: erroUpload } = await db.storage
                 .from("produtos")
@@ -175,38 +196,39 @@ async function salvarProduto(e) {
                 .getPublicUrl(nomeArquivo);
 
             imagemUrl = data.publicUrl;
-
         }
 
+        console.log({
+            loja_id: lojaId,
+            categoria_id: categoria,
+            nome,
+            descricao,
+            preco,
+            preco_promocional: precoPromocional,
+            estoque,
+            imagem_url: imagemUrl,
+            ativo,
+            destaque
+        });
+
         // =========================
-        // CADASTRAR PRODUTO
+        // Salvar no banco
         // =========================
 
         const { error } = await db
             .from("produtos")
-            .insert({
-
+            .insert([{
                 loja_id: lojaId,
-
-                categoria_id: categoria,
-
-                nome: nome,
-
-                descricao: descricao,
-
-                preco: preco,
-
+                categoria_id: Number(categoria),
+                nome,
+                descricao,
+                preco,
                 preco_promocional: precoPromocional,
-
-                estoque: estoque,
-
+                estoque,
                 imagem_url: imagemUrl,
-
-                ativo: ativo,
-
-                destaque: destaque
-
-            });
+                ativo,
+                destaque
+            }]);
 
         if (error) throw error;
 
@@ -214,13 +236,11 @@ async function salvarProduto(e) {
 
         window.location.href = "produtos.html";
 
-    }
+    } catch (erro) {
 
-    catch (erro) {
+        console.error("Erro:", erro);
 
-        console.error(erro);
-
-        alert("Erro ao cadastrar:\n\n" + erro.message);
+        alert("Erro ao cadastrar o produto:\n\n" + erro.message);
 
     }
 
