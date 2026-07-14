@@ -2,16 +2,20 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Comércio da Cidade</title>
 
     <link rel="stylesheet" href="css/style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 </head>
 
@@ -19,140 +23,115 @@
 
 <header>
 
-<div class="logo">
-<h2>Comércio da Cidade</h2>
-</div>
+    <div class="logo">
 
-<nav>
+        <h2>Comércio da Cidade</h2>
 
-<a href="#">Início</a>
+    </div>
 
-<a href="#">Categorias</a>
+    <nav>
 
-<a href="#">Lojas</a>
+        <a href="#">Início</a>
 
-<a href="login.html" class="login" id="btnLogin">
-    Entrar
-</a>
+        <a href="#categorias">Categorias</a>
 
-</nav>
+        <a href="#lojas">Lojas</a>
+
+        <a href="login.html" class="login" id="btnLogin">
+
+            Entrar
+
+        </a>
+
+    </nav>
 
 </header>
 
 <section class="banner">
 
-<h1>Encontre tudo o que precisa na sua cidade.</h1>
+    <h1>Encontre tudo o que precisa na sua cidade</h1>
 
-<p>Compre dos comerciantes locais sem sair de casa.</p>
+    <p>Compre dos comerciantes locais sem sair de casa.</p>
 
-<div class="pesquisa">
+    <div class="pesquisa">
 
-<input type="text" placeholder="Pesquisar lojas...">
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="Pesquisar lojas...">
 
-<button>Pesquisar</button>
+        <button id="btnPesquisar">
 
-</div>
+            <i class="fa-solid fa-magnifying-glass"></i>
 
-</section>
+        </button>
 
-<section class="categorias">
-
-<h2>Categorias</h2>
-
-<div class="lista-categorias">
-
-<div class="categoria">🛒 Mercados</div>
-
-<div class="categoria">💊 Farmácias</div>
-
-<div class="categoria">🍕 Restaurantes</div>
-
-<div class="categoria">👕 Roupas</div>
-
-<div class="categoria">🥩 Açougues</div>
-
-<div class="categoria">🍞 Padarias</div>
-
-</div>
+    </div>
 
 </section>
 
-<section class="lojas">
+<section class="categorias" id="categorias">
 
-<h2>Lojas em Destaque</h2>
+    <h2>Categorias</h2>
 
-<div class="cards">
+    <div class="lista-categorias" id="lista-categorias">
 
-<div class="card">
+        <div class="categoria">🛒 Mercados</div>
 
-<img src="img/farmacia.png">
+        <div class="categoria">💊 Farmácias</div>
 
-<h3>Farmácia Vida</h3>
+        <div class="categoria">🍕 Restaurantes</div>
 
-<p>💊 Farmácia</p>
+        <div class="categoria">👕 Roupas</div>
 
-<span>⭐ 4.9</span>
+        <div class="categoria">🥩 Açougues</div>
 
-<button>Ver Loja</button>
+        <div class="categoria">🍞 Padarias</div>
 
-</div>
+    </div>
 
-<div class="card">
+</section>
 
-<img src="img/mercado.png">
+<section class="lojas" id="lojas">
 
-<h3>Supermercado Boa Compra</h3>
+    <div class="titulo-lojas">
 
-<p>🛒 Mercado</p>
+        <h2>Lojas da Cidade</h2>
 
-<span>⭐ 4.8</span>
+        <span id="total-lojas"></span>
 
-<button>Ver Loja</button>
+    </div>
 
-</div>
+    <div class="cards" id="lista-lojas">
 
-<div class="card">
+        <div class="carregando">
 
-<img src="img/acougue.png">
+            <i class="fa-solid fa-spinner fa-spin"></i>
 
-<h3>Açougue do João</h3>
+            <p>Carregando lojas...</p>
 
-<p>🥩 Açougue</p>
+        </div>
 
-<span>⭐ 4.7</span>
-
-<button>Ver Loja</button>
-
-</div>
-
-<div class="card">
-
-<img src="img/padaria.png">
-
-<h3>Padaria Pão Quente</h3>
-
-<p>🍞 Padaria</p>
-
-<span>⭐ 4.9</span>
-
-<button>Ver Loja</button>
-
-</div>
-
-</div>
+    </div>
 
 </section>
 
 <footer>
 
-<p>© 2026 Comércio da Cidade - Todos os direitos reservados á Gabriel.</p>
+    <p>
+
+        © 2026 Comércio da Cidade - Todos os direitos reservados a Gabriel.
+
+    </p>
 
 </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
 
 <script src="js/index.js"></script>
+
 </body>
 
 </html>

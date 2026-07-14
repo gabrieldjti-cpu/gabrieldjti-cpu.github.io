@@ -10,17 +10,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     await verificarUsuario();
     await carregarCategorias();
 
-    const campoImagem = document.getElementById("imagem_url");
+    const inputImagem = document.getElementById("imagem");
 
-if (campoImagem) {
-    campoImagem.addEventListener("input", mostrarPreview);
-}
+    if (inputImagem) {
+        inputImagem.addEventListener("change", mostrarPreview);
+    }
 
-const form = document.getElementById("formProduto");
+    const form = document.getElementById("form-produto");
 
-if (form) {
-    form.addEventListener("submit", salvarProduto);
-}
+    if (form) {
+        form.addEventListener("submit", salvarProduto);
+    }
 
 });
 
@@ -29,16 +29,16 @@ if (form) {
 // =========================
 async function verificarUsuario() {
 
-    const { data, error } = await db.auth.getUser();
+    const { data: auth, error } = await db.auth.getUser();
 
-    if (error || !data.user) {
+    if (error || !auth.user) {
 
         window.location.href = "login.html";
         return;
 
     }
 
-    const usuario = data.user;
+    const usuario = auth.user;
 
     const { data: loja, error: erroLoja } = await db
         .from("lojas")
@@ -48,7 +48,7 @@ async function verificarUsuario() {
 
     if (erroLoja || !loja) {
 
-        console.log(erroLoja);
+        console.error(erroLoja);
 
         alert("Você ainda não possui uma loja cadastrada.");
 
@@ -60,11 +60,7 @@ async function verificarUsuario() {
 
     lojaId = loja.id;
 
-    const campoLoja = document.getElementById("nomeLoja");
-
-    if (campoLoja) {
-        campoLoja.value = loja.nome;
-    }
+    document.getElementById("nomeLoja").value = loja.nome;
 
 }
 
@@ -75,49 +71,60 @@ async function carregarCategorias() {
 
     const select = document.getElementById("categoria");
 
-    console.log("Select:", select);
+    select.innerHTML = "<option value=''>Carregando...</option>";
 
     const { data, error } = await db
         .from("categorias_produtos")
-        .select("*");
+        .select("*")
+        .order("nome");
 
-    console.log("Categorias:", data);
-    console.log("Erro:", error);
+    if (error) {
 
-    if (error) return;
+        console.error(error);
 
-    select.innerHTML = "";
+        select.innerHTML =
+            "<option value=''>Erro ao carregar categorias</option>";
+
+        return;
+
+    }
+
+    select.innerHTML =
+        "<option value=''>Selecione uma categoria</option>";
 
     data.forEach(categoria => {
 
-        select.innerHTML += `
-            <option value="${categoria.id}">
-                ${categoria.nome}
-            </option>
-        `;
+        const option = document.createElement("option");
+
+        option.value = categoria.id;
+        option.textContent = categoria.nome;
+
+        select.appendChild(option);
 
     });
 
 }
+
 // =========================
 // PREVIEW DA IMAGEM
 // =========================
-function mostrarPreview() {
+function mostrarPreview(event) {
 
-    const preview = document.getElementById("preview");
+    const arquivo = event.target.files[0];
 
-    const url = document.getElementById("imagem_url").value.trim();
+    if (!arquivo) return;
 
-    if (!preview) return;
+    const leitor = new FileReader();
 
-    if (url !== "") {
-        preview.src = url;
-    } else {
-        preview.src = "img/sem-imagem.png";
-    }
+    leitor.onload = function(e) {
+
+        document.getElementById("preview").src = e.target.result;
+
+    };
+
+    leitor.readAsDataURL(arquivo);
 
 }
-
 // =========================
 // SALVAR PRODUTO
 // =========================
@@ -138,20 +145,13 @@ async function salvarProduto(e) {
         const preco = parseFloat(document.getElementById("preco").value);
         const estoque = parseInt(document.getElementById("estoque").value) || 0;
 
-        const precoPromocionalCampo = document.getElementById("preco-promocao");
-        const precoPromocional = precoPromocionalCampo
-            ? parseFloat(precoPromocionalCampo.value) || null
-            : null;
+        const precoPromocional =
+            document.getElementById("preco-promocao").value
+                ? parseFloat(document.getElementById("preco-promocao").value)
+                : null;
 
-        const ativoCampo = document.getElementById("ativo");
-        const ativo = ativoCampo
-            ? ativoCampo.value === "true"
-            : true;
-
-        const destaqueCampo = document.getElementById("destaque");
-        const destaque = destaqueCampo
-            ? destaqueCampo.checked
-            : false;
+        const ativo = document.getElementById("ativo").checked;
+        const destaque = document.getElementById("destaque").checked;
 
         if (!nome) {
             alert("Informe o nome do produto.");
@@ -176,18 +176,18 @@ async function salvarProduto(e) {
 
         const inputImagem = document.getElementById("imagem");
 
-        if (inputImagem && inputImagem.files.length > 0) {
+        if (inputImagem.files.length > 0) {
 
             const arquivo = inputImagem.files[0];
 
-            const extensao = arquivo.name.split(".").pop();
-
             const nomeArquivo =
-                `${Date.now()}_${Math.random().toString(36).substring(2)}.${extensao}`;
+                `${Date.now()}_${arquivo.name.replace(/\s/g, "_")}`;
 
             const { error: erroUpload } = await db.storage
                 .from("produtos")
-                .upload(nomeArquivo, arquivo);
+                .upload(nomeArquivo, arquivo, {
+                    upsert: true
+                });
 
             if (erroUpload) throw erroUpload;
 
@@ -196,11 +196,14 @@ async function salvarProduto(e) {
                 .getPublicUrl(nomeArquivo);
 
             imagemUrl = data.publicUrl;
+
         }
+
+        console.log("Salvando produto...");
 
         console.log({
             loja_id: lojaId,
-            categoria_id: categoria,
+            categoria_id: Number(categoria),
             nome,
             descricao,
             preco,
@@ -211,24 +214,24 @@ async function salvarProduto(e) {
             destaque
         });
 
-        // =========================
-        // Salvar no banco
-        // =========================
-
-        const { error } = await db
+        const { data, error } = await db
             .from("produtos")
             .insert([{
                 loja_id: lojaId,
                 categoria_id: Number(categoria),
-                nome,
-                descricao,
-                preco,
+                nome: nome,
+                descricao: descricao,
+                preco: preco,
                 preco_promocional: precoPromocional,
-                estoque,
+                estoque: estoque,
                 imagem_url: imagemUrl,
-                ativo,
-                destaque
-            }]);
+                ativo: ativo,
+                destaque: destaque
+            }])
+            .select();
+
+        console.log("Resultado:", data);
+        console.log("Erro:", error);
 
         if (error) throw error;
 
@@ -238,9 +241,9 @@ async function salvarProduto(e) {
 
     } catch (erro) {
 
-        console.error("Erro:", erro);
+        console.error(erro);
 
-        alert("Erro ao cadastrar o produto:\n\n" + erro.message);
+        alert("Erro ao cadastrar:\n\n" + erro.message);
 
     }
 

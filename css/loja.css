@@ -1,0 +1,432 @@
+/* ==========================
+   RESET
+========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    color:#333;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+header{
+
+    background:#198754;
+    color:#fff;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 40px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+
+}
+
+.logo h2{
+    font-size:26px;
+}
+
+nav{
+    display:flex;
+    gap:20px;
+    align-items:center;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:500;
+}
+
+nav a:hover{
+    opacity:.8;
+}
+
+/* ==========================
+   CONTAINER
+========================== */
+
+.container{
+
+    width:95%;
+    max-width:1200px;
+
+    margin:30px auto;
+
+}
+
+/* ==========================
+   CARD DA LOJA
+========================== */
+
+.loja-info{
+
+    background:#fff;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    display:flex;
+
+    gap:25px;
+
+    align-items:center;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+    margin-bottom:30px;
+
+}
+
+.loja-info img{
+
+    width:130px;
+    height:130px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:4px solid #198754;
+
+}
+
+.loja-info h1{
+
+    color:#198754;
+
+    margin-bottom:12px;
+
+}
+
+.loja-info p{
+
+    margin:8px 0;
+
+    color:#555;
+
+}
+
+.loja-info i{
+
+    color:#198754;
+
+    width:20px;
+
+}
+
+/* ==========================
+   BOTÃO WHATSAPP
+========================== */
+
+.btn-whatsapp{
+
+    display:inline-block;
+
+    margin-top:18px;
+
+    background:#25D366;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:12px 20px;
+
+    border-radius:8px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-whatsapp:hover{
+
+    background:#1ebe5b;
+
+}
+
+/* ==========================
+   PESQUISA
+========================== */
+
+.pesquisa{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:30px;
+
+}
+
+.pesquisa input{
+
+    flex:1;
+
+    padding:14px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+}
+
+.pesquisa input:focus{
+
+    outline:none;
+
+    border-color:#198754;
+
+}
+
+/* ==========================
+   TÍTULO
+========================== */
+
+section h2{
+
+    color:#198754;
+
+    margin-bottom:20px;
+
+}
+
+/* ==========================
+   PRODUTOS
+========================== */
+
+.produtos{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+
+    gap:25px;
+
+}
+
+/* ==========================
+   CARD PRODUTO
+========================== */
+
+.produto{
+
+    background:#fff;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.produto:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.produto img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+}
+
+.produto .conteudo{
+
+    padding:18px;
+
+}
+
+.produto h3{
+
+    margin-bottom:10px;
+
+}
+
+.produto p{
+
+    color:#666;
+
+    font-size:14px;
+
+    margin-bottom:12px;
+
+}
+
+.preco{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:#198754;
+
+    margin-bottom:15px;
+
+}
+
+.estoque{
+
+    color:#666;
+
+    font-size:14px;
+
+    margin-bottom:15px;
+
+}
+
+/* ==========================
+   BOTÃO COMPRAR
+========================== */
+
+.btn-comprar{
+
+    width:100%;
+
+    background:#198754;
+
+    color:white;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-comprar:hover{
+
+    background:#146c43;
+
+}
+
+/* ==========================
+   SEM PRODUTOS
+========================== */
+
+.sem-produtos{
+
+    grid-column:1/-1;
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:40px;
+
+    text-align:center;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+}
+
+.sem-produtos i{
+
+    font-size:60px;
+
+    color:#198754;
+
+    margin-bottom:20px;
+
+}
+
+.sem-produtos h2{
+
+    margin-bottom:10px;
+
+}
+
+.sem-produtos p{
+
+    color:#666;
+
+}
+
+/* ==========================
+   FOOTER
+========================== */
+
+footer{
+
+    margin-top:60px;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#777;
+
+}
+
+/* ==========================
+   RESPONSIVO
+========================== */
+
+@media(max-width:768px){
+
+    header{
+
+        flex-direction:column;
+
+        gap:15px;
+
+        text-align:center;
+
+    }
+
+    nav{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+    }
+
+    .loja-info{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .pesquisa{
+
+        flex-direction:column;
+
+    }
+
+}

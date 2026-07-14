@@ -3,18 +3,18 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Novo Produto | Comércio da Cidade</title>
+    <title>Novo Produto | Comércio da Cidade</title>
 
-<link rel="stylesheet" href="css/novo-produto.css">
+    <link rel="stylesheet" href="css/novo-produto.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 </head>
 
@@ -22,257 +22,252 @@
 
 <header>
 
-<div class="logo">
+    <div class="logo">
+        <i class="fa-solid fa-store"></i>
+        <h2>Painel da Loja</h2>
+    </div>
 
-<i class="fa-solid fa-store"></i>
+    <nav>
 
-<h2>Painel da Loja</h2>
+        <a href="painel-loja.html">
+            <i class="fa-solid fa-chart-line"></i>
+            Dashboard
+        </a>
 
-</div>
+        <a href="produtos.html">
+            <i class="fa-solid fa-box"></i>
+            Produtos
+        </a>
 
-<nav>
+        <a href="perfil.html">
+            <i class="fa-solid fa-user"></i>
+            Perfil
+        </a>
 
-<a href="painel-loja.html">
+        <button type="button" onclick="fazerLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sair
+        </button>
 
-<i class="fa-solid fa-chart-line"></i>
-
-Dashboard
-
-</a>
-
-<a href="produtos.html">
-
-<i class="fa-solid fa-box"></i>
-
-Produtos
-
-</a>
-
-<a href="perfil.html">
-
-<i class="fa-solid fa-user"></i>
-
-Perfil
-
-</a>
-
-<button onclick="fazerLogout()">
-
-<i class="fa-solid fa-right-from-bracket"></i>
-
-Sair
-
-</button>
-
-</nav>
+    </nav>
 
 </header>
 
 <main class="container">
 
-<div class="breadcrumb">
+    <div class="breadcrumb">
 
-<a href="painel-loja.html">Dashboard</a>
+        <a href="painel-loja.html">Dashboard</a>
 
->
+        >
 
-<a href="produtos.html">Produtos</a>
+        <a href="produtos.html">Produtos</a>
 
->
+        >
 
-<strong>Novo Produto</strong>
+        <strong>Novo Produto</strong>
 
-</div>
+    </div>
 
-<div class="card">
+    <section class="card">
 
-<h1>
+        <h1>
 
-<i class="fa-solid fa-plus"></i>
+            <i class="fa-solid fa-plus"></i>
 
-Novo Produto
+            Novo Produto
 
-</h1>
+        </h1>
 
-<form id="form-produto">
+        <form id="form-produto">
 
-<div class="grid">
+            <div class="grid">
 
-<div class="col-esquerda">
+                <div class="col-esquerda">
 
-<div class="campo">
+                    <div class="campo">
 
-<label>Nome do Produto</label>
+                        <label for="nome">Nome do Produto</label>
 
-<input
-type="text"
-id="nome"
-required>
+                        <input
+                            type="text"
+                            id="nome"
+                            required>
 
-</div>
+                    </div>
 
-<div class="campo">
+                    <div class="campo">
 
-<label>Descrição</label>
+                        <label for="descricao">Descrição</label>
 
-<textarea
-id="descricao"
-rows="5"></textarea>
+                        <textarea
+                            id="descricao"
+                            rows="5"></textarea>
 
-</div>
+                    </div>
 
-<div class="linha">
+                    <div class="linha">
 
-<div class="campo">
+                        <div class="campo">
 
-<label>Categoria</label>
+                            <label for="categoria">Categoria</label>
 
-<select id="categoria"></select>
+                            <select id="categoria" required>
 
-</div>
+                                <option value="">Carregando...</option>
 
-<div class="campo">
+                            </select>
 
-<label>Preço</label>
+                        </div>
 
-<input
-type="number"
-step="0.01"
-id="preco"
-required>
+                        <div class="campo">
 
-</div>
+                            <label for="preco">Preço</label>
 
-</div>
+                            <input
+                                type="number"
+                                id="preco"
+                                step="0.01"
+                                min="0"
+                                required>
 
-<div class="linha">
+                        </div>
 
-<div class="campo">
+                    </div>
 
-<label>Preço Promocional</label>
+                    <div class="linha">
 
-<input
-type="number"
-step="0.01"
-id="preco-promocao">
+                        <div class="campo">
 
-</div>
+                            <label for="preco-promocao">Preço Promocional</label>
 
-<div class="campo">
+                            <input
+                                type="number"
+                                id="preco-promocao"
+                                step="0.01"
+                                min="0">
 
-<label>Quantidade em Estoque</label>
+                        </div>
 
-<input
-type="number"
-id="estoque"
-required>
+                        <div class="campo">
 
-</div>
+                            <label for="estoque">Estoque</label>
 
-</div>
+                            <input
+                                type="number"
+                                id="estoque"
+                                min="0"
+                                value="0"
+                                required>
 
-<div class="campo">
+                        </div>
 
-<label>
+                    </div>
 
-<input
-type="checkbox"
-id="ativo"
-checked>
+                    <div class="campo">
 
-Produto Ativo
+                        <label>
 
-</label>
+                            <input
+                                type="checkbox"
+                                id="ativo"
+                                checked>
 
-</div>
+                            Produto ativo
 
-<div class="campo">
+                        </label>
 
-<label>
+                    </div>
 
-<input
-type="checkbox"
-id="destaque">
+                    <div class="campo">
 
-Produto em Destaque
+                        <label>
 
-</label>
+                            <input
+                                type="checkbox"
+                                id="destaque">
 
-</div>
+                            Produto em destaque
 
-</div>
+                        </label>
 
-<div class="col-direita">
+                    </div>
 
-<div class="preview">
+                </div>
 
-<img
-id="preview"
-src="img/sem-imagem.png"
-alt="Prévia da imagem">
+                <div class="col-direita">
 
-</div>
+                    <div class="preview">
 
-<div class="campo">
+                        <img
+                            id="preview"
+                            src="img/sem-imagem.png"
+                            alt="Prévia">
 
-<label>Imagem do Produto</label>
+                    </div>
 
-<input
-type="file"
-id="imagem"
-accept="image/*">
+                    <div class="campo">
 
-</div>
+                        <label for="imagem">
 
-<div class="campo">
+                            Imagem do Produto
 
-<label>Minha Loja</label>
+                        </label>
 
-<input
-type="text"
-id="nomeLoja"
-disabled>
+                        <input
+                            type="file"
+                            id="imagem"
+                            accept="image/*">
 
-</div>
+                    </div>
 
-</div>
+                    <div class="campo">
 
-</div>
+                        <label>Minha Loja</label>
 
-<div class="botoes">
+                        <input
+                            type="text"
+                            id="nomeLoja"
+                            readonly>
 
-<a
-href="produtos.html"
-class="btn-cancelar">
+                    </div>
 
-Cancelar
+                </div>
 
-</a>
+            </div>
 
-<button
-type="submit"
-class="btn-salvar">
+            <div class="botoes">
 
-<i class="fa-solid fa-floppy-disk"></i>
+                <a
+                    href="produtos.html"
+                    class="btn-cancelar">
 
-Salvar Produto
+                    Cancelar
 
-</button>
+                </a>
 
-</div>
+                <button
+                    type="submit"
+                    class="btn-salvar">
 
-</form>
+                    <i class="fa-solid fa-floppy-disk"></i>
 
-</div>
+                    Salvar Produto
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
 
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
-
 <script src="js/novo-produto.js"></script>
 
 </body>
-
 </html>
