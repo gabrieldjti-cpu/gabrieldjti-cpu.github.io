@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     usuario = data.user;
 
-    console.log("Usuário logado:", usuario);
+    console.log("Usuário logado:", usuario.id);
 
     await carregarPerfil();
 
@@ -42,11 +42,9 @@ async function carregarPerfil() {
         .eq("id", usuario.id)
         .single();
 
-    console.log("Perfil:", data);
-    console.log("Erro perfil:", error);
-
     if (error) {
         console.error(error);
+        alert("Erro ao carregar perfil.");
         return;
     }
 
@@ -64,9 +62,9 @@ async function carregarPerfil() {
     if (data.rua) {
 
         endereco.innerHTML = `
-            ${data.rua}, ${data.numero}<br>
-            ${data.bairro}<br>
-            ${data.cidade}
+            ${data.rua}, ${data.numero || ""}<br>
+            ${data.bairro || ""}<br>
+            ${data.cidade || ""}
         `;
 
     } else {
@@ -80,32 +78,38 @@ async function carregarPerfil() {
 }
 
 // ===============================
-// CARREGAR LOJA
+// CARREGAR MINHA LOJA
 // ===============================
 
 async function carregarMinhaLoja() {
 
-    console.log("ID do usuário:", usuario.id);
+    const div = document.getElementById("minha-loja");
 
     const { data: loja, error } = await window.db
         .from("lojas")
-        .select("*")
+        .select(`
+            *,
+            categorias (
+                nome
+            )
+        `)
         .eq("proprietario_id", usuario.id)
         .maybeSingle();
-
-    console.log("Loja:", loja);
-    console.log("Erro loja:", error);
 
     if (error) {
         console.error(error);
         return;
     }
 
-    const div = document.getElementById("minha-loja");
+    // Não possui loja
 
     if (!loja) {
 
+        localStorage.removeItem("loja_id");
+        localStorage.removeItem("nome_loja");
+
         div.innerHTML = `
+
             <div class="sem-loja">
 
                 <i class="fa-solid fa-store-slash"></i>
@@ -113,20 +117,29 @@ async function carregarMinhaLoja() {
                 <h3>Você ainda não possui uma loja.</h3>
 
                 <p>
-                    Cadastre sua loja gratuitamente e comece a vender seus produtos.
+                    Cadastre sua loja gratuitamente e comece a vender.
                 </p>
 
                 <a href="cadastrar-loja.html" class="btn verde">
+
                     <i class="fa-solid fa-plus"></i>
+
                     Cadastrar Loja
+
                 </a>
 
             </div>
+
         `;
 
         return;
 
     }
+
+    // Guarda informações da loja
+
+    localStorage.setItem("loja_id", loja.id);
+    localStorage.setItem("nome_loja", loja.nome);
 
     div.innerHTML = `
 
@@ -134,18 +147,39 @@ async function carregarMinhaLoja() {
 
             <h3>${loja.nome}</h3>
 
-            <p><strong>Descrição:</strong> ${loja.descricao ?? "-"}</p>
+            <p>
+                <strong>Categoria:</strong>
+                ${loja.categorias?.nome || "Sem categoria"}
+            </p>
 
-            <p><strong>Telefone:</strong> ${loja.telefone ?? "-"}</p>
+            <p>
+                <strong>Descrição:</strong>
+                ${loja.descricao || "-"}
+            </p>
 
-            <p><strong>Cidade:</strong> ${loja.cidade ?? "-"}</p>
+            <p>
+                <strong>Telefone:</strong>
+                ${loja.telefone || "-"}
+            </p>
 
-            <p><strong>Status:</strong> ${loja.ativa ? "🟢 Ativa" : "🔴 Inativa"}</p>
+            <p>
+                <strong>Cidade:</strong>
+                ${loja.cidade || "-"}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                ${loja.ativa ? "🟢 Ativa" : "🔴 Inativa"}
+            </p>
 
             <br>
 
             <a href="painel-loja.html" class="btn verde">
+
+                <i class="fa-solid fa-store"></i>
+
                 Entrar no Painel
+
             </a>
 
         </div>
@@ -168,23 +202,12 @@ async function abrirModalEditar() {
         .eq("id", usuario.id)
         .single();
 
-    document.getElementById("edit-nome").value =
-        data.nome || "";
-
-    document.getElementById("edit-telefone").value =
-        data.telefone || "";
-
-    document.getElementById("edit-rua").value =
-        data.rua || "";
-
-    document.getElementById("edit-numero").value =
-        data.numero || "";
-
-    document.getElementById("edit-bairro").value =
-        data.bairro || "";
-
-    document.getElementById("edit-cidade").value =
-        data.cidade || "";
+    document.getElementById("edit-nome").value = data.nome || "";
+    document.getElementById("edit-telefone").value = data.telefone || "";
+    document.getElementById("edit-rua").value = data.rua || "";
+    document.getElementById("edit-numero").value = data.numero || "";
+    document.getElementById("edit-bairro").value = data.bairro || "";
+    document.getElementById("edit-cidade").value = data.cidade || "";
 
 }
 
@@ -221,7 +244,7 @@ async function salvarEdicaoPerfil() {
 
     if (error) {
         console.error(error);
-        alert("Erro ao salvar.");
+        alert("Erro ao salvar perfil.");
         return;
     }
 
@@ -229,7 +252,7 @@ async function salvarEdicaoPerfil() {
 
     fecharModalEditar();
 
-    await carregarPerfil();
+    carregarPerfil();
 
 }
 
@@ -242,6 +265,9 @@ async function fazerLogout() {
     if (!confirm("Deseja realmente sair?")) return;
 
     await window.db.auth.signOut();
+
+    localStorage.removeItem("loja_id");
+    localStorage.removeItem("nome_loja");
 
     window.location.href = "login.html";
 

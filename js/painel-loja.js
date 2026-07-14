@@ -40,14 +40,27 @@ async function carregarLoja() {
 
     const { data, error } = await window.db
         .from("lojas")
-        .select("*")
+        .select(`
+            *,
+            categorias (
+                nome
+            )
+        `)
         .eq("proprietario_id", usuario.id)
-        .single();
+        .maybeSingle();
 
     if (error) {
         console.error(error);
-        alert("Loja não encontrada.");
+        alert("Erro ao carregar a loja.");
         return;
+    }
+
+    // Usuário ainda não possui loja
+    if (!data) {
+
+        window.location.href = "cadastrar-loja.html";
+        return;
+
     }
 
     loja = data;
@@ -58,13 +71,13 @@ async function carregarLoja() {
         loja.nome;
 
     document.getElementById("categoria-loja").textContent =
-        loja.categoria_id;
+        loja.categorias?.nome || "Sem categoria";
 
     document.getElementById("cidade-loja").textContent =
-        loja.cidade;
+        loja.cidade || "-";
 
     document.getElementById("telefone-loja").textContent =
-        loja.telefone;
+        loja.telefone || "-";
 
     document.getElementById("status-loja").textContent =
         loja.ativa ? "🟢 Ativa" : "🔴 Inativa";
@@ -190,9 +203,11 @@ async function excluirProduto(id) {
 // LOGOUT
 // ===============================
 
-async function sair() {
+async function fazerLogout() {
 
     await window.db.auth.signOut();
+
+    localStorage.clear();
 
     window.location.href = "login.html";
 

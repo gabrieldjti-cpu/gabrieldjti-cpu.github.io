@@ -3,18 +3,18 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Painel da Loja</title>
+    <title>Cadastrar Loja | Comércio da Cidade</title>
 
-<link rel="stylesheet" href="css/painel-loja.css">
+    <link rel="stylesheet" href="css/cadastrar-loja.css">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 </head>
 
@@ -22,195 +22,240 @@
 
 <header>
 
-<div class="logo">
+    <div class="logo">
 
-<i class="fa-solid fa-store"></i>
+        <a href="index.html">
 
-<h2>Painel da Loja</h2>
+            <i class="fa-solid fa-store"></i>
 
-</div>
+            <span>Comércio da Cidade</span>
 
-<nav>
+        </a>
 
-<a href="painel-loja.html" class="ativo">
+    </div>
 
-<i class="fa-solid fa-chart-line"></i>
+    <nav>
 
-Dashboard
+        <a href="index.html">
 
-</a>
+            <i class="fa-solid fa-house"></i>
 
-<a href="produtos.html">
+            Início
 
-<i class="fa-solid fa-box"></i>
+        </a>
 
-Produtos
+        <a href="perfil.html">
 
-</a>
+            <i class="fa-solid fa-user"></i>
 
-<a href="pedidos.html">
+            Perfil
 
-<i class="fa-solid fa-cart-shopping"></i>
+        </a>
 
-Pedidos
-
-</a>
-
-<a href="perfil.html">
-
-<i class="fa-solid fa-user"></i>
-
-Perfil
-
-</a>
-
-<button onclick="fazerLogout()">
-
-<i class="fa-solid fa-right-from-bracket"></i>
-
-Sair
-
-</button>
-
-</nav>
+    </nav>
 
 </header>
 
 <main class="container">
 
-<section class="card">
+    <div class="card">
 
-<h2>
+        <div class="titulo">
 
-<i class="fa-solid fa-shop"></i>
+            <i class="fa-solid fa-shop"></i>
 
-Minha Loja
+            <h1>Cadastrar Loja</h1>
 
-</h2>
+        </div>
 
-<div class="info-loja">
+        <p class="subtitulo">
 
-<p><strong>Nome:</strong> <span id="nome-loja">Carregando...</span></p>
+            Preencha as informações abaixo para começar a vender no Comércio da Cidade.
 
-<p><strong>Categoria:</strong> <span id="categoria-loja">...</span></p>
+        </p>
 
-<p><strong>Cidade:</strong> <span id="cidade-loja">...</span></p>
+        <form id="formLoja">
 
-<p><strong>Telefone:</strong> <span id="telefone-loja">...</span></p>
+            <div class="campo">
 
-<p><strong>Status:</strong>
+                <label for="nome">
 
-<span id="status-loja">🟢 Ativa</span>
+                    Nome da Loja
 
-</p>
+                </label>
 
-</div>
+                <input
+                    type="text"
+                    id="nome"
+                    placeholder="Ex.: Mercado Boa Compra"
+                    required>
 
-<button class="btn">
+            </div>
 
-<i class="fa-solid fa-pen"></i>
+            <div class="campo">
 
-Editar Loja
+                <label for="categoria">
 
-</button>
+                    Categoria
 
-</section>
+                </label>
 
-<section class="card">
+                <select id="categoria" required>
 
-<h2>
+                    <option value="">
 
-<i class="fa-solid fa-bolt"></i>
+                        Carregando categorias...
 
-Ações Rápidas
+                    </option>
 
-</h2>
+                </select>
 
-<div class="atalhos">
+            </div>
 
-<a href="produtos.html" class="atalho">
+            <div class="duas-colunas">
 
-<i class="fa-solid fa-box"></i>
+                <div class="campo">
 
-<span>Gerenciar Produtos</span>
+                    <label for="telefone">
 
-</a>
+                        Telefone
 
-<a href="novo-produto.html" class="atalho">
+                    </label>
 
-<i class="fa-solid fa-plus"></i>
+                    <input
+                        type="text"
+                        id="telefone"
+                        placeholder="(33) 99999-9999">
 
-<span>Novo Produto</span>
+                </div>
 
-</a>
+                <div class="campo">
 
-<a href="pedidos.html" class="atalho">
+                    <label for="whatsapp">
 
-<i class="fa-solid fa-cart-shopping"></i>
+                        WhatsApp
 
-<span>Pedidos</span>
+                    </label>
 
-</a>
+                    <input
+                        type="text"
+                        id="whatsapp"
+                        placeholder="(33) 99999-9999">
 
-<a href="configuracoes-loja.html" class="atalho">
+                </div>
 
-<i class="fa-solid fa-gear"></i>
+            </div>
 
-<span>Configurações</span>
+            <div class="campo">
 
-</a>
+                <label for="descricao">
 
-</div>
+                    Descrição
 
-</section>
+                </label>
 
-<section class="card">
+                <textarea
+                    id="descricao"
+                    rows="4"
+                    placeholder="Descreva sua loja..."></textarea>
 
-<h2>
+            </div>
 
-<i class="fa-solid fa-chart-column"></i>
+            <div class="campo">
 
-Estatísticas
+                <label for="endereco">
 
-</h2>
+                    Endereço
 
-<div class="estatisticas">
+                </label>
 
-<div class="box">
+                <input
+                    type="text"
+                    id="endereco"
+                    placeholder="Rua, número">
 
-<h3 id="total-produtos">0</h3>
+            </div>
 
-<p>Produtos</p>
+            <div class="campo">
 
-</div>
+                <label for="cidade">
 
-<div class="box">
+                    Cidade
 
-<h3 id="total-pedidos">0</h3>
+                </label>
 
-<p>Pedidos</p>
+                <input
+                    type="text"
+                    id="cidade"
+                    placeholder="Sua cidade">
 
-</div>
+            </div>
 
-<div class="box">
+            <div class="duas-colunas">
 
-<h3 id="total-vendas">R$ 0,00</h3>
+                <div class="campo">
 
-<p>Vendas</p>
+                    <label for="abertura">
 
-</div>
+                        Horário de abertura
 
-</div>
+                    </label>
 
-</section>
+                    <input
+                        type="time"
+                        id="abertura">
+
+                </div>
+
+                <div class="campo">
+
+                    <label for="fechamento">
+
+                        Horário de fechamento
+
+                    </label>
+
+                    <input
+                        type="time"
+                        id="fechamento">
+
+                </div>
+
+            </div>
+
+            <div id="mensagem" class="mensagem"></div>
+
+            <button
+                type="submit"
+                class="btn">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Cadastrar Loja
+
+            </button>
+
+        </form>
+
+    </div>
 
 </main>
+
+<footer>
+
+    <p>
+
+        © 2026 Comércio da Cidade - Todos os direitos reservados.
+
+    </p>
+
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/supabase.js"></script>
 
-<script src="js/painel-loja.js"></script>
+<script src="js/cadastrar-loja.js"></script>
 
 </body>
 
