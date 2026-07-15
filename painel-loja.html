@@ -23,25 +23,37 @@
 <header>
 
     <div class="logo">
+
         <i class="fa-solid fa-store"></i>
+
         <h2>Painel da Loja</h2>
+
     </div>
 
     <nav>
 
         <a href="index.html">
+
             <i class="fa-solid fa-house"></i>
+
             Início
+
         </a>
 
         <a href="perfil.html">
+
             <i class="fa-solid fa-user"></i>
+
             Perfil
+
         </a>
 
         <button onclick="fazerLogout()">
+
             <i class="fa-solid fa-right-from-bracket"></i>
+
             Sair
+
         </button>
 
     </nav>
@@ -54,10 +66,25 @@
 
     <section class="card">
 
-        <h2>
-            <i class="fa-solid fa-shop"></i>
-            Minha Loja
-        </h2>
+        <div class="topo-card">
+
+            <h2>
+
+                <i class="fa-solid fa-shop"></i>
+
+                Minha Loja
+
+            </h2>
+
+            <button class="btn" onclick="window.location='editar-loja.html'">
+
+                <i class="fa-solid fa-pen"></i>
+
+                Editar Loja
+
+            </button>
+
+        </div>
 
         <div class="info-loja">
 
@@ -69,17 +96,9 @@
 
             <p><strong>Telefone:</strong> <span id="telefone-loja">...</span></p>
 
-            <p>
-                <strong>Status:</strong>
-                <span id="status-loja">🟢 Ativa</span>
-            </p>
+            <p><strong>Status:</strong> <span id="status-loja">...</span></p>
 
         </div>
-
-        <button class="btn">
-            <i class="fa-solid fa-pen"></i>
-            Editar Loja
-        </button>
 
     </section>
 
@@ -89,23 +108,31 @@
 
         <div class="topo-card">
 
-            <div class="titulo-card">
+            <h2>
 
-                <h2>
-                    <i class="fa-solid fa-box"></i>
-                    Produtos
-                </h2>
+                <i class="fa-solid fa-box"></i>
 
-                <a href="produtos.html" class="link-ver">
-                    Ver todos →
+                Últimos Produtos
+
+            </h2>
+
+            <div>
+
+                <a href="novo-produto.html" class="btn">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Novo Produto
+
+                </a>
+
+                <a href="produtos.html" class="btn btn-secundario">
+
+                    Ver Todos
+
                 </a>
 
             </div>
-
-            <a href="novo-produto.html" class="btn">
-                <i class="fa-solid fa-plus"></i>
-                Novo Produto
-            </a>
 
         </div>
 
@@ -116,16 +143,6 @@
                 <i class="fa-solid fa-box-open"></i>
 
                 <h3>Nenhum produto cadastrado</h3>
-
-                <p>
-                    Clique em <strong>Novo Produto</strong> para cadastrar
-                    o primeiro produto da sua loja.
-                </p>
-
-                <a href="novo-produto.html" class="btn">
-                    <i class="fa-solid fa-plus"></i>
-                    Cadastrar Produto
-                </a>
 
             </div>
 
@@ -138,8 +155,11 @@
     <section class="card">
 
         <h2>
+
             <i class="fa-solid fa-cart-shopping"></i>
-            Pedidos
+
+            Pedidos Recentes
+
         </h2>
 
         <div id="lista-pedidos">
@@ -155,25 +175,37 @@
     <section class="card">
 
         <h2>
+
             <i class="fa-solid fa-chart-column"></i>
+
             Estatísticas
+
         </h2>
 
         <div class="estatisticas">
 
             <div class="box">
+
                 <h3 id="total-produtos">0</h3>
+
                 <p>Produtos</p>
+
             </div>
 
             <div class="box">
+
                 <h3 id="total-pedidos">0</h3>
+
                 <p>Pedidos</p>
+
             </div>
 
             <div class="box">
+
                 <h3 id="total-vendas">R$ 0,00</h3>
+
                 <p>Vendas</p>
+
             </div>
 
         </div>
