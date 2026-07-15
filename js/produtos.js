@@ -4,6 +4,11 @@
 
 let usuario = null;
 let loja = null;
+let produtos = [];
+
+// =====================================
+// INICIAR
+// =====================================
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -12,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // Verifica usuário logado
     const { data, error } = await window.db.auth.getUser();
 
     if (error || !data.user) {
@@ -23,6 +27,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     usuario = data.user;
 
     await carregarLoja();
+
+    const pesquisa = document.getElementById("pesquisa");
+
+    if (pesquisa) {
+        pesquisa.addEventListener("input", pesquisarProdutos);
+    }
 
 });
 
@@ -46,7 +56,7 @@ async function carregarLoja() {
 
     loja = data;
 
-    carregarProdutos();
+    await carregarProdutos();
 
 }
 
@@ -60,7 +70,7 @@ async function carregarProdutos() {
         .from("produtos")
         .select(`
             *,
-            categorias_produtos!categoria_id (
+            categorias_produtos!categoria_id(
                 nome
             )
         `)
@@ -73,41 +83,48 @@ async function carregarProdutos() {
         return;
     }
 
+    produtos = data || [];
+
+    renderizarProdutos(produtos);
+
+}
+
+// =====================================
+// RENDERIZAR PRODUTOS
+// =====================================
+
+function renderizarProdutos(listaProdutos) {
+
     const lista = document.getElementById("lista-produtos");
 
     lista.innerHTML = "";
 
-    if (!data || data.length === 0) {
+    if (listaProdutos.length === 0) {
 
         lista.innerHTML = `
-
             <div class="sem-produtos">
 
                 <i class="fa-solid fa-box-open"></i>
 
-                <h2>Nenhum produto cadastrado.</h2>
+                <h2>Nenhum produto encontrado.</h2>
 
                 <p>
-                    Clique em <strong>Novo Produto</strong> para cadastrar o primeiro produto.
+                    Cadastre um novo produto para começar.
                 </p>
 
                 <a href="novo-produto.html" class="btn">
-
                     <i class="fa-solid fa-plus"></i>
-
                     Novo Produto
-
                 </a>
 
             </div>
-
         `;
 
         return;
 
     }
 
-    data.forEach(produto => {
+    listaProdutos.forEach(produto => {
 
         lista.innerHTML += `
 
@@ -120,25 +137,17 @@ async function carregarProdutos() {
                 <div class="produto-info">
 
                     <span class="categoria">
-
                         ${produto.categorias_produtos?.nome || "Sem categoria"}
-
                     </span>
 
                     <h3>${produto.nome}</h3>
 
-                    <p>
-
-                        ${produto.descricao || "Sem descrição."}
-
-                    </p>
+                    <p>${produto.descricao || "Sem descrição."}</p>
 
                     <div class="preco">
 
                         <strong>
-
                             R$ ${Number(produto.preco).toFixed(2)}
-
                         </strong>
 
                         ${
@@ -181,7 +190,9 @@ async function carregarProdutos() {
 
                     </button>
 
-                    <button class="btn-excluir" onclick="excluirProduto('${produto.id}')">
+                    <button
+                        class="btn-excluir"
+                        onclick="excluirProduto('${produto.id}')">
 
                         <i class="fa-solid fa-trash"></i>
 
@@ -196,5 +207,83 @@ async function carregarProdutos() {
         `;
 
     });
+
+}
+
+// =====================================
+// PESQUISAR
+// =====================================
+
+function pesquisarProdutos() {
+
+    const texto = document
+        .getElementById("pesquisa")
+        .value
+        .toLowerCase();
+
+    const resultado = produtos.filter(produto =>
+
+        produto.nome.toLowerCase().includes(texto) ||
+
+        (produto.descricao || "")
+            .toLowerCase()
+            .includes(texto)
+
+    );
+
+    renderizarProdutos(resultado);
+
+}
+
+// =====================================
+// EDITAR PRODUTO
+// =====================================
+
+function editarProduto(id) {
+
+    window.location.href = `editar-produto.html?id=${id}`;
+
+}
+
+// =====================================
+// EXCLUIR
+// =====================================
+
+async function excluirProduto(id) {
+
+    if (!confirm("Deseja excluir este produto?")) return;
+
+    try {
+
+        const { error } = await window.db
+            .from("produtos")
+            .delete()
+            .eq("id", id);
+
+        if (error) throw error;
+
+        alert("Produto excluído com sucesso!");
+
+        await carregarProdutos();
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert(erro.message);
+
+    }
+
+}
+
+// =====================================
+// LOGOUT
+// =====================================
+
+async function fazerLogout() {
+
+    await window.db.auth.signOut();
+
+    window.location.href = "login.html";
 
 }

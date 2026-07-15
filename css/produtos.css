@@ -511,3 +511,40 @@ nav button:hover{
     }
 
 }
+/* ===========================
+   AÇÕES DOS PRODUTOS
+=========================== */
+
+.acoes{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.acoes button{
+    border:none;
+    cursor:pointer;
+    padding:10px 18px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.acoes button:first-child{
+    background:#198754;
+    color:#fff;
+}
+
+.acoes button:first-child:hover{
+    background:#146c43;
+}
+
+.btn-excluir{
+    background:#dc3545;
+    color:#fff;
+}
+
+.btn-excluir:hover{
+    background:#bb2d3b;
+}
