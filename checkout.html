@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="css/checkout.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <i class="fa-solid fa-store"></i>
+
+        <h2>Comércio da Cidade</h2>
+
+    </div>
+
+    <nav>
+
+        <a href="index.html">
+
+            <i class="fa-solid fa-house"></i>
+
+            Início
+
+        </a>
+
+        <a href="carrinho.html">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            Carrinho
+
+        </a>
+
+        <a href="perfil.html">
+
+            <i class="fa-solid fa-user"></i>
+
+            Perfil
+
+        </a>
+
+    </nav>
+
+</header>
+
+<main class="container">
+
+    <div class="topo">
+
+        <h1>
+
+            <i class="fa-solid fa-credit-card"></i>
+
+            Finalizar Pedido
+
+        </h1>
+
+        <p>
+
+            Confira seus dados antes de concluir a compra.
+
+        </p>
+
+    </div>
+
+    <div class="checkout-grid">
+
+        <!-- ESQUERDA -->
+
+        <section>
+
+            <!-- ENDEREÇO -->
+
+            <div class="card">
+
+                <h2>
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    Endereço de Entrega
+
+                </h2>
+
+                <div class="linha">
+
+                    <div class="campo">
+
+                        <label>Nome</label>
+
+                        <input
+                            type="text"
+                            id="nome">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Telefone</label>
+
+                        <input
+                            type="text"
+                            id="telefone">
+
+                    </div>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>Endereço</label>
+
+                    <input
+                        type="text"
+                        id="endereco">
+
+                </div>
+
+                <div class="linha">
+
+                    <div class="campo">
+
+                        <label>Cidade</label>
+
+                        <input
+                            type="text"
+                            id="cidade">
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label>Estado</label>
+
+                        <input
+                            type="text"
+                            id="estado">
+
+                    </div>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>CEP</label>
+
+                    <input
+                        type="text"
+                        id="cep">
+
+                </div>
+
+            </div>
+
+            <!-- PAGAMENTO -->
+
+            <div class="card">
+
+                <h2>
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                    Forma de Pagamento
+
+                </h2>
+
+                <div class="campo">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="pix"
+                            checked>
+
+                        PIX
+
+                    </label>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="credito">
+
+                        Cartão de Crédito
+
+                    </label>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="debito">
+
+                        Cartão de Débito
+
+                    </label>
+
+                </div>
+
+                <div class="campo">
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="pagamento"
+                            value="dinheiro">
+
+                        Dinheiro
+
+                    </label>
+
+                </div>
+
+                <div
+                    id="troco-area"
+                    style="display:none;">
+
+                    <div class="campo">
+
+                        <label>Troco para</label>
+
+                        <input
+                            type="number"
+                            id="troco">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- OBSERVAÇÕES -->
+
+            <div class="card">
+
+                <h2>
+
+                    <i class="fa-solid fa-comment"></i>
+
+                    Observações
+
+                </h2>
+
+                <textarea
+
+                    id="observacoes"
+
+                    rows="5"
+
+                    placeholder="Ex.: tocar campainha, entregar na portaria...">
+
+                </textarea>
+
+            </div>
+
+        </section>
+
+        <!-- DIREITA -->
+
+        <aside>
+
+            <div class="card resumo">
+
+                <h2>
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    Resumo do Pedido
+
+                </h2>
+
+                <div id="lista-checkout">
+
+                    <!-- Produtos -->
+
+                </div>
+
+                <hr>
+
+                <div class="linha-resumo">
+
+                    <span>Subtotal</span>
+
+                    <strong id="subtotal">
+
+                        R$ 0,00
+
+                    </strong>
+
+                </div>
+
+                <div class="linha-resumo">
+
+                    <span>Frete</span>
+
+                    <strong id="frete">
+
+                        Grátis
+
+                    </strong>
+
+                </div>
+
+                <hr>
+
+                <div class="linha-resumo total">
+
+                    <span>Total</span>
+
+                    <strong id="total">
+
+                        R$ 0,00
+
+                    </strong>
+
+                </div>
+
+                <button
+
+                    id="btn-finalizar"
+
+                    class="btn">
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Finalizar Pedido
+
+                </button>
+
+                <a
+
+                    href="carrinho.html"
+
+                    class="btn-secundario">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Voltar ao Carrinho
+
+                </a>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/checkout.js"></script>
+
+</body>
+
+</html>

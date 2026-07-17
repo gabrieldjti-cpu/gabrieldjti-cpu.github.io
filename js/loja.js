@@ -239,13 +239,58 @@ function pesquisarProdutos() {
 }
 
 // =====================================
-// CARRINHO
+// ADICIONAR AO CARRINHO
 // =====================================
 
 function adicionarCarrinho(id) {
 
-    alert("Produto adicionado ao carrinho.");
+    const produto = produtos.find(p => p.id === id);
 
-    // Aqui vamos integrar o carrinho depois.
+    if (!produto) {
+        alert("Produto não encontrado.");
+        return;
+    }
+
+    let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+    // Verifica se já existe o mesmo produto da mesma loja
+    const existente = carrinho.find(item =>
+        item.id === produto.id &&
+        item.loja_id === lojaId
+    );
+
+    if (existente) {
+
+        existente.quantidade++;
+
+    } else {
+
+        carrinho.push({
+
+            id: produto.id,
+
+            loja_id: lojaId,
+
+            nome_loja: document.getElementById("nomeLoja").textContent,
+
+            nome: produto.nome,
+
+            descricao: produto.descricao,
+
+            preco: Number(produto.preco),
+
+            preco_promocional: produto.preco_promocional,
+
+            imagem_url: produto.imagem_url,
+
+            quantidade: 1
+
+        });
+
+    }
+
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+
+    alert("Produto adicionado ao carrinho!");
 
 }

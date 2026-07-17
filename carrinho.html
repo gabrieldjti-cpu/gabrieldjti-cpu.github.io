@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Carrinho | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="css/carrinho.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <i class="fa-solid fa-store"></i>
+
+        <h2>Comércio da Cidade</h2>
+
+    </div>
+
+    <nav>
+
+        <a href="index.html">
+            <i class="fa-solid fa-house"></i>
+            Início
+        </a>
+
+        <a href="lojas.html">
+            <i class="fa-solid fa-shop"></i>
+            Lojas
+        </a>
+
+        <a href="perfil.html">
+            <i class="fa-solid fa-user"></i>
+            Perfil
+        </a>
+
+        <button onclick="fazerLogout()">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Sair
+
+        </button>
+
+    </nav>
+
+</header>
+
+<main class="container">
+
+    <div class="topo">
+
+        <div>
+
+            <h1>
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                Meu Carrinho
+
+            </h1>
+
+            <p>
+
+                Confira seus produtos antes de finalizar a compra.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="carrinho-grid">
+
+        <!-- PRODUTOS -->
+
+        <section class="card">
+
+            <h2>
+
+                <i class="fa-solid fa-box"></i>
+
+                Produtos
+
+            </h2>
+
+            <div id="lista-carrinho">
+
+                <div class="carrinho-vazio">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <h3>Seu carrinho está vazio.</h3>
+
+                    <p>
+
+                        Adicione alguns produtos para continuar.
+
+                    </p>
+
+                    <a href="index.html" class="btn">
+
+                        <i class="fa-solid fa-store"></i>
+
+                        Continuar Comprando
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- RESUMO -->
+
+        <aside class="card resumo">
+
+            <h2>
+
+                <i class="fa-solid fa-receipt"></i>
+
+                Resumo do Pedido
+
+            </h2>
+
+            <div class="linha">
+
+                <span>Produtos</span>
+
+                <strong id="quantidade-itens">0</strong>
+
+            </div>
+
+            <div class="linha">
+
+                <span>Subtotal</span>
+
+                <strong id="subtotal">
+
+                    R$ 0,00
+
+                </strong>
+
+            </div>
+
+            <div class="linha">
+
+                <span>Entrega</span>
+
+                <strong>
+
+                    Grátis
+
+                </strong>
+
+            </div>
+
+            <hr>
+
+            <div class="linha total">
+
+                <span>Total</span>
+
+                <strong id="total-geral">
+
+                    R$ 0,00
+
+                </strong>
+
+            </div>
+
+            <button
+                id="btn-finalizar"
+                class="btn">
+
+                <i class="fa-solid fa-credit-card"></i>
+
+                Finalizar Compra
+
+            </button>
+
+            <a
+                href="index.html"
+                class="btn-secundario">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Continuar Comprando
+
+            </a>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
+<script src="js/carrinho-utils.js"></script>
+
+<script src="js/carrinho.js"></script>
+
+</body>
+
+</html>
