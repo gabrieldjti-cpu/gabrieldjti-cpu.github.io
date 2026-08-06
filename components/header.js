@@ -270,3 +270,54 @@ function configurarEventos() {
     });
 
 }
+// ==========================================
+// LOGOUT
+// ==========================================
+
+async function fazerLogout() {
+
+    const confirmar = confirm("Deseja realmente sair da sua conta?");
+
+    if (!confirmar) return;
+
+    const { error } = await db.auth.signOut();
+
+    if (error) {
+
+        console.error(error);
+
+        alert("Erro ao sair da conta.");
+
+        return;
+
+    }
+
+    localStorage.removeItem("carrinho");
+
+    window.location.href = "login.html";
+
+}
+
+// ==========================================
+// ATUALIZAR HEADER
+// ==========================================
+
+function atualizarHeader() {
+
+    atualizarContadorCarrinho();
+
+    verificarUsuario();
+
+}
+
+// ==========================================
+// DISPONIBILIZA FUNÇÕES GLOBALMENTE
+// ==========================================
+
+window.atualizarHeader = atualizarHeader;
+window.atualizarContadorCarrinho = atualizarContadorCarrinho;
+window.fazerLogout = fazerLogout;
+
+// ==========================================
+// FIM DO COMPONENTE HEADER
+// ==========================================
