@@ -1,156 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<meta charset="UTF-8">
+    <title>Loja | Comércio da Cidade</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/loja.css" />
 
-<title>Loja | Comércio da Cidade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-<link rel="stylesheet"
-href="css/loja.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="components/header.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
+  <body>
+    <div id="header"></div>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
+    <main class="container">
+      <section class="loja-info">
+        <img id="logoLoja" src="img/loja.png" />
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+        <div>
+          <h1 id="nomeLoja">Carregando...</h1>
 
-</head>
+          <p>
+            <i class="fa-solid fa-layer-group"></i>
 
-<body>
+            <span id="categoriaLoja"></span>
+          </p>
 
-<header>
+          <p>
+            <i class="fa-solid fa-location-dot"></i>
 
-<div class="logo">
+            <span id="cidadeLoja"></span>
+          </p>
 
-<h2>Comércio da Cidade</h2>
+          <p>
+            <i class="fa-solid fa-phone"></i>
 
-</div>
+            <span id="telefoneLoja"></span>
+          </p>
 
-<nav>
+          <a id="btnWhatsapp" target="_blank" class="btn-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i>
 
-<a href="index.html">
+            Conversar
+          </a>
+        </div>
+      </section>
 
-<i class="fa-solid fa-house"></i>
+      <section class="pesquisa">
+        <input type="text" id="pesquisa" placeholder="Pesquisar produtos..." />
+      </section>
 
-Início
+      <section>
+        <h2>Produtos</h2>
 
-</a>
+        <div id="listaProdutos" class="produtos"></div>
+      </section>
+    </main>
 
-<a href="carrinho.html">
+    <footer>
+      <p>© 2026 Comércio da Cidade</p>
+    </footer>
 
-<i class="fa-solid fa-cart-shopping"></i>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-Carrinho
+    <script src="js/supabase.js"></script>
+    <script src="components/header.js"></script>
 
-</a>
-
-</nav>
-
-</header>
-
-<main class="container">
-
-<section class="loja-info">
-
-<img
-id="logoLoja"
-src="img/loja.png">
-
-<div>
-
-<h1 id="nomeLoja">
-
-Carregando...
-
-</h1>
-
-<p>
-
-<i class="fa-solid fa-layer-group"></i>
-
-<span id="categoriaLoja"></span>
-
-</p>
-
-<p>
-
-<i class="fa-solid fa-location-dot"></i>
-
-<span id="cidadeLoja"></span>
-
-</p>
-
-<p>
-
-<i class="fa-solid fa-phone"></i>
-
-<span id="telefoneLoja"></span>
-
-</p>
-
-<a
-id="btnWhatsapp"
-target="_blank"
-class="btn-whatsapp">
-
-<i class="fa-brands fa-whatsapp"></i>
-
-Conversar
-
-</a>
-
-</div>
-
-</section>
-
-<section class="pesquisa">
-
-<input
-type="text"
-id="pesquisa"
-
-placeholder="Pesquisar produtos...">
-
-</section>
-
-<section>
-
-<h2>Produtos</h2>
-
-<div
-id="listaProdutos"
-class="produtos">
-
-</div>
-
-</section>
-
-</main>
-
-<footer>
-
-<p>
-
-© 2026 Comércio da Cidade
-
-</p>
-
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/supabase.js"></script>
-
-<script src="js/loja.js"></script>
-
-</body>
-
+    <script src="js/loja.js"></script>
+  </body>
 </html>

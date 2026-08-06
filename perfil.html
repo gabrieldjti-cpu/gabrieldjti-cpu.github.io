@@ -1,290 +1,189 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Meu Perfil | Comércio da Cidade</title>
 
-    <link rel="stylesheet" href="css/perfil.css">
+    <link rel="stylesheet" href="css/perfil.css" />
+    <link rel="stylesheet" href="components/header.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-</head>
-
-<body>
-
-    <!-- HEADER -->
-
-    <header class="header">
-
-        <div class="container">
-
-            <a href="index.html" class="logo">
-
-                <i class="fa-solid fa-store"></i>
-
-                <span>Comércio da Cidade</span>
-
-            </a>
-
-            <nav>
-
-                <a href="index.html">
-
-                    <i class="fa-solid fa-house"></i>
-
-                    Início
-
-                </a>
-
-            </nav>
-
-        </div>
-
-    </header>
+  <body>
+    <div id="header"></div>
 
     <!-- PERFIL -->
 
     <main class="perfil">
+      <div class="container-perfil">
+        <!-- CARD DO USUÁRIO -->
 
-        <div class="container-perfil">
+        <aside class="perfil-card">
+          <div class="avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
 
-            <!-- CARD DO USUÁRIO -->
+          <h2 id="perf-nome">Carregando...</h2>
 
-            <aside class="perfil-card">
+          <p id="perf-email">email@email.com</p>
 
-                <div class="avatar">
+          <hr />
 
-                    <i class="fa-solid fa-user"></i>
+          <div class="info">
+            <p>
+              <i class="fa-solid fa-phone"></i>
 
-                </div>
+              <span id="perf-telefone">Não informado</span>
+            </p>
 
-                <h2 id="perf-nome">Carregando...</h2>
+            <p>
+              <i class="fa-solid fa-location-dot"></i>
+            </p>
 
-                <p id="perf-email">email@email.com</p>
+            <div id="perf-endereco-resumo" class="endereco">Não informado</div>
+          </div>
 
-                <hr>
+          <button class="btn verde" onclick="abrirModalEditar()">
+            <i class="fa-solid fa-pen"></i>
 
-                <div class="info">
+            Editar Perfil
+          </button>
 
-                    <p>
+          <button class="btn vermelho" onclick="fazerLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
 
-                        <i class="fa-solid fa-phone"></i>
+            Sair
+          </button>
+        </aside>
 
-                        <span id="perf-telefone">Não informado</span>
+        <!-- CONTEÚDO -->
 
-                    </p>
+        <section class="conteudo">
+          <!-- MINHA LOJA -->
 
-                    <p>
+          <div class="card">
+            <div class="titulo">
+              <h2>
+                <i class="fa-solid fa-shop"></i>
 
-                        <i class="fa-solid fa-location-dot"></i>
+                Minha Loja
+              </h2>
+            </div>
 
-                    </p>
+            <div id="minha-loja">
+              <div class="sem-loja">
+                <i class="fa-solid fa-store-slash"></i>
 
-                    <div id="perf-endereco-resumo" class="endereco">
+                <h3>Você ainda não possui uma loja.</h3>
 
-                        Não informado
+                <p>
+                  Cadastre sua loja gratuitamente e comece a vender seus
+                  produtos.
+                </p>
 
-                    </div>
+                <a href="cadastrar-loja.html" class="btn verde">
+                  <i class="fa-solid fa-plus"></i>
 
-                </div>
+                  Cadastrar Loja
+                </a>
+              </div>
+            </div>
+          </div>
 
-                <button class="btn verde" onclick="abrirModalEditar()">
+          <!-- HISTÓRICO -->
 
-                    <i class="fa-solid fa-pen"></i>
+          <div class="card">
+            <div class="titulo">
+              <h2>
+                <i class="fa-solid fa-bag-shopping"></i>
 
-                    Editar Perfil
+                Histórico de Compras
+              </h2>
+            </div>
 
-                </button>
-
-                <button class="btn vermelho" onclick="fazerLogout()">
-
-                    <i class="fa-solid fa-right-from-bracket"></i>
-
-                    Sair
-
-                </button>
-
-            </aside>
-
-            <!-- CONTEÚDO -->
-
-            <section class="conteudo">
-
-                <!-- MINHA LOJA -->
-
-                <div class="card">
-
-                    <div class="titulo">
-
-                        <h2>
-
-                            <i class="fa-solid fa-shop"></i>
-
-                            Minha Loja
-
-                        </h2>
-
-                    </div>
-
-                    <div id="minha-loja">
-
-                        <div class="sem-loja">
-
-                            <i class="fa-solid fa-store-slash"></i>
-
-                            <h3>Você ainda não possui uma loja.</h3>
-
-                            <p>
-
-                                Cadastre sua loja gratuitamente e comece a vender seus produtos.
-
-                            </p>
-
-                            <a href="cadastrar-loja.html" class="btn verde">
-
-                                <i class="fa-solid fa-plus"></i>
-
-                                Cadastrar Loja
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- HISTÓRICO -->
-
-                <div class="card">
-
-                    <div class="titulo">
-
-                        <h2>
-
-                            <i class="fa-solid fa-bag-shopping"></i>
-
-                            Histórico de Compras
-
-                        </h2>
-
-                    </div>
-
-                    <div id="historico-compras">
-
-                        <div class="pedido">
-
-                            <p>Carregando pedidos...</p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </div>
-
+            <div id="historico-compras">
+              <div class="pedido">
+                <p>Carregando pedidos...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
 
     <!-- MODAL -->
 
     <div id="modal-editar-perfil" class="modal">
+      <div class="modal-box">
+        <div class="modal-topo">
+          <h2>
+            <i class="fa-solid fa-user-pen"></i>
 
-        <div class="modal-box">
-
-            <div class="modal-topo">
-
-                <h2>
-
-                    <i class="fa-solid fa-user-pen"></i>
-
-                    Editar Perfil
-
-                </h2>
-
-            </div>
-
-            <div class="campo">
-
-                <label>Nome</label>
-
-                <input type="text" id="edit-nome">
-
-            </div>
-
-            <div class="campo">
-
-                <label>Telefone</label>
-
-                <input type="text" id="edit-telefone">
-
-            </div>
-
-            <div class="campo">
-
-                <label>Rua</label>
-
-                <input type="text" id="edit-rua">
-
-            </div>
-
-            <div class="linha">
-
-                <div class="campo">
-
-                    <label>Número</label>
-
-                    <input type="text" id="edit-numero">
-
-                </div>
-
-                <div class="campo">
-
-                    <label>Bairro</label>
-
-                    <input type="text" id="edit-bairro">
-
-                </div>
-
-            </div>
-
-            <div class="campo">
-
-                <label>Cidade</label>
-
-                <input type="text" id="edit-cidade">
-
-            </div>
-
-            <div class="botoes">
-
-                <button class="btn cinza" onclick="fecharModalEditar()">
-
-                    Cancelar
-
-                </button>
-
-                <button class="btn verde" onclick="salvarEdicaoPerfil()">
-
-                    Salvar Alterações
-
-                </button>
-
-            </div>
-
+            Editar Perfil
+          </h2>
         </div>
 
+        <div class="campo">
+          <label>Nome</label>
+
+          <input type="text" id="edit-nome" />
+        </div>
+
+        <div class="campo">
+          <label>Telefone</label>
+
+          <input type="text" id="edit-telefone" />
+        </div>
+
+        <div class="campo">
+          <label>Rua</label>
+
+          <input type="text" id="edit-rua" />
+        </div>
+
+        <div class="linha">
+          <div class="campo">
+            <label>Número</label>
+
+            <input type="text" id="edit-numero" />
+          </div>
+
+          <div class="campo">
+            <label>Bairro</label>
+
+            <input type="text" id="edit-bairro" />
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>Cidade</label>
+
+          <input type="text" id="edit-cidade" />
+        </div>
+
+        <div class="botoes">
+          <button class="btn cinza" onclick="fecharModalEditar()">
+            Cancelar
+          </button>
+
+          <button class="btn verde" onclick="salvarEdicaoPerfil()">
+            Salvar Alterações
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- SUPABASE -->
@@ -292,9 +191,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/supabase.js"></script>
+    <script src="components/header.js"></script>
 
     <script src="js/perfil.js"></script>
-
-</body>
-
+  </body>
 </html>

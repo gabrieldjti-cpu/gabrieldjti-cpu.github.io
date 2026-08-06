@@ -1,262 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <link rel="stylesheet" href="components/header.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Cadastrar Loja | Comércio da Cidade</title>
 
-    <link rel="stylesheet" href="css/cadastrar-loja.css">
+    <link rel="stylesheet" href="css/cadastrar-loja.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
 
-</head>
+  <body>
+    <div id="header"></div>
 
-<body>
-
-<header>
-
-    <div class="logo">
-
-        <a href="index.html">
-
-            <i class="fa-solid fa-store"></i>
-
-            <span>Comércio da Cidade</span>
-
-        </a>
-
-    </div>
-
-    <nav>
-
-        <a href="index.html">
-
-            <i class="fa-solid fa-house"></i>
-
-            Início
-
-        </a>
-
-        <a href="perfil.html">
-
-            <i class="fa-solid fa-user"></i>
-
-            Perfil
-
-        </a>
-
-    </nav>
-
-</header>
-
-<main class="container">
-
-    <div class="card">
-
+    <main class="container">
+      <div class="card">
         <div class="titulo">
+          <i class="fa-solid fa-shop"></i>
 
-            <i class="fa-solid fa-shop"></i>
-
-            <h1>Cadastrar Loja</h1>
-
+          <h1>Cadastrar Loja</h1>
         </div>
 
         <p class="subtitulo">
-
-            Preencha as informações abaixo para começar a vender no Comércio da Cidade.
-
+          Preencha as informações abaixo para começar a vender no Comércio da
+          Cidade.
         </p>
 
         <form id="formLoja">
+          <div class="campo">
+            <label for="nome"> Nome da Loja </label>
 
+            <input
+              type="text"
+              id="nome"
+              placeholder="Ex.: Mercado Boa Compra"
+              required
+            />
+          </div>
+
+          <div class="campo">
+            <label for="categoria"> Categoria </label>
+
+            <select id="categoria" required>
+              <option value="">Carregando categorias...</option>
+            </select>
+          </div>
+
+          <div class="duas-colunas">
             <div class="campo">
+              <label for="telefone"> Telefone </label>
 
-                <label for="nome">
-
-                    Nome da Loja
-
-                </label>
-
-                <input
-                    type="text"
-                    id="nome"
-                    placeholder="Ex.: Mercado Boa Compra"
-                    required>
-
-            </div>
-
-            <div class="campo">
-
-                <label for="categoria">
-
-                    Categoria
-
-                </label>
-
-                <select id="categoria" required>
-
-                    <option value="">
-
-                        Carregando categorias...
-
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="duas-colunas">
-
-                <div class="campo">
-
-                    <label for="telefone">
-
-                        Telefone
-
-                    </label>
-
-                    <input
-                        type="text"
-                        id="telefone"
-                        placeholder="(33) 99999-9999">
-
-                </div>
-
-                <div class="campo">
-
-                    <label for="whatsapp">
-
-                        WhatsApp
-
-                    </label>
-
-                    <input
-                        type="text"
-                        id="whatsapp"
-                        placeholder="(33) 99999-9999">
-
-                </div>
-
+              <input type="text" id="telefone" placeholder="(33) 99999-9999" />
             </div>
 
             <div class="campo">
+              <label for="whatsapp"> WhatsApp </label>
 
-                <label for="descricao">
+              <input type="text" id="whatsapp" placeholder="(33) 99999-9999" />
+            </div>
+          </div>
 
-                    Descrição
+          <div class="campo">
+            <label for="descricao"> Descrição </label>
 
-                </label>
+            <textarea
+              id="descricao"
+              rows="4"
+              placeholder="Descreva sua loja..."
+            ></textarea>
+          </div>
 
-                <textarea
-                    id="descricao"
-                    rows="4"
-                    placeholder="Descreva sua loja..."></textarea>
+          <div class="campo">
+            <label for="endereco"> Endereço </label>
 
+            <input type="text" id="endereco" placeholder="Rua, número" />
+          </div>
+
+          <div class="campo">
+            <label for="cidade"> Cidade </label>
+
+            <input type="text" id="cidade" placeholder="Sua cidade" />
+          </div>
+
+          <div class="duas-colunas">
+            <div class="campo">
+              <label for="abertura"> Horário de abertura </label>
+
+              <input type="time" id="abertura" />
             </div>
 
             <div class="campo">
+              <label for="fechamento"> Horário de fechamento </label>
 
-                <label for="endereco">
-
-                    Endereço
-
-                </label>
-
-                <input
-                    type="text"
-                    id="endereco"
-                    placeholder="Rua, número">
-
+              <input type="time" id="fechamento" />
             </div>
+          </div>
 
-            <div class="campo">
+          <div id="mensagem" class="mensagem"></div>
 
-                <label for="cidade">
+          <button type="submit" class="btn">
+            <i class="fa-solid fa-floppy-disk"></i>
 
-                    Cidade
-
-                </label>
-
-                <input
-                    type="text"
-                    id="cidade"
-                    placeholder="Sua cidade">
-
-            </div>
-
-            <div class="duas-colunas">
-
-                <div class="campo">
-
-                    <label for="abertura">
-
-                        Horário de abertura
-
-                    </label>
-
-                    <input
-                        type="time"
-                        id="abertura">
-
-                </div>
-
-                <div class="campo">
-
-                    <label for="fechamento">
-
-                        Horário de fechamento
-
-                    </label>
-
-                    <input
-                        type="time"
-                        id="fechamento">
-
-                </div>
-
-            </div>
-
-            <div id="mensagem" class="mensagem"></div>
-
-            <button
-                type="submit"
-                class="btn">
-
-                <i class="fa-solid fa-floppy-disk"></i>
-
-                Cadastrar Loja
-
-            </button>
-
+            Cadastrar Loja
+          </button>
         </form>
+      </div>
+    </main>
 
-    </div>
+    <footer>
+      <p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
+    </footer>
 
-</main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<footer>
+    <script src="js/supabase.js"></script>
+    <script src="components/header.js"></script>
 
-    <p>
-
-        © 2026 Comércio da Cidade - Todos os direitos reservados.
-
-    </p>
-
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/supabase.js"></script>
-
-<script src="js/cadastrar-loja.js"></script>
-
-</body>
-
+    <script src="js/cadastrar-loja.js"></script>
+  </body>
 </html>
