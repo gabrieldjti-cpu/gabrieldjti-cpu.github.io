@@ -2,7 +2,6 @@
 // CARRINHO
 // ======================================
 
-const db = window.db;
 
 let carrinho = [];
 

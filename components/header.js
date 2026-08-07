@@ -3,7 +3,7 @@
 // Componente global do cabeçalho
 // ==========================================
 
-const db = window.db;
+
 
 // ==========================================
 // INICIAR HEADER

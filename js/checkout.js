@@ -3,19 +3,6 @@
 // PARTE 1 - INICIALIZAÇÃO
 // ======================================
 
-const db = window.db;
-
-let usuario = null;
-
-let carrinho = [];
-
-let pedidosPorLoja = {};
-
-let totalPedido = 0;
-
-// ======================================
-// INICIAR
-// ======================================
 
 document.addEventListener("DOMContentLoaded", async () => {
 

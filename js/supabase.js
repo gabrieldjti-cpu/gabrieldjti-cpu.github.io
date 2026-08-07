@@ -5,3 +5,4 @@ window.db = window.supabase.createClient(
 
 console.log("Supabase conectado!");
 console.log(window.db);
+const db = window.db;

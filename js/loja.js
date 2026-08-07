@@ -2,8 +2,6 @@
 // LOJA.JS
 // =====================================
 
-const db = window.db;
-
 let produtos = [];
 let lojaId = null;
 
@@ -14,7 +12,7 @@ let lojaId = null;
 document.addEventListener("DOMContentLoaded", async () => {
 
     const params = new URLSearchParams(window.location.search);
-
+console.log(params)
     lojaId = params.get("id");
 
     if (!lojaId) {
@@ -43,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function carregarLoja() {
 
+    
     const { data, error } = await db
 
         .from("lojas")

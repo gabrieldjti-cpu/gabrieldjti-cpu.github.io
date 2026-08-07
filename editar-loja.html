@@ -10,21 +10,28 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Cadastrar Loja | Comércio da Cidade</title>
+    <title>Editar Loja | Comércio da Cidade</title>
 
-    <!-- CSS DA PÁGINA -->
+
+    <!-- ==============================
+         CSS
+    =============================== -->
+
     <link
         rel="stylesheet"
-        href="css/cadastrar-loja.css"
+        href="css/editar-loja.css"
     >
 
-    <!-- CSS DO HEADER -->
     <link
         rel="stylesheet"
         href="components/header.css"
     >
 
-    <!-- GOOGLE FONTS -->
+
+    <!-- ==============================
+         GOOGLE FONTS
+    =============================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link
@@ -32,7 +39,11 @@
         rel="stylesheet"
     >
 
-    <!-- FONT AWESOME -->
+
+    <!-- ==============================
+         FONT AWESOME
+    =============================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -40,9 +51,14 @@
 
 </head>
 
+
 <body>
 
-    <!-- HEADER -->
+
+    <!-- ==============================
+         HEADER
+    =============================== -->
+
     <div id="header"></div>
 
 
@@ -54,33 +70,37 @@
 
         <div class="card">
 
-            <!-- TÍTULO -->
+
+            <!-- ==============================
+                 TÍTULO
+            =============================== -->
 
             <div class="titulo">
 
-                <i class="fa-solid fa-shop"></i>
+                <i class="fa-solid fa-pen-to-square"></i>
 
-                <h1>Cadastrar Loja</h1>
+                <div>
+
+                    <h1>Editar Loja</h1>
+
+                    <p>
+                        Atualize as informações da sua loja.
+                    </p>
+
+                </div>
 
             </div>
-
-            <p class="subtitulo">
-
-                Preencha as informações abaixo para começar
-                a vender no Comércio da Cidade.
-
-            </p>
 
 
             <!-- ==============================
                  FORMULÁRIO
             =============================== -->
 
-            <form id="formLoja">
+            <form id="formEditarLoja">
 
 
                 <!-- ==============================
-                     LOGO DA LOJA
+                     LOGO
                 =============================== -->
 
                 <div class="campo campo-logo">
@@ -101,7 +121,7 @@
                         <img
                             id="preview-logo"
                             src="img/loja.png"
-                            alt="Prévia da logo da loja"
+                            alt="Logo da loja"
                         >
 
                     </div>
@@ -118,12 +138,13 @@
 
                     <small>
 
-                        Escolha uma imagem para representar
-                        sua loja.
+                        Escolha uma nova imagem caso
+                        queira alterar a logo da loja.
 
                         <br>
 
                         Formatos aceitos: JPG, PNG ou WEBP.
+                        Máximo de 5 MB.
 
                     </small>
 
@@ -131,7 +152,7 @@
 
 
                 <!-- ==============================
-                     NOME DA LOJA
+                     NOME
                 =============================== -->
 
                 <div class="campo">
@@ -328,6 +349,40 @@
 
 
                 <!-- ==============================
+                     STATUS DA LOJA
+                =============================== -->
+
+                <div class="campo campo-status">
+
+                    <label for="ativa">
+
+                        Status da Loja
+
+                    </label>
+
+                    <select id="ativa">
+
+                        <option value="true">
+                            Loja ativa
+                        </option>
+
+                        <option value="false">
+                            Loja inativa
+                        </option>
+
+                    </select>
+
+                    <small>
+
+                        Lojas inativas não aparecem
+                        para os clientes.
+
+                    </small>
+
+                </div>
+
+
+                <!-- ==============================
                      MENSAGEM
                 =============================== -->
 
@@ -338,19 +393,38 @@
 
 
                 <!-- ==============================
-                     BOTÃO
+                     BOTÕES
                 =============================== -->
 
-                <button
-                    type="submit"
-                    class="btn"
-                >
+                <div class="acoes">
 
-                    <i class="fa-solid fa-floppy-disk"></i>
 
-                    Cadastrar Loja
+                    <a
+                        href="painel-loja.html"
+                        class="btn btn-cancelar"
+                    >
 
-                </button>
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Cancelar
+
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-salvar"
+                        id="btnSalvar"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Salvar Alterações
+
+                    </button>
+
+
+                </div>
 
 
             </form>
@@ -381,21 +455,26 @@
     =============================== -->
 
     <!-- SUPABASE -->
+
     <script
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
 
 
     <!-- CONFIGURAÇÃO SUPABASE -->
+
     <script src="js/supabase.js"></script>
 
 
     <!-- HEADER -->
+
     <script src="components/header.js"></script>
 
 
-    <!-- CADASTRO DA LOJA -->
-    <script src="js/cadastrar-loja.js"></script>
+    <!-- EDITAR LOJA -->
+
+    <script src="js/editar-loja.js"></script>
+
 
 </body>
 

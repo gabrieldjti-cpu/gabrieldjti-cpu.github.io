@@ -1,4 +1,3 @@
-const db = window.db;
 
 let lojaId = null;
 
