@@ -2,10 +2,12 @@
 // EDITAR LOJA
 // =======================================
 
-const db = window.db;
+let db = null;
 
 let usuario = null;
+
 let loja = null;
+
 let novaLogo = null;
 
 
@@ -13,14 +15,17 @@ let novaLogo = null;
 // ELEMENTOS
 // =======================================
 
-const form = document.getElementById("formEditarLoja");
-const mensagem = document.getElementById("mensagem");
+let form = null;
 
-const inputLogo = document.getElementById("logo");
-const previewLogo = document.getElementById("preview-logo");
+let mensagem = null;
 
-const categoria = document.getElementById("categoria");
-const btnSalvar = document.getElementById("btnSalvar");
+let inputLogo = null;
+
+let previewLogo = null;
+
+let categoria = null;
+
+let btnSalvar = null;
 
 
 // =======================================
@@ -29,15 +34,73 @@ const btnSalvar = document.getElementById("btnSalvar");
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    console.log("Editar loja iniciado.");
+    console.log("=================================");
+    console.log("EDITAR LOJA INICIADO");
+    console.log("=================================");
+
+
+    // ===================================
+    // ELEMENTOS
+    // ===================================
+
+    form = document.getElementById("formEditarLoja");
+
+    mensagem = document.getElementById("mensagem");
+
+    inputLogo = document.getElementById("logo");
+
+    previewLogo = document.getElementById("preview-logo");
+
+    categoria = document.getElementById("categoria");
+
+    btnSalvar = document.getElementById("btnSalvar");
+
+
+    console.log("Form:", form);
+    console.log("Categoria:", categoria);
+    console.log("Botão salvar:", btnSalvar);
+
+
+    // ===================================
+    // VERIFICAR FORMULÁRIO
+    // ===================================
+
+    if (!form) {
+
+        console.error(
+            "ERRO: #formEditarLoja não encontrado."
+        );
+
+        return;
+    }
+
+
+    if (!categoria) {
+
+        console.error(
+            "ERRO: #categoria não encontrado."
+        );
+
+        return;
+    }
+
+
+    // ===================================
+    // SUPABASE
+    // ===================================
+
+    db = window.db;
+
 
     if (!db) {
-
-        console.error("Supabase não encontrado.");
 
         mostrarMensagem(
             "Erro ao conectar com o Supabase.",
             "erro"
+        );
+
+        console.error(
+            "window.db não encontrado."
         );
 
         return;
@@ -54,7 +117,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     } = await db.auth.getUser();
 
 
-    console.log("Usuário:", data?.user);
+    console.log(
+        "Usuário:",
+        data?.user
+    );
 
 
     if (error) {
@@ -82,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ===================================
-    // PEGAR ID DA LOJA DA URL
+    // PEGAR ID DA URL
     // ===================================
 
     const params =
@@ -90,24 +156,41 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.location.search
         );
 
+
     const lojaId =
         params.get("id");
 
 
     console.log(
-        "ID da loja na URL:",
+        "ID recebido pela URL:",
         lojaId
     );
+
+
+    if (!lojaId) {
+
+        mostrarMensagem(
+            "ID da loja não encontrado.",
+            "erro"
+        );
+
+        console.error(
+            "A URL não possui o parâmetro ?id="
+        );
+
+        return;
+    }
 
 
     // ===================================
     // CARREGAR LOJA
     // ===================================
 
-    await carregarLoja(lojaId);
+    const carregou =
+        await carregarLoja(lojaId);
 
 
-    if (!loja) {
+    if (!carregou) {
 
         return;
     }
@@ -121,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ===================================
-    // SELECIONAR CATEGORIA DA LOJA
+    // SELECIONAR CATEGORIA ATUAL
     // ===================================
 
     if (loja.categoria_id) {
@@ -129,26 +212,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         categoria.value =
             String(loja.categoria_id);
 
+        console.log(
+            "Categoria atual:",
+            categoria.value
+        );
     }
 
 
     // ===================================
-    // LOGO
+    // EVENTO DA LOGO
     // ===================================
 
-    inputLogo?.addEventListener(
-        "change",
-        visualizarNovaLogo
+    if (inputLogo) {
+
+        inputLogo.addEventListener(
+            "change",
+            visualizarNovaLogo
+        );
+    }
+
+
+    // ===================================
+    // EVENTO DO FORMULÁRIO
+    // ===================================
+
+    form.addEventListener(
+        "submit",
+        salvarAlteracoes
     );
 
 
-    // ===================================
-    // FORMULÁRIO
-    // ===================================
-
-    form?.addEventListener(
-        "submit",
-        salvarAlteracoes
+    console.log(
+        "Editar loja pronto."
     );
 
 });
@@ -161,95 +256,113 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function carregarLoja(lojaId) {
 
     console.log(
-        "Carregando loja..."
+        "Buscando loja:",
+        lojaId
     );
 
 
-    let consulta;
+    try {
 
+        const {
+            data,
+            error
+        } = await db
 
-    // ===================================
-    // SE VEIO ID PELA URL
-    // ===================================
-
-    if (lojaId) {
-
-        consulta = await db
             .from("lojas")
-            .select("*")
-            .eq("id", lojaId)
+
+            .select(`
+                *,
+                categorias!categoria_id(
+                    id,
+                    nome
+                )
+            `)
+
+            .eq(
+                "id",
+                lojaId
+            )
+
             .eq(
                 "proprietario_id",
                 usuario.id
             )
+
             .maybeSingle();
 
-    } else {
 
-        // ===================================
-        // CASO NÃO TENHA ID
-        // ===================================
+        console.log(
+            "Resultado da loja:",
+            data
+        );
 
-        consulta = await db
-            .from("lojas")
-            .select("*")
-            .eq(
-                "proprietario_id",
-                usuario.id
-            )
-            .maybeSingle();
-
-    }
-
-
-    const {
-        data,
-        error
-    } = consulta;
-
-
-    console.log(
-        "Loja encontrada:",
-        data
-    );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao carregar loja:",
+        console.log(
+            "Erro da loja:",
             error
         );
 
-        mostrarMensagem(
-            "Erro ao carregar os dados da loja: " +
-            error.message,
-            "erro"
+
+        if (error) {
+
+            console.error(
+                "Erro Supabase:",
+                error
+            );
+
+            mostrarMensagem(
+                "Erro ao carregar a loja: " +
+                error.message,
+                "erro"
+            );
+
+            return false;
+        }
+
+
+        if (!data) {
+
+            console.error(
+                "Nenhuma loja encontrada."
+            );
+
+            mostrarMensagem(
+                "Loja não encontrada ou você não possui permissão para editá-la.",
+                "erro"
+            );
+
+            return false;
+        }
+
+
+        loja = data;
+
+
+        console.log(
+            "LOJA CARREGADA:",
+            loja
         );
 
-        return;
-    }
+
+        preencherFormulario(loja);
 
 
-    if (!data) {
+        return true;
+
+
+    } catch (erro) {
 
         console.error(
-            "Nenhuma loja encontrada."
+            "Erro ao buscar loja:",
+            erro
         );
 
         mostrarMensagem(
-            "Nenhuma loja encontrada para este usuário.",
+            "Erro ao carregar os dados da loja.",
             "erro"
         );
 
-        return;
+        return false;
     }
-
-
-    loja = data;
-
-
-    preencherFormulario(loja);
 
 }
 
@@ -273,11 +386,11 @@ function preencherFormulario(dados) {
     const nome =
         document.getElementById("nome");
 
+
     if (nome) {
 
         nome.value =
             dados.nome || "";
-
     }
 
 
@@ -288,11 +401,11 @@ function preencherFormulario(dados) {
     const telefone =
         document.getElementById("telefone");
 
+
     if (telefone) {
 
         telefone.value =
             dados.telefone || "";
-
     }
 
 
@@ -303,11 +416,11 @@ function preencherFormulario(dados) {
     const whatsapp =
         document.getElementById("whatsapp");
 
+
     if (whatsapp) {
 
         whatsapp.value =
             dados.whatsapp || "";
-
     }
 
 
@@ -318,11 +431,11 @@ function preencherFormulario(dados) {
     const descricao =
         document.getElementById("descricao");
 
+
     if (descricao) {
 
         descricao.value =
             dados.descricao || "";
-
     }
 
 
@@ -333,11 +446,11 @@ function preencherFormulario(dados) {
     const endereco =
         document.getElementById("endereco");
 
+
     if (endereco) {
 
         endereco.value =
             dados.endereco || "";
-
     }
 
 
@@ -348,41 +461,45 @@ function preencherFormulario(dados) {
     const cidade =
         document.getElementById("cidade");
 
+
     if (cidade) {
 
         cidade.value =
             dados.cidade || "";
-
     }
 
 
     // ===================================
-    // ABERTURA
+    // HORÁRIO DE ABERTURA
     // ===================================
 
     const abertura =
         document.getElementById("abertura");
 
+
     if (abertura) {
 
         abertura.value =
-            dados.horario_abertura || "";
-
+            formatarHora(
+                dados.horario_abertura
+            );
     }
 
 
     // ===================================
-    // FECHAMENTO
+    // HORÁRIO DE FECHAMENTO
     // ===================================
 
     const fechamento =
         document.getElementById("fechamento");
 
+
     if (fechamento) {
 
         fechamento.value =
-            dados.horario_fechamento || "";
-
+            formatarHora(
+                dados.horario_fechamento
+            );
     }
 
 
@@ -393,13 +510,13 @@ function preencherFormulario(dados) {
     const ativa =
         document.getElementById("ativa");
 
+
     if (ativa) {
 
         ativa.value =
             dados.ativa === false
                 ? "false"
                 : "true";
-
     }
 
 
@@ -412,9 +529,36 @@ function preencherFormulario(dados) {
         previewLogo.src =
             dados.logo_url ||
             "img/loja.png";
-
     }
 
+}
+
+
+// =======================================
+// FORMATAR HORA
+// =======================================
+
+function formatarHora(hora) {
+
+    if (!hora) {
+
+        return "";
+    }
+
+
+    // Caso venha como:
+    // 08:00:00
+
+    if (hora.length >= 5) {
+
+        return hora.substring(
+            0,
+            5
+        );
+    }
+
+
+    return hora;
 }
 
 
@@ -436,26 +580,108 @@ async function carregarCategorias() {
     `;
 
 
-    const {
-        data,
-        error
-    } = await db
-        .from("categorias")
-        .select("id,nome")
-        .order("nome");
+    try {
+
+        const {
+            data,
+            error
+        } = await db
+
+            .from("categorias")
+
+            .select(
+                "id,nome"
+            )
+
+            .order(
+                "nome",
+                {
+                    ascending: true
+                }
+            );
 
 
-    console.log(
-        "Categorias:",
-        data
-    );
+        console.log(
+            "Categorias encontradas:",
+            data
+        );
 
 
-    if (error) {
+        if (error) {
+
+            console.error(
+                "Erro categorias:",
+                error
+            );
+
+            categoria.innerHTML = `
+                <option value="">
+                    Erro ao carregar categorias
+                </option>
+            `;
+
+            mostrarMensagem(
+                "Erro ao carregar categorias: " +
+                error.message,
+                "erro"
+            );
+
+            return;
+        }
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            categoria.innerHTML = `
+                <option value="">
+                    Nenhuma categoria cadastrada
+                </option>
+            `;
+
+            return;
+        }
+
+
+        categoria.innerHTML = `
+            <option value="">
+                Selecione uma categoria
+            </option>
+        `;
+
+
+        data.forEach(cat => {
+
+            categoria.innerHTML += `
+                <option value="${cat.id}">
+                    ${cat.nome}
+                </option>
+            `;
+
+        });
+
+
+        // =================================
+        // SELECIONAR CATEGORIA DA LOJA
+        // =================================
+
+        if (loja?.categoria_id) {
+
+            categoria.value =
+                String(
+                    loja.categoria_id
+                );
+
+        }
+
+
+    } catch (erro) {
 
         console.error(
             "Erro ao carregar categorias:",
-            error
+            erro
         );
 
         categoria.innerHTML = `
@@ -464,50 +690,13 @@ async function carregarCategorias() {
             </option>
         `;
 
-        mostrarMensagem(
-            "Erro ao carregar categorias: " +
-            error.message,
-            "erro"
-        );
-
-        return;
     }
-
-
-    if (!data || data.length === 0) {
-
-        categoria.innerHTML = `
-            <option value="">
-                Nenhuma categoria cadastrada
-            </option>
-        `;
-
-        return;
-    }
-
-
-    categoria.innerHTML = `
-        <option value="">
-            Selecione uma categoria
-        </option>
-    `;
-
-
-    data.forEach(cat => {
-
-        categoria.innerHTML += `
-            <option value="${cat.id}">
-                ${cat.nome}
-            </option>
-        `;
-
-    });
 
 }
 
 
 // =======================================
-// PREVISUALIZAR LOGO
+// VISUALIZAR NOVA LOGO
 // =======================================
 
 function visualizarNovaLogo(event) {
@@ -571,13 +760,16 @@ function visualizarNovaLogo(event) {
     novaLogo = arquivo;
 
 
-    const url =
-        URL.createObjectURL(
-            arquivo
-        );
+    if (previewLogo) {
 
+        const url =
+            URL.createObjectURL(
+                arquivo
+            );
 
-    previewLogo.src = url;
+        previewLogo.src =
+            url;
+    }
 
 
     mostrarMensagem(
@@ -597,7 +789,6 @@ async function enviarLogo() {
     if (!novaLogo) {
 
         return loja.logo_url || null;
-
     }
 
 
@@ -617,7 +808,7 @@ async function enviarLogo() {
 
 
     console.log(
-        "Upload:",
+        "Enviando logo:",
         caminho
     );
 
@@ -625,7 +816,9 @@ async function enviarLogo() {
     const {
         error
     } = await db.storage
+
         .from("logos-lojas")
+
         .upload(
             caminho,
             novaLogo,
@@ -639,7 +832,7 @@ async function enviarLogo() {
     if (error) {
 
         console.error(
-            "Erro no upload:",
+            "Erro upload:",
             error
         );
 
@@ -647,15 +840,18 @@ async function enviarLogo() {
             "Erro ao enviar a logo: " +
             error.message
         );
-
     }
 
 
     const {
         data
     } = db.storage
+
         .from("logos-lojas")
-        .getPublicUrl(caminho);
+
+        .getPublicUrl(
+            caminho
+        );
 
 
     return data.publicUrl;
@@ -664,7 +860,7 @@ async function enviarLogo() {
 
 
 // =======================================
-// SALVAR
+// SALVAR ALTERAÇÕES
 // =======================================
 
 async function salvarAlteracoes(event) {
@@ -683,16 +879,22 @@ async function salvarAlteracoes(event) {
     }
 
 
-    btnSalvar.disabled = true;
+    if (btnSalvar) {
 
+        btnSalvar.disabled = true;
 
-    btnSalvar.innerHTML = `
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        Salvando...
-    `;
+        btnSalvar.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Salvando...
+        `;
+    }
 
 
     try {
+
+        // =================================
+        // CAMPOS
+        // =================================
 
         const nome =
             document
@@ -752,22 +954,27 @@ async function salvarAlteracoes(event) {
                 .value;
 
 
+        const ativaElemento =
+            document.getElementById(
+                "ativa"
+            );
+
+
         const ativa =
-            document
-                .getElementById("ativa")
-                .value === "true";
+            ativaElemento
+                ? ativaElemento.value === "true"
+                : loja.ativa;
 
 
-        // ===================================
-        // VALIDAÇÃO
-        // ===================================
+        // =================================
+        // VALIDAÇÕES
+        // =================================
 
         if (!nome) {
 
             throw new Error(
                 "Informe o nome da loja."
             );
-
         }
 
 
@@ -776,13 +983,12 @@ async function salvarAlteracoes(event) {
             throw new Error(
                 "Selecione uma categoria."
             );
-
         }
 
 
-        // ===================================
+        // =================================
         // LOGO
-        // ===================================
+        // =================================
 
         let logoUrl =
             loja.logo_url || null;
@@ -792,13 +998,12 @@ async function salvarAlteracoes(event) {
 
             logoUrl =
                 await enviarLogo();
-
         }
 
 
-        // ===================================
-        // DADOS
-        // ===================================
+        // =================================
+        // DADOS ATUALIZADOS
+        // =================================
 
         const dadosAtualizados = {
 
@@ -832,31 +1037,50 @@ async function salvarAlteracoes(event) {
 
 
         console.log(
-            "Dados para atualizar:",
+            "Dados para atualização:",
             dadosAtualizados
         );
 
 
-        // ===================================
-        // UPDATE
-        // ===================================
+        // =================================
+        // ATUALIZAR NO SUPABASE
+        // =================================
 
         const {
+            data,
             error
         } = await db
+
             .from("lojas")
-            .update(dadosAtualizados)
-            .eq("id", loja.id)
+
+            .update(
+                dadosAtualizados
+            )
+
+            .eq(
+                "id",
+                loja.id
+            )
+
             .eq(
                 "proprietario_id",
                 usuario.id
-            );
+            )
+
+            .select()
+            .single();
+
+
+        console.log(
+            "Resultado UPDATE:",
+            data
+        );
 
 
         if (error) {
 
             console.error(
-                "Erro no UPDATE:",
+                "Erro UPDATE:",
                 error
             );
 
@@ -864,13 +1088,20 @@ async function salvarAlteracoes(event) {
                 "Erro ao atualizar loja: " +
                 error.message
             );
-
         }
 
 
-        // ===================================
+        // =================================
+        // ATUALIZAR OBJETO LOCAL
+        // =================================
+
+        loja =
+            data;
+
+
+        // =================================
         // SUCESSO
-        // ===================================
+        // =================================
 
         mostrarMensagem(
             "Loja atualizada com sucesso!",
@@ -883,7 +1114,7 @@ async function salvarAlteracoes(event) {
             window.location.href =
                 "painel-loja.html";
 
-        }, 1500);
+        }, 1200);
 
 
     } catch (erro) {
@@ -903,13 +1134,15 @@ async function salvarAlteracoes(event) {
 
     } finally {
 
-        btnSalvar.disabled = false;
+        if (btnSalvar) {
 
+            btnSalvar.disabled = false;
 
-        btnSalvar.innerHTML = `
-            <i class="fa-solid fa-floppy-disk"></i>
-            Salvar Alterações
-        `;
+            btnSalvar.innerHTML = `
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar Alterações
+            `;
+        }
 
     }
 
@@ -917,12 +1150,22 @@ async function salvarAlteracoes(event) {
 
 
 // =======================================
-// MENSAGEM
+// MOSTRAR MENSAGEM
 // =======================================
 
-function mostrarMensagem(texto, tipo) {
+function mostrarMensagem(
+    texto,
+    tipo
+) {
 
-    if (!mensagem) return;
+    if (!mensagem) {
+
+        console.log(
+            `[${tipo}] ${texto}`
+        );
+
+        return;
+    }
 
 
     mensagem.textContent =

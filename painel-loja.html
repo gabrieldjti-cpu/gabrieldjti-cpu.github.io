@@ -1,144 +1,352 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Painel da Loja | Comércio da Cidade</title>
 
-    <link rel="stylesheet" href="css/painel-loja.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="components/header.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- CSS DO PAINEL -->
 
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
+        rel="stylesheet"
+        href="css/painel-loja.css"
+    >
 
-  <body>
-    <div id="header"></div>
 
-    <main class="container">
-      <!-- DADOS DA LOJA -->
+    <!-- CSS DO HEADER -->
 
-      <section class="card">
+    <link
+        rel="stylesheet"
+        href="components/header.css"
+    >
+
+
+    <!-- GOOGLE FONTS -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- FONT AWESOME -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================
+     HEADER
+====================================== -->
+
+<div id="header"></div>
+
+
+<!-- ======================================
+     CONTEÚDO
+====================================== -->
+
+<main class="container">
+
+
+    <!-- ==================================
+         DADOS DA LOJA
+    =================================== -->
+
+    <section class="card">
+
         <div class="topo-card">
-          <h2>
-            <i class="fa-solid fa-shop"></i>
 
-            Minha Loja
-          </h2>
+            <h2>
 
-          <button class="btn" onclick="window.location = 'editar-loja.html'">
-            <i class="fa-solid fa-pen"></i>
+                <i class="fa-solid fa-shop"></i>
 
-            Editar Loja
-          </button>
+                Minha Loja
+
+            </h2>
+
+
+            <button
+                id="btnEditarLoja"
+                class="btn"
+                type="button"
+            >
+
+                <i class="fa-solid fa-pen-to-square"></i>
+
+                Editar Loja
+
+            </button>
+
         </div>
+
 
         <div class="info-loja">
-          <p>
-            <strong>Nome:</strong> <span id="nome-loja">Carregando...</span>
-          </p>
 
-          <p>
-            <strong>Categoria:</strong> <span id="categoria-loja">...</span>
-          </p>
+            <p>
 
-          <p><strong>Cidade:</strong> <span id="cidade-loja">...</span></p>
+                <strong>Nome:</strong>
 
-          <p><strong>Telefone:</strong> <span id="telefone-loja">...</span></p>
+                <span id="nome-loja">
+                    Carregando...
+                </span>
 
-          <p><strong>Status:</strong> <span id="status-loja">...</span></p>
+            </p>
+
+
+            <p>
+
+                <strong>Categoria:</strong>
+
+                <span id="categoria-loja">
+                    Carregando...
+                </span>
+
+            </p>
+
+
+            <p>
+
+                <strong>Cidade:</strong>
+
+                <span id="cidade-loja">
+                    Carregando...
+                </span>
+
+            </p>
+
+
+            <p>
+
+                <strong>Telefone:</strong>
+
+                <span id="telefone-loja">
+                    Carregando...
+                </span>
+
+            </p>
+
+
+            <p>
+
+                <strong>Status:</strong>
+
+                <span id="status-loja">
+                    Carregando...
+                </span>
+
+            </p>
+
         </div>
-      </section>
 
-      <!-- PRODUTOS -->
+    </section>
 
-      <section class="card">
+
+
+    <!-- ==================================
+         PRODUTOS
+    =================================== -->
+
+    <section class="card">
+
         <div class="topo-card">
-          <h2>
-            <i class="fa-solid fa-box"></i>
 
-            Últimos Produtos
-          </h2>
+            <h2>
 
-          <div>
-            <a href="novo-produto.html" class="btn">
-              <i class="fa-solid fa-plus"></i>
+                <i class="fa-solid fa-box"></i>
 
-              Novo Produto
-            </a>
+                Últimos Produtos
 
-            <a href="produtos.html" class="btn btn-secundario"> Ver Todos </a>
-          </div>
+            </h2>
+
+
+            <div>
+
+                <a
+                    href="novo-produto.html"
+                    class="btn"
+                >
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Novo Produto
+
+                </a>
+
+
+                <a
+                    href="produtos.html"
+                    class="btn btn-secundario"
+                >
+
+                    Ver Todos
+
+                </a>
+
+            </div>
+
         </div>
+
 
         <div id="lista-produtos">
-          <div class="sem-produtos">
-            <i class="fa-solid fa-box-open"></i>
 
-            <h3>Nenhum produto cadastrado</h3>
-          </div>
+            <div class="sem-produtos">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h3>
+                    Nenhum produto cadastrado
+                </h3>
+
+            </div>
+
         </div>
-      </section>
 
-      <!-- PEDIDOS -->
+    </section>
 
-      <section class="card">
+
+
+    <!-- ==================================
+         PEDIDOS
+    =================================== -->
+
+    <section class="card">
+
         <h2>
-          <i class="fa-solid fa-cart-shopping"></i>
 
-          Pedidos Recentes
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            Pedidos Recentes
+
         </h2>
+
 
         <div id="lista-pedidos">
-          <p>Nenhum pedido recebido.</p>
+
+            <p>
+                Nenhum pedido recebido.
+            </p>
+
         </div>
-      </section>
 
-      <!-- ESTATÍSTICAS -->
+    </section>
 
-      <section class="card">
+
+
+    <!-- ==================================
+         ESTATÍSTICAS
+    =================================== -->
+
+    <section class="card">
+
         <h2>
-          <i class="fa-solid fa-chart-column"></i>
 
-          Estatísticas
+            <i class="fa-solid fa-chart-column"></i>
+
+            Estatísticas
+
         </h2>
 
+
         <div class="estatisticas">
-          <div class="box">
-            <h3 id="total-produtos">0</h3>
 
-            <p>Produtos</p>
-          </div>
 
-          <div class="box">
-            <h3 id="total-pedidos">0</h3>
+            <!-- PRODUTOS -->
 
-            <p>Pedidos</p>
-          </div>
+            <div class="box">
 
-          <div class="box">
-            <h3 id="total-vendas">R$ 0,00</h3>
+                <h3 id="total-produtos">
+                    0
+                </h3>
 
-            <p>Vendas</p>
-          </div>
+                <p>
+                    Produtos
+                </p>
+
+            </div>
+
+
+            <!-- PEDIDOS -->
+
+            <div class="box">
+
+                <h3 id="total-pedidos">
+                    0
+                </h3>
+
+                <p>
+                    Pedidos
+                </p>
+
+            </div>
+
+
+            <!-- VENDAS -->
+
+            <div class="box">
+
+                <h3 id="total-vendas">
+                    R$ 0,00
+                </h3>
+
+                <p>
+                    Vendas
+                </p>
+
+            </div>
+
+
         </div>
-      </section>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </section>
 
-    <script src="js/supabase.js"></script>
-    <script src="components/header.js"></script>
 
-    <script src="js/painel-loja.js"></script>
-  </body>
+</main>
+
+
+
+<!-- ======================================
+     SUPABASE
+====================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- CONFIGURAÇÃO SUPABASE -->
+
+<script src="js/supabase.js"></script>
+
+
+<!-- HEADER -->
+
+<script src="components/header.js"></script>
+
+
+<!-- PAINEL -->
+
+<script src="js/painel-loja.js"></script>
+
+
+</body>
+
 </html>

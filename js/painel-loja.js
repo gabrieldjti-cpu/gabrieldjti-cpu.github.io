@@ -1,10 +1,10 @@
 // ======================================
 // PAINEL DA LOJA
-// Parte 1
 // ======================================
 
 let usuario = null;
 let loja = null;
+
 
 // ======================================
 // INICIAR
@@ -12,38 +12,92 @@ let loja = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    console.log("Painel da loja iniciado.");
+
     try {
 
+        // ==================================
+        // VERIFICAR SUPABASE
+        // ==================================
+
         if (!window.db) {
-            alert("Erro ao conectar ao Supabase.");
+
+            console.error(
+                "Supabase não encontrado."
+            );
+
+            alert(
+                "Erro ao conectar ao Supabase."
+            );
+
             return;
         }
 
-        // Verifica usuário logado
-        const { data, error } = await window.db.auth.getUser();
 
-        if (error || !data.user) {
+        // ==================================
+        // VERIFICAR USUÁRIO
+        // ==================================
 
-            window.location.href = "login.html";
+        const {
+            data,
+            error
+        } = await window.db.auth.getUser();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar usuário:",
+                error
+            );
+
+            window.location.href =
+                "login.html";
+
             return;
-
         }
+
+
+        if (!data.user) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
 
         usuario = data.user;
 
-        console.log("Usuário:", usuario);
+
+        console.log(
+            "Usuário:",
+            usuario
+        );
+
+
+        // ==================================
+        // CARREGAR LOJA
+        // ==================================
 
         await carregarLoja();
 
+
     } catch (erro) {
 
-        console.error("Erro ao iniciar painel:", erro);
+        console.error(
+            "Erro ao iniciar painel:",
+            erro
+        );
 
-        alert("Erro ao carregar o painel.");
+        alert(
+            "Erro ao carregar o painel."
+        );
 
     }
 
 });
+
 
 // ======================================
 // CARREGAR DADOS DA LOJA
@@ -53,91 +107,266 @@ async function carregarLoja() {
 
     try {
 
-        const { data, error } = await window.db
+        console.log(
+            "Buscando loja do usuário..."
+        );
+
+
+        const {
+            data,
+            error
+        } = await window.db
+
             .from("lojas")
+
             .select(`
                 *,
                 categorias!categoria_id(
                     nome
                 )
             `)
-            .eq("proprietario_id", usuario.id)
+
+            .eq(
+                "proprietario_id",
+                usuario.id
+            )
+
             .maybeSingle();
 
-        console.log("Loja:", data);
-        console.log("Erro:", error);
 
-        if (error) throw error;
+        console.log(
+            "Loja encontrada:",
+            data
+        );
 
-        // Usuário não possui loja
+        console.log(
+            "Erro:",
+            error
+        );
+
+
+        // ==================================
+        // ERRO
+        // ==================================
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar loja:",
+                error
+            );
+
+            throw error;
+        }
+
+
+        // ==================================
+        // SEM LOJA
+        // ==================================
+
         if (!data) {
 
-            window.location.href = "cadastrar-loja.html";
-            return;
+            console.log(
+                "Usuário não possui loja."
+            );
 
+
+            window.location.href =
+                "cadastrar-loja.html";
+
+            return;
         }
+
+
+        // ==================================
+        // GUARDAR LOJA
+        // ==================================
 
         loja = data;
 
-        // ===========================
-        // Dados da Loja
-        // ===========================
 
-        document.getElementById("nome-loja").textContent =
-            loja.nome || "-";
+        // ==================================
+        // NOME
+        // ==================================
 
-        document.getElementById("categoria-loja").textContent =
-            loja.categorias?.nome || "Sem categoria";
+        const nomeLoja =
+            document.getElementById(
+                "nome-loja"
+            );
 
-        document.getElementById("cidade-loja").textContent =
-            loja.cidade || "-";
+        if (nomeLoja) {
 
-        document.getElementById("telefone-loja").textContent =
-            loja.telefone || "-";
-
-        document.getElementById("status-loja").innerHTML =
-            loja.ativa
-                ? "🟢 Ativa"
-                : "🔴 Inativa";
-
-        // ===========================
-        // Botão Editar Loja
-        // ===========================
-
-        const botaoEditarLoja = document.querySelector(".btn");
-
-        if (botaoEditarLoja) {
-
-            botaoEditarLoja.onclick = () => {
-
-                window.location.href =
-                    `editar-loja.html?id=${loja.id}`;
-
-            };
+            nomeLoja.textContent =
+                loja.nome || "-";
 
         }
 
-        // ===========================
-        // Carrega Produtos
-        // ===========================
+
+        // ==================================
+        // CATEGORIA
+        // ==================================
+
+        const categoriaLoja =
+            document.getElementById(
+                "categoria-loja"
+            );
+
+        if (categoriaLoja) {
+
+            categoriaLoja.textContent =
+                loja.categorias?.nome ||
+                "Sem categoria";
+
+        }
+
+
+        // ==================================
+        // CIDADE
+        // ==================================
+
+        const cidadeLoja =
+            document.getElementById(
+                "cidade-loja"
+            );
+
+        if (cidadeLoja) {
+
+            cidadeLoja.textContent =
+                loja.cidade || "-";
+
+        }
+
+
+        // ==================================
+        // TELEFONE
+        // ==================================
+
+        const telefoneLoja =
+            document.getElementById(
+                "telefone-loja"
+            );
+
+        if (telefoneLoja) {
+
+            telefoneLoja.textContent =
+                loja.telefone || "-";
+
+        }
+
+
+        // ==================================
+        // STATUS
+        // ==================================
+
+        const statusLoja =
+            document.getElementById(
+                "status-loja"
+            );
+
+        if (statusLoja) {
+
+            statusLoja.innerHTML =
+                loja.ativa
+
+                    ? "🟢 Ativa"
+
+                    : "🔴 Inativa";
+
+        }
+
+
+        // ==================================
+        // BOTÃO EDITAR LOJA
+        // ==================================
+
+        configurarBotaoEditar();
+
+
+        // ==================================
+        // CARREGAR PRODUTOS
+        // ==================================
 
         await carregarProdutos();
 
-        // ===========================
-        // Estatísticas
-        // ===========================
+
+        // ==================================
+        // ESTATÍSTICAS
+        // ==================================
 
         await carregarEstatisticas();
 
+
+        // ==================================
+        // PEDIDOS
+        // ==================================
+
+        await carregarPedidos();
+
+
     } catch (erro) {
 
-        console.error("Erro ao carregar loja:", erro);
+        console.error(
+            "Erro ao carregar loja:",
+            erro
+        );
 
-        alert("Erro ao carregar os dados da loja.");
+        alert(
+            "Erro ao carregar os dados da loja."
+        );
 
     }
 
 }
+
+
+// ======================================
+// CONFIGURAR BOTÃO EDITAR
+// ======================================
+
+function configurarBotaoEditar() {
+
+    const botao =
+        document.getElementById(
+            "btnEditarLoja"
+        );
+
+
+    if (!botao) {
+
+        console.warn(
+            "Botão btnEditarLoja não encontrado."
+        );
+
+        return;
+    }
+
+
+    if (!loja?.id) {
+
+        console.warn(
+            "ID da loja não encontrado."
+        );
+
+        return;
+    }
+
+
+    botao.onclick = () => {
+
+        console.log(
+            "Abrindo edição da loja:",
+            loja.id
+        );
+
+
+        window.location.href =
+            `editar-loja.html?id=${loja.id}`;
+
+    };
+
+}
+
+
 // ======================================
 // CARREGAR PRODUTOS
 // ======================================
@@ -146,38 +375,103 @@ async function carregarProdutos() {
 
     try {
 
-        const { data, error } = await window.db
+        console.log(
+            "Carregando produtos..."
+        );
+
+
+        const {
+            data,
+            error
+        } = await window.db
+
             .from("produtos")
+
             .select(`
                 *,
                 categorias_produtos!categoria_id(
                     nome
                 )
             `)
-            .eq("loja_id", loja.id)
-            .order("created_at", { ascending: false });
 
-        console.log("Produtos:", data);
-        console.log("Erro produtos:", error);
+            .eq(
+                "loja_id",
+                loja.id
+            )
 
-        if (error) throw error;
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
-        // Estatística
-        const totalProdutos = document.getElementById("total-produtos");
 
-        if (totalProdutos) {
-            totalProdutos.textContent = data.length;
+        console.log(
+            "Produtos:",
+            data
+        );
+
+
+        console.log(
+            "Erro produtos:",
+            error
+        );
+
+
+        if (error) {
+
+            throw error;
+
         }
 
-        const lista = document.getElementById("lista-produtos");
 
-        if (!lista) return;
+        // ==================================
+        // ESTATÍSTICA DE PRODUTOS
+        // ==================================
+
+        const totalProdutos =
+            document.getElementById(
+                "total-produtos"
+            );
+
+
+        if (totalProdutos) {
+
+            totalProdutos.textContent =
+                data?.length || 0;
+
+        }
+
+
+        // ==================================
+        // LISTA
+        // ==================================
+
+        const lista =
+            document.getElementById(
+                "lista-produtos"
+            );
+
+
+        if (!lista) {
+
+            return;
+
+        }
+
 
         lista.innerHTML = "";
 
-        // Nenhum produto
 
-        if (!data || data.length === 0) {
+        // ==================================
+        // NENHUM PRODUTO
+        // ==================================
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             lista.innerHTML = `
 
@@ -185,16 +479,22 @@ async function carregarProdutos() {
 
                     <i class="fa-solid fa-box-open"></i>
 
-                    <h3>Nenhum produto cadastrado</h3>
+                    <h3>
+                        Nenhum produto cadastrado
+                    </h3>
 
                     <p>
 
-                        Clique em <strong>Novo Produto</strong>
+                        Clique em
+                        <strong>Novo Produto</strong>
                         para cadastrar seu primeiro produto.
 
                     </p>
 
-                    <a href="novo-produto.html" class="btn">
+                    <a
+                        href="novo-produto.html"
+                        class="btn"
+                    >
 
                         <i class="fa-solid fa-plus"></i>
 
@@ -210,115 +510,211 @@ async function carregarProdutos() {
 
         }
 
-        // Lista de produtos
+
+        // ==================================
+        // MOSTRAR PRODUTOS
+        // ==================================
 
         data.forEach(produto => {
 
             lista.innerHTML += `
 
-            <div class="produto-card">
+                <div class="produto-card">
 
-                <img
-                    src="${produto.imagem_url || "img/sem-imagem.png"}"
-                    alt="${produto.nome}"
-                    class="foto-produto"
-                >
+                    <img
+                        src="${
+                            produto.imagem_url ||
+                            "img/sem-imagem.png"
+                        }"
+                        alt="${produto.nome}"
+                        class="foto-produto"
+                    >
 
-                <div class="produto-info">
 
-                    <span class="categoria">
+                    <div class="produto-info">
 
-                        ${produto.categorias_produtos?.nome || "Sem categoria"}
+                        <span class="categoria">
 
-                    </span>
+                            ${
+                                produto
+                                    .categorias_produtos
+                                    ?.nome ||
+                                "Sem categoria"
+                            }
 
-                    <h3>${produto.nome}</h3>
+                        </span>
 
-                    <p class="descricao">
 
-                        ${produto.descricao || "Sem descrição."}
+                        <h3>
 
-                    </p>
+                            ${produto.nome}
 
-                    <div class="precos">
+                        </h3>
 
-                        <strong class="preco">
 
-                            R$ ${Number(produto.preco).toFixed(2)}
+                        <p class="descricao">
 
-                        </strong>
+                            ${
+                                produto.descricao ||
+                                "Sem descrição."
+                            }
 
-                        ${
-                            produto.preco_promocional
-                            ? `
-                                <span class="promo">
-                                    De R$ ${Number(produto.preco).toFixed(2)}
-                                    por
-                                    R$ ${Number(produto.preco_promocional).toFixed(2)}
-                                </span>
-                            `
-                            : ""
-                        }
+                        </p>
+
+
+                        <div class="precos">
+
+                            <strong class="preco">
+
+                                R$
+                                ${Number(
+                                    produto.preco || 0
+                                ).toFixed(2)}
+
+                            </strong>
+
+
+                            ${
+                                produto.preco_promocional
+                                    ? `
+
+                                        <span class="promo">
+
+                                            De R$
+                                            ${Number(
+                                                produto.preco
+                                            ).toFixed(2)}
+
+                                            por
+
+                                            R$
+                                            ${Number(
+                                                produto.preco_promocional
+                                            ).toFixed(2)}
+
+                                        </span>
+
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+
+                        <p>
+
+                            <strong>
+                                Estoque:
+                            </strong>
+
+                            ${produto.estoque ?? 0}
+
+                        </p>
+
+
+                        <p>
+
+                            ${
+                                produto.ativo
+
+                                    ? `
+                                        <span class="status ativo">
+                                            🟢 Ativo
+                                        </span>
+                                      `
+
+                                    : `
+                                        <span class="status inativo">
+                                            🔴 Inativo
+                                        </span>
+                                      `
+                            }
+
+                        </p>
 
                     </div>
 
-                    <p>
 
-                        <strong>Estoque:</strong>
+                    <div class="acoes">
 
-                        ${produto.estoque}
 
-                    </p>
+                        <button
+                            class="btn-editar"
+                            onclick="
+                                editarProduto('${produto.id}')
+                            "
+                        >
 
-                    <p>
+                            <i class="fa-solid fa-pen"></i>
 
-                        ${
-                            produto.ativo
-                            ? '<span class="status ativo">🟢 Ativo</span>'
-                            : '<span class="status inativo">🔴 Inativo</span>'
-                        }
+                            Editar
 
-                    </p>
+                        </button>
 
-                </div>
 
-                <div class="acoes">
+                        <button
+                            class="btn-excluir"
+                            onclick="
+                                excluirProduto('${produto.id}')
+                            "
+                        >
 
-                    <button
-                        class="btn-editar"
-                        onclick="editarProduto('${produto.id}')">
+                            <i class="fa-solid fa-trash"></i>
 
-                        <i class="fa-solid fa-pen"></i>
+                            Excluir
 
-                        Editar
+                        </button>
 
-                    </button>
 
-                    <button
-                        class="btn-excluir"
-                        onclick="excluirProduto('${produto.id}')">
-
-                        <i class="fa-solid fa-trash"></i>
-
-                        Excluir
-
-                    </button>
+                    </div>
 
                 </div>
-
-            </div>
 
             `;
 
         });
 
+
     } catch (erro) {
 
-        console.error("Erro ao carregar produtos:", erro);
+        console.error(
+            "Erro ao carregar produtos:",
+            erro
+        );
+
+
+        const lista =
+            document.getElementById(
+                "lista-produtos"
+            );
+
+
+        if (lista) {
+
+            lista.innerHTML = `
+
+                <div class="sem-produtos">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <h3>
+                        Erro ao carregar produtos
+                    </h3>
+
+                    <p>
+                        Tente atualizar a página.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
 
     }
 
 }
+
 
 // ======================================
 // EDITAR PRODUTO
@@ -326,9 +722,21 @@ async function carregarProdutos() {
 
 function editarProduto(id) {
 
-    window.location.href = `editar-produto.html?id=${id}`;
+    if (!id) {
+
+        alert(
+            "Produto não encontrado."
+        );
+
+        return;
+    }
+
+
+    window.location.href =
+        `editar-produto.html?id=${id}`;
 
 }
+
 
 // ======================================
 // EXCLUIR PRODUTO
@@ -336,64 +744,214 @@ function editarProduto(id) {
 
 async function excluirProduto(id) {
 
-    const confirmar = confirm(
-        "Deseja realmente excluir este produto?"
-    );
+    if (!id) {
 
-    if (!confirmar) return;
+        alert(
+            "Produto não encontrado."
+        );
+
+        return;
+    }
+
+
+    const confirmar =
+        confirm(
+            "Deseja realmente excluir este produto?"
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
 
     try {
 
-        const { error } = await window.db
+        const {
+            error
+        } = await window.db
+
             .from("produtos")
+
             .delete()
-            .eq("id", id);
 
-        if (error) throw error;
+            .eq(
+                "id",
+                id
+            )
 
-        alert("Produto excluído com sucesso!");
+            .eq(
+                "loja_id",
+                loja.id
+            );
 
-        carregarProdutos();
 
-        carregarEstatisticas();
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        alert(
+            "Produto excluído com sucesso!"
+        );
+
+
+        await carregarProdutos();
+
+        await carregarEstatisticas();
+
 
     } catch (erro) {
 
-        console.error(erro);
+        console.error(
+            "Erro ao excluir produto:",
+            erro
+        );
 
-        alert("Erro ao excluir produto.");
+
+        alert(
+            "Erro ao excluir produto."
+        );
 
     }
 
 }
+
+
 // ======================================
 // CARREGAR ESTATÍSTICAS
 // ======================================
 
 async function carregarEstatisticas() {
 
-    const { count } = await window.db
-        .from("produtos")
-        .select("*", { count: "exact", head: true })
-        .eq("loja_id", loja.id);
+    try {
 
-    document.getElementById("total-produtos").textContent = count || 0;
+        if (!loja) {
 
-    document.getElementById("total-pedidos").textContent = "0";
+            return;
 
-    document.getElementById("total-vendas").textContent = "R$ 0,00";
+        }
+
+
+        // ==================================
+        // TOTAL DE PRODUTOS
+        // ==================================
+
+        const {
+            count: quantidadeProdutos,
+            error: erroProdutos
+        } = await window.db
+
+            .from("produtos")
+
+            .select(
+                "*",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+
+            .eq(
+                "loja_id",
+                loja.id
+            );
+
+
+        if (erroProdutos) {
+
+            console.error(
+                "Erro estatística produtos:",
+                erroProdutos
+            );
+
+        }
+
+
+        const totalProdutos =
+            document.getElementById(
+                "total-produtos"
+            );
+
+
+        if (totalProdutos) {
+
+            totalProdutos.textContent =
+                quantidadeProdutos || 0;
+
+        }
+
+
+        // ==================================
+        // PEDIDOS
+        // ==================================
+
+        const totalPedidos =
+            document.getElementById(
+                "total-pedidos"
+            );
+
+
+        if (totalPedidos) {
+
+            totalPedidos.textContent =
+                "0";
+
+        }
+
+
+        // ==================================
+        // VENDAS
+        // ==================================
+
+        const totalVendas =
+            document.getElementById(
+                "total-vendas"
+            );
+
+
+        if (totalVendas) {
+
+            totalVendas.textContent =
+                "R$ 0,00";
+
+        }
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar estatísticas:",
+            erro
+        );
+
+    }
 
 }
 
+
 // ======================================
-// CARREGAR PEDIDOS (Preparação)
+// CARREGAR PEDIDOS
 // ======================================
 
 async function carregarPedidos() {
 
-    const lista = document.getElementById("lista-pedidos");
+    const lista =
+        document.getElementById(
+            "lista-pedidos"
+        );
 
-    if (!lista) return;
+
+    if (!lista) {
+
+        return;
+
+    }
+
 
     lista.innerHTML = `
 
@@ -401,12 +959,15 @@ async function carregarPedidos() {
 
             <i class="fa-solid fa-cart-shopping"></i>
 
-            <h3>Nenhum pedido recebido</h3>
+            <h3>
+                Nenhum pedido recebido
+            </h3>
 
             <p>
 
-                Quando algum cliente comprar um produto,
-                os pedidos aparecerão aqui.
+                Quando algum cliente comprar
+                um produto, os pedidos
+                aparecerão aqui.
 
             </p>
 
@@ -416,22 +977,49 @@ async function carregarPedidos() {
 
 }
 
+
 // ======================================
 // FAZER LOGOUT
 // ======================================
 
 async function fazerLogout() {
 
-    const sair = confirm("Deseja realmente sair da sua conta?");
+    const sair =
+        confirm(
+            "Deseja realmente sair da sua conta?"
+        );
 
-    if (!sair) return;
 
-    await window.db.auth.signOut();
+    if (!sair) {
 
-    localStorage.clear();
+        return;
 
-    sessionStorage.clear();
+    }
 
-    window.location.href = "login.html";
+
+    try {
+
+        await window.db.auth.signOut();
+
+        localStorage.clear();
+
+        sessionStorage.clear();
+
+        window.location.href =
+            "login.html";
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao sair:",
+            erro
+        );
+
+        alert(
+            "Erro ao sair da conta."
+        );
+
+    }
 
 }
