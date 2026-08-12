@@ -198,6 +198,8 @@ body {
 
     overflow: hidden;
 
+    position: relative;
+
     transition: .3s;
 }
 
@@ -205,13 +207,60 @@ body {
     border-color: #2563eb;
 }
 
-.logo-preview img {
+
+/* ==========================
+   IMAGEM REAL DA LOGO
+========================== */
+
+#preview-logo {
     width: 100%;
     height: 100%;
 
     object-fit: cover;
 
     display: block;
+
+    border-radius: 50%;
+}
+
+
+/* Garante que o atributo hidden funcione */
+
+#preview-logo[hidden] {
+    display: none !important;
+}
+
+
+/* ==========================
+   PLACEHOLDER DA LOGO
+========================== */
+
+.logo-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    transition: .3s;
+}
+
+.logo-placeholder i {
+    font-size: 58px;
+}
+
+
+/* Efeito ao passar o mouse */
+
+.logo-preview:hover .logo-placeholder {
+    background: #dbeafe;
 }
 
 
@@ -477,6 +526,8 @@ footer {
         width: 50px;
         height: 50px;
 
+        flex-shrink: 0;
+
         font-size: 22px;
     }
 
@@ -495,6 +546,10 @@ footer {
     .logo-preview {
         width: 140px;
         height: 140px;
+    }
+
+    .logo-placeholder i {
+        font-size: 48px;
     }
 
     .btn {

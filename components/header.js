@@ -493,74 +493,113 @@
     // VERIFICAR USUÁRIO
     // ==========================================
 
-    async function verificarUsuarioHeader() {
+async function verificarUsuarioHeader() {
 
-        if (!window.db) {
+    if (!window.db) {
+
+        console.error(
+            "Header: Supabase não foi inicializado."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        // Primeiro verifica se existe sessão
+
+        const {
+            data: sessaoData,
+            error: sessaoError
+        } = await window.db.auth.getSession();
+
+
+        if (sessaoError) {
 
             console.error(
-                "Header: Supabase não foi inicializado."
+                "Header - erro ao verificar sessão:",
+                sessaoError
             );
+
+            mostrarUsuarioDeslogado();
 
             return;
 
         }
 
 
-        try {
+        // Nenhuma sessão = usuário deslogado
+        // Isso é normal e não deve gerar erro
 
-            const {
-                data,
-                error
-            } = await window.db.auth.getUser();
+        if (!sessaoData.session) {
 
+            mostrarUsuarioDeslogado();
 
-            if (error) {
-
-                console.error(
-                    "Header - erro ao verificar usuário:",
-                    error
-                );
-
-                mostrarUsuarioDeslogado();
-
-                return;
-
-            }
-
-
-            const user =
-                data.user;
-
-
-            if (!user) {
-
-                mostrarUsuarioDeslogado();
-
-                return;
-
-            }
-
-
-            mostrarUsuarioLogado(
-                user
-            );
-
-
-            await verificarLojaUsuario(
-                user.id
-            );
-
-
-        } catch (erro) {
-
-            console.error(
-                "Header - erro inesperado:",
-                erro
-            );
+            return;
 
         }
 
+
+        // Agora sim busca o usuário
+
+        const {
+            data: usuarioData,
+            error: usuarioError
+        } = await window.db.auth.getUser();
+
+
+        if (usuarioError) {
+
+            console.error(
+                "Header - erro ao buscar usuário:",
+                usuarioError
+            );
+
+            mostrarUsuarioDeslogado();
+
+            return;
+
+        }
+
+
+        const user =
+            usuarioData.user;
+
+
+        if (!user) {
+
+            mostrarUsuarioDeslogado();
+
+            return;
+
+        }
+
+
+        mostrarUsuarioLogado(
+            user
+        );
+
+
+        await verificarLojaUsuario(
+            user.id
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            "Header - erro inesperado:",
+            erro
+        );
+
+
+        mostrarUsuarioDeslogado();
+
     }
+
+}
 
 
     // ==========================================

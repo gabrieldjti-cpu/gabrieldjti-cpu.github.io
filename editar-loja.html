@@ -32,7 +32,16 @@
          GOOGLE FONTS
     =============================== -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -81,7 +90,9 @@
 
                 <div>
 
-                    <h1>Editar Loja</h1>
+                    <h1>
+                        Editar Loja
+                    </h1>
 
                     <p>
                         Atualize as informações da sua loja.
@@ -114,20 +125,40 @@
                     </label>
 
 
-                    <!-- PREVIEW -->
+                    <!-- ==========================
+                         PREVIEW DA LOGO
+                    =========================== -->
 
                     <div class="logo-preview">
 
+
+                        <!-- LOGO REAL -->
+
                         <img
                             id="preview-logo"
-                            src="img/loja.png"
                             alt="Logo da loja"
+                            hidden
                         >
+
+
+                        <!-- PLACEHOLDER -->
+
+                        <div
+                            id="preview-logo-placeholder"
+                            class="logo-placeholder"
+                        >
+
+                            <i class="fa-solid fa-store"></i>
+
+                        </div>
+
 
                     </div>
 
 
-                    <!-- INPUT -->
+                    <!-- ==========================
+                         INPUT DA LOGO
+                    =========================== -->
 
                     <input
                         type="file"
@@ -143,7 +174,11 @@
 
                         <br>
 
-                        Formatos aceitos: JPG, PNG ou WEBP.
+                        Formatos aceitos:
+                        JPG, PNG ou WEBP.
+
+                        <br>
+
                         Máximo de 5 MB.
 
                     </small>
@@ -158,6 +193,8 @@
                 <div class="campo">
 
                     <label for="nome">
+
+                        <i class="fa-solid fa-store"></i>
 
                         Nome da Loja
 
@@ -181,6 +218,8 @@
 
                     <label for="categoria">
 
+                        <i class="fa-solid fa-layer-group"></i>
+
                         Categoria
 
                     </label>
@@ -191,9 +230,7 @@
                     >
 
                         <option value="">
-
                             Carregando categorias...
-
                         </option>
 
                     </select>
@@ -208,9 +245,13 @@
                 <div class="duas-colunas">
 
 
+                    <!-- TELEFONE -->
+
                     <div class="campo">
 
                         <label for="telefone">
+
+                            <i class="fa-solid fa-phone"></i>
 
                             Telefone
 
@@ -225,9 +266,13 @@
                     </div>
 
 
+                    <!-- WHATSAPP -->
+
                     <div class="campo">
 
                         <label for="whatsapp">
+
+                            <i class="fa-brands fa-whatsapp"></i>
 
                             WhatsApp
 
@@ -241,6 +286,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -251,6 +297,8 @@
                 <div class="campo">
 
                     <label for="descricao">
+
+                        <i class="fa-solid fa-align-left"></i>
 
                         Descrição
 
@@ -273,6 +321,8 @@
 
                     <label for="endereco">
 
+                        <i class="fa-solid fa-location-dot"></i>
+
                         Endereço
 
                     </label>
@@ -294,6 +344,8 @@
 
                     <label for="cidade">
 
+                        <i class="fa-solid fa-city"></i>
+
                         Cidade
 
                     </label>
@@ -314,9 +366,13 @@
                 <div class="duas-colunas">
 
 
+                    <!-- ABERTURA -->
+
                     <div class="campo">
 
                         <label for="abertura">
+
+                            <i class="fa-solid fa-clock"></i>
 
                             Horário de abertura
 
@@ -330,9 +386,13 @@
                     </div>
 
 
+                    <!-- FECHAMENTO -->
+
                     <div class="campo">
 
                         <label for="fechamento">
+
+                            <i class="fa-solid fa-clock"></i>
 
                             Horário de fechamento
 
@@ -345,6 +405,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -355,6 +416,8 @@
                 <div class="campo campo-status">
 
                     <label for="ativa">
+
+                        <i class="fa-solid fa-toggle-on"></i>
 
                         Status da Loja
 
@@ -371,6 +434,7 @@
                         </option>
 
                     </select>
+
 
                     <small>
 
@@ -399,6 +463,8 @@
                 <div class="acoes">
 
 
+                    <!-- CANCELAR -->
+
                     <a
                         href="painel-loja.html"
                         class="btn btn-cancelar"
@@ -410,6 +476,8 @@
 
                     </a>
 
+
+                    <!-- SALVAR -->
 
                     <button
                         type="submit"
@@ -453,6 +521,7 @@
     <!-- ==============================
          SCRIPTS
     =============================== -->
+
 
     <!-- SUPABASE -->
 

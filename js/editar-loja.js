@@ -23,6 +23,8 @@ let inputLogo = null;
 
 let previewLogo = null;
 
+let placeholderLogo = null;
+
 let categoria = null;
 
 let btnSalvar = null;
@@ -32,228 +34,304 @@ let btnSalvar = null;
 // INICIAR
 // =======================================
 
-document.addEventListener("DOMContentLoaded", async () => {
-
-    console.log("=================================");
-    console.log("EDITAR LOJA INICIADO");
-    console.log("=================================");
-
-
-    // ===================================
-    // ELEMENTOS
-    // ===================================
-
-    form = document.getElementById("formEditarLoja");
-
-    mensagem = document.getElementById("mensagem");
-
-    inputLogo = document.getElementById("logo");
-
-    previewLogo = document.getElementById("preview-logo");
-
-    categoria = document.getElementById("categoria");
-
-    btnSalvar = document.getElementById("btnSalvar");
-
-
-    console.log("Form:", form);
-    console.log("Categoria:", categoria);
-    console.log("Botão salvar:", btnSalvar);
-
-
-    // ===================================
-    // VERIFICAR FORMULÁRIO
-    // ===================================
-
-    if (!form) {
-
-        console.error(
-            "ERRO: #formEditarLoja não encontrado."
-        );
-
-        return;
-    }
-
-
-    if (!categoria) {
-
-        console.error(
-            "ERRO: #categoria não encontrado."
-        );
-
-        return;
-    }
-
-
-    // ===================================
-    // SUPABASE
-    // ===================================
-
-    db = window.db;
-
-
-    if (!db) {
-
-        mostrarMensagem(
-            "Erro ao conectar com o Supabase.",
-            "erro"
-        );
-
-        console.error(
-            "window.db não encontrado."
-        );
-
-        return;
-    }
-
-
-    // ===================================
-    // VERIFICAR USUÁRIO
-    // ===================================
-
-    const {
-        data,
-        error
-    } = await db.auth.getUser();
-
-
-    console.log(
-        "Usuário:",
-        data?.user
-    );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao verificar usuário:",
-            error
-        );
-
-        window.location.href = "login.html";
-
-        return;
-    }
-
-
-    if (!data.user) {
-
-        window.location.href = "login.html";
-
-        return;
-    }
-
-
-    usuario = data.user;
-
-
-    // ===================================
-    // PEGAR ID DA URL
-    // ===================================
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-
-    const lojaId =
-        params.get("id");
-
-
-    console.log(
-        "ID recebido pela URL:",
-        lojaId
-    );
-
-
-    if (!lojaId) {
-
-        mostrarMensagem(
-            "ID da loja não encontrado.",
-            "erro"
-        );
-
-        console.error(
-            "A URL não possui o parâmetro ?id="
-        );
-
-        return;
-    }
-
-
-    // ===================================
-    // CARREGAR LOJA
-    // ===================================
-
-    const carregou =
-        await carregarLoja(lojaId);
-
-
-    if (!carregou) {
-
-        return;
-    }
-
-
-    // ===================================
-    // CARREGAR CATEGORIAS
-    // ===================================
-
-    await carregarCategorias();
-
-
-    // ===================================
-    // SELECIONAR CATEGORIA ATUAL
-    // ===================================
-
-    if (loja.categoria_id) {
-
-        categoria.value =
-            String(loja.categoria_id);
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
         console.log(
-            "Categoria atual:",
-            categoria.value
+            "================================="
         );
-    }
 
-
-    // ===================================
-    // EVENTO DA LOGO
-    // ===================================
-
-    if (inputLogo) {
-
-        inputLogo.addEventListener(
-            "change",
-            visualizarNovaLogo
+        console.log(
+            "EDITAR LOJA INICIADO"
         );
+
+        console.log(
+            "================================="
+        );
+
+
+        // ===================================
+        // ELEMENTOS
+        // ===================================
+
+        form =
+            document.getElementById(
+                "formEditarLoja"
+            );
+
+
+        mensagem =
+            document.getElementById(
+                "mensagem"
+            );
+
+
+        inputLogo =
+            document.getElementById(
+                "logo"
+            );
+
+
+        previewLogo =
+            document.getElementById(
+                "preview-logo"
+            );
+
+
+        placeholderLogo =
+            document.getElementById(
+                "preview-logo-placeholder"
+            );
+
+
+        categoria =
+            document.getElementById(
+                "categoria"
+            );
+
+
+        btnSalvar =
+            document.getElementById(
+                "btnSalvar"
+            );
+
+
+        // ===================================
+        // VERIFICAR FORMULÁRIO
+        // ===================================
+
+        if (!form) {
+
+            console.error(
+                "ERRO: #formEditarLoja não encontrado."
+            );
+
+            return;
+
+        }
+
+
+        if (!categoria) {
+
+            console.error(
+                "ERRO: #categoria não encontrado."
+            );
+
+            return;
+
+        }
+
+
+        // ===================================
+        // SUPABASE
+        // ===================================
+
+        db = window.db;
+
+
+        if (!db) {
+
+            mostrarMensagem(
+                "Erro ao conectar com o Supabase.",
+                "erro"
+            );
+
+
+            console.error(
+                "window.db não encontrado."
+            );
+
+
+            return;
+
+        }
+
+
+        // ===================================
+        // VERIFICAR USUÁRIO
+        // ===================================
+
+        try {
+
+            const {
+                data,
+                error
+            } = await db.auth.getUser();
+
+
+            if (error) {
+
+                console.error(
+                    "Erro ao verificar usuário:",
+                    error
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+
+                return;
+
+            }
+
+
+            if (!data.user) {
+
+                window.location.href =
+                    "login.html";
+
+
+                return;
+
+            }
+
+
+            usuario =
+                data.user;
+
+
+            console.log(
+                "Usuário conectado:",
+                usuario.id
+            );
+
+
+            // ===================================
+            // PEGAR ID DA URL
+            // ===================================
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const lojaId =
+                params.get("id");
+
+
+            console.log(
+                "ID recebido pela URL:",
+                lojaId
+            );
+
+
+            if (!lojaId) {
+
+                mostrarMensagem(
+                    "ID da loja não encontrado.",
+                    "erro"
+                );
+
+
+                console.error(
+                    "A URL não possui o parâmetro ?id="
+                );
+
+
+                return;
+
+            }
+
+
+            // ===================================
+            // CARREGAR LOJA
+            // ===================================
+
+            const carregou =
+                await carregarLoja(
+                    lojaId
+                );
+
+
+            if (!carregou) {
+
+                return;
+
+            }
+
+
+            // ===================================
+            // CARREGAR CATEGORIAS
+            // ===================================
+
+            await carregarCategorias();
+
+
+            // ===================================
+            // SELECIONAR CATEGORIA ATUAL
+            // ===================================
+
+            if (
+                loja &&
+                loja.categoria_id
+            ) {
+
+                categoria.value =
+                    String(
+                        loja.categoria_id
+                    );
+
+            }
+
+
+            // ===================================
+            // EVENTO DA LOGO
+            // ===================================
+
+            if (inputLogo) {
+
+                inputLogo.addEventListener(
+                    "change",
+                    visualizarNovaLogo
+                );
+
+            }
+
+
+            // ===================================
+            // EVENTO DO FORMULÁRIO
+            // ===================================
+
+            form.addEventListener(
+                "submit",
+                salvarAlteracoes
+            );
+
+
+            console.log(
+                "Editar loja pronto."
+            );
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao iniciar página:",
+                erro
+            );
+
+
+            mostrarMensagem(
+                "Erro ao carregar a página.",
+                "erro"
+            );
+
+        }
+
     }
-
-
-    // ===================================
-    // EVENTO DO FORMULÁRIO
-    // ===================================
-
-    form.addEventListener(
-        "submit",
-        salvarAlteracoes
-    );
-
-
-    console.log(
-        "Editar loja pronto."
-    );
-
-});
+);
 
 
 // =======================================
 // CARREGAR LOJA
 // =======================================
 
-async function carregarLoja(lojaId) {
+async function carregarLoja(
+    lojaId
+) {
 
     console.log(
         "Buscando loja:",
@@ -296,11 +374,6 @@ async function carregarLoja(lojaId) {
             data
         );
 
-        console.log(
-            "Erro da loja:",
-            error
-        );
-
 
         if (error) {
 
@@ -309,13 +382,16 @@ async function carregarLoja(lojaId) {
                 error
             );
 
+
             mostrarMensagem(
                 "Erro ao carregar a loja: " +
                 error.message,
                 "erro"
             );
 
+
             return false;
+
         }
 
 
@@ -325,16 +401,20 @@ async function carregarLoja(lojaId) {
                 "Nenhuma loja encontrada."
             );
 
+
             mostrarMensagem(
                 "Loja não encontrada ou você não possui permissão para editá-la.",
                 "erro"
             );
 
+
             return false;
+
         }
 
 
-        loja = data;
+        loja =
+            data;
 
 
         console.log(
@@ -343,7 +423,9 @@ async function carregarLoja(lojaId) {
         );
 
 
-        preencherFormulario(loja);
+        preencherFormulario(
+            loja
+        );
 
 
         return true;
@@ -356,12 +438,15 @@ async function carregarLoja(lojaId) {
             erro
         );
 
+
         mostrarMensagem(
             "Erro ao carregar os dados da loja.",
             "erro"
         );
 
+
         return false;
+
     }
 
 }
@@ -371,7 +456,9 @@ async function carregarLoja(lojaId) {
 // PREENCHER FORMULÁRIO
 // =======================================
 
-function preencherFormulario(dados) {
+function preencherFormulario(
+    dados
+) {
 
     console.log(
         "Preenchendo formulário:",
@@ -384,13 +471,16 @@ function preencherFormulario(dados) {
     // ===================================
 
     const nome =
-        document.getElementById("nome");
+        document.getElementById(
+            "nome"
+        );
 
 
     if (nome) {
 
         nome.value =
             dados.nome || "";
+
     }
 
 
@@ -399,13 +489,16 @@ function preencherFormulario(dados) {
     // ===================================
 
     const telefone =
-        document.getElementById("telefone");
+        document.getElementById(
+            "telefone"
+        );
 
 
     if (telefone) {
 
         telefone.value =
             dados.telefone || "";
+
     }
 
 
@@ -414,13 +507,16 @@ function preencherFormulario(dados) {
     // ===================================
 
     const whatsapp =
-        document.getElementById("whatsapp");
+        document.getElementById(
+            "whatsapp"
+        );
 
 
     if (whatsapp) {
 
         whatsapp.value =
             dados.whatsapp || "";
+
     }
 
 
@@ -429,13 +525,16 @@ function preencherFormulario(dados) {
     // ===================================
 
     const descricao =
-        document.getElementById("descricao");
+        document.getElementById(
+            "descricao"
+        );
 
 
     if (descricao) {
 
         descricao.value =
             dados.descricao || "";
+
     }
 
 
@@ -444,13 +543,16 @@ function preencherFormulario(dados) {
     // ===================================
 
     const endereco =
-        document.getElementById("endereco");
+        document.getElementById(
+            "endereco"
+        );
 
 
     if (endereco) {
 
         endereco.value =
             dados.endereco || "";
+
     }
 
 
@@ -459,22 +561,27 @@ function preencherFormulario(dados) {
     // ===================================
 
     const cidade =
-        document.getElementById("cidade");
+        document.getElementById(
+            "cidade"
+        );
 
 
     if (cidade) {
 
         cidade.value =
             dados.cidade || "";
+
     }
 
 
     // ===================================
-    // HORÁRIO DE ABERTURA
+    // HORÁRIO ABERTURA
     // ===================================
 
     const abertura =
-        document.getElementById("abertura");
+        document.getElementById(
+            "abertura"
+        );
 
 
     if (abertura) {
@@ -483,15 +590,18 @@ function preencherFormulario(dados) {
             formatarHora(
                 dados.horario_abertura
             );
+
     }
 
 
     // ===================================
-    // HORÁRIO DE FECHAMENTO
+    // HORÁRIO FECHAMENTO
     // ===================================
 
     const fechamento =
-        document.getElementById("fechamento");
+        document.getElementById(
+            "fechamento"
+        );
 
 
     if (fechamento) {
@@ -500,6 +610,7 @@ function preencherFormulario(dados) {
             formatarHora(
                 dados.horario_fechamento
             );
+
     }
 
 
@@ -508,7 +619,9 @@ function preencherFormulario(dados) {
     // ===================================
 
     const ativa =
-        document.getElementById("ativa");
+        document.getElementById(
+            "ativa"
+        );
 
 
     if (ativa) {
@@ -517,6 +630,7 @@ function preencherFormulario(dados) {
             dados.ativa === false
                 ? "false"
                 : "true";
+
     }
 
 
@@ -524,11 +638,104 @@ function preencherFormulario(dados) {
     // LOGO
     // ===================================
 
-    if (previewLogo) {
+    atualizarPreviewLogo(
+        dados.logo_url
+    );
+
+}
+
+
+// =======================================
+// ATUALIZAR PREVIEW DA LOGO
+// =======================================
+
+function atualizarPreviewLogo(
+    url
+) {
+
+    if (!previewLogo) {
+
+        return;
+
+    }
+
+
+    // ===================================
+    // POSSUI LOGO
+    // ===================================
+
+    if (url) {
 
         previewLogo.src =
-            dados.logo_url ||
-            "img/loja.png";
+            url;
+
+
+        previewLogo.hidden =
+            false;
+
+
+        if (placeholderLogo) {
+
+            placeholderLogo.style.display =
+                "none";
+
+        }
+
+
+        // ===================================
+        // ERRO AO CARREGAR A IMAGEM
+        // ===================================
+
+        previewLogo.onerror =
+            () => {
+
+                console.warn(
+                    "Não foi possível carregar a logo."
+                );
+
+
+                previewLogo.hidden =
+                    true;
+
+
+                previewLogo.removeAttribute(
+                    "src"
+                );
+
+
+                if (placeholderLogo) {
+
+                    placeholderLogo.style.display =
+                        "flex";
+
+                }
+
+            };
+
+
+        return;
+
+    }
+
+
+    // ===================================
+    // NÃO POSSUI LOGO
+    // ===================================
+
+    previewLogo.hidden =
+        true;
+
+
+    previewLogo.removeAttribute(
+        "src"
+    );
+
+
+    if (placeholderLogo) {
+
+        placeholderLogo.style.display =
+            "flex";
+
     }
 
 }
@@ -538,27 +745,31 @@ function preencherFormulario(dados) {
 // FORMATAR HORA
 // =======================================
 
-function formatarHora(hora) {
+function formatarHora(
+    hora
+) {
 
     if (!hora) {
 
         return "";
+
     }
 
 
-    // Caso venha como:
-    // 08:00:00
-
-    if (hora.length >= 5) {
+    if (
+        hora.length >= 5
+    ) {
 
         return hora.substring(
             0,
             5
         );
+
     }
 
 
     return hora;
+
 }
 
 
@@ -574,9 +785,13 @@ async function carregarCategorias() {
 
 
     categoria.innerHTML = `
+
         <option value="">
+
             Carregando categorias...
+
         </option>
+
     `;
 
 
@@ -601,12 +816,6 @@ async function carregarCategorias() {
             );
 
 
-        console.log(
-            "Categorias encontradas:",
-            data
-        );
-
-
         if (error) {
 
             console.error(
@@ -614,11 +823,17 @@ async function carregarCategorias() {
                 error
             );
 
+
             categoria.innerHTML = `
+
                 <option value="">
+
                     Erro ao carregar categorias
+
                 </option>
+
             `;
+
 
             mostrarMensagem(
                 "Erro ao carregar categorias: " +
@@ -626,7 +841,9 @@ async function carregarCategorias() {
                 "erro"
             );
 
+
             return;
+
         }
 
 
@@ -636,38 +853,65 @@ async function carregarCategorias() {
         ) {
 
             categoria.innerHTML = `
+
                 <option value="">
+
                     Nenhuma categoria cadastrada
+
                 </option>
+
             `;
 
+
             return;
+
         }
 
 
         categoria.innerHTML = `
+
             <option value="">
+
                 Selecione uma categoria
+
             </option>
+
         `;
 
 
-        data.forEach(cat => {
+        data.forEach(
+            (cat) => {
 
-            categoria.innerHTML += `
-                <option value="${cat.id}">
-                    ${cat.nome}
-                </option>
-            `;
-
-        });
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
 
-        // =================================
-        // SELECIONAR CATEGORIA DA LOJA
-        // =================================
+                option.value =
+                    cat.id;
 
-        if (loja?.categoria_id) {
+
+                option.textContent =
+                    cat.nome;
+
+
+                categoria.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        // ===================================
+        // SELECIONAR CATEGORIA ATUAL
+        // ===================================
+
+        if (
+            loja &&
+            loja.categoria_id
+        ) {
 
             categoria.value =
                 String(
@@ -684,10 +928,15 @@ async function carregarCategorias() {
             erro
         );
 
+
         categoria.innerHTML = `
+
             <option value="">
+
                 Erro ao carregar categorias
+
             </option>
+
         `;
 
     }
@@ -699,7 +948,9 @@ async function carregarCategorias() {
 // VISUALIZAR NOVA LOGO
 // =======================================
 
-function visualizarNovaLogo(event) {
+function visualizarNovaLogo(
+    event
+) {
 
     const arquivo =
         event.target.files[0];
@@ -707,16 +958,32 @@ function visualizarNovaLogo(event) {
 
     if (!arquivo) {
 
-        novaLogo = null;
+        novaLogo =
+            null;
+
+
+        atualizarPreviewLogo(
+            loja?.logo_url || null
+        );
+
 
         return;
+
     }
 
 
+    // ===================================
+    // TIPOS PERMITIDOS
+    // ===================================
+
     const tiposPermitidos = [
+
         "image/jpeg",
+
         "image/png",
+
         "image/webp"
+
     ];
 
 
@@ -731,13 +998,28 @@ function visualizarNovaLogo(event) {
             "erro"
         );
 
-        inputLogo.value = "";
 
-        novaLogo = null;
+        inputLogo.value =
+            "";
+
+
+        novaLogo =
+            null;
+
+
+        atualizarPreviewLogo(
+            loja?.logo_url || null
+        );
+
 
         return;
+
     }
 
+
+    // ===================================
+    // TAMANHO MÁXIMO
+    // ===================================
 
     if (
         arquivo.size >
@@ -749,27 +1031,46 @@ function visualizarNovaLogo(event) {
             "erro"
         );
 
-        inputLogo.value = "";
 
-        novaLogo = null;
+        inputLogo.value =
+            "";
+
+
+        novaLogo =
+            null;
+
+
+        atualizarPreviewLogo(
+            loja?.logo_url || null
+        );
+
 
         return;
+
     }
 
 
-    novaLogo = arquivo;
+    // ===================================
+    // SALVAR NOVA LOGO
+    // ===================================
+
+    novaLogo =
+        arquivo;
 
 
-    if (previewLogo) {
+    // ===================================
+    // PREVIEW LOCAL
+    // ===================================
 
-        const url =
-            URL.createObjectURL(
-                arquivo
-            );
+    const url =
+        URL.createObjectURL(
+            arquivo
+        );
 
-        previewLogo.src =
-            url;
-    }
+
+    atualizarPreviewLogo(
+        url
+    );
 
 
     mostrarMensagem(
@@ -789,8 +1090,13 @@ async function enviarLogo() {
     if (!novaLogo) {
 
         return loja.logo_url || null;
+
     }
 
+
+    // ===================================
+    // EXTENSÃO
+    // ===================================
 
     const extensao =
         novaLogo.name
@@ -799,9 +1105,17 @@ async function enviarLogo() {
             .toLowerCase();
 
 
+    // ===================================
+    // NOME DO ARQUIVO
+    // ===================================
+
     const nomeArquivo =
         `${Date.now()}.${extensao}`;
 
+
+    // ===================================
+    // CAMINHO NO STORAGE
+    // ===================================
 
     const caminho =
         `lojas/${usuario.id}/${nomeArquivo}`;
@@ -813,18 +1127,27 @@ async function enviarLogo() {
     );
 
 
+    // ===================================
+    // UPLOAD
+    // ===================================
+
     const {
         error
     } = await db.storage
 
-        .from("logos-lojas")
+        .from(
+            "logos-lojas"
+        )
 
         .upload(
             caminho,
             novaLogo,
             {
-                cacheControl: "3600",
-                upsert: false
+                cacheControl:
+                    "3600",
+
+                upsert:
+                    false
             }
         );
 
@@ -836,22 +1159,42 @@ async function enviarLogo() {
             error
         );
 
+
         throw new Error(
             "Erro ao enviar a logo: " +
             error.message
         );
+
     }
 
+
+    // ===================================
+    // PEGAR URL PÚBLICA
+    // ===================================
 
     const {
         data
     } = db.storage
 
-        .from("logos-lojas")
+        .from(
+            "logos-lojas"
+        )
 
         .getPublicUrl(
             caminho
         );
+
+
+    if (
+        !data ||
+        !data.publicUrl
+    ) {
+
+        throw new Error(
+            "Não foi possível obter a URL da logo."
+        );
+
+    }
 
 
     return data.publicUrl;
@@ -863,7 +1206,9 @@ async function enviarLogo() {
 // SALVAR ALTERAÇÕES
 // =======================================
 
-async function salvarAlteracoes(event) {
+async function salvarAlteracoes(
+    event
+) {
 
     event.preventDefault();
 
@@ -875,30 +1220,44 @@ async function salvarAlteracoes(event) {
             "erro"
         );
 
+
         return;
+
     }
 
 
+    // ===================================
+    // DESABILITAR BOTÃO
+    // ===================================
+
     if (btnSalvar) {
 
-        btnSalvar.disabled = true;
+        btnSalvar.disabled =
+            true;
+
 
         btnSalvar.innerHTML = `
+
             <i class="fa-solid fa-spinner fa-spin"></i>
+
             Salvando...
+
         `;
+
     }
 
 
     try {
 
-        // =================================
+        // ===================================
         // CAMPOS
-        // =================================
+        // ===================================
 
         const nome =
             document
-                .getElementById("nome")
+                .getElementById(
+                    "nome"
+                )
                 .value
                 .trim();
 
@@ -909,48 +1268,62 @@ async function salvarAlteracoes(event) {
 
         const telefone =
             document
-                .getElementById("telefone")
+                .getElementById(
+                    "telefone"
+                )
                 .value
                 .trim();
 
 
         const whatsapp =
             document
-                .getElementById("whatsapp")
+                .getElementById(
+                    "whatsapp"
+                )
                 .value
                 .trim();
 
 
         const descricao =
             document
-                .getElementById("descricao")
+                .getElementById(
+                    "descricao"
+                )
                 .value
                 .trim();
 
 
         const endereco =
             document
-                .getElementById("endereco")
+                .getElementById(
+                    "endereco"
+                )
                 .value
                 .trim();
 
 
         const cidade =
             document
-                .getElementById("cidade")
+                .getElementById(
+                    "cidade"
+                )
                 .value
                 .trim();
 
 
         const abertura =
             document
-                .getElementById("abertura")
+                .getElementById(
+                    "abertura"
+                )
                 .value;
 
 
         const fechamento =
             document
-                .getElementById("fechamento")
+                .getElementById(
+                    "fechamento"
+                )
                 .value;
 
 
@@ -962,19 +1335,21 @@ async function salvarAlteracoes(event) {
 
         const ativa =
             ativaElemento
-                ? ativaElemento.value === "true"
+                ? ativaElemento.value ===
+                  "true"
                 : loja.ativa;
 
 
-        // =================================
+        // ===================================
         // VALIDAÇÕES
-        // =================================
+        // ===================================
 
         if (!nome) {
 
             throw new Error(
                 "Informe o nome da loja."
             );
+
         }
 
 
@@ -983,12 +1358,13 @@ async function salvarAlteracoes(event) {
             throw new Error(
                 "Selecione uma categoria."
             );
+
         }
 
 
-        // =================================
+        // ===================================
         // LOGO
-        // =================================
+        // ===================================
 
         let logoUrl =
             loja.logo_url || null;
@@ -998,29 +1374,38 @@ async function salvarAlteracoes(event) {
 
             logoUrl =
                 await enviarLogo();
+
         }
 
 
-        // =================================
-        // DADOS ATUALIZADOS
-        // =================================
+        // ===================================
+        // DADOS
+        // ===================================
 
         const dadosAtualizados = {
 
-            nome,
+            nome:
+                nome,
 
             categoria_id:
-                Number(categoriaId),
+                Number(
+                    categoriaId
+                ),
 
-            telefone,
+            telefone:
+                telefone,
 
-            whatsapp,
+            whatsapp:
+                whatsapp,
 
-            descricao,
+            descricao:
+                descricao,
 
-            endereco,
+            endereco:
+                endereco,
 
-            cidade,
+            cidade:
+                cidade,
 
             horario_abertura:
                 abertura || null,
@@ -1028,7 +1413,8 @@ async function salvarAlteracoes(event) {
             horario_fechamento:
                 fechamento || null,
 
-            ativa,
+            ativa:
+                ativa,
 
             logo_url:
                 logoUrl
@@ -1042,9 +1428,9 @@ async function salvarAlteracoes(event) {
         );
 
 
-        // =================================
+        // ===================================
         // ATUALIZAR NO SUPABASE
-        // =================================
+        // ===================================
 
         const {
             data,
@@ -1068,13 +1454,8 @@ async function salvarAlteracoes(event) {
             )
 
             .select()
+
             .single();
-
-
-        console.log(
-            "Resultado UPDATE:",
-            data
-        );
 
 
         if (error) {
@@ -1084,24 +1465,39 @@ async function salvarAlteracoes(event) {
                 error
             );
 
+
             throw new Error(
                 "Erro ao atualizar loja: " +
                 error.message
             );
+
         }
 
 
-        // =================================
+        // ===================================
         // ATUALIZAR OBJETO LOCAL
-        // =================================
+        // ===================================
 
         loja =
             data;
 
 
-        // =================================
+        novaLogo =
+            null;
+
+
+        // ===================================
+        // ATUALIZAR PREVIEW
+        // ===================================
+
+        atualizarPreviewLogo(
+            loja.logo_url
+        );
+
+
+        // ===================================
         // SUCESSO
-        // =================================
+        // ===================================
 
         mostrarMensagem(
             "Loja atualizada com sucesso!",
@@ -1109,12 +1505,19 @@ async function salvarAlteracoes(event) {
         );
 
 
-        setTimeout(() => {
+        // ===================================
+        // REDIRECIONAR
+        // ===================================
 
-            window.location.href =
-                "painel-loja.html";
+        setTimeout(
+            () => {
 
-        }, 1200);
+                window.location.href =
+                    "painel-loja.html";
+
+            },
+            1200
+        );
 
 
     } catch (erro) {
@@ -1136,12 +1539,18 @@ async function salvarAlteracoes(event) {
 
         if (btnSalvar) {
 
-            btnSalvar.disabled = false;
+            btnSalvar.disabled =
+                false;
+
 
             btnSalvar.innerHTML = `
+
                 <i class="fa-solid fa-floppy-disk"></i>
+
                 Salvar Alterações
+
             `;
+
         }
 
     }
@@ -1164,7 +1573,9 @@ function mostrarMensagem(
             `[${tipo}] ${texto}`
         );
 
+
         return;
+
     }
 
 

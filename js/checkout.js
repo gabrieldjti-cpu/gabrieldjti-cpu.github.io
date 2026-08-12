@@ -1,209 +1,556 @@
-// ======================================
+// ==========================================
 // CHECKOUT.JS
-// PARTE 1 - INICIALIZAÇÃO
-// ======================================
+// Comércio da Cidade
+// ==========================================
+
+let usuario = null;
+
+let carrinho = [];
+
+let pedidosPorLoja = {};
+
+let totalPedido = 0;
 
 
-document.addEventListener("DOMContentLoaded", async () => {
+// ==========================================
+// INICIAR
+// ==========================================
 
-    if (!db) {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-        alert("Erro ao conectar ao banco.");
+        console.log(
+            "Checkout iniciado."
+        );
 
-        return;
 
-    }
+        // ==================================
+        // SUPABASE
+        // ==================================
 
-    await verificarUsuario();
+        if (!window.db) {
 
-    carregarCarrinho();
+            console.error(
+                "Checkout: Supabase não inicializado."
+            );
 
-    if (carrinho.length === 0) {
 
-        alert("Seu carrinho está vazio.");
+            alert(
+                "Erro ao conectar ao banco."
+            );
 
-        window.location.href = "carrinho.html";
 
-        return;
-
-    }
-
-    agruparProdutosPorLoja();
-
-    mostrarResumo();
-
-    await carregarDadosCliente();
-
-    configurarPagamento();
-
-    document
-        .getElementById("form-checkout")
-        ?.addEventListener("submit", finalizarCompra);
-
-});
-
-// ======================================
-// VERIFICAR USUÁRIO
-// ======================================
-
-async function verificarUsuario() {
-
-    const {
-
-        data: { user },
-
-        error
-
-    } = await db.auth.getUser();
-
-    if (error || !user) {
-
-        window.location.href = "login.html";
-
-        return;
-
-    }
-
-    usuario = user;
-
-}
-
-// ======================================
-// CARREGAR CARRINHO
-// ======================================
-
-function carregarCarrinho() {
-
-    carrinho = JSON.parse(
-
-        localStorage.getItem("carrinho")
-
-    ) || [];
-
-}
-
-// ======================================
-// AGRUPAR PRODUTOS POR LOJA
-// ======================================
-
-function agruparProdutosPorLoja() {
-
-    pedidosPorLoja = {};
-
-    carrinho.forEach(produto => {
-
-        if (!pedidosPorLoja[produto.loja_id]) {
-
-            pedidosPorLoja[produto.loja_id] = {
-
-                loja_id: produto.loja_id,
-
-                nome_loja: produto.loja,
-
-                produtos: []
-
-            };
+            return;
 
         }
 
-        pedidosPorLoja[produto.loja_id]
 
-            .produtos
+        // ==================================
+        // USUÁRIO
+        // ==================================
 
-            .push(produto);
+        const autenticado =
+            await verificarUsuario();
 
-    });
+
+        if (!autenticado) {
+
+            return;
+
+        }
+
+
+        // ==================================
+        // CARRINHO
+        // ==================================
+
+        carregarCarrinho();
+
+
+        if (
+            carrinho.length === 0
+        ) {
+
+            alert(
+                "Seu carrinho está vazio."
+            );
+
+
+            window.location.href =
+                "carrinho.html";
+
+
+            return;
+
+        }
+
+
+        // ==================================
+        // PREPARAR CHECKOUT
+        // ==================================
+
+        agruparProdutosPorLoja();
+
+
+        mostrarResumo();
+
+
+        preencherDadosUsuario();
+
+
+        configurarPagamento();
+
+
+        // ==================================
+        // BOTÃO FINALIZAR
+        // ==================================
+
+        const btnFinalizar =
+            document.getElementById(
+                "btn-finalizar"
+            );
+
+
+        if (btnFinalizar) {
+
+            btnFinalizar.addEventListener(
+                "click",
+                finalizarCompra
+            );
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// VERIFICAR USUÁRIO
+// ==========================================
+
+async function verificarUsuario() {
+
+    try {
+
+        // Primeiro verifica a sessão
+
+        const {
+            data: sessaoData,
+            error: sessaoError
+        } = await window.db.auth.getSession();
+
+
+        if (sessaoError) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                sessaoError
+            );
+
+
+            window.location.href =
+                "login.html";
+
+
+            return false;
+
+        }
+
+
+        if (
+            !sessaoData.session
+        ) {
+
+            window.location.href =
+                "login.html";
+
+
+            return false;
+
+        }
+
+
+        // ==================================
+        // BUSCAR USUÁRIO
+        // ==================================
+
+        const {
+            data,
+            error
+        } = await window.db.auth.getUser();
+
+
+        if (
+            error ||
+            !data.user
+        ) {
+
+            console.error(
+                "Erro ao verificar usuário:",
+                error
+            );
+
+
+            window.location.href =
+                "login.html";
+
+
+            return false;
+
+        }
+
+
+        usuario =
+            data.user;
+
+
+        return true;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro inesperado ao verificar usuário:",
+            erro
+        );
+
+
+        window.location.href =
+            "login.html";
+
+
+        return false;
+
+    }
 
 }
-// ======================================
-// ATUALIZAR RESUMO DO PEDIDO
-// ======================================
 
-function atualizarResumo() {
 
-    const lista = document.getElementById("lista-resumo");
+// ==========================================
+// CARREGAR CARRINHO
+// ==========================================
 
-    const total = document.getElementById("total-geral");
+function carregarCarrinho() {
 
-    if (!lista) return;
+    try {
 
-    lista.innerHTML = "";
+        // Carrinho é a fonte principal.
+        // checkout fica como fallback.
 
-    totalPedido = 0;
+        const dados =
+            localStorage.getItem(
+                "carrinho"
+            )
+            ||
+            localStorage.getItem(
+                "checkout"
+            );
 
-    Object.values(pedidosPorLoja).forEach(loja => {
 
-        let htmlProdutos = "";
+        const parsed =
+            dados
+                ? JSON.parse(dados)
+                : [];
 
-        loja.produtos.forEach(produto => {
 
-            const subtotal =
-                Number(produto.preco) *
-                Number(produto.quantidade);
+        carrinho =
+            Array.isArray(parsed)
+                ? parsed
+                : [];
 
-            totalPedido += subtotal;
 
-            htmlProdutos += `
+    } catch (erro) {
 
-                <div class="produto-resumo">
+        console.error(
+            "Erro ao carregar carrinho:",
+            erro
+        );
 
-                    <img
-                        src="${produto.imagem_url || "img/sem-imagem.png"}"
-                        alt="${produto.nome}"
-                    >
 
-                    <div class="dados">
+        carrinho =
+            [];
 
-                        <h4>${produto.nome}</h4>
+    }
 
-                        <p>
+}
 
-                            ${produto.quantidade} ×
-                            R$ ${Number(produto.preco).toFixed(2)}
 
-                        </p>
+// ==========================================
+// AGRUPAR PRODUTOS POR LOJA
+// ==========================================
 
-                    </div>
+function agruparProdutosPorLoja() {
 
-                    <strong>
+    pedidosPorLoja =
+        {};
 
-                        R$ ${subtotal.toFixed(2)}
 
-                    </strong>
+    carrinho.forEach(
+        (produto) => {
 
-                </div>
+            const lojaId =
+                String(
+                    produto.loja_id ||
+                    ""
+                );
 
-            `;
 
-        });
+            if (!lojaId) {
 
-        lista.innerHTML += `
+                return;
 
-            <div class="card-loja">
+            }
 
-                <div class="topo-loja">
 
-                    <h3>
+            if (
+                !pedidosPorLoja[
+                    lojaId
+                ]
+            ) {
 
-                        <i class="fa-solid fa-store"></i>
+                pedidosPorLoja[
+                    lojaId
+                ] = {
 
-                        ${loja.nome_loja}
+                    loja_id:
+                        lojaId,
 
-                    </h3>
+                    nome_loja:
+                        produto.nome_loja ||
+                        produto.loja ||
+                        "Loja",
 
-                </div>
+                    produtos:
+                        []
 
-                ${htmlProdutos}
+                };
 
-                <div class="subtotal-loja">
+            }
 
-                    <span>Subtotal da Loja</span>
 
-                    <strong>
+            pedidosPorLoja[
+                lojaId
+            ]
+                .produtos
+                .push(
+                    produto
+                );
 
-                        R$ ${loja.total.toFixed(2)}
+        }
+    );
 
-                    </strong>
+}
+
+
+// ==========================================
+// MOSTRAR RESUMO
+// ==========================================
+
+function mostrarResumo() {
+
+    const lista =
+        document.getElementById(
+            "lista-checkout"
+        );
+
+
+    const subtotalElemento =
+        document.getElementById(
+            "subtotal"
+        );
+
+
+    const totalElemento =
+        document.getElementById(
+            "total"
+        );
+
+
+    if (
+        !lista ||
+        !subtotalElemento ||
+        !totalElemento
+    ) {
+
+        console.error(
+            "Elementos do resumo não encontrados."
+        );
+
+
+        return;
+
+    }
+
+
+    lista.innerHTML =
+        "";
+
+
+    totalPedido =
+        0;
+
+
+    Object.values(
+        pedidosPorLoja
+    )
+        .forEach(
+            (loja) => {
+
+                let htmlProdutos =
+                    "";
+
+
+                let subtotalLoja =
+                    0;
+
+
+                loja.produtos.forEach(
+                    (produto) => {
+
+                        const quantidade =
+                            normalizarQuantidade(
+                                produto.quantidade
+                            );
+
+
+                        const preco =
+                            obterPrecoFinal(
+                                produto
+                            );
+
+
+                        const subtotal =
+                            preco *
+                            quantidade;
+
+
+                        subtotalLoja +=
+                            subtotal;
+
+
+                        totalPedido +=
+                            subtotal;
+
+
+                        htmlProdutos +=
+                            criarProdutoResumo(
+                                produto,
+                                quantidade,
+                                preco,
+                                subtotal
+                            );
+
+                    }
+                );
+
+
+                lista.insertAdjacentHTML(
+                    "beforeend",
+                    `
+
+                        <div class="checkout-loja">
+
+
+                            <div class="checkout-loja-topo">
+
+                                <i class="fa-solid fa-store"></i>
+
+                                ${escaparHTML(
+                                    loja.nome_loja
+                                )}
+
+                            </div>
+
+
+                            ${htmlProdutos}
+
+
+                            <div class="checkout-subtotal-loja">
+
+                                <span>
+                                    Subtotal da loja
+                                </span>
+
+                                <strong>
+
+                                    ${formatarMoeda(
+                                        subtotalLoja
+                                    )}
+
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+                    `
+                );
+
+            }
+        );
+
+
+    subtotalElemento.textContent =
+        formatarMoeda(
+            totalPedido
+        );
+
+
+    totalElemento.textContent =
+        formatarMoeda(
+            totalPedido
+        );
+
+}
+
+
+// ==========================================
+// CRIAR PRODUTO DO RESUMO
+// ==========================================
+
+function criarProdutoResumo(
+    produto,
+    quantidade,
+    preco,
+    subtotal
+) {
+
+    const nome =
+        escaparHTML(
+            produto.nome ||
+            "Produto"
+        );
+
+
+    let imagemHTML =
+        "";
+
+
+    if (
+        produto.imagem_url
+    ) {
+
+        imagemHTML = `
+
+            <div class="area-imagem-checkout">
+
+                <img
+                    src="${escaparHTML(
+                        produto.imagem_url
+                    )}"
+                    alt="${nome}"
+                    class="imagem-checkout"
+                    onerror="mostrarPlaceholderCheckout(this)"
+                >
+
+                <div
+                    class="imagem-checkout-placeholder"
+                    style="display:none;"
+                >
+
+                    <i class="fa-solid fa-box"></i>
 
                 </div>
 
@@ -211,354 +558,928 @@ function atualizarResumo() {
 
         `;
 
-    });
 
-    total.textContent =
-        `R$ ${totalPedido.toFixed(2)}`;
+    } else {
+
+        imagemHTML = `
+
+            <div class="area-imagem-checkout">
+
+                <div class="imagem-checkout-placeholder">
+
+                    <i class="fa-solid fa-box"></i>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="item-checkout">
+
+
+            ${imagemHTML}
+
+
+            <div class="dados-checkout">
+
+                <strong>
+                    ${nome}
+                </strong>
+
+                <span>
+
+                    ${quantidade}
+                    ×
+                    ${formatarMoeda(
+                        preco
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="valor-checkout">
+
+                ${formatarMoeda(
+                    subtotal
+                )}
+
+            </div>
+
+
+        </div>
+
+    `;
 
 }
 
-// ======================================
-// FORMATAR DINHEIRO
-// ======================================
 
-function formatarPreco(valor) {
+// ==========================================
+// PREÇO FINAL
+// ==========================================
 
-    return Number(valor)
-        .toLocaleString("pt-BR", {
+function obterPrecoFinal(
+    produto
+) {
 
-            style: "currency",
+    const preco =
+        Number(
+            produto.preco || 0
+        );
 
-            currency: "BRL"
 
-        });
+    const promocional =
+        Number(
+            produto.preco_promocional || 0
+        );
+
+
+    if (
+        promocional > 0 &&
+        promocional < preco
+    ) {
+
+        return promocional;
+
+    }
+
+
+    return preco;
 
 }
-// ======================================
-// CARREGAR DADOS DO CLIENTE
-// ======================================
 
-async function carregarDadosCliente() {
 
-    try {
+// ==========================================
+// QUANTIDADE
+// ==========================================
 
-        const { data, error } = await db
-            .from("profiles")
-            .select("*")
-            .eq("id", usuario.id)
-            .single();
+function normalizarQuantidade(
+    quantidade
+) {
 
-        if (error) {
+    const valor =
+        Number(
+            quantidade
+        );
 
-            console.error(error);
+
+    if (
+        !Number.isFinite(valor) ||
+        valor < 1
+    ) {
+
+        return 1;
+
+    }
+
+
+    return Math.floor(
+        valor
+    );
+
+}
+
+
+// ==========================================
+// PREENCHER NOME
+// ==========================================
+
+function preencherDadosUsuario() {
+
+    if (!usuario) {
+
+        return;
+
+    }
+
+
+    const nome =
+        document.getElementById(
+            "nome"
+        );
+
+
+    if (
+        nome &&
+        !nome.value
+    ) {
+
+        nome.value =
+            usuario
+                .user_metadata
+                ?.display_name
+            ||
+            usuario.email
+                ?.split("@")[0]
+            ||
+            "";
+
+    }
+
+}
+
+
+// ==========================================
+// CONFIGURAR PAGAMENTO
+// ==========================================
+
+function configurarPagamento() {
+
+    const opcoes =
+        document.querySelectorAll(
+            "input[name='pagamento']"
+        );
+
+
+    const trocoArea =
+        document.getElementById(
+            "troco-area"
+        );
+
+
+    const troco =
+        document.getElementById(
+            "troco"
+        );
+
+
+    function atualizarTroco() {
+
+        const selecionado =
+            document.querySelector(
+                "input[name='pagamento']:checked"
+            );
+
+
+        if (!selecionado) {
+
             return;
 
         }
 
-        document.getElementById("nome").value =
-            data.nome || "";
 
-        document.getElementById("telefone").value =
-            data.telefone || "";
+        if (
+            selecionado.value ===
+            "dinheiro"
+        ) {
 
-        document.getElementById("cidade").value =
-            data.cidade || "";
+            if (trocoArea) {
 
-        document.getElementById("endereco").value =
-            data.endereco || "";
+                trocoArea.style.display =
+                    "block";
 
-        document.getElementById("numero").value =
-            data.numero || "";
+            }
 
-        document.getElementById("bairro").value =
-            data.bairro || "";
 
-        document.getElementById("complemento").value =
-            data.complemento || "";
+        } else {
 
-    } catch (erro) {
+            if (trocoArea) {
 
-        console.error(erro);
+                trocoArea.style.display =
+                    "none";
 
-    }
+            }
 
-}
 
-// ======================================
-// VALIDAR FORMULÁRIO
-// ======================================
+            if (troco) {
 
-function validarFormulario() {
-
-    const nome =
-        document.getElementById("nome").value.trim();
-
-    const telefone =
-        document.getElementById("telefone").value.trim();
-
-    const cidade =
-        document.getElementById("cidade").value.trim();
-
-    const endereco =
-        document.getElementById("endereco").value.trim();
-
-    const numero =
-        document.getElementById("numero").value.trim();
-
-    const bairro =
-        document.getElementById("bairro").value.trim();
-
-    const pagamento =
-        document.querySelector("input[name='pagamento']:checked");
-
-    if (!nome) {
-
-        alert("Informe seu nome.");
-
-        return false;
-
-    }
-
-    if (!telefone) {
-
-        alert("Informe seu telefone.");
-
-        return false;
-
-    }
-
-    if (!cidade) {
-
-        alert("Informe sua cidade.");
-
-        return false;
-
-    }
-
-    if (!endereco) {
-
-        alert("Informe o endereço.");
-
-        return false;
-
-    }
-
-    if (!numero) {
-
-        alert("Informe o número.");
-
-        return false;
-
-    }
-
-    if (!bairro) {
-
-        alert("Informe o bairro.");
-
-        return false;
-
-    }
-
-    if (!pagamento) {
-
-        alert("Selecione uma forma de pagamento.");
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-// ======================================
-// INICIAR CHECKOUT
-// ======================================
-
-document.addEventListener("DOMContentLoaded", async () => {
-
-    if (!db) {
-
-        alert("Erro ao conectar ao banco.");
-        return;
-
-    }
-
-    await verificarUsuario();
-
-    carregarCarrinho();
-
-    if (carrinho.length === 0) {
-
-        alert("Seu carrinho está vazio.");
-
-        window.location.href = "carrinho.html";
-
-        return;
-
-    }
-
-    agruparPedidos();
-
-    atualizarResumo();
-
-    await carregarDadosCliente();
-
-});
-// ======================================
-// FINALIZAR PEDIDO
-// ======================================
-
-async function finalizarPedido() {
-
-    try {
-
-        if (!validarFormulario()) return;
-
-        const botao = document.getElementById("btn-finalizar");
-
-        if (botao) {
-
-            botao.disabled = true;
-            botao.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Finalizando...';
-
-        }
-
-        const formaPagamento =
-            document.querySelector(
-                "input[name='pagamento']:checked"
-            ).value;
-
-        const endereco = {
-
-            nome:
-                document.getElementById("nome").value.trim(),
-
-            telefone:
-                document.getElementById("telefone").value.trim(),
-
-            cidade:
-                document.getElementById("cidade").value.trim(),
-
-            endereco:
-                document.getElementById("endereco").value.trim(),
-
-            numero:
-                document.getElementById("numero").value.trim(),
-
-            bairro:
-                document.getElementById("bairro").value.trim(),
-
-            complemento:
-                document.getElementById("complemento").value.trim()
-
-        };
-
-        // Cria um pedido para cada loja
-
-        for (const loja of Object.values(pedidosPorLoja)) {
-
-            const { data: pedido, error: erroPedido } =
-                await db
-                    .from("pedidos")
-                    .insert({
-
-                        cliente_id: usuario.id,
-
-                        loja_id: loja.loja_id,
-
-                        status: "pendente",
-
-                        forma_pagamento: formaPagamento,
-
-                        valor_total: loja.total,
-
-                        nome_cliente: endereco.nome,
-
-                        telefone: endereco.telefone,
-
-                        cidade: endereco.cidade,
-
-                        endereco: endereco.endereco,
-
-                        numero: endereco.numero,
-
-                        bairro: endereco.bairro,
-
-                        complemento: endereco.complemento
-
-                    })
-                    .select()
-                    .single();
-
-            if (erroPedido) throw erroPedido;
-
-            // Salva os produtos
-
-            for (const produto of loja.produtos) {
-
-                const { error: erroItem } =
-                    await db
-                        .from("itens_pedido")
-                        .insert({
-
-                            pedido_id: pedido.id,
-
-                            produto_id: produto.id,
-
-                            quantidade: produto.quantidade,
-
-                            preco: produto.preco
-
-                        });
-
-                if (erroItem) throw erroItem;
-
-                // Atualiza estoque
-
-                const novoEstoque =
-                    Math.max(
-                        0,
-                        produto.estoque - produto.quantidade
-                    );
-
-                await db
-                    .from("produtos")
-                    .update({
-
-                        estoque: novoEstoque
-
-                    })
-                    .eq("id", produto.id);
+                troco.value =
+                    "";
 
             }
 
         }
 
-        localStorage.removeItem("carrinho");
+    }
 
-        alert("Pedido realizado com sucesso!");
 
-        window.location.href = "meus-pedidos.html";
+    opcoes.forEach(
+        (opcao) => {
+
+            opcao.addEventListener(
+                "change",
+                atualizarTroco
+            );
+
+        }
+    );
+
+
+    atualizarTroco();
+
+}
+
+
+// ==========================================
+// VALIDAR FORMULÁRIO
+// ==========================================
+
+function validarFormulario() {
+
+    const nome =
+        valorCampo(
+            "nome"
+        );
+
+
+    const telefone =
+        valorCampo(
+            "telefone"
+        );
+
+
+    const endereco =
+        valorCampo(
+            "endereco"
+        );
+
+
+    const cidade =
+        valorCampo(
+            "cidade"
+        );
+
+
+    const estado =
+        valorCampo(
+            "estado"
+        );
+
+
+    const cep =
+        valorCampo(
+            "cep"
+        );
+
+
+    const pagamento =
+        document.querySelector(
+            "input[name='pagamento']:checked"
+        );
+
+
+    if (!nome) {
+
+        alert(
+            "Informe seu nome."
+        );
+
+
+        return false;
+
+    }
+
+
+    if (!telefone) {
+
+        alert(
+            "Informe seu telefone."
+        );
+
+
+        return false;
+
+    }
+
+
+    const telefoneNumeros =
+        telefone.replace(
+            /\D/g,
+            ""
+        );
+
+
+    if (
+        telefoneNumeros.length < 10
+    ) {
+
+        alert(
+            "Informe um telefone válido."
+        );
+
+
+        return false;
+
+    }
+
+
+    if (!endereco) {
+
+        alert(
+            "Informe o endereço de entrega."
+        );
+
+
+        return false;
+
+    }
+
+
+    if (!cidade) {
+
+        alert(
+            "Informe a cidade."
+        );
+
+
+        return false;
+
+    }
+
+
+    if (
+        estado.length !== 2
+    ) {
+
+        alert(
+            "Informe o estado com 2 letras. Ex.: MG."
+        );
+
+
+        return false;
+
+    }
+
+
+    const cepNumeros =
+        cep.replace(
+            /\D/g,
+            ""
+        );
+
+
+    if (
+        cepNumeros.length !== 8
+    ) {
+
+        alert(
+            "Informe um CEP válido."
+        );
+
+
+        return false;
+
+    }
+
+
+    if (!pagamento) {
+
+        alert(
+            "Selecione uma forma de pagamento."
+        );
+
+
+        return false;
+
+    }
+
+
+    // ==================================
+    // TROCO
+    // ==================================
+
+    if (
+        pagamento.value ===
+        "dinheiro"
+    ) {
+
+        const trocoValor =
+            Number(
+                document.getElementById(
+                    "troco"
+                )?.value || 0
+            );
+
+
+        if (
+            trocoValor > 0 &&
+            trocoValor <
+                totalPedido
+        ) {
+
+            alert(
+                "O valor para troco não pode ser menor que o total do pedido."
+            );
+
+
+            return false;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+// ==========================================
+// FINALIZAR COMPRA
+// ==========================================
+
+async function finalizarCompra() {
+
+    if (
+        !validarFormulario()
+    ) {
+
+        return;
+
+    }
+
+
+    const botao =
+        document.getElementById(
+            "btn-finalizar"
+        );
+
+
+    if (botao) {
+
+        botao.disabled =
+            true;
+
+
+        botao.innerHTML = `
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            Finalizando...
+
+        `;
+
+    }
+
+
+    try {
+
+        // ==================================
+        // GARANTIR SESSÃO
+        // ==================================
+
+        const {
+            data: sessaoData
+        } = await window.db.auth.getSession();
+
+
+        if (
+            !sessaoData.session
+        ) {
+
+            throw new Error(
+                "Sua sessão expirou. Entre novamente."
+            );
+
+        }
+
+
+        // ==================================
+        // PAGAMENTO
+        // ==================================
+
+        const pagamento =
+            document.querySelector(
+                "input[name='pagamento']:checked"
+            ).value;
+
+
+        // ==================================
+        // ITENS PARA O BANCO
+        // ==================================
+
+        const itens =
+            carrinho.map(
+                (produto) => ({
+
+                    produto_id:
+                        String(
+                            produto.id
+                        ),
+
+                    quantidade:
+                        normalizarQuantidade(
+                            produto.quantidade
+                        )
+
+                })
+            );
+
+
+        // ==================================
+        // DADOS DE ENTREGA
+        // ==================================
+
+        const nome =
+            valorCampo(
+                "nome"
+            );
+
+
+        const telefone =
+            valorCampo(
+                "telefone"
+            );
+
+
+        const endereco =
+            valorCampo(
+                "endereco"
+            );
+
+
+        const cidade =
+            valorCampo(
+                "cidade"
+            );
+
+
+        const estado =
+            valorCampo(
+                "estado"
+            )
+                .toUpperCase();
+
+
+        const cep =
+            valorCampo(
+                "cep"
+            );
+
+
+        const observacaoUsuario =
+            document
+                .getElementById(
+                    "observacoes"
+                )
+                ?.value
+                .trim()
+            ||
+            "";
+
+
+        const troco =
+            Number(
+                document
+                    .getElementById(
+                        "troco"
+                    )
+                    ?.value || 0
+            );
+
+
+        // Por enquanto os dados de entrega ficam
+        // registrados em observacoes do pedido.
+
+        const linhasObservacoes = [
+
+            `Cliente: ${nome}`,
+
+            `Telefone: ${telefone}`,
+
+            `Endereço: ${endereco}`,
+
+            `Cidade/UF: ${cidade} - ${estado}`,
+
+            `CEP: ${cep}`
+
+        ];
+
+
+        if (
+            pagamento ===
+                "dinheiro" &&
+            troco > 0
+        ) {
+
+            linhasObservacoes.push(
+                `Troco para: ${formatarMoeda(
+                    troco
+                )}`
+            );
+
+        }
+
+
+        if (
+            observacaoUsuario
+        ) {
+
+            linhasObservacoes.push(
+                `Observação: ${observacaoUsuario}`
+            );
+
+        }
+
+
+        const observacoesBanco =
+            linhasObservacoes.join(
+                "\n"
+            );
+
+
+        // ==================================
+        // FINALIZAR NO BANCO
+        // ==================================
+
+        const {
+            data,
+            error
+        } = await window.db.rpc(
+            "finalizar_checkout",
+            {
+
+                p_forma_pagamento:
+                    pagamento,
+
+                p_observacoes:
+                    observacoesBanco,
+
+                p_itens:
+                    itens
+
+            }
+        );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        console.log(
+            "Pedidos criados:",
+            data
+        );
+
+
+        // ==================================
+        // LIMPAR CARRINHO
+        // ==================================
+
+        localStorage.removeItem(
+            "carrinho"
+        );
+
+
+        localStorage.removeItem(
+            "checkout"
+        );
+
+
+        if (
+            typeof window
+                .atualizarContadorCarrinho ===
+            "function"
+        ) {
+
+            window
+                .atualizarContadorCarrinho();
+
+        }
+
+
+        // ==================================
+        // SUCESSO
+        // ==================================
+
+        alert(
+            "Pedido realizado com sucesso!"
+        );
+
+
+        window.location.href =
+            "meus-pedidos.html";
+
 
     } catch (erro) {
 
-        console.error(erro);
+        console.error(
+            "Erro ao finalizar pedido:",
+            erro
+        );
 
-        alert("Erro ao finalizar o pedido:\n\n" + erro.message);
 
-        const botao = document.getElementById("btn-finalizar");
+        alert(
+            "Erro ao finalizar o pedido:\n\n" +
+            (
+                erro.message ||
+                "Erro desconhecido."
+            )
+        );
+
 
         if (botao) {
 
-            botao.disabled = false;
+            botao.disabled =
+                false;
 
-            botao.innerHTML =
-                '<i class="fa-solid fa-check"></i> Finalizar Pedido';
+
+            botao.innerHTML = `
+
+                <i class="fa-solid fa-check"></i>
+
+                Finalizar Pedido
+
+            `;
 
         }
 
     }
 
 }
+
+
+// ==========================================
+// PLACEHOLDER DE IMAGEM
+// ==========================================
+
+function mostrarPlaceholderCheckout(
+    imagem
+) {
+
+    if (!imagem) {
+
+        return;
+
+    }
+
+
+    const area =
+        imagem.closest(
+            ".area-imagem-checkout"
+        );
+
+
+    imagem.style.display =
+        "none";
+
+
+    imagem.removeAttribute(
+        "src"
+    );
+
+
+    if (!area) {
+
+        return;
+
+    }
+
+
+    const placeholder =
+        area.querySelector(
+            ".imagem-checkout-placeholder"
+        );
+
+
+    if (placeholder) {
+
+        placeholder.style.display =
+            "flex";
+
+    }
+
+}
+
+
+// ==========================================
+// PEGAR VALOR DE CAMPO
+// ==========================================
+
+function valorCampo(
+    id
+) {
+
+    return document
+        .getElementById(
+            id
+        )
+        ?.value
+        .trim()
+        ||
+        "";
+
+}
+
+
+// ==========================================
+// FORMATAR MOEDA
+// ==========================================
+
+function formatarMoeda(
+    valor
+) {
+
+    return Number(
+        valor || 0
+    )
+        .toLocaleString(
+            "pt-BR",
+            {
+                style:
+                    "currency",
+
+                currency:
+                    "BRL"
+            }
+        );
+
+}
+
+
+// ==========================================
+// ESCAPAR HTML
+// ==========================================
+
+function escaparHTML(
+    valor
+) {
+
+    return String(
+        valor ?? ""
+    )
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+
+// ==========================================
+// GLOBAL
+// ==========================================
+
+window.mostrarPlaceholderCheckout =
+    mostrarPlaceholderCheckout;

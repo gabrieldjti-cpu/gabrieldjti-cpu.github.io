@@ -1,84 +1,177 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
 
-    <title>Loja | Comércio da Cidade</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <link rel="stylesheet" href="css/loja.css" />
+  <title>Loja | Comércio da Cidade</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="stylesheet"
+    href="css/loja.css"
+  />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="components/header.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
 
-  <body>
-    <div id="header"></div>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
 
-    <main class="container">
-      <section class="loja-info">
-        <img id="logoLoja" src="img/loja.png" />
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
 
-        <div>
-          <h1 id="nomeLoja">Carregando...</h1>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
 
-          <p>
-            <i class="fa-solid fa-layer-group"></i>
+</head>
 
-            <span id="categoriaLoja"></span>
-          </p>
+<body>
 
-          <p>
-            <i class="fa-solid fa-location-dot"></i>
+  <!-- HEADER -->
 
-            <span id="cidadeLoja"></span>
-          </p>
+  <div id="header"></div>
 
-          <p>
-            <i class="fa-solid fa-phone"></i>
 
-            <span id="telefoneLoja"></span>
-          </p>
+  <!-- CONTEÚDO -->
 
-          <a id="btnWhatsapp" target="_blank" class="btn-whatsapp">
-            <i class="fa-brands fa-whatsapp"></i>
+  <main class="container">
 
-            Conversar
-          </a>
-        </div>
-      </section>
 
-      <section class="pesquisa">
-        <input type="text" id="pesquisa" placeholder="Pesquisar produtos..." />
-      </section>
+    <!-- INFORMAÇÕES DA LOJA -->
 
-      <section>
-        <h2>Produtos</h2>
+    <section class="loja-info">
 
-        <div id="listaProdutos" class="produtos"></div>
-      </section>
-    </main>
 
-    <footer>
-      <p>© 2026 Comércio da Cidade</p>
-    </footer>
+      <!-- LOGO
+           Sem src padrão para evitar 404 -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <img
+        id="logoLoja"
+        alt="Logo da loja"
+        style="display: none;"
+      />
 
-    <script src="js/supabase.js"></script>
-    
-    <script src="components/header.js"></script>
 
-    <script src="js/loja.js"></script>
-  </body>
+      <div>
+
+        <h1 id="nomeLoja">
+          Carregando...
+        </h1>
+
+
+        <p>
+
+          <i class="fa-solid fa-layer-group"></i>
+
+          <span id="categoriaLoja"></span>
+
+        </p>
+
+
+        <p>
+
+          <i class="fa-solid fa-location-dot"></i>
+
+          <span id="cidadeLoja"></span>
+
+        </p>
+
+
+        <p>
+
+          <i class="fa-solid fa-phone"></i>
+
+          <span id="telefoneLoja"></span>
+
+        </p>
+
+
+        <a
+          id="btnWhatsapp"
+          class="btn-whatsapp"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <i class="fa-brands fa-whatsapp"></i>
+
+          Conversar
+
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- PESQUISA -->
+
+    <section class="pesquisa">
+
+      <input
+        type="text"
+        id="pesquisa"
+        placeholder="Pesquisar produtos..."
+      />
+
+    </section>
+
+
+    <!-- PRODUTOS -->
+
+    <section>
+
+      <h2>
+        Produtos
+      </h2>
+
+      <div
+        id="listaProdutos"
+        class="produtos"
+      ></div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <p>
+      © 2026 Comércio da Cidade
+    </p>
+
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="js/supabase.js"></script>
+
+  <script src="components/header.js"></script>
+
+  <script src="js/loja.js"></script>
+
+</body>
+
 </html>

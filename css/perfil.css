@@ -564,3 +564,86 @@ body{
     }
 
 }
+/* ===========================
+   BOTÃO VER TODOS OS PEDIDOS
+=========================== */
+
+.btn-ver-pedidos {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+    padding: 14px 18px;
+
+    border: 2px solid #2563eb;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+}
+
+
+.btn-ver-pedidos i {
+
+    font-size: 16px;
+
+}
+
+
+.btn-ver-pedidos:hover {
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, .22);
+
+}
+
+
+.btn-ver-pedidos:active {
+
+    transform: translateY(0);
+
+}
+
+
+/* CELULAR */
+
+@media(max-width:600px) {
+
+    .btn-ver-pedidos {
+
+        padding: 13px;
+
+        font-size: 14px;
+
+    }
+
+}

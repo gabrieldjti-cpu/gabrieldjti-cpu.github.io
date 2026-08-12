@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Meus Pedidos | Comércio da Cidade
+    </title>
+
+
+    <!-- HEADER -->
+
+    <link
+        rel="stylesheet"
+        href="components/header.css"
+    >
+
+
+    <!-- CSS DA PÁGINA -->
+
+    <link
+        rel="stylesheet"
+        href="css/meus-pedidos.css"
+    >
+
+
+    <!-- GOOGLE FONTS -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- FONT AWESOME -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ======================================
+         HEADER
+    ======================================= -->
+
+    <div id="header"></div>
+
+
+    <!-- ======================================
+         CONTEÚDO
+    ======================================= -->
+
+    <main class="container">
+
+
+        <!-- ==================================
+             TOPO
+        =================================== -->
+
+        <div class="topo-pagina">
+
+            <div>
+
+                <h1>
+
+                    <i class="fa-solid fa-box"></i>
+
+                    Meus Pedidos
+
+                </h1>
+
+                <p>
+                    Acompanhe suas compras realizadas
+                    no Comércio da Cidade.
+                </p>
+
+            </div>
+
+
+            <a
+                href="index.html"
+                class="btn-comprar"
+            >
+
+                <i class="fa-solid fa-store"></i>
+
+                Continuar Comprando
+
+            </a>
+
+        </div>
+
+
+        <!-- ==================================
+             FILTROS
+        =================================== -->
+
+        <section class="filtros">
+
+            <button
+                type="button"
+                class="filtro ativo"
+                data-status="todos"
+            >
+
+                Todos
+
+            </button>
+
+
+            <button
+                type="button"
+                class="filtro"
+                data-status="pendente"
+            >
+
+                <i class="fa-solid fa-clock"></i>
+
+                Pendentes
+
+            </button>
+
+
+            <button
+                type="button"
+                class="filtro"
+                data-status="preparando"
+            >
+
+                <i class="fa-solid fa-box-open"></i>
+
+                Preparando
+
+            </button>
+
+
+            <button
+                type="button"
+                class="filtro"
+                data-status="finalizado"
+            >
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Finalizados
+
+            </button>
+
+
+            <button
+                type="button"
+                class="filtro"
+                data-status="cancelado"
+            >
+
+                <i class="fa-solid fa-circle-xmark"></i>
+
+                Cancelados
+
+            </button>
+
+        </section>
+
+
+        <!-- ==================================
+             LISTA DE PEDIDOS
+        =================================== -->
+
+        <section
+            id="lista-pedidos"
+            class="lista-pedidos"
+        >
+
+
+            <!-- CARREGANDO -->
+
+            <div class="carregando">
+
+                <i
+                    class="fa-solid fa-spinner fa-spin"
+                ></i>
+
+                <p>
+                    Carregando seus pedidos...
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ======================================
+         MODAL DE DETALHES
+    ======================================= -->
+
+    <div
+        id="modal-pedido"
+        class="modal"
+    >
+
+        <div class="modal-overlay"></div>
+
+
+        <div class="modal-conteudo">
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="modal-topo">
+
+                <div>
+
+                    <h2>
+
+                        <i class="fa-solid fa-receipt"></i>
+
+                        Detalhes do Pedido
+
+                    </h2>
+
+                    <span id="modal-numero-pedido"></span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btn-fechar-modal"
+                    class="btn-fechar"
+                    aria-label="Fechar"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- CONTEÚDO -->
+
+            <div id="conteudo-modal-pedido">
+
+                <!-- JS -->
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <footer>
+
+        <p>
+
+            © 2026 Comércio da Cidade -
+            Todos os direitos reservados.
+
+        </p>
+
+    </footer>
+
+
+    <!-- ======================================
+         SCRIPTS
+    ======================================= -->
+
+
+    <!-- SUPABASE -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+
+    <!-- CONFIGURAÇÃO SUPABASE -->
+
+    <script src="js/supabase.js"></script>
+
+
+    <!-- HEADER -->
+
+    <script src="components/header.js"></script>
+
+
+    <!-- MEUS PEDIDOS -->
+
+    <script src="js/meus-pedidos.js"></script>
+
+
+</body>
+
+</html>
