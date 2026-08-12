@@ -12,119 +12,9 @@
 body{
     background:#f5f7fb;
     color:#333;
+    min-height:100vh;
 }
 
-/* ===================================
-   HEADER
-=================================== */
-
-header{
-
-    background:#198754;
-
-    color:#fff;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:18px 40px;
-
-    box-shadow:0 4px 12px rgba(0,0,0,.15);
-
-    position:sticky;
-
-    top:0;
-
-    z-index:1000;
-
-}
-
-.logo{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-}
-
-.logo i{
-
-    font-size:30px;
-
-}
-
-.logo h2{
-
-    font-size:24px;
-
-}
-
-nav{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-
-}
-
-nav a{
-
-    color:white;
-
-    text-decoration:none;
-
-    font-weight:500;
-
-    transition:.3s;
-
-}
-
-nav a:hover{
-
-    opacity:.8;
-
-}
-
-nav a.ativo{
-
-    border-bottom:2px solid #fff;
-
-    padding-bottom:4px;
-
-}
-
-nav button{
-
-    background:#dc3545;
-
-    color:#fff;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    font-weight:600;
-
-    transition:.3s;
-
-}
-
-nav button:hover{
-
-    background:#bb2d3b;
-
-}
 
 /* ===================================
    CONTAINER
@@ -133,12 +23,12 @@ nav button:hover{
 .container{
 
     width:95%;
-
     max-width:1200px;
 
-    margin:30px auto;
+    margin:30px auto 50px;
 
 }
+
 
 /* ===================================
    CARD
@@ -146,7 +36,7 @@ nav button:hover{
 
 .card{
 
-    background:white;
+    background:#fff;
 
     border-radius:16px;
 
@@ -154,15 +44,19 @@ nav button:hover{
 
     margin-bottom:25px;
 
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.08);
 
 }
+
+
+/* ===================================
+   TÍTULO DOS CARDS
+=================================== */
 
 .card h2{
 
     color:#198754;
-
-    margin-bottom:20px;
 
     display:flex;
 
@@ -170,40 +64,39 @@ nav button:hover{
 
     gap:10px;
 
+    font-size:22px;
+
 }
 
+
 /* ===================================
-   INFO DA LOJA
+   TOPO DOS CARDS
 =================================== */
 
-.info-loja{
+.topo-card{
 
-    display:grid;
+    display:flex;
 
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    align-items:center;
 
-    gap:15px;
+    justify-content:space-between;
+
+    gap:20px;
 
     margin-bottom:25px;
 
 }
 
-.info-loja p{
 
-    background:#f8f9fa;
+.topo-card h2{
 
-    border-left:5px solid #198754;
-
-    padding:15px;
-
-    border-radius:10px;
-
-    font-size:15px;
+    margin-bottom:0;
 
 }
 
+
 /* ===================================
-   BOTÃO
+   BOTÕES
 =================================== */
 
 .btn{
@@ -212,97 +105,594 @@ nav button:hover{
 
     align-items:center;
 
+    justify-content:center;
+
     gap:8px;
 
     background:#198754;
 
-    color:white;
+    color:#fff;
 
     text-decoration:none;
 
     border:none;
 
-    padding:12px 22px;
+    padding:12px 20px;
 
     border-radius:10px;
 
     cursor:pointer;
 
-    font-size:15px;
+    font-size:14px;
 
     font-weight:600;
 
-    transition:.3s;
+    transition:
+        background .3s,
+        transform .2s;
 
 }
+
 
 .btn:hover{
 
     background:#146c43;
 
+    transform:translateY(-2px);
+
 }
 
+
+.btn-secundario{
+
+    background:#eef1f4;
+
+    color:#333;
+
+}
+
+
+.btn-secundario:hover{
+
+    background:#dfe3e7;
+
+    color:#222;
+
+}
+
+
 /* ===================================
-   AÇÕES RÁPIDAS
+   AÇÕES DOS PRODUTOS
 =================================== */
 
-.atalhos{
+.acoes-produtos{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/* ===================================
+   ÁREA PRINCIPAL DA LOJA
+=================================== */
+
+.dados-loja-painel{
 
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    grid-template-columns:180px 1fr;
+
+    gap:25px;
+
+    align-items:start;
+
+}
+
+
+/* ===================================
+   ÁREA DA LOGO
+=================================== */
+
+.area-logo-loja{
+
+    width:180px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+/* ===================================
+   LOGO REAL
+=================================== */
+
+.logo-loja-painel{
+
+    width:160px;
+
+    height:160px;
+
+    object-fit:cover;
+
+    border-radius:20px;
+
+    background:#f8f9fa;
+
+    border:1px solid #e3e6e9;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+/* ===================================
+   PLACEHOLDER SEM LOGO
+=================================== */
+
+.logo-loja-placeholder{
+
+    width:160px;
+
+    height:160px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#f0f7f3;
+
+    border:2px dashed #198754;
+
+    color:#198754;
+
+}
+
+
+.logo-loja-placeholder i{
+
+    font-size:60px;
+
+}
+
+
+/* ===================================
+   INFORMAÇÕES DA LOJA
+=================================== */
+
+.info-loja{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px,1fr)
+        );
+
+    gap:15px;
+
+}
+
+
+.info-loja p{
+
+    background:#f8f9fa;
+
+    border-left:
+        5px solid #198754;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    line-height:1.6;
+
+}
+
+
+.info-loja strong{
+
+    color:#333;
+
+}
+
+
+/* ===================================
+   LISTA DE PRODUTOS
+=================================== */
+
+#lista-produtos{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(280px,1fr)
+        );
 
     gap:20px;
 
 }
 
-.atalho{
 
-    background:white;
+/* ===================================
+   CARD DO PRODUTO
+=================================== */
 
-    border:2px solid #198754;
+.produto-card{
 
-    border-radius:15px;
+    background:#fff;
 
-    text-decoration:none;
+    border:1px solid #eee;
 
-    color:#198754;
+    border-radius:16px;
 
-    padding:25px;
+    overflow:hidden;
 
-    text-align:center;
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.06);
 
-    transition:.3s;
-
-}
-
-.atalho:hover{
-
-    background:#198754;
-
-    color:white;
-
-    transform:translateY(-5px);
+    transition:
+        transform .3s,
+        box-shadow .3s;
 
 }
 
-.atalho i{
 
-    font-size:34px;
+.produto-card:hover{
 
-    margin-bottom:15px;
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.1);
+
+}
+
+
+/* ===================================
+   FOTO DO PRODUTO
+=================================== */
+
+.foto-produto{
+
+    width:100%;
+
+    height:210px;
+
+    object-fit:cover;
 
     display:block;
 
+    background:#f1f1f1;
+
 }
 
-.atalho span{
+
+/* ===================================
+   INFORMAÇÕES DO PRODUTO
+=================================== */
+
+.produto-info{
+
+    padding:18px;
+
+}
+
+
+.produto-info h3{
+
+    margin:12px 0 8px;
 
     font-size:18px;
+
+    color:#333;
+
+}
+
+
+.produto-info .descricao{
+
+    color:#666;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+    margin-bottom:12px;
+
+}
+
+
+/* ===================================
+   CATEGORIA DO PRODUTO
+=================================== */
+
+.categoria{
+
+    display:inline-block;
+
+    background:#e8f5ee;
+
+    color:#198754;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    font-size:12px;
 
     font-weight:600;
 
 }
+
+
+/* ===================================
+   PREÇOS
+=================================== */
+
+.precos{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
+    margin:12px 0;
+
+}
+
+
+.preco{
+
+    color:#198754;
+
+    font-size:20px;
+
+}
+
+
+.promo{
+
+    color:#dc3545;
+
+    font-size:13px;
+
+    font-weight:500;
+
+}
+
+
+/* ===================================
+   STATUS
+=================================== */
+
+.status{
+
+    display:inline-block;
+
+    margin-top:5px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+.status.ativo{
+
+    color:#198754;
+
+}
+
+
+.status.inativo{
+
+    color:#dc3545;
+
+}
+
+
+/* ===================================
+   AÇÕES DO PRODUTO
+=================================== */
+
+.acoes{
+
+    display:flex;
+
+    gap:10px;
+
+    padding:0 18px 18px;
+
+}
+
+
+.btn-editar,
+.btn-excluir{
+
+    flex:1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:7px;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:11px;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    font-size:13px;
+
+    transition:
+        transform .2s,
+        opacity .2s;
+
+}
+
+
+.btn-editar{
+
+    background:#198754;
+
+}
+
+
+.btn-excluir{
+
+    background:#dc3545;
+
+}
+
+
+.btn-editar:hover,
+.btn-excluir:hover{
+
+    transform:translateY(-2px);
+
+    opacity:.9;
+
+}
+
+
+/* ===================================
+   SEM PRODUTOS
+=================================== */
+
+.sem-produtos{
+
+    grid-column:1 / -1;
+
+    width:100%;
+
+    text-align:center;
+
+    padding:45px 20px;
+
+    border:2px dashed #dcdcdc;
+
+    border-radius:12px;
+
+    background:#fafafa;
+
+}
+
+
+.sem-produtos i{
+
+    font-size:55px;
+
+    color:#198754;
+
+    margin-bottom:18px;
+
+}
+
+
+.sem-produtos h3{
+
+    margin-bottom:10px;
+
+    color:#333;
+
+}
+
+
+.sem-produtos p{
+
+    color:#666;
+
+    margin-bottom:20px;
+
+    font-size:14px;
+
+}
+
+
+/* ===================================
+   PEDIDOS
+=================================== */
+
+#lista-pedidos{
+
+    margin-top:20px;
+
+}
+
+
+.sem-pedidos{
+
+    width:100%;
+
+    text-align:center;
+
+    padding:40px 20px;
+
+    border:2px dashed #dcdcdc;
+
+    border-radius:12px;
+
+    background:#fafafa;
+
+}
+
+
+.sem-pedidos i{
+
+    font-size:50px;
+
+    color:#198754;
+
+    margin-bottom:15px;
+
+}
+
+
+.sem-pedidos h3{
+
+    margin-bottom:8px;
+
+}
+
+
+.sem-pedidos p{
+
+    color:#666;
+
+    font-size:14px;
+
+}
+
 
 /* ===================================
    ESTATÍSTICAS
@@ -312,101 +702,251 @@ nav button:hover{
 
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
 
     gap:20px;
 
+    margin-top:20px;
+
 }
+
 
 .estatisticas .box{
 
     background:#198754;
 
-    color:white;
+    color:#fff;
 
-    padding:30px;
+    padding:28px 20px;
 
     border-radius:15px;
 
     text-align:center;
 
-    transition:.3s;
+    transition:
+        transform .3s,
+        box-shadow .3s;
 
 }
+
 
 .estatisticas .box:hover{
 
     transform:translateY(-5px);
 
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.12);
+
 }
+
+
+.estatisticas .box > i{
+
+    font-size:28px;
+
+    margin-bottom:12px;
+
+    opacity:.9;
+
+}
+
 
 .estatisticas h3{
 
-    font-size:34px;
+    font-size:28px;
 
-    margin-bottom:10px;
+    margin-bottom:5px;
 
 }
+
 
 .estatisticas p{
 
-    font-size:16px;
+    font-size:14px;
+
+    opacity:.9;
 
 }
 
+
 /* ===================================
-   RESPONSIVO
+   FOOTER
+=================================== */
+
+footer{
+
+    margin-top:40px;
+
+    padding:25px 20px;
+
+    text-align:center;
+
+    background:#fff;
+
+    border-top:1px solid #e5e5e5;
+
+    color:#666;
+
+    font-size:13px;
+
+}
+
+
+/* ===================================
+   RESPONSIVO - TABLET
 =================================== */
 
 @media(max-width:900px){
 
-    header{
+    .dados-loja-painel{
 
-        flex-direction:column;
-
-        gap:20px;
-
-        text-align:center;
-
-        padding:20px;
+        grid-template-columns:140px 1fr;
 
     }
 
-    nav{
 
-        flex-wrap:wrap;
+    .area-logo-loja{
 
-        justify-content:center;
+        width:140px;
+
+    }
+
+
+    .logo-loja-painel,
+    .logo-loja-placeholder{
+
+        width:130px;
+
+        height:130px;
+
+    }
+
+
+    .logo-loja-placeholder i{
+
+        font-size:50px;
+
+    }
+
+
+    .estatisticas{
+
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
 
     }
 
 }
 
-@media(max-width:600px){
+
+/* ===================================
+   RESPONSIVO - CELULAR
+=================================== */
+
+@media(max-width:650px){
 
     .container{
 
         width:92%;
 
+        margin-top:20px;
+
     }
+
 
     .card{
 
         padding:18px;
 
+        border-radius:14px;
+
     }
+
+
+    .topo-card{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+
+    .topo-card .btn{
+
+        width:100%;
+
+    }
+
+
+    .acoes-produtos{
+
+        width:100%;
+
+    }
+
+
+    .acoes-produtos .btn{
+
+        flex:1;
+
+    }
+
+
+    /* LOGO */
+
+    .dados-loja-painel{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .area-logo-loja{
+
+        width:100%;
+
+    }
+
+
+    .logo-loja-painel,
+    .logo-loja-placeholder{
+
+        width:140px;
+
+        height:140px;
+
+    }
+
+
+    /* INFO */
 
     .info-loja{
 
         grid-template-columns:1fr;
 
+        width:100%;
+
     }
 
-    .atalhos{
+
+    /* PRODUTOS */
+
+    #lista-produtos{
 
         grid-template-columns:1fr;
 
     }
+
+
+    /* ESTATÍSTICAS */
 
     .estatisticas{
 
@@ -415,142 +955,40 @@ nav button:hover{
     }
 
 }
-.titulo-card{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
 
-.link-ver{
-    color:#198754;
-    text-decoration:none;
-    font-size:14px;
-    font-weight:600;
-}
 
-.link-ver:hover{
-    text-decoration:underline;
-}
+/* ===================================
+   RESPONSIVO - CELULAR PEQUENO
+=================================== */
 
-.sem-produtos{
-    width:100%;
-    text-align:center;
-    padding:40px 20px;
-    border:2px dashed #dcdcdc;
-    border-radius:12px;
-}
+@media(max-width:420px){
 
-.sem-produtos i{
-    font-size:60px;
-    color:#198754;
-    margin-bottom:20px;
-}
+    .acoes-produtos{
 
-.sem-produtos h3{
-    margin-bottom:10px;
-}
+        flex-direction:column;
 
-.sem-produtos p{
-    color:#666;
-    margin-bottom:20px;
-}
-#lista-produtos{
+    }
 
-    display:grid;
 
-    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    .acoes-produtos .btn{
 
-    gap:20px;
+        width:100%;
 
-    margin-top:30px;
+    }
 
-}
 
-.produto-card{
+    .acoes{
 
-    background:#fff;
+        flex-direction:column;
 
-    border-radius:16px;
+    }
 
-    overflow:hidden;
 
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    .btn-editar,
+    .btn-excluir{
 
-}
+        width:100%;
 
-.foto-produto{
-
-    width:100%;
-
-    height:220px;
-
-    object-fit:cover;
-
-}
-
-.produto-info{
-
-    padding:20px;
-
-}
-
-.produto-info h3{
-
-    margin:10px 0;
-
-}
-
-.categoria{
-
-    background:#198754;
-
-    color:#fff;
-
-    padding:5px 10px;
-
-    border-radius:20px;
-
-    font-size:12px;
-
-}
-
-.acoes{
-
-    display:flex;
-
-    gap:10px;
-
-    padding:20px;
-
-}
-
-.btn-editar,
-.btn-excluir{
-
-    flex:1;
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:12px;
-
-    color:white;
-
-    cursor:pointer;
-
-    font-weight:600;
-
-}
-
-.btn-editar{
-
-    background:#198754;
-
-}
-
-.btn-excluir{
-
-    background:#dc3545;
+    }
 
 }

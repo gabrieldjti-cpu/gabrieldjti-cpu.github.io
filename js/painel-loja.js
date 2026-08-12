@@ -16,19 +16,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
 
-        // ==================================
-        // VERIFICAR SUPABASE
-        // ==================================
-
         if (!window.db) {
 
-            console.error(
-                "Supabase não encontrado."
-            );
+            console.error("Supabase não encontrado.");
 
-            alert(
-                "Erro ao conectar ao Supabase."
-            );
+            alert("Erro ao conectar ao Supabase.");
 
             return;
         }
@@ -71,14 +63,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         console.log(
-            "Usuário:",
-            usuario
+            "Usuário conectado:",
+            usuario.id
         );
 
-
-        // ==================================
-        // CARREGAR LOJA
-        // ==================================
 
         await carregarLoja();
 
@@ -100,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 // ======================================
-// CARREGAR DADOS DA LOJA
+// CARREGAR LOJA
 // ======================================
 
 async function carregarLoja() {
@@ -139,15 +127,6 @@ async function carregarLoja() {
             data
         );
 
-        console.log(
-            "Erro:",
-            error
-        );
-
-
-        // ==================================
-        // ERRO
-        // ==================================
 
         if (error) {
 
@@ -161,15 +140,10 @@ async function carregarLoja() {
 
 
         // ==================================
-        // SEM LOJA
+        // NÃO POSSUI LOJA
         // ==================================
 
         if (!data) {
-
-            console.log(
-                "Usuário não possui loja."
-            );
-
 
             window.location.href =
                 "cadastrar-loja.html";
@@ -178,11 +152,14 @@ async function carregarLoja() {
         }
 
 
+        loja = data;
+
+
         // ==================================
-        // GUARDAR LOJA
+        // LOGO
         // ==================================
 
-        loja = data;
+        carregarLogoLoja();
 
 
         // ==================================
@@ -193,6 +170,7 @@ async function carregarLoja() {
             document.getElementById(
                 "nome-loja"
             );
+
 
         if (nomeLoja) {
 
@@ -210,6 +188,7 @@ async function carregarLoja() {
             document.getElementById(
                 "categoria-loja"
             );
+
 
         if (categoriaLoja) {
 
@@ -229,6 +208,7 @@ async function carregarLoja() {
                 "cidade-loja"
             );
 
+
         if (cidadeLoja) {
 
             cidadeLoja.textContent =
@@ -245,6 +225,7 @@ async function carregarLoja() {
             document.getElementById(
                 "telefone-loja"
             );
+
 
         if (telefoneLoja) {
 
@@ -263,27 +244,26 @@ async function carregarLoja() {
                 "status-loja"
             );
 
+
         if (statusLoja) {
 
-            statusLoja.innerHTML =
+            statusLoja.textContent =
                 loja.ativa
-
                     ? "🟢 Ativa"
-
                     : "🔴 Inativa";
 
         }
 
 
         // ==================================
-        // BOTÃO EDITAR LOJA
+        // BOTÃO EDITAR
         // ==================================
 
         configurarBotaoEditar();
 
 
         // ==================================
-        // CARREGAR PRODUTOS
+        // PRODUTOS
         // ==================================
 
         await carregarProdutos();
@@ -320,7 +300,98 @@ async function carregarLoja() {
 
 
 // ======================================
-// CONFIGURAR BOTÃO EDITAR
+// CARREGAR LOGO DA LOJA
+// ======================================
+
+function carregarLogoLoja() {
+
+    const imagem =
+        document.getElementById(
+            "logo-loja"
+        );
+
+
+    const placeholder =
+        document.getElementById(
+            "logo-loja-placeholder"
+        );
+
+
+    if (!imagem || !placeholder) {
+
+        console.warn(
+            "Elementos da logo não encontrados."
+        );
+
+        return;
+    }
+
+
+    // ==================================
+    // POSSUI LOGO
+    // ==================================
+
+    if (loja?.logo_url) {
+
+        imagem.src =
+            loja.logo_url;
+
+
+        imagem.hidden =
+            false;
+
+
+        placeholder.style.display =
+            "none";
+
+
+        imagem.onerror = () => {
+
+            console.warn(
+                "Erro ao carregar logo da loja."
+            );
+
+
+            imagem.hidden =
+                true;
+
+
+            imagem.removeAttribute(
+                "src"
+            );
+
+
+            placeholder.style.display =
+                "flex";
+
+        };
+
+
+        return;
+    }
+
+
+    // ==================================
+    // NÃO POSSUI LOGO
+    // ==================================
+
+    imagem.hidden =
+        true;
+
+
+    imagem.removeAttribute(
+        "src"
+    );
+
+
+    placeholder.style.display =
+        "flex";
+
+}
+
+
+// ======================================
+// BOTÃO EDITAR LOJA
 // ======================================
 
 function configurarBotaoEditar() {
@@ -333,31 +404,17 @@ function configurarBotaoEditar() {
 
     if (!botao) {
 
-        console.warn(
-            "Botão btnEditarLoja não encontrado."
-        );
-
         return;
     }
 
 
     if (!loja?.id) {
 
-        console.warn(
-            "ID da loja não encontrado."
-        );
-
         return;
     }
 
 
     botao.onclick = () => {
-
-        console.log(
-            "Abrindo edição da loja:",
-            loja.id
-        );
-
 
         window.location.href =
             `editar-loja.html?id=${loja.id}`;
@@ -374,11 +431,6 @@ function configurarBotaoEditar() {
 async function carregarProdutos() {
 
     try {
-
-        console.log(
-            "Carregando produtos..."
-        );
-
 
         const {
             data,
@@ -407,27 +459,24 @@ async function carregarProdutos() {
             );
 
 
-        console.log(
-            "Produtos:",
-            data
-        );
-
-
-        console.log(
-            "Erro produtos:",
-            error
-        );
-
-
         if (error) {
+
+            console.error(
+                "Erro ao carregar produtos:",
+                error
+            );
 
             throw error;
 
         }
 
 
+        const produtos =
+            data || [];
+
+
         // ==================================
-        // ESTATÍSTICA DE PRODUTOS
+        // TOTAL
         // ==================================
 
         const totalProdutos =
@@ -439,7 +488,7 @@ async function carregarProdutos() {
         if (totalProdutos) {
 
             totalProdutos.textContent =
-                data?.length || 0;
+                produtos.length;
 
         }
 
@@ -465,13 +514,10 @@ async function carregarProdutos() {
 
 
         // ==================================
-        // NENHUM PRODUTO
+        // SEM PRODUTOS
         // ==================================
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (produtos.length === 0) {
 
             lista.innerHTML = `
 
@@ -484,11 +530,9 @@ async function carregarProdutos() {
                     </h3>
 
                     <p>
-
                         Clique em
                         <strong>Novo Produto</strong>
                         para cadastrar seu primeiro produto.
-
                     </p>
 
                     <a
@@ -515,23 +559,61 @@ async function carregarProdutos() {
         // MOSTRAR PRODUTOS
         // ==================================
 
-        data.forEach(produto => {
+        produtos.forEach(produto => {
+
+            const preco =
+                Number(
+                    produto.preco || 0
+                );
+
+
+            const temPromocao =
+                produto.preco_promocional !== null &&
+                produto.preco_promocional !== undefined &&
+                Number(
+                    produto.preco_promocional
+                ) > 0;
+
+
+            const imagemProduto =
+                produto.imagem_url || "";
+
 
             lista.innerHTML += `
 
                 <div class="produto-card">
 
-                    <img
-                        src="${
-                            produto.imagem_url ||
-                            "img/sem-imagem.png"
-                        }"
-                        alt="${produto.nome}"
-                        class="foto-produto"
-                    >
+
+                    ${
+                        imagemProduto
+                            ? `
+                                <img
+                                    src="${imagemProduto}"
+                                    alt="${produto.nome || "Produto"}"
+                                    class="foto-produto"
+                                >
+                              `
+                            : `
+                                <div
+                                    class="foto-produto"
+                                    style="
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        font-size:45px;
+                                        color:#198754;
+                                    "
+                                >
+
+                                    <i class="fa-solid fa-box"></i>
+
+                                </div>
+                              `
+                    }
 
 
                     <div class="produto-info">
+
 
                         <span class="categoria">
 
@@ -547,7 +629,10 @@ async function carregarProdutos() {
 
                         <h3>
 
-                            ${produto.nome}
+                            ${
+                                produto.nome ||
+                                "Produto"
+                            }
 
                         </h3>
 
@@ -564,39 +649,41 @@ async function carregarProdutos() {
 
                         <div class="precos">
 
-                            <strong class="preco">
-
-                                R$
-                                ${Number(
-                                    produto.preco || 0
-                                ).toFixed(2)}
-
-                            </strong>
-
 
                             ${
-                                produto.preco_promocional
+                                temPromocao
                                     ? `
 
                                         <span class="promo">
 
                                             De R$
-                                            ${Number(
-                                                produto.preco
-                                            ).toFixed(2)}
+                                            ${preco.toFixed(2)}
 
-                                            por
+                                        </span>
+
+
+                                        <strong class="preco">
 
                                             R$
                                             ${Number(
                                                 produto.preco_promocional
                                             ).toFixed(2)}
 
-                                        </span>
+                                        </strong>
 
-                                    `
-                                    : ""
+                                      `
+                                    : `
+
+                                        <strong class="preco">
+
+                                            R$
+                                            ${preco.toFixed(2)}
+
+                                        </strong>
+
+                                      `
                             }
+
 
                         </div>
 
@@ -607,7 +694,9 @@ async function carregarProdutos() {
                                 Estoque:
                             </strong>
 
-                            ${produto.estoque ?? 0}
+                            ${
+                                produto.estoque ?? 0
+                            }
 
                         </p>
 
@@ -616,13 +705,11 @@ async function carregarProdutos() {
 
                             ${
                                 produto.ativo
-
                                     ? `
                                         <span class="status ativo">
                                             🟢 Ativo
                                         </span>
                                       `
-
                                     : `
                                         <span class="status inativo">
                                             🔴 Inativo
@@ -632,6 +719,7 @@ async function carregarProdutos() {
 
                         </p>
 
+
                     </div>
 
 
@@ -639,10 +727,9 @@ async function carregarProdutos() {
 
 
                         <button
+                            type="button"
                             class="btn-editar"
-                            onclick="
-                                editarProduto('${produto.id}')
-                            "
+                            onclick="editarProduto('${produto.id}')"
                         >
 
                             <i class="fa-solid fa-pen"></i>
@@ -653,10 +740,9 @@ async function carregarProdutos() {
 
 
                         <button
+                            type="button"
                             class="btn-excluir"
-                            onclick="
-                                excluirProduto('${produto.id}')
-                            "
+                            onclick="excluirProduto('${produto.id}')"
                         >
 
                             <i class="fa-solid fa-trash"></i>
@@ -754,6 +840,16 @@ async function excluirProduto(id) {
     }
 
 
+    if (!loja?.id) {
+
+        alert(
+            "Loja não encontrada."
+        );
+
+        return;
+    }
+
+
     const confirmar =
         confirm(
             "Deseja realmente excluir este produto?"
@@ -830,10 +926,9 @@ async function carregarEstatisticas() {
 
     try {
 
-        if (!loja) {
+        if (!loja?.id) {
 
             return;
-
         }
 
 
@@ -865,7 +960,7 @@ async function carregarEstatisticas() {
         if (erroProdutos) {
 
             console.error(
-                "Erro estatística produtos:",
+                "Erro ao contar produtos:",
                 erroProdutos
             );
 
@@ -887,7 +982,7 @@ async function carregarEstatisticas() {
 
 
         // ==================================
-        // PEDIDOS
+        // TOTAL DE PEDIDOS
         // ==================================
 
         const totalPedidos =
@@ -905,7 +1000,7 @@ async function carregarEstatisticas() {
 
 
         // ==================================
-        // VENDAS
+        // TOTAL DE VENDAS
         // ==================================
 
         const totalVendas =
@@ -949,7 +1044,6 @@ async function carregarPedidos() {
     if (!lista) {
 
         return;
-
     }
 
 
@@ -965,61 +1059,13 @@ async function carregarPedidos() {
 
             <p>
 
-                Quando algum cliente comprar
-                um produto, os pedidos
-                aparecerão aqui.
+                Quando algum cliente fizer
+                um pedido, ele aparecerá aqui.
 
             </p>
 
         </div>
 
     `;
-
-}
-
-
-// ======================================
-// FAZER LOGOUT
-// ======================================
-
-async function fazerLogout() {
-
-    const sair =
-        confirm(
-            "Deseja realmente sair da sua conta?"
-        );
-
-
-    if (!sair) {
-
-        return;
-
-    }
-
-
-    try {
-
-        await window.db.auth.signOut();
-
-        localStorage.clear();
-
-        sessionStorage.clear();
-
-        window.location.href =
-            "login.html";
-
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao sair:",
-            erro
-        );
-
-        alert(
-            "Erro ao sair da conta."
-        );
-
-    }
 
 }

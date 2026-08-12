@@ -101,61 +101,104 @@
         </div>
 
 
-        <div class="info-loja">
+        <!-- ==================================
+             LOGO + INFORMAÇÕES DA LOJA
+        =================================== -->
 
-            <p>
-
-                <strong>Nome:</strong>
-
-                <span id="nome-loja">
-                    Carregando...
-                </span>
-
-            </p>
+        <div class="dados-loja-painel">
 
 
-            <p>
+            <!-- LOGO -->
 
-                <strong>Categoria:</strong>
-
-                <span id="categoria-loja">
-                    Carregando...
-                </span>
-
-            </p>
+            <div class="area-logo-loja">
 
 
-            <p>
+                <!-- LOGO REAL -->
 
-                <strong>Cidade:</strong>
-
-                <span id="cidade-loja">
-                    Carregando...
-                </span>
-
-            </p>
-
-
-            <p>
-
-                <strong>Telefone:</strong>
-
-                <span id="telefone-loja">
-                    Carregando...
-                </span>
-
-            </p>
+                <img
+                    id="logo-loja"
+                    class="logo-loja-painel"
+                    alt="Logo da loja"
+                    hidden
+                >
 
 
-            <p>
+                <!-- PLACEHOLDER -->
 
-                <strong>Status:</strong>
+                <div
+                    id="logo-loja-placeholder"
+                    class="logo-loja-placeholder"
+                >
 
-                <span id="status-loja">
-                    Carregando...
-                </span>
+                    <i class="fa-solid fa-store"></i>
 
-            </p>
+                </div>
+
+
+            </div>
+
+
+            <!-- INFORMAÇÕES -->
+
+            <div class="info-loja">
+
+
+                <p>
+
+                    <strong>Nome:</strong>
+
+                    <span id="nome-loja">
+                        Carregando...
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>Categoria:</strong>
+
+                    <span id="categoria-loja">
+                        Carregando...
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>Cidade:</strong>
+
+                    <span id="cidade-loja">
+                        Carregando...
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>Telefone:</strong>
+
+                    <span id="telefone-loja">
+                        Carregando...
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>Status:</strong>
+
+                    <span id="status-loja">
+                        Carregando...
+                    </span>
+
+                </p>
+
+
+            </div>
 
         </div>
 
@@ -180,7 +223,8 @@
             </h2>
 
 
-            <div>
+            <div class="acoes-produtos">
+
 
                 <a
                     href="novo-produto.html"
@@ -199,9 +243,12 @@
                     class="btn btn-secundario"
                 >
 
+                    <i class="fa-solid fa-list"></i>
+
                     Ver Todos
 
                 </a>
+
 
             </div>
 
@@ -217,6 +264,10 @@
                 <h3>
                     Nenhum produto cadastrado
                 </h3>
+
+                <p>
+                    Cadastre seu primeiro produto.
+                </p>
 
             </div>
 
@@ -243,9 +294,20 @@
 
         <div id="lista-pedidos">
 
-            <p>
-                Nenhum pedido recebido.
-            </p>
+            <div class="sem-pedidos">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <h3>
+                    Nenhum pedido recebido
+                </h3>
+
+                <p>
+                    Quando algum cliente fizer um pedido,
+                    ele aparecerá aqui.
+                </p>
+
+            </div>
 
         </div>
 
@@ -275,6 +337,8 @@
 
             <div class="box">
 
+                <i class="fa-solid fa-box"></i>
+
                 <h3 id="total-produtos">
                     0
                 </h3>
@@ -290,6 +354,8 @@
 
             <div class="box">
 
+                <i class="fa-solid fa-cart-shopping"></i>
+
                 <h3 id="total-pedidos">
                     0
                 </h3>
@@ -304,6 +370,8 @@
             <!-- VENDAS -->
 
             <div class="box">
+
+                <i class="fa-solid fa-sack-dollar"></i>
 
                 <h3 id="total-vendas">
                     R$ 0,00
@@ -326,10 +394,29 @@
 
 
 <!-- ======================================
-     SUPABASE
+     FOOTER
 ====================================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<footer>
+
+    <p>
+        © 2026 Comércio da Cidade - Todos os direitos reservados.
+    </p>
+
+</footer>
+
+
+
+<!-- ======================================
+     SCRIPTS
+====================================== -->
+
+
+<!-- SUPABASE -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
 
 
 <!-- CONFIGURAÇÃO SUPABASE -->
