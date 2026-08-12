@@ -5,10 +5,6 @@
 
 (() => {
 
-    // ==========================================
-    // INICIAR HEADER
-    // ==========================================
-
     document.addEventListener("DOMContentLoaded", async () => {
 
         console.log("Header iniciado.");
@@ -16,6 +12,8 @@
         criarHeader();
 
         atualizarContadorCarrinho();
+
+        configurarMenuMobile();
 
         configurarEventos();
 
@@ -40,6 +38,7 @@
 
                 <div class="header-container">
 
+
                     <!-- LOGO -->
 
                     <a
@@ -56,34 +55,53 @@
                     </a>
 
 
+                    <!-- BOTÃO MENU MOBILE -->
+
+                    <button
+                        id="btnMenuMobile"
+                        class="btn-menu-mobile"
+                        type="button"
+                        aria-label="Abrir menu"
+                        aria-expanded="false"
+                    >
+
+                        <i
+                            id="iconeMenuMobile"
+                            class="fa-solid fa-bars"
+                        ></i>
+
+                    </button>
+
+
                     <!-- MENU -->
 
-                    <nav class="menu">
+                    <nav
+                        class="menu"
+                        id="menuPrincipal"
+                    >
 
-
-                        <!-- INÍCIO -->
 
                         <a href="index.html">
 
                             <i class="fa-solid fa-house"></i>
 
-                            Início
+                            <span>
+                                Início
+                            </span>
 
                         </a>
 
-
-                        <!-- CATEGORIAS -->
 
                         <a href="index.html#categorias">
 
                             <i class="fa-solid fa-layer-group"></i>
 
-                            Categorias
+                            <span>
+                                Categorias
+                            </span>
 
                         </a>
 
-
-                        <!-- CARRINHO -->
 
                         <a
                             href="carrinho.html"
@@ -92,7 +110,9 @@
 
                             <i class="fa-solid fa-cart-shopping"></i>
 
-                            Carrinho
+                            <span>
+                                Carrinho
+                            </span>
 
                             <span
                                 id="contador-carrinho"
@@ -104,8 +124,6 @@
                         </a>
 
 
-                        <!-- MINHA LOJA -->
-
                         <a
                             href="painel-loja.html"
                             id="btnMinhaLoja"
@@ -114,12 +132,12 @@
 
                             <i class="fa-solid fa-store"></i>
 
-                            Minha Loja
+                            <span>
+                                Minha Loja
+                            </span>
 
                         </a>
 
-
-                        <!-- PERFIL -->
 
                         <a
                             href="perfil.html"
@@ -136,8 +154,6 @@
                         </a>
 
 
-                        <!-- LOGIN -->
-
                         <a
                             href="login.html"
                             id="btnLogin"
@@ -145,12 +161,12 @@
 
                             <i class="fa-solid fa-right-to-bracket"></i>
 
-                            Entrar
+                            <span>
+                                Entrar
+                            </span>
 
                         </a>
 
-
-                        <!-- LOGOUT -->
 
                         <button
                             type="button"
@@ -160,7 +176,9 @@
 
                             <i class="fa-solid fa-right-from-bracket"></i>
 
-                            Sair
+                            <span>
+                                Sair
+                            </span>
 
                         </button>
 
@@ -171,11 +189,16 @@
 
             </header>
 
+
+            <!-- OVERLAY MOBILE -->
+
+            <div
+                id="menuOverlay"
+                class="menu-overlay"
+            ></div>
+
         `;
 
-
-        // Se a página possui <div id="header"></div>,
-        // coloca o componente dentro dela.
 
         if (containerHeader) {
 
@@ -184,13 +207,282 @@
 
         } else {
 
-            // Segurança para páginas antigas
-            // que ainda não possuem a div.
-
             document.body.insertAdjacentHTML(
                 "afterbegin",
                 html
             );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // CONFIGURAR MENU MOBILE
+    // ==========================================
+
+    function configurarMenuMobile() {
+
+        const btnMenu =
+            document.getElementById(
+                "btnMenuMobile"
+            );
+
+
+        const menu =
+            document.getElementById(
+                "menuPrincipal"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "menuOverlay"
+            );
+
+
+        if (!btnMenu || !menu) {
+
+            console.warn(
+                "Elementos do menu mobile não encontrados."
+            );
+
+            return;
+
+        }
+
+
+        btnMenu.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    menu.classList.contains(
+                        "aberto"
+                    )
+                ) {
+
+                    fecharMenuMobile();
+
+                } else {
+
+                    abrirMenuMobile();
+
+                }
+
+            }
+        );
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                fecharMenuMobile
+            );
+
+        }
+
+
+        menu.addEventListener(
+            "click",
+            (event) => {
+
+                const link =
+                    event.target.closest(
+                        "a"
+                    );
+
+
+                if (link) {
+
+                    fecharMenuMobile();
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    fecharMenuMobile();
+
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            "resize",
+            () => {
+
+                if (
+                    window.innerWidth > 900
+                ) {
+
+                    fecharMenuMobile();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // ==========================================
+    // ABRIR MENU MOBILE
+    // ==========================================
+
+    function abrirMenuMobile() {
+
+        const menu =
+            document.getElementById(
+                "menuPrincipal"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "menuOverlay"
+            );
+
+
+        const btnMenu =
+            document.getElementById(
+                "btnMenuMobile"
+            );
+
+
+        const icone =
+            document.getElementById(
+                "iconeMenuMobile"
+            );
+
+
+        if (!menu) {
+
+            return;
+
+        }
+
+
+        menu.classList.add(
+            "aberto"
+        );
+
+
+        if (overlay) {
+
+            overlay.classList.add(
+                "ativo"
+            );
+
+        }
+
+
+        if (btnMenu) {
+
+            btnMenu.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+
+            btnMenu.setAttribute(
+                "aria-label",
+                "Fechar menu"
+            );
+
+        }
+
+
+        if (icone) {
+
+            icone.className =
+                "fa-solid fa-xmark";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // FECHAR MENU MOBILE
+    // ==========================================
+
+    function fecharMenuMobile() {
+
+        const menu =
+            document.getElementById(
+                "menuPrincipal"
+            );
+
+
+        const overlay =
+            document.getElementById(
+                "menuOverlay"
+            );
+
+
+        const btnMenu =
+            document.getElementById(
+                "btnMenuMobile"
+            );
+
+
+        const icone =
+            document.getElementById(
+                "iconeMenuMobile"
+            );
+
+
+        if (menu) {
+
+            menu.classList.remove(
+                "aberto"
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                "ativo"
+            );
+
+        }
+
+
+        if (btnMenu) {
+
+            btnMenu.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+
+            btnMenu.setAttribute(
+                "aria-label",
+                "Abrir menu"
+            );
+
+        }
+
+
+        if (icone) {
+
+            icone.className =
+                "fa-solid fa-bars";
 
         }
 
@@ -217,7 +509,7 @@
         try {
 
             const {
-                data: { user },
+                data,
                 error
             } = await window.db.auth.getUser();
 
@@ -236,9 +528,9 @@
             }
 
 
-            // ======================================
-            // NÃO LOGADO
-            // ======================================
+            const user =
+                data.user;
+
 
             if (!user) {
 
@@ -249,16 +541,10 @@
             }
 
 
-            // ======================================
-            // USUÁRIO LOGADO
-            // ======================================
+            mostrarUsuarioLogado(
+                user
+            );
 
-            mostrarUsuarioLogado(user);
-
-
-            // ======================================
-            // VERIFICAR SE POSSUI LOJA
-            // ======================================
 
             await verificarLojaUsuario(
                 user.id
@@ -284,16 +570,27 @@
     function mostrarUsuarioDeslogado() {
 
         const btnLogin =
-            document.getElementById("btnLogin");
+            document.getElementById(
+                "btnLogin"
+            );
+
 
         const btnPerfil =
-            document.getElementById("btnPerfil");
+            document.getElementById(
+                "btnPerfil"
+            );
+
 
         const btnLogout =
-            document.getElementById("btnLogout");
+            document.getElementById(
+                "btnLogout"
+            );
+
 
         const btnMinhaLoja =
-            document.getElementById("btnMinhaLoja");
+            document.getElementById(
+                "btnMinhaLoja"
+            );
 
 
         if (btnLogin) {
@@ -337,16 +634,27 @@
     function mostrarUsuarioLogado(user) {
 
         const btnLogin =
-            document.getElementById("btnLogin");
+            document.getElementById(
+                "btnLogin"
+            );
+
 
         const btnPerfil =
-            document.getElementById("btnPerfil");
+            document.getElementById(
+                "btnPerfil"
+            );
+
 
         const btnLogout =
-            document.getElementById("btnLogout");
+            document.getElementById(
+                "btnLogout"
+            );
+
 
         const nomeUsuario =
-            document.getElementById("nomeUsuario");
+            document.getElementById(
+                "nomeUsuario"
+            );
 
 
         const nome =
@@ -393,7 +701,9 @@
     // VERIFICAR LOJA DO USUÁRIO
     // ==========================================
 
-    async function verificarLojaUsuario(usuarioId) {
+    async function verificarLojaUsuario(
+        usuarioId
+    ) {
 
         const btnMinhaLoja =
             document.getElementById(
@@ -417,7 +727,9 @@
 
                 .from("lojas")
 
-                .select("id,nome")
+                .select(
+                    "id,nome"
+                )
 
                 .eq(
                     "proprietario_id",
@@ -433,6 +745,7 @@
                     "Header - erro ao verificar loja:",
                     error
                 );
+
 
                 btnMinhaLoja.style.display =
                     "none";
@@ -451,9 +764,6 @@
                 btnMinhaLoja.href =
                     "painel-loja.html";
 
-
-                // Salva apenas como apoio.
-                // O Supabase continua sendo a fonte oficial.
 
                 localStorage.setItem(
                     "loja_id",
@@ -491,6 +801,7 @@
                 "Header - erro ao buscar loja:",
                 erro
             );
+
 
             btnMinhaLoja.style.display =
                 "none";
@@ -539,6 +850,7 @@
                 erro
             );
 
+
             carrinho = [];
 
         }
@@ -547,23 +859,28 @@
         let total = 0;
 
 
-        carrinho.forEach(produto => {
+        carrinho.forEach(
+            (produto) => {
 
-            const quantidade =
-                Number(
-                    produto.quantidade || 1
-                );
+                const quantidade =
+                    Number(
+                        produto.quantidade || 1
+                    );
 
 
-            if (
-                Number.isFinite(quantidade)
-            ) {
+                if (
+                    Number.isFinite(
+                        quantidade
+                    )
+                ) {
 
-                total += quantidade;
+                    total +=
+                        quantidade;
+
+                }
 
             }
-
-        });
+        );
 
 
         contador.textContent =
@@ -594,27 +911,19 @@
         }
 
 
-        // Quando voltar para a aba
-
         window.addEventListener(
             "focus",
-            () => {
-
-                atualizarContadorCarrinho();
-
-            }
+            atualizarContadorCarrinho
         );
 
-
-        // Quando localStorage mudar
-        // em outra aba
 
         window.addEventListener(
             "storage",
             (event) => {
 
                 if (
-                    event.key === "carrinho"
+                    event.key ===
+                    "carrinho"
                 ) {
 
                     atualizarContadorCarrinho();
@@ -671,6 +980,7 @@
                     error
                 );
 
+
                 alert(
                     "Erro ao sair da conta."
                 );
@@ -680,16 +990,17 @@
             }
 
 
-            // Remove apenas informações relacionadas
-            // à loja do usuário.
-
             localStorage.removeItem(
                 "loja_id"
             );
 
+
             localStorage.removeItem(
                 "nome_loja"
             );
+
+
+            fecharMenuMobile();
 
 
             window.location.href =
@@ -727,7 +1038,7 @@
 
 
     // ==========================================
-    // FUNÇÕES QUE OUTRAS PÁGINAS PODEM USAR
+    // FUNÇÕES GLOBAIS
     // ==========================================
 
     window.atualizarHeader =
@@ -738,4 +1049,4 @@
         atualizarContadorCarrinho;
 
 
-})();
+})(); // FIM DO HEADER

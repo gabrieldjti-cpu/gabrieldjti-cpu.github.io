@@ -3,58 +3,57 @@
 ========================================== */
 
 :root{
-
     --primary:#ff6b35;
     --primary-dark:#e85b2b;
     --bg:#ffffff;
     --text:#333333;
+    --text-light:#666666;
     --border:#ececec;
     --shadow:0 6px 18px rgba(0,0,0,.08);
-
 }
 
+
+/* ==========================================
+   HEADER
+========================================== */
+
 .header{
-
     width:100%;
-
     background:var(--bg);
 
     position:sticky;
-
     top:0;
-
     left:0;
 
-    z-index:999;
+    z-index:1000;
 
     border-bottom:1px solid var(--border);
-
     box-shadow:var(--shadow);
-
 }
 
+
 .header-container{
-
     width:95%;
-
     max-width:1300px;
-
-    margin:auto;
 
     height:75px;
 
-    display:flex;
+    margin:auto;
 
+    display:flex;
+    align-items:center;
     justify-content:space-between;
 
-    align-items:center;
-
+    gap:20px;
 }
 
+
+/* ==========================================
+   LOGO
+========================================== */
+
 .logo{
-
     display:flex;
-
     align-items:center;
 
     gap:12px;
@@ -64,36 +63,41 @@
     color:var(--primary);
 
     font-size:24px;
-
     font-weight:700;
 
+    white-space:nowrap;
+
+    transition:.25s;
 }
+
 
 .logo i{
-
     font-size:28px;
-
 }
 
-.menu{
 
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-
+.logo:hover{
+    transform:scale(1.02);
 }
+
+
 /* ==========================================
    MENU
 ========================================== */
 
+.menu{
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+}
+
+
 .menu a,
 .menu button{
-
     display:flex;
-
     align-items:center;
+    justify-content:center;
 
     gap:8px;
 
@@ -105,246 +109,422 @@
 
     border:none;
 
-    font-size:15px;
-
+    font-size:14px;
     font-weight:500;
 
     cursor:pointer;
 
-    transition:.25s;
-
-    padding:10px 14px;
+    padding:10px 12px;
 
     border-radius:10px;
 
+    transition:
+        background .25s,
+        color .25s,
+        transform .25s;
+
+    white-space:nowrap;
 }
+
 
 .menu a:hover,
 .menu button:hover{
-
     color:var(--primary);
-
     background:#fff4ef;
 
+    transform:translateY(-2px);
 }
+
 
 /* ==========================================
    CARRINHO
 ========================================== */
 
 .btn-carrinho{
-
     position:relative;
-
 }
 
-.contador{
 
+.contador{
     position:absolute;
 
-    top:-6px;
+    top:-7px;
+    right:-7px;
 
-    right:-6px;
+    min-width:21px;
+    height:21px;
 
-    min-width:22px;
+    padding:0 5px;
 
-    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     border-radius:50%;
 
     background:var(--primary);
-
     color:#fff;
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:12px;
-
+    font-size:11px;
     font-weight:700;
-
-    padding:0 5px;
-
 }
 
+
 /* ==========================================
-   LOGIN / PERFIL
+   LOGIN
 ========================================== */
 
 #btnLogin{
-
     background:var(--primary);
 
     color:#fff !important;
 
     padding:10px 18px;
-
-    border-radius:10px;
-
 }
 
-#btnLogin:hover{
 
+#btnLogin:hover{
     background:var(--primary-dark);
 
     color:#fff !important;
-
 }
 
-#btnLogout{
 
+/* ==========================================
+   LOGOUT
+========================================== */
+
+#btnLogout{
     background:#dc3545;
 
     color:#fff;
 
     padding:10px 18px;
+}
+
+
+#btnLogout:hover{
+    background:#bb2d3b;
+
+    color:#fff;
+}
+
+
+/* ==========================================
+   BOTÃO MENU MOBILE
+========================================== */
+
+.btn-menu-mobile{
+    display:none;
+
+    width:44px;
+    height:44px;
+
+    align-items:center;
+    justify-content:center;
+
+    border:none;
 
     border-radius:10px;
 
+    background:#fff4ef;
+
+    color:var(--primary);
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:.25s;
 }
 
-#btnLogout:hover{
 
-    background:#bb2d3b;
-
+.btn-menu-mobile:hover{
+    background:#ffe9df;
 }
+
+
 /* ==========================================
-   RESPONSIVO
+   OVERLAY MOBILE
 ========================================== */
 
-@media (max-width:900px){
+.menu-overlay{
+    display:none;
 
-    .header-container{
+    position:fixed;
 
-        flex-direction:column;
+    inset:0;
 
-        height:auto;
+    background:rgba(0,0,0,.35);
 
-        padding:15px 0;
+    z-index:998;
 
-        gap:15px;
+    opacity:0;
 
-    }
-
-    .menu{
-
-        width:100%;
-
-        flex-wrap:wrap;
-
-        justify-content:center;
-
-        gap:10px;
-
-    }
-
+    transition:opacity .3s;
 }
 
-@media (max-width:600px){
+
+.menu-overlay.ativo{
+    opacity:1;
+}
+
+
+/* ==========================================
+   TABLET / MOBILE
+========================================== */
+
+@media(max-width:900px){
+
+    .header-container{
+        width:100%;
+        height:68px;
+
+        padding:0 18px;
+
+        position:relative;
+    }
+
+
+    /* LOGO */
 
     .logo{
-
         font-size:20px;
 
+        gap:9px;
+
+        max-width:calc(100% - 70px);
     }
+
 
     .logo i{
-
-        font-size:24px;
-
+        font-size:25px;
     }
 
+
+    /* BOTÃO HAMBÚRGUER */
+
+    .btn-menu-mobile{
+        display:flex;
+
+        flex-shrink:0;
+    }
+
+
+    /* MENU */
+
     .menu{
+        position:absolute;
 
-        display:grid;
-
-        grid-template-columns:repeat(2,1fr);
-
-        gap:10px;
+        top:68px;
+        left:0;
 
         width:100%;
 
+        background:#fff;
+
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+
+        gap:5px;
+
+        padding:0 18px;
+
+        border-top:1px solid var(--border);
+
+        box-shadow:0 10px 25px rgba(0,0,0,.1);
+
+        max-height:0;
+
+        overflow:hidden;
+
+        opacity:0;
+
+        pointer-events:none;
+
+        transition:
+            max-height .35s ease,
+            opacity .25s ease,
+            padding .35s ease;
+
+        z-index:1001;
     }
+
+
+    .menu.aberto{
+        max-height:600px;
+
+        padding:15px 18px 20px;
+
+        opacity:1;
+
+        pointer-events:auto;
+    }
+
+
+    /* LINKS */
 
     .menu a,
     .menu button{
-
-        justify-content:center;
-
         width:100%;
 
-        padding:12px;
+        min-height:48px;
 
-        font-size:14px;
+        justify-content:flex-start;
 
+        padding:12px 15px;
+
+        border-radius:10px;
+
+        font-size:15px;
+
+        transform:none;
     }
 
-    .contador{
 
-        top:-4px;
+    .menu a:hover,
+    .menu button:hover{
+        transform:none;
+    }
 
-        right:-4px;
 
-        min-width:20px;
+    .menu a i,
+    .menu button i{
+        width:24px;
 
-        height:20px;
+        text-align:center;
 
-        font-size:11px;
+        font-size:17px;
+    }
 
+
+    /* MINHA LOJA */
+
+    #btnMinhaLoja{
+        background:#f8f9fa;
+    }
+
+
+    /* PERFIL */
+
+    #btnPerfil{
+        background:#f8f9fa;
+    }
+
+
+    /* LOGIN */
+
+    #btnLogin{
+        justify-content:center;
+
+        margin-top:5px;
+    }
+
+
+    /* LOGOUT */
+
+    #btnLogout{
+        justify-content:center;
+
+        margin-top:5px;
+
+        min-height:50px;
+    }
+
+
+    /* CARRINHO */
+
+    .btn-carrinho .contador{
+        position:static;
+
+        margin-left:auto;
+
+        width:23px;
+        height:23px;
+
+        flex-shrink:0;
+    }
+
+
+    /* OVERLAY */
+
+    .menu-overlay{
+        display:block;
+
+        pointer-events:none;
+    }
+
+
+    .menu-overlay.ativo{
+        pointer-events:auto;
     }
 
 }
+
 
 /* ==========================================
-   ANIMAÇÕES
+   CELULAR PEQUENO
 ========================================== */
 
-.logo,
-.menu a,
-.menu button{
+@media(max-width:480px){
 
-    transition:all .25s ease;
+    .header-container{
+        padding:0 14px;
+    }
+
+
+    .logo{
+        font-size:18px;
+    }
+
+
+    .logo i{
+        font-size:23px;
+    }
+
+
+    .btn-menu-mobile{
+        width:42px;
+        height:42px;
+
+        font-size:20px;
+    }
+
+
+    .menu{
+        padding-left:14px;
+        padding-right:14px;
+    }
+
+
+    .menu.aberto{
+        padding-left:14px;
+        padding-right:14px;
+    }
 
 }
 
-.logo:hover{
 
-    transform:scale(1.03);
-
-}
-
-.menu a:hover,
-.menu button:hover{
-
-    transform:translateY(-2px);
-
-}
+/* ==========================================
+   ANIMAÇÃO
+========================================== */
 
 .header{
-
-    animation:aparecerHeader .4s ease;
-
+    animation:aparecerHeader .35s ease;
 }
+
 
 @keyframes aparecerHeader{
 
     from{
-
         opacity:0;
-
-        transform:translateY(-10px);
-
+        transform:translateY(-8px);
     }
 
     to{
-
         opacity:1;
-
         transform:translateY(0);
-
     }
 
 }
