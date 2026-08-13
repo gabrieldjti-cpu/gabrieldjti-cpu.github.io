@@ -1,88 +1,260 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="components/header.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Comércio da Cidade</title>
+<head>
 
-    <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+  <title>
+    Comércio da Cidade
+  </title>
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
 
-  <body>
-    <div id="header"></div>
+  <!-- ==================================
+       CSS
+  =================================== -->
 
-    <section class="banner">
-      <h1>Encontre tudo o que precisa na sua cidade</h1>
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
 
-      <p>Compre dos comerciantes locais sem sair de casa.</p>
+  <link
+    rel="stylesheet"
+    href="components/feedback.css"
+  />
 
-      <div class="pesquisa">
-        <input type="text" id="pesquisa" placeholder="Pesquisar lojas..." />
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  />
 
-        <button id="btnPesquisar">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
+
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+
+</head>
+
+
+<body>
+
+
+  <!-- ==================================
+       HEADER
+  =================================== -->
+
+  <div id="header"></div>
+
+
+  <!-- ==================================
+       BANNER
+  =================================== -->
+
+  <section class="banner">
+
+    <h1>
+      Encontre tudo o que precisa na sua cidade
+    </h1>
+
+    <p>
+      Compre dos comerciantes locais sem sair de casa.
+    </p>
+
+
+    <!-- PESQUISA -->
+
+    <div class="pesquisa">
+
+      <input
+        type="text"
+        id="pesquisa"
+        placeholder="Pesquisar lojas..."
+        autocomplete="off"
+        aria-label="Pesquisar lojas"
+      />
+
+
+      <button
+        id="btnPesquisar"
+        type="button"
+        aria-label="Pesquisar"
+      >
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================
+       CATEGORIAS
+  =================================== -->
+
+  <section
+    class="categorias"
+    id="categorias"
+  >
+
+    <h2>
+      Categorias
+    </h2>
+
+
+    <div
+      class="lista-categorias"
+      id="lista-categorias"
+    >
+
+      <div class="categoria">
+        🛒 Mercados
       </div>
-    </section>
 
-    <section class="categorias" id="categorias">
-      <h2>Categorias</h2>
-
-      <div class="lista-categorias" id="lista-categorias">
-        <div class="categoria">🛒 Mercados</div>
-
-        <div class="categoria">💊 Farmácias</div>
-
-        <div class="categoria">🍕 Restaurantes</div>
-
-        <div class="categoria">👕 Roupas</div>
-
-        <div class="categoria">🥩 Açougues</div>
-
-        <div class="categoria">🍞 Padarias</div>
-      </div>
-    </section>
-
-    <section class="lojas" id="lojas">
-      <div class="titulo-lojas">
-        <h2>Lojas da Cidade</h2>
-
-        <span id="total-lojas"></span>
+      <div class="categoria">
+        💊 Farmácias
       </div>
 
-      <div class="cards" id="lista-lojas">
-        <div class="carregando">
-          <i class="fa-solid fa-spinner fa-spin"></i>
-
-          <p>Carregando lojas...</p>
-        </div>
+      <div class="categoria">
+        🍕 Restaurantes
       </div>
-    </section>
 
-    <footer>
-      <p>© 2026 Comércio da Cidade - Todos os direitos reservados a Gabriel.</p>
-    </footer>
+      <div class="categoria">
+        👕 Roupas
+      </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <div class="categoria">
+        🥩 Açougues
+      </div>
 
-    <script src="js/supabase.js"></script>
+      <div class="categoria">
+        🍞 Padarias
+      </div>
 
-    <script src="components/header.js"></script>
+    </div>
 
-    <script src="js/index.js"></script>
-  </body>
+  </section>
+
+
+  <!-- ==================================
+       LOJAS
+  =================================== -->
+
+  <section
+    class="lojas"
+    id="lojas"
+  >
+
+    <div class="titulo-lojas">
+
+      <h2>
+        Lojas da Cidade
+      </h2>
+
+      <span id="total-lojas"></span>
+
+    </div>
+
+
+    <!-- LISTA DE LOJAS -->
+
+    <div
+      class="cards"
+      id="lista-lojas"
+    >
+
+      <div class="carregando">
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        <p>
+          Carregando lojas...
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================
+       FOOTER
+  =================================== -->
+
+  <footer>
+
+    <p>
+      © 2026 Comércio da Cidade -
+      Todos os direitos reservados a Gabriel.
+    </p>
+
+  </footer>
+
+
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
+
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- CONFIGURAÇÃO SUPABASE -->
+
+  <script src="js/supabase.js"></script>
+
+
+  <!-- HEADER -->
+
+  <script src="components/header.js"></script>
+
+
+  <!-- FEEDBACK PERSONALIZADO -->
+
+  <script src="components/feedback.js"></script>
+
+
+  <!-- PÁGINA INICIAL -->
+
+  <script src="js/index.js"></script>
+
+
+</body>
+
 </html>

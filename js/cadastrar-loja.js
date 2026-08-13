@@ -1,297 +1,712 @@
-// =======================================
-// CADASTRAR LOJA
-// =======================================
+// ==========================================
+// CADASTRAR-LOJA.JS
+// Comércio da Cidade
+// ==========================================
 
-// =======================================
+
+// ==========================================
 // ELEMENTOS
-// =======================================
+// ==========================================
 
-const form = document.getElementById("formLoja");
-const mensagem = document.getElementById("mensagem");
-const categoria = document.getElementById("categoria");
+const form =
+    document.getElementById(
+        "formLoja"
+    );
 
-const inputLogo = document.getElementById("logo");
-const previewLogo = document.getElementById("preview-logo");
+const mensagem =
+    document.getElementById(
+        "mensagem"
+    );
+
+const categoria =
+    document.getElementById(
+        "categoria"
+    );
+
+const inputLogo =
+    document.getElementById(
+        "logo"
+    );
+
+const previewLogo =
+    document.getElementById(
+        "preview-logo"
+    );
+
+const botao =
+    form?.querySelector(
+        'button[type="submit"]'
+    )
+    ||
+    document.querySelector(
+        ".btn"
+    );
+
 
 let usuario = null;
 
 
-// =======================================
+// ==========================================
 // INICIAR
-// =======================================
+// ==========================================
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    if (!window.db) {
+        // ==================================
+        // SUPABASE
+        // ==================================
 
-        alert("Erro ao conectar com o Supabase.");
+        if (!window.db) {
+
+            console.error(
+                "Supabase não foi inicializado."
+            );
+
+
+            notificar(
+                "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+                "erro",
+                "Erro de conexão",
+                6000
+            );
+
+
+            if (botao) {
+
+                botao.disabled =
+                    true;
+
+            }
+
+
+            return;
+
+        }
+
+
+        // ==================================
+        // VERIFICAR SESSÃO
+        // ==================================
+
+        const autenticado =
+            await verificarUsuario();
+
+
+        if (!autenticado) {
+
+            return;
+
+        }
+
+
+        // ==================================
+        // VERIFICAR LOJA EXISTENTE
+        // ==================================
+
+        const possuiLoja =
+            await verificarLojaExistente();
+
+
+        if (possuiLoja) {
+
+            return;
+
+        }
+
+
+        // ==================================
+        // CATEGORIAS
+        // ==================================
+
+        await carregarCategorias();
+
+
+        // ==================================
+        // PREVIEW
+        // ==================================
+
+        configurarPreviewLogo();
+
+    }
+);
+
+
+// ==========================================
+// VERIFICAR USUÁRIO
+// ==========================================
+
+async function verificarUsuario() {
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await window.db
+                .auth
+                .getSession();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                error
+            );
+
+
+            notificar(
+                "Não foi possível verificar sua sessão.",
+                "erro",
+                "Erro de autenticação"
+            );
+
+
+            return false;
+
+        }
+
+
+        if (
+            !data.session
+        ) {
+
+            window.location.href =
+                "login.html";
+
+
+            return false;
+
+        }
+
+
+        usuario =
+            data.session.user;
+
+
+        return true;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao verificar usuário:",
+            erro
+        );
+
+
+        notificar(
+            "Ocorreu um erro ao verificar sua conta.",
+            "erro",
+            "Erro de autenticação"
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+// ==========================================
+// VERIFICAR LOJA EXISTENTE
+// ==========================================
+
+async function verificarLojaExistente() {
+
+    try {
+
+        const {
+            data: lojaExistente,
+            error
+        } = await window.db
+
+            .from("lojas")
+
+            .select(
+                "id,nome"
+            )
+
+            .eq(
+                "proprietario_id",
+                usuario.id
+            )
+
+            .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao verificar loja:",
+                error
+            );
+
+
+            notificar(
+                "Não foi possível verificar se você já possui uma loja.",
+                "erro",
+                "Erro ao verificar loja"
+            );
+
+
+            return false;
+
+        }
+
+
+        if (
+            !lojaExistente
+        ) {
+
+            return false;
+
+        }
+
+
+        // ==================================
+        // JÁ POSSUI LOJA
+        // ==================================
+
+        localStorage.setItem(
+            "loja_id",
+            lojaExistente.id
+        );
+
+
+        if (
+            lojaExistente.nome
+        ) {
+
+            localStorage.setItem(
+                "nome_loja",
+                lojaExistente.nome
+            );
+
+        }
+
+
+        notificar(
+            "Você já possui uma loja cadastrada. Abrindo seu painel...",
+            "info",
+            "Loja já cadastrada",
+            2500
+        );
+
+
+        if (mensagem) {
+
+            mensagem.textContent =
+                "";
+
+        }
+
+
+        if (form) {
+
+            form
+                .querySelectorAll(
+                    "input, select, textarea, button"
+                )
+                .forEach(
+                    (elemento) => {
+
+                        elemento.disabled =
+                            true;
+
+                    }
+                );
+
+        }
+
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "painel-loja.html";
+
+            },
+            1400
+        );
+
+
+        return true;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro inesperado ao verificar loja:",
+            erro
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+// ==========================================
+// CARREGAR CATEGORIAS
+// ==========================================
+
+async function carregarCategorias() {
+
+    if (!categoria) {
+
+        console.error(
+            "Campo categoria não encontrado."
+        );
+
 
         return;
 
     }
 
 
-    // ===============================
-    // VERIFICAR USUÁRIO
-    // ===============================
-
-    const {
-        data,
-        error
-    } = await window.db.auth.getUser();
+    categoria.disabled =
+        true;
 
 
-    if (error || !data.user) {
+    categoria.innerHTML = `
 
-        window.location.href = "login.html";
+        <option value="">
 
-        return;
+            Carregando categorias...
 
-    }
+        </option>
 
-
-    usuario = data.user;
-
-
-    // ===============================
-    // VERIFICAR SE JÁ POSSUI LOJA
-    // ===============================
-
-    const {
-        data: lojaExistente,
-        error: erroLoja
-    } = await window.db
-
-        .from("lojas")
-
-        .select("id")
-
-        .eq("proprietario_id", usuario.id)
-
-        .maybeSingle();
+    `;
 
 
-    if (erroLoja) {
+    try {
 
-        console.error(erroLoja);
+        const {
+            data,
+            error
+        } = await window.db
 
-    }
+            .from("categorias")
+
+            .select(
+                "id,nome"
+            )
+
+            .order(
+                "nome",
+                {
+                    ascending: true
+                }
+            );
 
 
-    if (lojaExistente) {
+        if (error) {
 
-        mensagem.style.color = "#198754";
+            throw error;
 
-        mensagem.innerHTML = `
-        
-            Você já possui uma loja cadastrada.
-            
-            <br><br>
+        }
 
-            Redirecionando para o painel...
+
+        categoria.innerHTML = `
+
+            <option value="">
+
+                Selecione uma categoria
+
+            </option>
 
         `;
 
 
-        setTimeout(() => {
+        const categorias =
+            Array.isArray(data)
+                ? data
+                : [];
 
-            window.location.href = "painel-loja.html";
 
-        }, 2000);
+        categorias.forEach(
+            (cat) => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
 
-        return;
+                option.value =
+                    cat.id;
+
+
+                option.textContent =
+                    cat.nome;
+
+
+                categoria.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        categoria.disabled =
+            false;
+
+
+        if (
+            categorias.length === 0
+        ) {
+
+            notificar(
+                "Nenhuma categoria de loja está disponível no momento.",
+                "aviso",
+                "Categorias indisponíveis"
+            );
+
+        }
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar categorias:",
+            erro
+        );
+
+
+        categoria.innerHTML = `
+
+            <option value="">
+
+                Erro ao carregar categorias
+
+            </option>
+
+        `;
+
+
+        categoria.disabled =
+            true;
+
+
+        notificar(
+            "Não foi possível carregar as categorias das lojas.",
+            "erro",
+            "Erro ao carregar categorias",
+            5000
+        );
 
     }
-
-
-    // ===============================
-    // CARREGAR CATEGORIAS
-    // ===============================
-
-    await carregarCategorias();
-
-
-    // ===============================
-    // CONFIGURAR PREVIEW DA LOGO
-    // ===============================
-
-    configurarPreviewLogo();
-
-});
-
-
-// =======================================
-// CARREGAR CATEGORIAS
-// =======================================
-
-async function carregarCategorias() {
-
-    categoria.innerHTML = `
-
-        <option value="">
-            Carregando categorias...
-        </option>
-
-    `;
-
-
-    const {
-        data,
-        error
-    } = await window.db
-
-        .from("categorias")
-
-        .select("id,nome")
-
-        .order("nome");
-
-
-    if (error) {
-
-        console.error(error);
-
-        mensagem.style.color = "red";
-
-        mensagem.textContent =
-            "Erro ao carregar categorias: " +
-            error.message;
-
-        return;
-
-    }
-
-
-    categoria.innerHTML = `
-
-        <option value="">
-            Selecione uma categoria
-        </option>
-
-    `;
-
-
-    data.forEach(cat => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = cat.id;
-
-        option.textContent = cat.nome;
-
-        categoria.appendChild(option);
-
-    });
 
 }
 
 
-// =======================================
+// ==========================================
 // PREVIEW DA LOGO
-// =======================================
+// ==========================================
 
 function configurarPreviewLogo() {
 
-    if (!inputLogo) return;
+    if (!inputLogo) {
 
-    inputLogo.addEventListener("change", () => {
+        return;
 
-        const arquivo =
-            inputLogo.files[0];
-
-
-        if (!arquivo) {
-
-            return;
-
-        }
+    }
 
 
-        // ===============================
-        // VERIFICAR TIPO
-        // ===============================
+    inputLogo.addEventListener(
+        "change",
+        () => {
 
-        const tiposPermitidos = [
-
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-
-        ];
+            const arquivo =
+                inputLogo.files?.[0];
 
 
-        if (!tiposPermitidos.includes(arquivo.type)) {
+            if (!arquivo) {
 
-            alert(
-                "Formato de imagem inválido.\n\n" +
-                "Escolha JPG, PNG ou WEBP."
-            );
-
-            inputLogo.value = "";
-
-            return;
-
-        }
-
-
-        // ===============================
-        // LIMITE DE TAMANHO
-        // ===============================
-
-        const tamanhoMaximo =
-            5 * 1024 * 1024;
-
-
-        if (arquivo.size > tamanhoMaximo) {
-
-            alert(
-                "A imagem é muito grande.\n\n" +
-                "O tamanho máximo é 5 MB."
-            );
-
-            inputLogo.value = "";
-
-            return;
-
-        }
-
-
-        // ===============================
-        // MOSTRAR PREVIEW
-        // ===============================
-
-        const leitor =
-            new FileReader();
-
-
-        leitor.onload = function(event) {
-
-            if (previewLogo) {
-
-                previewLogo.src =
-                    event.target.result;
+                return;
 
             }
 
-        };
+
+            // ==================================
+            // FORMATOS PERMITIDOS
+            // ==================================
+
+            const tiposPermitidos = [
+
+                "image/jpeg",
+
+                "image/png",
+
+                "image/webp"
+
+            ];
 
 
-        leitor.readAsDataURL(arquivo);
+            if (
+                !tiposPermitidos.includes(
+                    arquivo.type
+                )
+            ) {
 
-    });
+                notificar(
+                    "Escolha uma imagem nos formatos JPG, PNG ou WEBP.",
+                    "aviso",
+                    "Formato de imagem inválido"
+                );
+
+
+                inputLogo.value =
+                    "";
+
+
+                limparPreviewLogo();
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // TAMANHO
+            // ==================================
+
+            const tamanhoMaximo =
+                5 * 1024 * 1024;
+
+
+            if (
+                arquivo.size >
+                tamanhoMaximo
+            ) {
+
+                notificar(
+                    "A logo deve ter no máximo 5 MB.",
+                    "aviso",
+                    "Imagem muito grande"
+                );
+
+
+                inputLogo.value =
+                    "";
+
+
+                limparPreviewLogo();
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // PREVIEW
+            // ==================================
+
+            const leitor =
+                new FileReader();
+
+
+            leitor.onload =
+                function (
+                    event
+                ) {
+
+                    if (
+                        previewLogo
+                    ) {
+
+                        previewLogo.src =
+                            event
+                                .target
+                                .result;
+
+
+                        previewLogo.style.display =
+                            "block";
+
+
+                        previewLogo.hidden =
+                            false;
+
+                    }
+
+                };
+
+
+            leitor.onerror =
+                function () {
+
+                    notificar(
+                        "Não foi possível visualizar a imagem selecionada.",
+                        "erro",
+                        "Erro na imagem"
+                    );
+
+
+                    inputLogo.value =
+                        "";
+
+                };
+
+
+            leitor.readAsDataURL(
+                arquivo
+            );
+
+        }
+    );
 
 }
 
 
-// =======================================
+// ==========================================
+// LIMPAR PREVIEW
+// ==========================================
+
+function limparPreviewLogo() {
+
+    if (!previewLogo) {
+
+        return;
+
+    }
+
+
+    previewLogo.removeAttribute(
+        "src"
+    );
+
+
+    previewLogo.style.display =
+        "none";
+
+
+    previewLogo.hidden =
+        true;
+
+}
+
+
+// ==========================================
 // UPLOAD DA LOGO
-// =======================================
+// ==========================================
 
 async function enviarLogo() {
 
-    if (!inputLogo || !inputLogo.files.length) {
+    if (
+        !inputLogo ||
+        !inputLogo.files?.length
+    ) {
 
         return null;
 
@@ -302,28 +717,33 @@ async function enviarLogo() {
         inputLogo.files[0];
 
 
-    // ===============================
-    // GERAR NOME ÚNICO
-    // ===============================
+    // ==================================
+    // EXTENSÃO
+    // ==================================
 
     const extensao =
         arquivo.name
+
             .split(".")
+
             .pop()
+
             .toLowerCase();
 
 
+    // ==================================
+    // NOME ÚNICO
+    // ==================================
+
     const nomeArquivo =
+        `${Date.now()}.${extensao}`;
 
-        `${usuario.id}_${Date.now()}.${extensao}`;
 
-
-    // ===============================
+    // ==================================
     // CAMINHO
-    // ===============================
+    // ==================================
 
     const caminho =
-
         `lojas/${usuario.id}/${nomeArquivo}`;
 
 
@@ -333,25 +753,34 @@ async function enviarLogo() {
     );
 
 
-    // ===============================
+    // ==================================
     // UPLOAD
-    // ===============================
+    // ==================================
 
     const {
         data,
         error
-    } = await window.db.storage
+    } =
+        await window.db
+            .storage
 
-        .from("logos-lojas")
+            .from(
+                "logos-lojas"
+            )
 
-        .upload(
-            caminho,
-            arquivo,
-            {
-                cacheControl: "3600",
-                upsert: true
-            }
-        );
+            .upload(
+                caminho,
+                arquivo,
+                {
+
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false
+
+                }
+            );
 
 
     if (error) {
@@ -361,9 +790,9 @@ async function enviarLogo() {
             error
         );
 
+
         throw new Error(
-            "Erro ao enviar a logo: " +
-            error.message
+            "Não foi possível enviar a logo da loja."
         );
 
     }
@@ -375,20 +804,28 @@ async function enviarLogo() {
     );
 
 
-    // ===============================
-    // PEGAR URL PÚBLICA
-    // ===============================
+    // ==================================
+    // URL PÚBLICA
+    // ==================================
 
     const {
         data: urlData
-    } = window.db.storage
+    } =
+        window.db
+            .storage
 
-        .from("logos-lojas")
+            .from(
+                "logos-lojas"
+            )
 
-        .getPublicUrl(caminho);
+            .getPublicUrl(
+                caminho
+            );
 
 
-    if (!urlData || !urlData.publicUrl) {
+    if (
+        !urlData?.publicUrl
+    ) {
 
         throw new Error(
             "Não foi possível obter a URL da logo."
@@ -397,322 +834,339 @@ async function enviarLogo() {
     }
 
 
-    console.log(
-        "URL da logo:",
-        urlData.publicUrl
-    );
-
-
     return urlData.publicUrl;
 
 }
 
 
-// =======================================
-// CADASTRAR LOJA
-// =======================================
+// ==========================================
+// FORMULÁRIO
+// ==========================================
 
-form.addEventListener("submit", async (e) => {
+if (form) {
 
-    e.preventDefault();
+    form.addEventListener(
+        "submit",
+        async (
+            event
+        ) => {
 
+            event.preventDefault();
 
-    mensagem.textContent = "";
 
+            if (!usuario) {
 
-    const botao =
-        document.querySelector(".btn");
+                notificar(
+                    "Sua sessão não foi encontrada. Entre novamente.",
+                    "erro",
+                    "Sessão expirada"
+                );
 
 
-    botao.disabled = true;
+                return;
 
+            }
 
-    botao.innerHTML = `
 
-        <i class="fa-solid fa-spinner fa-spin"></i>
+            // ==================================
+            // PEGAR DADOS
+            // ==================================
 
-        Salvando...
+            const nome =
+                obterValor(
+                    "nome"
+                );
 
-    `;
 
+            const telefone =
+                obterValor(
+                    "telefone"
+                );
 
-    try {
 
+            const whatsapp =
+                obterValor(
+                    "whatsapp"
+                );
 
-        // ===============================
-        // PEGAR DADOS
-        // ===============================
 
-        const nome =
-            document
-                .getElementById("nome")
-                .value
-                .trim();
+            const descricao =
+                obterValor(
+                    "descricao"
+                );
 
 
-        const telefone =
-            document
-                .getElementById("telefone")
-                .value
-                .trim();
+            const endereco =
+                obterValor(
+                    "endereco"
+                );
 
 
-        const whatsapp =
-            document
-                .getElementById("whatsapp")
-                .value
-                .trim();
+            const cidade =
+                obterValor(
+                    "cidade"
+                );
 
 
-        const descricao =
-            document
-                .getElementById("descricao")
-                .value
-                .trim();
+            const abertura =
+                obterValor(
+                    "abertura"
+                );
 
 
-        const endereco =
-            document
-                .getElementById("endereco")
-                .value
-                .trim();
+            const fechamento =
+                obterValor(
+                    "fechamento"
+                );
 
 
-        const cidade =
-            document
-                .getElementById("cidade")
-                .value
-                .trim();
+            // ==================================
+            // VALIDAÇÃO
+            // ==================================
 
+            if (!nome) {
 
-        const abertura =
-            document
-                .getElementById("abertura")
-                .value;
+                notificar(
+                    "Digite o nome da sua loja.",
+                    "aviso",
+                    "Nome obrigatório"
+                );
 
 
-        const fechamento =
-            document
-                .getElementById("fechamento")
-                .value;
+                focarCampo(
+                    "nome"
+                );
 
 
-        // ===============================
-        // VALIDAÇÕES
-        // ===============================
+                return;
 
-        if (!nome) {
+            }
 
-            throw new Error(
-                "Informe o nome da loja."
-            );
 
-        }
+            if (
+                nome.length < 3
+            ) {
 
+                notificar(
+                    "O nome da loja deve possuir pelo menos 3 caracteres.",
+                    "aviso",
+                    "Nome muito curto"
+                );
 
-        if (!categoria.value) {
 
-            throw new Error(
-                "Selecione uma categoria."
-            );
+                focarCampo(
+                    "nome"
+                );
 
-        }
 
+                return;
 
-        // ===============================
-        // UPLOAD DA LOGO
-        // ===============================
+            }
 
-        mensagem.style.color = "#666";
 
-        mensagem.textContent =
-            "Enviando logo da loja...";
+            if (
+                !categoria?.value
+            ) {
 
+                notificar(
+                    "Escolha a categoria da sua loja.",
+                    "aviso",
+                    "Categoria obrigatória"
+                );
 
-        const logoUrl =
-            await enviarLogo();
 
+                categoria?.focus();
 
-        // ===============================
-        // DADOS DA LOJA
-        // ===============================
 
-        const dadosLoja = {
+                return;
 
-            proprietario_id:
-                usuario.id,
+            }
 
-            categoria_id:
-                Number(categoria.value),
 
-            nome:
+            // ==================================
+            // BOTÃO
+            // ==================================
 
-                nome,
+            const conteudoOriginal =
+                botao?.innerHTML;
 
-            descricao:
 
-                descricao,
+            if (botao) {
 
-            telefone:
+                botao.disabled =
+                    true;
 
-                telefone,
 
-            whatsapp:
+                botao.innerHTML = `
 
-                whatsapp,
+                    <i class="fa-solid fa-spinner fa-spin"></i>
 
-            endereco:
+                    Cadastrando...
 
-                endereco,
+                `;
 
-            cidade:
+            }
 
-                cidade,
 
-            horario_abertura:
+            if (mensagem) {
 
-                abertura || null,
+                mensagem.textContent =
+                    "";
 
-            horario_fechamento:
+            }
 
-                fechamento || null,
 
-            logo_url:
+            let cadastroConcluido =
+                false;
 
-                logoUrl,
 
-            ativa:
+            try {
 
-                true
+                // ==================================
+                // LOGO
+                // ==================================
 
-        };
+                let logoUrl =
+                    null;
 
 
-        console.log(
-            "Dados da loja:",
-            dadosLoja
-        );
+                if (
+                    inputLogo?.files?.length
+                ) {
 
+                    atualizarMensagem(
+                        "Enviando logo da loja..."
+                    );
 
-        // ===============================
-        // INSERT
-        // ===============================
 
-        const {
-            data,
-            error
-        } = await window.db
+                    logoUrl =
+                        await enviarLogo();
 
-            .from("lojas")
+                }
 
-            .insert([dadosLoja])
 
-            .select()
-            .single();
+                // ==================================
+                // CRIANDO LOJA
+                // ==================================
 
+                atualizarMensagem(
+                    "Criando sua loja..."
+                );
 
-        if (error) {
 
-            console.error(
-                "Erro ao cadastrar:",
-                error
-            );
+                const dadosLoja = {
 
-            throw error;
+                    proprietario_id:
+                        usuario.id,
 
-        }
+                    categoria_id:
+                        Number(
+                            categoria.value
+                        ),
 
+                    nome,
 
-        console.log(
-            "Loja cadastrada:",
-            data
-        );
+                    descricao,
 
+                    telefone,
 
-        // ===============================
-        // SUCESSO
-        // ===============================
+                    whatsapp,
 
-        mensagem.style.color =
-            "#198754";
+                    endereco,
 
+                    cidade,
 
-        mensagem.innerHTML = `
+                    horario_abertura:
+                        abertura ||
+                        null,
 
-            <i class="fa-solid fa-circle-check"></i>
+                    horario_fechamento:
+                        fechamento ||
+                        null,
 
-            Loja cadastrada com sucesso!
+                    logo_url:
+                        logoUrl,
 
-            <br>
+                    ativa:
+                        true
 
-            Redirecionando...
+                };
 
-        `;
 
+                console.log(
+                    "Dados da loja:",
+                    dadosLoja
+                );
 
-        // Salvar informações básicas
-        // para uso no projeto
 
-        localStorage.setItem(
-            "loja_id",
-            data.id
-        );
+                // ==================================
+                // INSERT
+                // ==================================
 
+                const {
+                    data,
+                    error
+                } = await window.db
 
-        localStorage.setItem(
-            "nome_loja",
-            data.nome
-        );
+                    .from(
+                        "lojas"
+                    )
 
+                    .insert(
+                        dadosLoja
+                    )
 
-        // ===============================
-        // REDIRECIONAR
-        // ===============================
+                    .select()
 
-        setTimeout(() => {
+                    .single();
 
-            window.location.href =
-                "painel-loja.html";
 
-        }, 1500);
+                if (error) {
 
+                    throw error;
 
-    } catch (erro) {
+                }
 
 
-        console.error(
-            "Erro:",
-            erro
-        );
+                if (!data) {
 
+                    throw new Error(
+                        "A loja não foi retornada após o cadastro."
+                    );
 
-        mensagem.style.color =
-            "#dc3545";
+                }
 
 
-        mensagem.innerHTML = `
+                console.log(
+                    "Loja cadastrada:",
+                    data
+                );
 
-            <i class="fa-solid fa-circle-exclamation"></i>
 
-            ${erro.message}
+                cadastroConcluido =
+                    true;
 
-        `;
 
+                // ==================================
+                // LOCAL STORAGE
+                // ==================================
 
-    } finally {
+                localStorage.setItem(
+                    "loja_id",
+                    data.id
+                );
 
 
-        botao.disabled = false;
+                localStorage.setItem(
+                    "nome_loja",
+                    data.nome
+                );
 
 
-        botao.innerHTML = `
+                // ==================================
+                // SUCESSO
+                // ==================================
 
-            <i class="fa-solid fa-floppy-disk"></i>
-
-            Cadastrar Loja
-
-        `;
-
-    }
-
-});
+                atualizarMensagem(
+                    ""
+ 

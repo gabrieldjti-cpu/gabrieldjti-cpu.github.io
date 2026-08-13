@@ -36,9 +36,26 @@ document.addEventListener(
             );
 
 
-            alert(
-                "Erro ao conectar ao banco."
+            notificar(
+                "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+                "erro",
+                "Erro de conexão",
+                6000
             );
+
+
+            const botao =
+                document.getElementById(
+                    "btn-finalizar"
+                );
+
+
+            if (botao) {
+
+                botao.disabled =
+                    true;
+
+            }
 
 
             return;
@@ -72,13 +89,23 @@ document.addEventListener(
             carrinho.length === 0
         ) {
 
-            alert(
-                "Seu carrinho está vazio."
+            notificar(
+                "Adicione produtos ao carrinho antes de finalizar uma compra.",
+                "aviso",
+                "Carrinho vazio",
+                2500
             );
 
 
-            window.location.href =
-                "carrinho.html";
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "carrinho.html";
+
+                },
+                1000
+            );
 
 
             return;
@@ -92,12 +119,9 @@ document.addEventListener(
 
         agruparProdutosPorLoja();
 
-
         mostrarResumo();
 
-
         preencherDadosUsuario();
-
 
         configurarPagamento();
 
@@ -133,12 +157,17 @@ async function verificarUsuario() {
 
     try {
 
-        // Primeiro verifica a sessão
+        // ==================================
+        // SESSÃO
+        // ==================================
 
         const {
             data: sessaoData,
             error: sessaoError
-        } = await window.db.auth.getSession();
+        } =
+            await window.db
+                .auth
+                .getSession();
 
 
         if (sessaoError) {
@@ -149,8 +178,11 @@ async function verificarUsuario() {
             );
 
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Não foi possível verificar sua sessão.",
+                "erro",
+                "Erro de autenticação"
+            );
 
 
             return false;
@@ -162,8 +194,23 @@ async function verificarUsuario() {
             !sessaoData.session
         ) {
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Entre na sua conta para finalizar a compra.",
+                "info",
+                "Login necessário",
+                2500
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                900
+            );
 
 
             return false;
@@ -172,13 +219,16 @@ async function verificarUsuario() {
 
 
         // ==================================
-        // BUSCAR USUÁRIO
+        // USUÁRIO
         // ==================================
 
         const {
             data,
             error
-        } = await window.db.auth.getUser();
+        } =
+            await window.db
+                .auth
+                .getUser();
 
 
         if (
@@ -192,8 +242,22 @@ async function verificarUsuario() {
             );
 
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Sua sessão não pôde ser validada. Entre novamente.",
+                "erro",
+                "Sessão inválida"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                1000
+            );
 
 
             return false;
@@ -216,8 +280,11 @@ async function verificarUsuario() {
         );
 
 
-        window.location.href =
-            "login.html";
+        notificar(
+            "Ocorreu um erro ao verificar sua conta.",
+            "erro",
+            "Erro de autenticação"
+        );
 
 
         return false;
@@ -270,6 +337,13 @@ function carregarCarrinho() {
 
         carrinho =
             [];
+
+
+        notificar(
+            "Não foi possível carregar os produtos do carrinho.",
+            "erro",
+            "Erro no carrinho"
+        );
 
     }
 
@@ -451,7 +525,6 @@ function mostrarResumo() {
 
                         <div class="checkout-loja">
 
-
                             <div class="checkout-loja-topo">
 
                                 <i class="fa-solid fa-store"></i>
@@ -481,7 +554,6 @@ function mostrarResumo() {
                                 </strong>
 
                             </div>
-
 
                         </div>
 
@@ -542,6 +614,7 @@ function criarProdutoResumo(
                     )}"
                     alt="${nome}"
                     class="imagem-checkout"
+                    loading="lazy"
                     onerror="mostrarPlaceholderCheckout(this)"
                 >
 
@@ -565,7 +638,9 @@ function criarProdutoResumo(
 
             <div class="area-imagem-checkout">
 
-                <div class="imagem-checkout-placeholder">
+                <div
+                    class="imagem-checkout-placeholder"
+                >
 
                     <i class="fa-solid fa-box"></i>
 
@@ -581,7 +656,6 @@ function criarProdutoResumo(
     return `
 
         <div class="item-checkout">
-
 
             ${imagemHTML}
 
@@ -612,7 +686,6 @@ function criarProdutoResumo(
                 )}
 
             </div>
-
 
         </div>
 
@@ -688,7 +761,7 @@ function normalizarQuantidade(
 
 
 // ==========================================
-// PREENCHER NOME
+// PREENCHER DADOS DO USUÁRIO
 // ==========================================
 
 function preencherDadosUsuario() {
@@ -700,21 +773,25 @@ function preencherDadosUsuario() {
     }
 
 
-    const nome =
+    const campoNome =
         document.getElementById(
             "nome"
         );
 
 
     if (
-        nome &&
-        !nome.value
+        campoNome &&
+        !campoNome.value
     ) {
 
-        nome.value =
+        campoNome.value =
             usuario
                 .user_metadata
                 ?.display_name
+            ||
+            usuario
+                .user_metadata
+                ?.nome
             ||
             usuario.email
                 ?.split("@")[0]
@@ -865,10 +942,21 @@ function validarFormulario() {
         );
 
 
+    // ==================================
+    // NOME
+    // ==================================
+
     if (!nome) {
 
-        alert(
-            "Informe seu nome."
+        notificar(
+            "Informe o nome de quem receberá o pedido.",
+            "aviso",
+            "Nome obrigatório"
+        );
+
+
+        focarCampo(
+            "nome"
         );
 
 
@@ -877,10 +965,21 @@ function validarFormulario() {
     }
 
 
+    // ==================================
+    // TELEFONE
+    // ==================================
+
     if (!telefone) {
 
-        alert(
-            "Informe seu telefone."
+        notificar(
+            "Informe um telefone para contato.",
+            "aviso",
+            "Telefone obrigatório"
+        );
+
+
+        focarCampo(
+            "telefone"
         );
 
 
@@ -897,11 +996,19 @@ function validarFormulario() {
 
 
     if (
-        telefoneNumeros.length < 10
+        telefoneNumeros.length < 10 ||
+        telefoneNumeros.length > 11
     ) {
 
-        alert(
-            "Informe um telefone válido."
+        notificar(
+            "Digite um telefone válido com DDD.",
+            "aviso",
+            "Telefone inválido"
+        );
+
+
+        focarCampo(
+            "telefone"
         );
 
 
@@ -909,11 +1016,22 @@ function validarFormulario() {
 
     }
 
+
+    // ==================================
+    // ENDEREÇO
+    // ==================================
 
     if (!endereco) {
 
-        alert(
-            "Informe o endereço de entrega."
+        notificar(
+            "Informe onde o pedido deve ser entregue.",
+            "aviso",
+            "Endereço obrigatório"
+        );
+
+
+        focarCampo(
+            "endereco"
         );
 
 
@@ -921,11 +1039,22 @@ function validarFormulario() {
 
     }
 
+
+    // ==================================
+    // CIDADE
+    // ==================================
 
     if (!cidade) {
 
-        alert(
-            "Informe a cidade."
+        notificar(
+            "Informe a cidade de entrega.",
+            "aviso",
+            "Cidade obrigatória"
+        );
+
+
+        focarCampo(
+            "cidade"
         );
 
 
@@ -933,13 +1062,24 @@ function validarFormulario() {
 
     }
 
+
+    // ==================================
+    // ESTADO
+    // ==================================
 
     if (
         estado.length !== 2
     ) {
 
-        alert(
-            "Informe o estado com 2 letras. Ex.: MG."
+        notificar(
+            "Informe a sigla do estado com 2 letras. Exemplo: BA, SP ou MG.",
+            "aviso",
+            "Estado inválido"
+        );
+
+
+        focarCampo(
+            "estado"
         );
 
 
@@ -947,6 +1087,10 @@ function validarFormulario() {
 
     }
 
+
+    // ==================================
+    // CEP
+    // ==================================
 
     const cepNumeros =
         cep.replace(
@@ -959,8 +1103,15 @@ function validarFormulario() {
         cepNumeros.length !== 8
     ) {
 
-        alert(
-            "Informe um CEP válido."
+        notificar(
+            "Digite um CEP válido com 8 números.",
+            "aviso",
+            "CEP inválido"
+        );
+
+
+        focarCampo(
+            "cep"
         );
 
 
@@ -969,10 +1120,16 @@ function validarFormulario() {
     }
 
 
+    // ==================================
+    // PAGAMENTO
+    // ==================================
+
     if (!pagamento) {
 
-        alert(
-            "Selecione uma forma de pagamento."
+        notificar(
+            "Escolha como deseja pagar pelo pedido.",
+            "aviso",
+            "Forma de pagamento"
         );
 
 
@@ -992,20 +1149,29 @@ function validarFormulario() {
 
         const trocoValor =
             Number(
-                document.getElementById(
-                    "troco"
-                )?.value || 0
+                document
+                    .getElementById(
+                        "troco"
+                    )
+                    ?.value || 0
             );
 
 
         if (
             trocoValor > 0 &&
             trocoValor <
-                totalPedido
+            totalPedido
         ) {
 
-            alert(
-                "O valor para troco não pode ser menor que o total do pedido."
+            notificar(
+                `O valor informado para troco deve ser igual ou maior que ${formatarMoeda(totalPedido)}.`,
+                "aviso",
+                "Valor de troco inválido"
+            );
+
+
+            focarCampo(
+                "troco"
             );
 
 
@@ -1042,6 +1208,10 @@ async function finalizarCompra() {
         );
 
 
+    const conteudoOriginal =
+        botao?.innerHTML;
+
+
     if (botao) {
 
         botao.disabled =
@@ -1066,8 +1236,19 @@ async function finalizarCompra() {
         // ==================================
 
         const {
-            data: sessaoData
-        } = await window.db.auth.getSession();
+            data: sessaoData,
+            error: sessaoError
+        } =
+            await window.db
+                .auth
+                .getSession();
+
+
+        if (sessaoError) {
+
+            throw sessaoError;
+
+        }
 
 
         if (
@@ -1111,6 +1292,21 @@ async function finalizarCompra() {
 
                 })
             );
+
+
+        // ==================================
+        // VALIDAR ITENS
+        // ==================================
+
+        if (
+            itens.length === 0
+        ) {
+
+            throw new Error(
+                "Nenhum produto foi encontrado no carrinho."
+            );
+
+        }
 
 
         // ==================================
@@ -1175,8 +1371,9 @@ async function finalizarCompra() {
             );
 
 
-        // Por enquanto os dados de entrega ficam
-        // registrados em observacoes do pedido.
+        // ==================================
+        // OBSERVAÇÕES DO PEDIDO
+        // ==================================
 
         const linhasObservacoes = [
 
@@ -1194,8 +1391,7 @@ async function finalizarCompra() {
 
 
         if (
-            pagamento ===
-                "dinheiro" &&
+            pagamento === "dinheiro" &&
             troco > 0
         ) {
 
@@ -1232,21 +1428,23 @@ async function finalizarCompra() {
         const {
             data,
             error
-        } = await window.db.rpc(
-            "finalizar_checkout",
-            {
+        } =
+            await window.db
+                .rpc(
+                    "finalizar_checkout",
+                    {
 
-                p_forma_pagamento:
-                    pagamento,
+                        p_forma_pagamento:
+                            pagamento,
 
-                p_observacoes:
-                    observacoesBanco,
+                        p_observacoes:
+                            observacoesBanco,
 
-                p_itens:
-                    itens
+                        p_itens:
+                            itens
 
-            }
-        );
+                    }
+                );
 
 
         if (error) {
@@ -1292,13 +1490,39 @@ async function finalizarCompra() {
         // SUCESSO
         // ==================================
 
-        alert(
-            "Pedido realizado com sucesso!"
+        if (botao) {
+
+            botao.innerHTML = `
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Pedido realizado
+
+            `;
+
+        }
+
+
+        notificar(
+            "Seu pedido foi realizado com sucesso.",
+            "sucesso",
+            "Pedido confirmado!",
+            3500
         );
 
 
-        window.location.href =
-            "meus-pedidos.html";
+        // Dá tempo de visualizar
+        // a mensagem antes de redirecionar.
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "meus-pedidos.html";
+
+            },
+            1300
+        );
 
 
     } catch (erro) {
@@ -1309,12 +1533,17 @@ async function finalizarCompra() {
         );
 
 
-        alert(
-            "Erro ao finalizar o pedido:\n\n" +
-            (
-                erro.message ||
-                "Erro desconhecido."
-            )
+        const mensagemErro =
+            tratarErroCheckout(
+                erro
+            );
+
+
+        notificar(
+            mensagemErro,
+            "erro",
+            "Não foi possível finalizar",
+            6000
         );
 
 
@@ -1324,17 +1553,154 @@ async function finalizarCompra() {
                 false;
 
 
-            botao.innerHTML = `
+            botao.innerHTML =
+                conteudoOriginal ||
+                `
 
-                <i class="fa-solid fa-check"></i>
+                    <i class="fa-solid fa-check"></i>
 
-                Finalizar Pedido
+                    Finalizar Pedido
 
-            `;
+                `;
 
         }
 
     }
+
+}
+
+
+// ==========================================
+// TRATAR ERROS DO CHECKOUT
+// ==========================================
+
+function tratarErroCheckout(
+    erro
+) {
+
+    const texto =
+        String(
+            erro?.message ||
+            ""
+        )
+            .toLowerCase();
+
+
+    // ==================================
+    // ESTOQUE
+    // ==================================
+
+    if (
+        texto.includes(
+            "estoque insuficiente"
+        )
+    ) {
+
+        return (
+            erro.message ||
+            "Um dos produtos não possui estoque suficiente."
+        );
+
+    }
+
+
+    if (
+        texto.includes(
+            "não está disponível"
+        )
+        ||
+        texto.includes(
+            "nao esta disponivel"
+        )
+    ) {
+
+        return (
+            erro.message ||
+            "Um dos produtos não está mais disponível."
+        );
+
+    }
+
+
+    // ==================================
+    // PRODUTO
+    // ==================================
+
+    if (
+        texto.includes(
+            "produto não encontrado"
+        )
+        ||
+        texto.includes(
+            "produto nao encontrado"
+        )
+    ) {
+
+        return (
+            "Um dos produtos do carrinho não está mais disponível. Volte ao carrinho e atualize sua compra."
+        );
+
+    }
+
+
+    // ==================================
+    // SESSÃO
+    // ==================================
+
+    if (
+        texto.includes(
+            "sessão expirou"
+        )
+        ||
+        texto.includes(
+            "sessao expirou"
+        )
+        ||
+        texto.includes(
+            "não autenticado"
+        )
+        ||
+        texto.includes(
+            "nao autenticado"
+        )
+    ) {
+
+        return (
+            "Sua sessão expirou. Entre novamente para finalizar o pedido."
+        );
+
+    }
+
+
+    // ==================================
+    // REDE
+    // ==================================
+
+    if (
+        texto.includes(
+            "failed to fetch"
+        )
+        ||
+        texto.includes(
+            "network"
+        )
+    ) {
+
+        return (
+            "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
+        );
+
+    }
+
+
+    // ==================================
+    // PADRÃO
+    // ==================================
+
+    return (
+        erro?.message ||
+        "Ocorreu um erro ao finalizar o pedido."
+    );
 
 }
 
@@ -1405,9 +1771,46 @@ function valorCampo(
             id
         )
         ?.value
-        .trim()
+        ?.trim()
         ||
         "";
+
+}
+
+
+// ==========================================
+// FOCAR CAMPO
+// ==========================================
+
+function focarCampo(
+    id
+) {
+
+    const campo =
+        document.getElementById(
+            id
+        );
+
+
+    if (!campo) {
+
+        return;
+
+    }
+
+
+    campo.focus();
+
+
+    campo.scrollIntoView(
+        {
+            behavior:
+                "smooth",
+
+            block:
+                "center"
+        }
+    );
 
 }
 
@@ -1473,6 +1876,43 @@ function escaparHTML(
             "'",
             "&#039;"
         );
+
+}
+
+
+// ==========================================
+// NOTIFICAÇÃO
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
+    );
 
 }
 

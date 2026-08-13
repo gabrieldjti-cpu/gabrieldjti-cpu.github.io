@@ -5,22 +5,68 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Criar Conta | Comércio da Cidade</title>
+    <title>
+        Criar Conta | Comércio da Cidade
+    </title>
 
-    <link rel="stylesheet" href="css/cadastro.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- ==================================
+         CSS DA PÁGINA
+    =================================== -->
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="css/cadastro.css"
+    >
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- ==================================
+         FEEDBACK / ALERTAS
+    =================================== -->
+
+    <link
+        rel="stylesheet"
+        href="components/feedback.css"
+    >
+
+
+    <!-- ==================================
+         GOOGLE FONTS
+    =================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==================================
+         FONT AWESOME
+    =================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
 
 </head>
+
 
 <body>
 
@@ -28,23 +74,40 @@
 
         <div class="cadastro-card">
 
+
+            <!-- ==================================
+                 LOGO
+            =================================== -->
+
             <div class="logo">
 
                 <i class="fa-solid fa-store"></i>
 
-                <h1>Comércio da Cidade</h1>
+                <h1>
+                    Comércio da Cidade
+                </h1>
 
-                <p>Crie sua conta gratuitamente.</p>
+                <p>
+                    Crie sua conta gratuitamente.
+                </p>
 
             </div>
 
+
+            <!-- ==================================
+                 FORMULÁRIO
+            =================================== -->
+
             <form id="cadastroForm">
 
-                <!-- Nome -->
+
+                <!-- NOME -->
 
                 <div class="input-group">
 
-                    <label for="nome">Nome completo</label>
+                    <label for="nome">
+                        Nome completo
+                    </label>
 
                     <div class="input">
 
@@ -54,17 +117,22 @@
                             type="text"
                             id="nome"
                             placeholder="Digite seu nome"
-                            required>
+                            autocomplete="name"
+                            required
+                        >
 
                     </div>
 
                 </div>
 
-                <!-- Email -->
+
+                <!-- EMAIL -->
 
                 <div class="input-group">
 
-                    <label for="email">E-mail</label>
+                    <label for="email">
+                        E-mail
+                    </label>
 
                     <div class="input">
 
@@ -74,17 +142,22 @@
                             type="email"
                             id="email"
                             placeholder="Digite seu e-mail"
-                            required>
+                            autocomplete="email"
+                            required
+                        >
 
                     </div>
 
                 </div>
 
-                <!-- Telefone -->
+
+                <!-- TELEFONE -->
 
                 <div class="input-group">
 
-                    <label for="telefone">Telefone</label>
+                    <label for="telefone">
+                        Telefone
+                    </label>
 
                     <div class="input">
 
@@ -93,17 +166,22 @@
                         <input
                             type="tel"
                             id="telefone"
-                            placeholder="(00) 00000-0000">
+                            placeholder="(00) 00000-0000"
+                            autocomplete="tel"
+                        >
 
                     </div>
 
                 </div>
 
-                <!-- Senha -->
+
+                <!-- SENHA -->
 
                 <div class="input-group">
 
-                    <label for="senha">Senha</label>
+                    <label for="senha">
+                        Senha
+                    </label>
 
                     <div class="input">
 
@@ -113,12 +191,16 @@
                             type="password"
                             id="senha"
                             placeholder="Crie uma senha"
-                            required>
+                            autocomplete="new-password"
+                            required
+                        >
 
                         <button
                             type="button"
                             id="toggleSenha"
-                            class="mostrar-senha">
+                            class="mostrar-senha"
+                            aria-label="Mostrar ou ocultar senha"
+                        >
 
                             <i class="fa-solid fa-eye"></i>
 
@@ -128,11 +210,14 @@
 
                 </div>
 
-                <!-- Confirmar Senha -->
+
+                <!-- CONFIRMAR SENHA -->
 
                 <div class="input-group">
 
-                    <label for="confirmarSenha">Confirmar senha</label>
+                    <label for="confirmarSenha">
+                        Confirmar senha
+                    </label>
 
                     <div class="input">
 
@@ -142,12 +227,16 @@
                             type="password"
                             id="confirmarSenha"
                             placeholder="Digite novamente"
-                            required>
+                            autocomplete="new-password"
+                            required
+                        >
 
                         <button
                             type="button"
                             id="toggleConfirmarSenha"
-                            class="mostrar-senha">
+                            class="mostrar-senha"
+                            aria-label="Mostrar ou ocultar confirmação da senha"
+                        >
 
                             <i class="fa-solid fa-eye"></i>
 
@@ -157,7 +246,8 @@
 
                 </div>
 
-                <!-- Termos -->
+
+                <!-- TERMOS -->
 
                 <div class="termos">
 
@@ -166,23 +256,31 @@
                         <input
                             type="checkbox"
                             id="termos"
-                            required>
+                            required
+                        >
 
-                        Li e aceito os Termos de Uso e a Política de Privacidade.
+                        Li e aceito os Termos de Uso
+                        e a Política de Privacidade.
 
                     </label>
 
                 </div>
 
-                <!-- Mensagem -->
 
-                <div id="mensagem"></div>
+                <!-- MENSAGEM DE CARREGAMENTO -->
 
-                <!-- Botão -->
+                <div
+                    id="mensagem"
+                    aria-live="polite"
+                ></div>
+
+
+                <!-- BOTÃO -->
 
                 <button
                     type="submit"
-                    class="btn-cadastro">
+                    class="btn-cadastro"
+                >
 
                     Criar Conta
 
@@ -190,9 +288,16 @@
 
             </form>
 
+
+            <!-- ==================================
+                 LOGIN
+            =================================== -->
+
             <div class="login">
 
-                <p>Já possui uma conta?</p>
+                <p>
+                    Já possui uma conta?
+                </p>
 
                 <a href="login.html">
 
@@ -202,9 +307,15 @@
 
             </div>
 
+
+            <!-- ==================================
+                 VOLTAR
+            =================================== -->
+
             <a
                 href="index.html"
-                class="voltar">
+                class="voltar"
+            >
 
                 <i class="fa-solid fa-arrow-left"></i>
 
@@ -216,12 +327,27 @@
 
     </main>
 
-    <!-- Supabase -->
 
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- ==================================
+         SCRIPTS
+    =================================== -->
 
-   <script src="js/supabase.js"></script>
-   <script src="js/cadastro.js"></script>
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+
+    <!-- FEEDBACK PERSONALIZADO -->
+
+    <script src="components/feedback.js"></script>
+
+
+    <!-- CADASTRO -->
+
+    <script src="js/cadastro.js"></script>
+
 </body>
 
 </html>

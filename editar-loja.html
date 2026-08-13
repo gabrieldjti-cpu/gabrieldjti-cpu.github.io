@@ -10,7 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Editar Loja | Comércio da Cidade</title>
+    <title>
+        Editar Loja | Comércio da Cidade
+    </title>
 
 
     <!-- ==============================
@@ -19,12 +21,17 @@
 
     <link
         rel="stylesheet"
-        href="css/editar-loja.css"
+        href="components/header.css"
     >
 
     <link
         rel="stylesheet"
-        href="components/header.css"
+        href="components/feedback.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/editar-loja.css"
     >
 
 
@@ -125,14 +132,10 @@
                     </label>
 
 
-                    <!-- ==========================
-                         PREVIEW DA LOGO
-                    =========================== -->
+                    <!-- PREVIEW -->
 
                     <div class="logo-preview">
 
-
-                        <!-- LOGO REAL -->
 
                         <img
                             id="preview-logo"
@@ -140,8 +143,6 @@
                             hidden
                         >
 
-
-                        <!-- PLACEHOLDER -->
 
                         <div
                             id="preview-logo-placeholder"
@@ -156,9 +157,7 @@
                     </div>
 
 
-                    <!-- ==========================
-                         INPUT DA LOGO
-                    =========================== -->
+                    <!-- INPUT -->
 
                     <input
                         type="file"
@@ -204,6 +203,7 @@
                         type="text"
                         id="nome"
                         placeholder="Ex.: Mercado Boa Compra"
+                        autocomplete="organization"
                         required
                     >
 
@@ -258,9 +258,10 @@
                         </label>
 
                         <input
-                            type="text"
+                            type="tel"
                             id="telefone"
                             placeholder="(33) 99999-9999"
+                            autocomplete="tel"
                         >
 
                     </div>
@@ -279,13 +280,13 @@
                         </label>
 
                         <input
-                            type="text"
+                            type="tel"
                             id="whatsapp"
                             placeholder="(33) 99999-9999"
+                            inputmode="tel"
                         >
 
                     </div>
-
 
                 </div>
 
@@ -307,6 +308,7 @@
                     <textarea
                         id="descricao"
                         rows="4"
+                        maxlength="500"
                         placeholder="Descreva sua loja..."
                     ></textarea>
 
@@ -331,6 +333,7 @@
                         type="text"
                         id="endereco"
                         placeholder="Rua, número"
+                        autocomplete="street-address"
                     >
 
                 </div>
@@ -354,6 +357,7 @@
                         type="text"
                         id="cidade"
                         placeholder="Sua cidade"
+                        autocomplete="address-level2"
                     >
 
                 </div>
@@ -405,7 +409,6 @@
 
                     </div>
 
-
                 </div>
 
 
@@ -447,12 +450,13 @@
 
 
                 <!-- ==============================
-                     MENSAGEM
+                     MENSAGEM DE CARREGAMENTO
                 =============================== -->
 
                 <div
                     id="mensagem"
                     class="mensagem"
+                    aria-live="polite"
                 ></div>
 
 
@@ -491,9 +495,7 @@
 
                     </button>
 
-
                 </div>
-
 
             </form>
 
@@ -509,10 +511,8 @@
     <footer>
 
         <p>
-
             © 2026 Comércio da Cidade -
             Todos os direitos reservados.
-
         </p>
 
     </footer>
@@ -525,9 +525,7 @@
 
     <!-- SUPABASE -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
     <!-- CONFIGURAÇÃO SUPABASE -->
@@ -538,6 +536,11 @@
     <!-- HEADER -->
 
     <script src="components/header.js"></script>
+
+
+    <!-- FEEDBACK PERSONALIZADO -->
+
+    <script src="components/feedback.js"></script>
 
 
     <!-- EDITAR LOJA -->

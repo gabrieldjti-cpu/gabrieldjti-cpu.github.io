@@ -27,6 +27,18 @@ document.addEventListener(
                 "Index: Supabase não foi inicializado."
             );
 
+
+            notificar(
+                "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+                "erro",
+                "Erro de conexão",
+                6000
+            );
+
+
+            mostrarErroLojas();
+
+
             return;
 
         }
@@ -80,6 +92,7 @@ async function carregarLojas() {
             "#lista-lojas não encontrado."
         );
 
+
         return;
 
     }
@@ -113,32 +126,36 @@ async function carregarLojas() {
         const {
             data,
             error
-        } = await window.db
+        } =
+            await window.db
 
-            .from("lojas")
-
-            .select(`
-                id,
-                nome,
-                cidade,
-                logo_url,
-                ativa,
-                categorias (
-                    nome
+                .from(
+                    "lojas"
                 )
-            `)
 
-            .eq(
-                "ativa",
-                true
-            )
+                .select(`
+                    id,
+                    nome,
+                    cidade,
+                    logo_url,
+                    ativa,
+                    categorias (
+                        nome
+                    )
+                `)
 
-            .order(
-                "nome",
-                {
-                    ascending: true
-                }
-            );
+                .eq(
+                    "ativa",
+                    true
+                )
+
+                .order(
+                    "nome",
+                    {
+                        ascending:
+                            true
+                    }
+                );
 
 
         // ==================================
@@ -153,23 +170,15 @@ async function carregarLojas() {
             );
 
 
-            lista.innerHTML = `
+            mostrarErroLojas();
 
-                <div class="sem-produtos">
 
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <h3>
-                        Erro ao carregar lojas.
-                    </h3>
-
-                    <p>
-                        Tente atualizar a página.
-                    </p>
-
-                </div>
-
-            `;
+            notificar(
+                "Não foi possível carregar as lojas disponíveis.",
+                "erro",
+                "Erro ao carregar lojas",
+                5000
+            );
 
 
             return;
@@ -182,23 +191,14 @@ async function carregarLojas() {
         // ==================================
 
         const lojas =
-            data || [];
+            Array.isArray(data)
+                ? data
+                : [];
 
 
-        const total =
-            document.getElementById(
-                "total-lojas"
-            );
-
-
-        if (total) {
-
-            total.textContent =
-                lojas.length === 1
-                    ? "1 loja"
-                    : `${lojas.length} lojas`;
-
-        }
+        atualizarTotalLojas(
+            lojas.length
+        );
 
 
         // ==================================
@@ -216,11 +216,11 @@ async function carregarLojas() {
                     <i class="fa-solid fa-store-slash"></i>
 
                     <h3>
-                        Nenhuma loja cadastrada.
+                        Nenhuma loja disponível.
                     </h3>
 
                     <p>
-                        Ainda não existem lojas disponíveis.
+                        Ainda não existem lojas disponíveis no momento.
                     </p>
 
                 </div>
@@ -234,33 +234,15 @@ async function carregarLojas() {
 
 
         // ==================================
-        // LIMPAR CARREGAMENTO
-        // ==================================
-
-        lista.innerHTML =
-            "";
-
-
-        // ==================================
         // CRIAR CARDS
         // ==================================
 
-        lojas.forEach(
-            (loja) => {
-
-                const card =
-                    criarCardLoja(
-                        loja
-                    );
-
-
-                lista.insertAdjacentHTML(
-                    "beforeend",
-                    card
-                );
-
-            }
-        );
+        lista.innerHTML =
+            lojas
+                .map(
+                    criarCardLoja
+                )
+                .join("");
 
 
     } catch (erro) {
@@ -271,21 +253,98 @@ async function carregarLojas() {
         );
 
 
-        lista.innerHTML = `
+        mostrarErroLojas();
 
-            <div class="sem-produtos">
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <h3>
-                    Não foi possível carregar as lojas.
-                </h3>
-
-            </div>
-
-        `;
+        notificar(
+            "Ocorreu um erro inesperado ao carregar as lojas.",
+            "erro",
+            "Não foi possível carregar",
+            5000
+        );
 
     }
+
+}
+
+
+// ==========================================
+// MOSTRAR ERRO DAS LOJAS
+// ==========================================
+
+function mostrarErroLojas() {
+
+    const lista =
+        document.getElementById(
+            "lista-lojas"
+        );
+
+
+    if (!lista) {
+
+        return;
+
+    }
+
+
+    lista.innerHTML = `
+
+        <div class="sem-produtos">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <h3>
+                Não foi possível carregar as lojas.
+            </h3>
+
+            <p>
+                Atualize a página e tente novamente.
+            </p>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="window.location.reload()"
+            >
+
+                <i class="fa-solid fa-rotate-right"></i>
+
+                Tentar novamente
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+// ==========================================
+// ATUALIZAR TOTAL DE LOJAS
+// ==========================================
+
+function atualizarTotalLojas(
+    quantidade
+) {
+
+    const total =
+        document.getElementById(
+            "total-lojas"
+        );
+
+
+    if (!total) {
+
+        return;
+
+    }
+
+
+    total.textContent =
+        quantidade === 1
+            ? "1 loja"
+            : `${quantidade} lojas`;
 
 }
 
@@ -319,6 +378,13 @@ function criarCardLoja(
         );
 
 
+    const lojaId =
+        escaparAtributo(
+            loja.id ||
+            ""
+        );
+
+
     // ==================================
     // LOGO
     // ==================================
@@ -326,14 +392,18 @@ function criarCardLoja(
     let logoHTML;
 
 
-    if (loja.logo_url) {
+    if (
+        loja.logo_url
+    ) {
 
         logoHTML = `
 
             <div class="area-logo-card">
 
                 <img
-                    src="${escaparAtributo(loja.logo_url)}"
+                    src="${escaparAtributo(
+                        loja.logo_url
+                    )}"
                     alt="Logo da ${nome}"
                     class="logo-card-loja"
                     loading="lazy"
@@ -381,7 +451,12 @@ function criarCardLoja(
 
         <div
             class="card"
-            data-nome="${nome.toLowerCase()}"
+            data-nome="${escaparAtributo(
+                normalizarTexto(
+                    loja.nome ||
+                    ""
+                )
+            )}"
         >
 
             ${logoHTML}
@@ -412,7 +487,7 @@ function criarCardLoja(
 
             <button
                 type="button"
-                onclick="abrirLoja('${loja.id}')"
+                onclick="abrirLoja('${lojaId}')"
             >
 
                 <i class="fa-solid fa-store"></i>
@@ -449,10 +524,16 @@ function mostrarPlaceholderLogo(
         );
 
 
-    if (!area) {
+    imagem.style.display =
+        "none";
 
-        imagem.style.display =
-            "none";
+
+    imagem.removeAttribute(
+        "src"
+    );
+
+
+    if (!area) {
 
         return;
 
@@ -463,15 +544,6 @@ function mostrarPlaceholderLogo(
         area.querySelector(
             ".logo-card-placeholder"
         );
-
-
-    imagem.style.display =
-        "none";
-
-
-    imagem.removeAttribute(
-        "src"
-    );
 
 
     if (placeholder) {
@@ -504,9 +576,9 @@ function pesquisarLojas() {
 
 
     const texto =
-        input.value
-            .trim()
-            .toLowerCase();
+        normalizarTexto(
+            input.value
+        );
 
 
     const cards =
@@ -515,25 +587,147 @@ function pesquisarLojas() {
         );
 
 
+    let encontrados =
+        0;
+
+
     cards.forEach(
         (card) => {
 
             const nome =
                 card.dataset.nome ||
-                card
-                    .querySelector("h3")
-                    ?.textContent
-                    .toLowerCase() ||
-                "";
+                normalizarTexto(
+                    card
+                        .querySelector(
+                            "h3"
+                        )
+                        ?.textContent ||
+                    ""
+                );
+
+
+            const encontrou =
+                nome.includes(
+                    texto
+                );
 
 
             card.style.display =
-                nome.includes(texto)
+                encontrou
                     ? ""
                     : "none";
 
+
+            if (encontrou) {
+
+                encontrados++;
+
+            }
+
         }
     );
+
+
+    atualizarMensagemPesquisa(
+        texto,
+        encontrados,
+        cards.length
+    );
+
+}
+
+
+// ==========================================
+// MENSAGEM DA PESQUISA
+// ==========================================
+
+function atualizarMensagemPesquisa(
+    texto,
+    encontrados,
+    totalCards
+) {
+
+    const lista =
+        document.getElementById(
+            "lista-lojas"
+        );
+
+
+    if (!lista) {
+
+        return;
+
+    }
+
+
+    let mensagem =
+        document.getElementById(
+            "nenhuma-loja-pesquisa"
+        );
+
+
+    // ==================================
+    // SEM PESQUISA
+    // ==================================
+
+    if (
+        !texto ||
+        totalCards === 0 ||
+        encontrados > 0
+    ) {
+
+        if (mensagem) {
+
+            mensagem.remove();
+
+        }
+
+
+        return;
+
+    }
+
+
+    // ==================================
+    // NENHUM RESULTADO
+    // ==================================
+
+    if (!mensagem) {
+
+        mensagem =
+            document.createElement(
+                "div"
+            );
+
+
+        mensagem.id =
+            "nenhuma-loja-pesquisa";
+
+
+        mensagem.className =
+            "sem-produtos";
+
+
+        lista.appendChild(
+            mensagem
+        );
+
+    }
+
+
+    mensagem.innerHTML = `
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <h3>
+            Nenhuma loja encontrada.
+        </h3>
+
+        <p>
+            Tente pesquisar usando outro nome.
+        </p>
+
+    `;
 
 }
 
@@ -548,13 +742,22 @@ function abrirLoja(
 
     if (!id) {
 
+        notificar(
+            "Não foi possível identificar esta loja.",
+            "erro",
+            "Loja indisponível"
+        );
+
+
         return;
 
     }
 
 
     window.location.href =
-        `loja.html?id=${encodeURIComponent(id)}`;
+        `loja.html?id=${encodeURIComponent(
+            id
+        )}`;
 
 }
 
@@ -569,9 +772,12 @@ async function abrirMinhaLoja() {
 
     if (!window.db) {
 
-        alert(
-            "Erro ao conectar com o Supabase."
+        notificar(
+            "Não foi possível conectar ao sistema.",
+            "erro",
+            "Erro de conexão"
         );
+
 
         return;
 
@@ -587,7 +793,10 @@ async function abrirMinhaLoja() {
         const {
             data,
             error
-        } = await window.db.auth.getSession();
+        } =
+            await window.db
+                .auth
+                .getSession();
 
 
         if (error) {
@@ -598,8 +807,11 @@ async function abrirMinhaLoja() {
             );
 
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Não foi possível verificar sua sessão.",
+                "erro",
+                "Erro de autenticação"
+            );
 
 
             return;
@@ -617,8 +829,23 @@ async function abrirMinhaLoja() {
 
         if (!session) {
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Entre na sua conta para acessar sua loja.",
+                "info",
+                "Login necessário",
+                2500
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                800
+            );
 
 
             return;
@@ -637,20 +864,23 @@ async function abrirMinhaLoja() {
         const {
             data: loja,
             error: lojaError
-        } = await window.db
+        } =
+            await window.db
 
-            .from("lojas")
+                .from(
+                    "lojas"
+                )
 
-            .select(
-                "id,nome"
-            )
+                .select(
+                    "id,nome"
+                )
 
-            .eq(
-                "proprietario_id",
-                user.id
-            )
+                .eq(
+                    "proprietario_id",
+                    user.id
+                )
 
-            .maybeSingle();
+                .maybeSingle();
 
 
         if (lojaError) {
@@ -661,8 +891,10 @@ async function abrirMinhaLoja() {
             );
 
 
-            alert(
-                "Erro ao verificar sua loja."
+            notificar(
+                "Não foi possível verificar sua loja.",
+                "erro",
+                "Erro ao carregar loja"
             );
 
 
@@ -685,7 +917,8 @@ async function abrirMinhaLoja() {
 
             localStorage.setItem(
                 "nome_loja",
-                loja.nome || ""
+                loja.nome ||
+                ""
             );
 
 
@@ -712,8 +945,23 @@ async function abrirMinhaLoja() {
         );
 
 
-        window.location.href =
-            "cadastrar-loja.html";
+        notificar(
+            "Você ainda não possui uma loja cadastrada.",
+            "info",
+            "Crie sua loja",
+            2500
+        );
+
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "cadastrar-loja.html";
+
+            },
+            800
+        );
 
 
     } catch (erro) {
@@ -724,11 +972,43 @@ async function abrirMinhaLoja() {
         );
 
 
-        alert(
-            "Erro ao verificar sua loja."
+        notificar(
+            "Ocorreu um erro ao verificar sua loja.",
+            "erro",
+            "Não foi possível continuar"
         );
 
     }
+
+}
+
+
+// ==========================================
+// NORMALIZAR TEXTO
+// Melhora a busca com acentos
+// ==========================================
+
+function normalizarTexto(
+    valor
+) {
+
+    return String(
+        valor ??
+        ""
+    )
+
+        .normalize(
+            "NFD"
+        )
+
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+
+        .trim()
+
+        .toLowerCase();
 
 }
 
@@ -742,7 +1022,8 @@ function escaparHTML(
 ) {
 
     return String(
-        valor ?? ""
+        valor ??
+        ""
     )
 
         .replaceAll(
@@ -783,6 +1064,43 @@ function escaparAtributo(
 
     return escaparHTML(
         valor
+    );
+
+}
+
+
+// ==========================================
+// FEEDBACK
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
     );
 
 }

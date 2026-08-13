@@ -1,162 +1,454 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Editar Produto | Comércio da Cidade</title>
+<head>
 
-    <link rel="stylesheet" href="css/novo-produto.css" />
-    <link rel="stylesheet" href="components/header.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta charset="UTF-8" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
+  <title>
+    Editar Produto | Comércio da Cidade
+  </title>
 
-  <body>
-    <div id="header"></div>
 
-    <main class="container">
-      <div class="breadcrumb">
-        <a href="painel-loja.html">Dashboard</a>
+  <!-- ==================================
+       CSS
+  =================================== -->
 
-        >
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
 
-        <a href="produtos.html">Produtos</a>
+  <link
+    rel="stylesheet"
+    href="components/feedback.css"
+  />
 
-        >
+  <link
+    rel="stylesheet"
+    href="css/novo-produto.css"
+  />
 
-        <strong>Editar Produto</strong>
-      </div>
 
-      <section class="card">
-        <h1 id="tituloPagina">
-          <i class="fa-solid fa-pen"></i>
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
 
-          Editar Produto
-        </h1>
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
 
-        <form id="form-produto">
-          <div class="grid">
-            <div class="col-esquerda">
-              <div class="campo">
-                <label for="nome">Nome do Produto</label>
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
 
-                <input type="text" id="nome" required />
-              </div>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
 
-              <div class="campo">
-                <label for="descricao">Descrição</label>
 
-                <textarea id="descricao" rows="5"></textarea>
-              </div>
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
 
-              <div class="linha">
-                <div class="campo">
-                  <label for="categoria">Categoria</label>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
 
-                  <select id="categoria" required>
-                    <option value="">Carregando...</option>
-                  </select>
-                </div>
+</head>
 
-                <div class="campo">
-                  <label for="preco">Preço</label>
 
-                  <input
-                    type="number"
-                    id="preco"
-                    step="0.01"
-                    min="0"
-                    required
-                  />
-                </div>
-              </div>
+<body>
 
-              <div class="linha">
-                <div class="campo">
-                  <label for="preco-promocao">Preço Promocional</label>
 
-                  <input
-                    type="number"
-                    id="preco-promocao"
-                    step="0.01"
-                    min="0"
-                  />
-                </div>
+  <!-- ==================================
+       HEADER
+  =================================== -->
 
-                <div class="campo">
-                  <label for="estoque">Estoque</label>
+  <div id="header"></div>
 
-                  <input type="number" id="estoque" min="0" required />
-                </div>
-              </div>
 
-              <div class="campo">
-                <label>
-                  <input type="checkbox" id="ativo" />
+  <!-- ==================================
+       CONTEÚDO
+  =================================== -->
 
-                  Produto ativo
-                </label>
-              </div>
+  <main class="container">
 
-              <div class="campo">
-                <label>
-                  <input type="checkbox" id="destaque" />
 
-                  Produto em destaque
-                </label>
-              </div>
+    <!-- BREADCRUMB -->
+
+    <div class="breadcrumb">
+
+      <a href="painel-loja.html">
+        Dashboard
+      </a>
+
+      >
+
+      <a href="produtos.html">
+        Produtos
+      </a>
+
+      >
+
+      <strong>
+        Editar Produto
+      </strong>
+
+    </div>
+
+
+    <!-- ==================================
+         CARD
+    =================================== -->
+
+    <section class="card">
+
+
+      <!-- TÍTULO -->
+
+      <h1 id="tituloPagina">
+
+        <i class="fa-solid fa-pen"></i>
+
+        Editar Produto
+
+      </h1>
+
+
+      <!-- ==================================
+           FORMULÁRIO
+      =================================== -->
+
+      <form id="form-produto">
+
+
+        <div class="grid">
+
+
+          <!-- ==================================
+               COLUNA ESQUERDA
+          =================================== -->
+
+          <div class="col-esquerda">
+
+
+            <!-- NOME -->
+
+            <div class="campo">
+
+              <label for="nome">
+                Nome do Produto
+              </label>
+
+              <input
+                type="text"
+                id="nome"
+                autocomplete="off"
+                placeholder="Ex.: Bolo de Chocolate"
+                required
+              />
+
             </div>
 
-            <div class="col-direita">
-              <div class="preview">
-                <img
-                  id="preview"
-                  src="img/sem-imagem.png"
-                  alt="Prévia do Produto"
+
+            <!-- DESCRIÇÃO -->
+
+            <div class="campo">
+
+              <label for="descricao">
+                Descrição
+              </label>
+
+              <textarea
+                id="descricao"
+                rows="5"
+                maxlength="500"
+                placeholder="Descreva o produto..."
+              ></textarea>
+
+            </div>
+
+
+            <!-- CATEGORIA / PREÇO -->
+
+            <div class="linha">
+
+
+              <div class="campo">
+
+                <label for="categoria">
+                  Categoria
+                </label>
+
+                <select
+                  id="categoria"
+                  required
+                >
+
+                  <option value="">
+                    Carregando...
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="preco">
+                  Preço
+                </label>
+
+                <input
+                  type="number"
+                  id="preco"
+                  step="0.01"
+                  min="0.01"
+                  inputmode="decimal"
+                  placeholder="0,00"
+                  required
                 />
+
               </div>
 
-              <div class="campo">
-                <label for="imagem"> Alterar Imagem </label>
-
-                <input type="file" id="imagem" accept="image/*" />
-              </div>
-
-              <div class="campo">
-                <label>Minha Loja</label>
-
-                <input type="text" id="nomeLoja" readonly />
-              </div>
             </div>
+
+
+            <!-- PROMOÇÃO / ESTOQUE -->
+
+            <div class="linha">
+
+
+              <div class="campo">
+
+                <label for="preco-promocao">
+                  Preço Promocional
+                </label>
+
+                <input
+                  type="number"
+                  id="preco-promocao"
+                  step="0.01"
+                  min="0.01"
+                  inputmode="decimal"
+                  placeholder="Opcional"
+                />
+
+              </div>
+
+
+              <div class="campo">
+
+                <label for="estoque">
+                  Estoque
+                </label>
+
+                <input
+                  type="number"
+                  id="estoque"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="0"
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- PRODUTO ATIVO -->
+
+            <div class="campo">
+
+              <label>
+
+                <input
+                  type="checkbox"
+                  id="ativo"
+                />
+
+                Produto ativo
+
+              </label>
+
+            </div>
+
+
+            <!-- DESTAQUE -->
+
+            <div class="campo">
+
+              <label>
+
+                <input
+                  type="checkbox"
+                  id="destaque"
+                />
+
+                Produto em destaque
+
+              </label>
+
+            </div>
+
           </div>
 
-          <div class="botoes">
-            <a href="produtos.html" class="btn-cancelar"> Cancelar </a>
 
-            <button type="submit" id="btnSalvar" class="btn-salvar">
-              <i class="fa-solid fa-floppy-disk"></i>
+          <!-- ==================================
+               COLUNA DIREITA
+          =================================== -->
 
-              Salvar Alterações
-            </button>
+          <div class="col-direita">
+
+
+            <!-- PREVIEW -->
+
+            <div class="preview">
+
+              <img
+                id="preview"
+                alt="Prévia do Produto"
+                style="display: none;"
+              />
+
+            </div>
+
+
+            <!-- IMAGEM -->
+
+            <div class="campo">
+
+              <label for="imagem">
+
+                <i class="fa-solid fa-image"></i>
+
+                Alterar Imagem
+
+              </label>
+
+              <input
+                type="file"
+                id="imagem"
+                accept="image/jpeg,image/png,image/webp"
+              />
+
+              <small>
+                Formatos aceitos: JPG, PNG ou WEBP.
+                Máximo de 5 MB.
+              </small>
+
+            </div>
+
+
+            <!-- LOJA -->
+
+            <div class="campo">
+
+              <label for="nomeLoja">
+                Minha Loja
+              </label>
+
+              <input
+                type="text"
+                id="nomeLoja"
+                readonly
+              />
+
+            </div>
+
           </div>
-        </form>
-      </section>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        </div>
 
-    <script src="js/supabase.js"></script>
-    <script src="components/header.js"></script>
-    <script src="js/editar-produto.js"></script>
-  </body>
+
+        <!-- ==================================
+             BOTÕES
+        =================================== -->
+
+        <div class="botoes">
+
+
+          <!-- CANCELAR -->
+
+          <a
+            href="produtos.html"
+            class="btn-cancelar"
+          >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Cancelar
+
+          </a>
+
+
+          <!-- SALVAR -->
+
+          <button
+            type="submit"
+            id="btnSalvar"
+            class="btn-salvar"
+          >
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            Salvar Alterações
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
+
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- CONFIGURAÇÃO SUPABASE -->
+
+  <script src="js/supabase.js"></script>
+
+
+  <!-- HEADER -->
+
+  <script src="components/header.js"></script>
+
+
+  <!-- FEEDBACK PERSONALIZADO -->
+
+  <script src="components/feedback.js"></script>
+
+
+  <!-- EDITAR PRODUTO -->
+
+  <script src="js/editar-produto.js"></script>
+
+
+</body>
+
 </html>

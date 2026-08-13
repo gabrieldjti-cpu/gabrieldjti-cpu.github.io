@@ -1,96 +1,466 @@
-// ===============================
+// ==========================================
+// LOGIN.JS
+// Comércio da Cidade
+// ==========================================
+
+
+// ==========================================
 // ELEMENTOS
-// ===============================
+// ==========================================
 
-const form = document.getElementById("loginForm");
-const email = document.getElementById("email");
-const senha = document.getElementById("senha");
-const btnMostrarSenha = document.getElementById("toggleSenha");
+const form =
+    document.getElementById(
+        "loginForm"
+    );
 
-// Verifica se o Supabase foi inicializado
+const email =
+    document.getElementById(
+        "email"
+    );
+
+const senha =
+    document.getElementById(
+        "senha"
+    );
+
+const btnMostrarSenha =
+    document.getElementById(
+        "toggleSenha"
+    );
+
+const btnLogin =
+    document.querySelector(
+        ".btn-login"
+    );
+
+
+// ==========================================
+// VERIFICAR SUPABASE
+// ==========================================
+
 if (!window.db) {
-    alert("Erro: Supabase não foi inicializado.");
-    throw new Error("window.db não encontrado.");
+
+    console.error(
+        "Erro: Supabase não foi inicializado."
+    );
+
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        mostrarAlerta(
+            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+            "erro",
+            "Erro de conexão",
+            6000
+        );
+
+    }
+
+
+    if (btnLogin) {
+
+        btnLogin.disabled =
+            true;
+
+    }
+
 }
 
-// ===============================
+
+// ==========================================
 // MOSTRAR / ESCONDER SENHA
-// ===============================
+// ==========================================
 
-btnMostrarSenha.addEventListener("click", () => {
+if (
+    btnMostrarSenha &&
+    senha
+) {
 
-    const icone = btnMostrarSenha.querySelector("i");
+    btnMostrarSenha.addEventListener(
+        "click",
+        () => {
 
-    if (senha.type === "password") {
+            const icone =
+                btnMostrarSenha.querySelector(
+                    "i"
+                );
 
-        senha.type = "text";
-        icone.classList.replace("fa-eye", "fa-eye-slash");
 
-    } else {
+            const mostrar =
+                senha.type ===
+                "password";
 
-        senha.type = "password";
-        icone.classList.replace("fa-eye-slash", "fa-eye");
 
-    }
+            senha.type =
+                mostrar
+                    ? "text"
+                    : "password";
 
-});
 
-// ===============================
+            if (icone) {
+
+                if (mostrar) {
+
+                    icone.classList.replace(
+                        "fa-eye",
+                        "fa-eye-slash"
+                    );
+
+
+                    btnMostrarSenha.setAttribute(
+                        "aria-label",
+                        "Ocultar senha"
+                    );
+
+                } else {
+
+                    icone.classList.replace(
+                        "fa-eye-slash",
+                        "fa-eye"
+                    );
+
+
+                    btnMostrarSenha.setAttribute(
+                        "aria-label",
+                        "Mostrar senha"
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
 // LOGIN
-// ===============================
+// ==========================================
 
-form.addEventListener("submit", async (e) => {
+if (
+    form &&
+    email &&
+    senha &&
+    btnLogin &&
+    window.db
+) {
 
-    e.preventDefault();
+    form.addEventListener(
+        "submit",
+        async (event) => {
 
-    const btn = document.querySelector(".btn-login");
+            event.preventDefault();
 
-    btn.disabled = true;
-    btn.textContent = "Entrando...";
 
-    try {
+            // ==================================
+            // DADOS
+            // ==================================
 
-        const { data, error } = await window.db.auth.signInWithPassword({
+            const emailDigitado =
+                email.value
+                    .trim();
 
-            email: email.value.trim(),
-            password: senha.value
 
-        });
+            const senhaDigitada =
+                senha.value;
 
-        if (error) {
-            throw error;
+
+            // ==================================
+            // VALIDAR E-MAIL
+            // ==================================
+
+            if (!emailDigitado) {
+
+                mostrarAlerta(
+                    "Digite seu e-mail para continuar.",
+                    "aviso",
+                    "E-mail obrigatório"
+                );
+
+
+                email.focus();
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // VALIDAR SENHA
+            // ==================================
+
+            if (!senhaDigitada) {
+
+                mostrarAlerta(
+                    "Digite sua senha para continuar.",
+                    "aviso",
+                    "Senha obrigatória"
+                );
+
+
+                senha.focus();
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // BOTÃO CARREGANDO
+            // ==================================
+
+            const conteudoOriginal =
+                btnLogin.innerHTML;
+
+
+            btnLogin.disabled =
+                true;
+
+
+            btnLogin.innerHTML = `
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                Entrando...
+
+            `;
+
+
+            try {
+
+                // ==================================
+                // LOGIN SUPABASE
+                // ==================================
+
+                const {
+                    data,
+                    error
+                } =
+                    await window.db
+                        .auth
+                        .signInWithPassword({
+
+                            email:
+                                emailDigitado,
+
+                            password:
+                                senhaDigitada
+
+                        });
+
+
+                if (error) {
+
+                    throw error;
+
+                }
+
+
+                if (
+                    !data ||
+                    !data.user
+                ) {
+
+                    throw new Error(
+                        "Não foi possível identificar o usuário."
+                    );
+
+                }
+
+
+                console.log(
+                    "Login realizado:",
+                    data.user.id
+                );
+
+
+                // ==================================
+                // SUCESSO
+                // ==================================
+
+                mostrarAlerta(
+                    "Login realizado com sucesso.",
+                    "sucesso",
+                    "Bem-vindo!",
+                    1200
+                );
+
+
+                // Pequeno atraso para o usuário
+                // visualizar a mensagem
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            "perfil.html";
+
+                    },
+                    650
+                );
+
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro no login:",
+                    erro
+                );
+
+
+                // ==================================
+                // TRATAR ERRO
+                // ==================================
+
+                const mensagem =
+                    obterMensagemErroLogin(
+                        erro
+                    );
+
+
+                mostrarAlerta(
+                    mensagem,
+                    "erro",
+                    "Não foi possível entrar",
+                    5000
+                );
+
+
+                // ==================================
+                // LIMPAR SENHA
+                // ==================================
+
+                senha.value =
+                    "";
+
+
+                senha.focus();
+
+
+                // ==================================
+                // RESTAURAR BOTÃO
+                // ==================================
+
+                btnLogin.disabled =
+                    false;
+
+
+                btnLogin.innerHTML =
+                    conteudoOriginal;
+
+            }
+
         }
+    );
 
-        console.log("Login realizado:", data);
+}
 
-        window.location.href = "perfil.html";
 
-    } catch (erro) {
+// ==========================================
+// MENSAGEM DE ERRO
+// ==========================================
 
-        console.error(erro);
+function obterMensagemErroLogin(
+    erro
+) {
 
-        let mensagem = "Erro ao fazer login.";
+    const mensagem =
+        String(
+            erro?.message ||
+            ""
+        )
+            .toLowerCase();
 
-        switch (erro.message) {
 
-            case "Invalid login credentials":
-                mensagem = "E-mail ou senha incorretos.";
-                break;
+    // ==================================
+    // LOGIN INVÁLIDO
+    // ==================================
 
-            case "Email not confirmed":
-                mensagem = "Confirme seu e-mail antes de entrar.";
-                break;
+    if (
+        mensagem.includes(
+            "invalid login credentials"
+        )
+    ) {
 
-            default:
-                mensagem = erro.message;
-
-        }
-
-        alert(mensagem);
-
-        btn.disabled = false;
-        btn.textContent = "Entrar";
+        return (
+            "E-mail ou senha incorretos. Confira seus dados e tente novamente."
+        );
 
     }
 
-});
+
+    // ==================================
+    // E-MAIL NÃO CONFIRMADO
+    // ==========================================
+
+    if (
+        mensagem.includes(
+            "email not confirmed"
+        )
+    ) {
+
+        return (
+            "Confirme seu e-mail antes de entrar na sua conta."
+        );
+
+    }
+
+
+    // ==================================
+    // MUITAS TENTATIVAS
+    // ==========================================
+
+    if (
+        mensagem.includes(
+            "rate limit"
+        )
+        ||
+        mensagem.includes(
+            "too many requests"
+        )
+    ) {
+
+        return (
+            "Foram feitas muitas tentativas. Aguarde um momento e tente novamente."
+        );
+
+    }
+
+
+    // ==================================
+    // REDE
+    // ==========================================
+
+    if (
+        mensagem.includes(
+            "failed to fetch"
+        )
+        ||
+        mensagem.includes(
+            "network"
+        )
+    ) {
+
+        return (
+            "Não foi possível conectar ao servidor. Verifique sua internet."
+        );
+
+    }
+
+
+    // ==================================
+    // PADRÃO
+    // ==========================================
+
+    return (
+        "Ocorreu um erro ao fazer login. Tente novamente."
+    );
+
+}

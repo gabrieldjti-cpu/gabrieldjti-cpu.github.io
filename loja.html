@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
   <meta charset="UTF-8" />
 
   <meta
@@ -9,22 +10,14 @@
     content="width=device-width, initial-scale=1.0"
   />
 
-  <title>Loja | Comércio da Cidade</title>
+  <title>
+    Loja | Comércio da Cidade
+  </title>
 
-  <link
-    rel="stylesheet"
-    href="css/loja.css"
-  />
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <!-- ==================================
+       CSS
+  =================================== -->
 
   <link
     rel="stylesheet"
@@ -33,30 +26,73 @@
 
   <link
     rel="stylesheet"
+    href="components/feedback.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/loja.css"
+  />
+
+
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
+
+  <link
+    rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
   />
 
 </head>
 
+
 <body>
 
-  <!-- HEADER -->
+
+  <!-- ==================================
+       HEADER
+  =================================== -->
 
   <div id="header"></div>
 
 
-  <!-- CONTEÚDO -->
+  <!-- ==================================
+       CONTEÚDO
+  =================================== -->
 
   <main class="container">
 
 
-    <!-- INFORMAÇÕES DA LOJA -->
+    <!-- ==================================
+         INFORMAÇÕES DA LOJA
+    =================================== -->
 
     <section class="loja-info">
 
 
-      <!-- LOGO
-           Sem src padrão para evitar 404 -->
+      <!-- LOGO -->
 
       <img
         id="logoLoja"
@@ -67,10 +103,15 @@
 
       <div>
 
+
+        <!-- NOME -->
+
         <h1 id="nomeLoja">
           Carregando...
         </h1>
 
+
+        <!-- CATEGORIA -->
 
         <p>
 
@@ -81,6 +122,8 @@
         </p>
 
 
+        <!-- CIDADE -->
+
         <p>
 
           <i class="fa-solid fa-location-dot"></i>
@@ -90,6 +133,8 @@
         </p>
 
 
+        <!-- TELEFONE -->
+
         <p>
 
           <i class="fa-solid fa-phone"></i>
@@ -98,6 +143,8 @@
 
         </p>
 
+
+        <!-- WHATSAPP -->
 
         <a
           id="btnWhatsapp"
@@ -117,7 +164,9 @@
     </section>
 
 
-    <!-- PESQUISA -->
+    <!-- ==================================
+         PESQUISA
+    =================================== -->
 
     <section class="pesquisa">
 
@@ -125,12 +174,16 @@
         type="text"
         id="pesquisa"
         placeholder="Pesquisar produtos..."
+        autocomplete="off"
+        aria-label="Pesquisar produtos desta loja"
       />
 
     </section>
 
 
-    <!-- PRODUTOS -->
+    <!-- ==================================
+         PRODUTOS
+    =================================== -->
 
     <section>
 
@@ -138,18 +191,32 @@
         Produtos
       </h2>
 
+
       <div
         id="listaProdutos"
         class="produtos"
-      ></div>
+      >
+
+        <div class="carregando">
+
+          <i class="fa-solid fa-spinner fa-spin"></i>
+
+          <p>
+            Carregando produtos...
+          </p>
+
+        </div>
+
+      </div>
 
     </section>
-
 
   </main>
 
 
-  <!-- FOOTER -->
+  <!-- ==================================
+       FOOTER
+  =================================== -->
 
   <footer>
 
@@ -160,17 +227,35 @@
   </footer>
 
 
-  <!-- SCRIPTS -->
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- CONFIGURAÇÃO SUPABASE -->
 
   <script src="js/supabase.js"></script>
 
+
+  <!-- HEADER -->
+
   <script src="components/header.js"></script>
 
+
+  <!-- FEEDBACK PERSONALIZADO -->
+
+  <script src="components/feedback.js"></script>
+
+
+  <!-- LOJA -->
+
   <script src="js/loja.js"></script>
+
 
 </body>
 

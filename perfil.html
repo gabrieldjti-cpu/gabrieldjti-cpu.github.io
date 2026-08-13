@@ -1,198 +1,531 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Meu Perfil | Comércio da Cidade</title>
+<head>
 
-    <link rel="stylesheet" href="css/perfil.css" />
-    <link rel="stylesheet" href="components/header.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <meta charset="UTF-8" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
+  <title>
+    Meu Perfil | Comércio da Cidade
+  </title>
 
-  <body>
-    <div id="header"></div>
 
-    <!-- PERFIL -->
+  <!-- ==================================
+       CSS
+  =================================== -->
 
-    <main class="perfil">
-      <div class="container-perfil">
-        <!-- CARD DO USUÁRIO -->
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
 
-        <aside class="perfil-card">
-          <div class="avatar">
-            <i class="fa-solid fa-user"></i>
+  <link
+    rel="stylesheet"
+    href="components/feedback.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/perfil.css"
+  />
+
+
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+
+</head>
+
+
+<body>
+
+
+  <!-- ==================================
+       HEADER
+  =================================== -->
+
+  <div id="header"></div>
+
+
+  <!-- ==================================
+       PERFIL
+  =================================== -->
+
+  <main class="perfil">
+
+    <div class="container-perfil">
+
+
+      <!-- ==================================
+           CARD DO USUÁRIO
+      =================================== -->
+
+      <aside class="perfil-card">
+
+
+        <!-- AVATAR -->
+
+        <div class="avatar">
+
+          <i class="fa-solid fa-user"></i>
+
+        </div>
+
+
+        <!-- NOME -->
+
+        <h2 id="perf-nome">
+          Carregando...
+        </h2>
+
+
+        <!-- EMAIL -->
+
+        <p id="perf-email">
+          email@email.com
+        </p>
+
+
+        <hr />
+
+
+        <!-- INFORMAÇÕES -->
+
+        <div class="info">
+
+
+          <!-- TELEFONE -->
+
+          <p>
+
+            <i class="fa-solid fa-phone"></i>
+
+            <span id="perf-telefone">
+              Não informado
+            </span>
+
+          </p>
+
+
+          <!-- ENDEREÇO -->
+
+          <p>
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+              Endereço
+            </span>
+
+          </p>
+
+
+          <div
+            id="perf-endereco-resumo"
+            class="endereco"
+          >
+            Não informado
           </div>
 
-          <h2 id="perf-nome">Carregando...</h2>
+        </div>
 
-          <p id="perf-email">email@email.com</p>
 
-          <hr />
+        <!-- EDITAR PERFIL -->
 
-          <div class="info">
-            <p>
-              <i class="fa-solid fa-phone"></i>
+        <button
+          type="button"
+          class="btn verde"
+          onclick="abrirModalEditar()"
+        >
 
-              <span id="perf-telefone">Não informado</span>
-            </p>
+          <i class="fa-solid fa-pen"></i>
 
-            <p>
-              <i class="fa-solid fa-location-dot"></i>
-            </p>
+          Editar Perfil
 
-            <div id="perf-endereco-resumo" class="endereco">Não informado</div>
+        </button>
+
+
+        <!-- LOGOUT -->
+
+        <button
+          type="button"
+          class="btn vermelho"
+          onclick="fazerLogout()"
+        >
+
+          <i class="fa-solid fa-right-from-bracket"></i>
+
+          Sair
+
+        </button>
+
+      </aside>
+
+
+      <!-- ==================================
+           CONTEÚDO
+      =================================== -->
+
+      <section class="conteudo">
+
+
+        <!-- ==================================
+             MINHA LOJA
+        =================================== -->
+
+        <div class="card">
+
+          <div class="titulo">
+
+            <h2>
+
+              <i class="fa-solid fa-shop"></i>
+
+              Minha Loja
+
+            </h2>
+
           </div>
 
-          <button class="btn verde" onclick="abrirModalEditar()">
-            <i class="fa-solid fa-pen"></i>
 
-            Editar Perfil
-          </button>
+          <div
+            id="minha-loja"
+            aria-live="polite"
+          >
 
-          <button class="btn vermelho" onclick="fazerLogout()">
-            <i class="fa-solid fa-right-from-bracket"></i>
+            <div class="sem-loja">
 
-            Sair
-          </button>
-        </aside>
+              <i class="fa-solid fa-store-slash"></i>
 
-        <!-- CONTEÚDO -->
+              <h3>
+                Você ainda não possui uma loja.
+              </h3>
 
-        <section class="conteudo">
-          <!-- MINHA LOJA -->
+              <p>
+                Cadastre sua loja gratuitamente
+                e comece a vender seus produtos.
+              </p>
 
-          <div class="card">
-            <div class="titulo">
-              <h2>
-                <i class="fa-solid fa-shop"></i>
 
-                Minha Loja
-              </h2>
+              <a
+                href="cadastrar-loja.html"
+                class="btn verde"
+              >
+
+                <i class="fa-solid fa-plus"></i>
+
+                Cadastrar Loja
+
+              </a>
+
             </div>
 
-            <div id="minha-loja">
-              <div class="sem-loja">
-                <i class="fa-solid fa-store-slash"></i>
+          </div>
 
-                <h3>Você ainda não possui uma loja.</h3>
+        </div>
 
-                <p>
-                  Cadastre sua loja gratuitamente e comece a vender seus
-                  produtos.
-                </p>
 
-                <a href="cadastrar-loja.html" class="btn verde">
-                  <i class="fa-solid fa-plus"></i>
+        <!-- ==================================
+             HISTÓRICO DE COMPRAS
+        =================================== -->
 
-                  Cadastrar Loja
-                </a>
-              </div>
+        <div class="card">
+
+          <div class="titulo">
+
+            <h2>
+
+              <i class="fa-solid fa-bag-shopping"></i>
+
+              Histórico de Compras
+
+            </h2>
+
+          </div>
+
+
+          <div
+            id="historico-compras"
+            aria-live="polite"
+          >
+
+            <div class="pedido">
+
+              <p>
+                Carregando pedidos...
+              </p>
+
             </div>
+
           </div>
 
-          <!-- HISTÓRICO -->
-
-          <div class="card">
-            <div class="titulo">
-              <h2>
-                <i class="fa-solid fa-bag-shopping"></i>
-
-                Histórico de Compras
-              </h2>
-            </div>
-
-            <div id="historico-compras">
-              <div class="pedido">
-                <p>Carregando pedidos...</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <!-- MODAL -->
-
-    <div id="modal-editar-perfil" class="modal">
-      <div class="modal-box">
-        <div class="modal-topo">
-          <h2>
-            <i class="fa-solid fa-user-pen"></i>
-
-            Editar Perfil
-          </h2>
         </div>
 
-        <div class="campo">
-          <label>Nome</label>
+      </section>
 
-          <input type="text" id="edit-nome" />
-        </div>
-
-        <div class="campo">
-          <label>Telefone</label>
-
-          <input type="text" id="edit-telefone" />
-        </div>
-
-        <div class="campo">
-          <label>Rua</label>
-
-          <input type="text" id="edit-rua" />
-        </div>
-
-        <div class="linha">
-          <div class="campo">
-            <label>Número</label>
-
-            <input type="text" id="edit-numero" />
-          </div>
-
-          <div class="campo">
-            <label>Bairro</label>
-
-            <input type="text" id="edit-bairro" />
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Cidade</label>
-
-          <input type="text" id="edit-cidade" />
-        </div>
-
-        <div class="botoes">
-          <button class="btn cinza" onclick="fecharModalEditar()">
-            Cancelar
-          </button>
-
-          <button class="btn verde" onclick="salvarEdicaoPerfil()">
-            Salvar Alterações
-          </button>
-        </div>
-      </div>
     </div>
 
-    <!-- SUPABASE -->
+  </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="js/supabase.js"></script>
-    <script src="components/header.js"></script>
+  <!-- ==================================
+       MODAL EDITAR PERFIL
+  =================================== -->
 
-    <script src="js/perfil.js"></script>
-  </body>
+  <div
+    id="modal-editar-perfil"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titulo-editar-perfil"
+  >
+
+    <div class="modal-box">
+
+
+      <!-- TOPO -->
+
+      <div class="modal-topo">
+
+        <h2 id="titulo-editar-perfil">
+
+          <i class="fa-solid fa-user-pen"></i>
+
+          Editar Perfil
+
+        </h2>
+
+      </div>
+
+
+      <!-- ==================================
+           NOME
+      =================================== -->
+
+      <div class="campo">
+
+        <label for="edit-nome">
+          Nome
+        </label>
+
+        <input
+          type="text"
+          id="edit-nome"
+          autocomplete="name"
+          placeholder="Seu nome completo"
+        />
+
+      </div>
+
+
+      <!-- ==================================
+           TELEFONE
+      =================================== -->
+
+      <div class="campo">
+
+        <label for="edit-telefone">
+          Telefone
+        </label>
+
+        <input
+          type="tel"
+          id="edit-telefone"
+          autocomplete="tel"
+          placeholder="(00) 00000-0000"
+        />
+
+      </div>
+
+
+      <!-- ==================================
+           RUA
+      =================================== -->
+
+      <div class="campo">
+
+        <label for="edit-rua">
+          Rua
+        </label>
+
+        <input
+          type="text"
+          id="edit-rua"
+          autocomplete="address-line1"
+          placeholder="Nome da rua"
+        />
+
+      </div>
+
+
+      <!-- ==================================
+           NÚMERO / BAIRRO
+      =================================== -->
+
+      <div class="linha">
+
+
+        <!-- NÚMERO -->
+
+        <div class="campo">
+
+          <label for="edit-numero">
+            Número
+          </label>
+
+          <input
+            type="text"
+            id="edit-numero"
+            inputmode="numeric"
+            placeholder="Número"
+          />
+
+        </div>
+
+
+        <!-- BAIRRO -->
+
+        <div class="campo">
+
+          <label for="edit-bairro">
+            Bairro
+          </label>
+
+          <input
+            type="text"
+            id="edit-bairro"
+            placeholder="Seu bairro"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================
+           CIDADE
+      =================================== -->
+
+      <div class="campo">
+
+        <label for="edit-cidade">
+          Cidade
+        </label>
+
+        <input
+          type="text"
+          id="edit-cidade"
+          autocomplete="address-level2"
+          placeholder="Sua cidade"
+        />
+
+      </div>
+
+
+      <!-- ==================================
+           BOTÕES
+      =================================== -->
+
+      <div class="botoes">
+
+
+        <!-- CANCELAR -->
+
+        <button
+          type="button"
+          class="btn cinza"
+          onclick="fecharModalEditar()"
+        >
+
+          <i class="fa-solid fa-xmark"></i>
+
+          Cancelar
+
+        </button>
+
+
+        <!-- SALVAR -->
+
+        <button
+          type="button"
+          class="btn verde"
+          onclick="salvarEdicaoPerfil()"
+        >
+
+          <i class="fa-solid fa-floppy-disk"></i>
+
+          Salvar Alterações
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
+
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- CONFIGURAÇÃO SUPABASE -->
+
+  <script src="js/supabase.js"></script>
+
+
+  <!-- HEADER -->
+
+  <script src="components/header.js"></script>
+
+
+  <!-- FEEDBACK PERSONALIZADO -->
+
+  <script src="components/feedback.js"></script>
+
+
+  <!-- PERFIL -->
+
+  <script src="js/perfil.js"></script>
+
+
+</body>
+
 </html>

@@ -10,18 +10,14 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Painel da Loja | Comércio da Cidade</title>
+    <title>
+        Painel da Loja | Comércio da Cidade
+    </title>
 
 
-    <!-- CSS DO PAINEL -->
-
-    <link
-        rel="stylesheet"
-        href="css/painel-loja.css"
-    >
-
-
-    <!-- CSS DO HEADER -->
+    <!-- ==================================
+         CSS DO HEADER
+    =================================== -->
 
     <link
         rel="stylesheet"
@@ -29,11 +25,39 @@
     >
 
 
-    <!-- GOOGLE FONTS -->
+    <!-- ==================================
+         FEEDBACK PERSONALIZADO
+    =================================== -->
+
+    <link
+        rel="stylesheet"
+        href="components/feedback.css"
+    >
+
+
+    <!-- ==================================
+         CSS DO PAINEL
+    =================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/painel-loja.css"
+    >
+
+
+    <!-- ==================================
+         GOOGLE FONTS
+    =================================== -->
 
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
     >
 
     <link
@@ -42,7 +66,9 @@
     >
 
 
-    <!-- FONT AWESOME -->
+    <!-- ==================================
+         FONT AWESOME
+    =================================== -->
 
     <link
         rel="stylesheet"
@@ -102,7 +128,7 @@
 
 
         <!-- ==================================
-             LOGO + INFORMAÇÕES DA LOJA
+             LOGO + INFORMAÇÕES
         =================================== -->
 
         <div class="dados-loja-painel">
@@ -113,8 +139,6 @@
             <div class="area-logo-loja">
 
 
-                <!-- LOGO REAL -->
-
                 <img
                     id="logo-loja"
                     class="logo-loja-painel"
@@ -122,8 +146,6 @@
                     hidden
                 >
 
-
-                <!-- PLACEHOLDER -->
 
                 <div
                     id="logo-loja-placeholder"
@@ -133,7 +155,6 @@
                     <i class="fa-solid fa-store"></i>
 
                 </div>
-
 
             </div>
 
@@ -145,7 +166,9 @@
 
                 <p>
 
-                    <strong>Nome:</strong>
+                    <strong>
+                        Nome:
+                    </strong>
 
                     <span id="nome-loja">
                         Carregando...
@@ -156,7 +179,9 @@
 
                 <p>
 
-                    <strong>Categoria:</strong>
+                    <strong>
+                        Categoria:
+                    </strong>
 
                     <span id="categoria-loja">
                         Carregando...
@@ -167,7 +192,9 @@
 
                 <p>
 
-                    <strong>Cidade:</strong>
+                    <strong>
+                        Cidade:
+                    </strong>
 
                     <span id="cidade-loja">
                         Carregando...
@@ -178,7 +205,9 @@
 
                 <p>
 
-                    <strong>Telefone:</strong>
+                    <strong>
+                        Telefone:
+                    </strong>
 
                     <span id="telefone-loja">
                         Carregando...
@@ -189,7 +218,9 @@
 
                 <p>
 
-                    <strong>Status:</strong>
+                    <strong>
+                        Status:
+                    </strong>
 
                     <span id="status-loja">
                         Carregando...
@@ -197,13 +228,11 @@
 
                 </p>
 
-
             </div>
 
         </div>
 
     </section>
-
 
 
     <!-- ==================================
@@ -249,13 +278,15 @@
 
                 </a>
 
-
             </div>
 
         </div>
 
 
-        <div id="lista-produtos">
+        <div
+            id="lista-produtos"
+            aria-live="polite"
+        >
 
             <div class="sem-produtos">
 
@@ -276,7 +307,6 @@
     </section>
 
 
-
     <!-- ==================================
          PEDIDOS
     =================================== -->
@@ -292,7 +322,10 @@
         </h2>
 
 
-        <div id="lista-pedidos">
+        <div
+            id="lista-pedidos"
+            aria-live="polite"
+        >
 
             <div class="sem-pedidos">
 
@@ -312,7 +345,6 @@
         </div>
 
     </section>
-
 
 
     <!-- ==================================
@@ -383,14 +415,12 @@
 
             </div>
 
-
         </div>
 
     </section>
 
 
 </main>
-
 
 
 <!-- ======================================
@@ -400,11 +430,11 @@
 <footer>
 
     <p>
-        © 2026 Comércio da Cidade - Todos os direitos reservados.
+        © 2026 Comércio da Cidade -
+        Todos os direitos reservados.
     </p>
 
 </footer>
-
 
 
 <!-- ======================================
@@ -414,9 +444,7 @@
 
 <!-- SUPABASE -->
 
-<script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
 <!-- CONFIGURAÇÃO SUPABASE -->
@@ -427,6 +455,11 @@
 <!-- HEADER -->
 
 <script src="components/header.js"></script>
+
+
+<!-- FEEDBACK PERSONALIZADO -->
+
+<script src="components/feedback.js"></script>
 
 
 <!-- PAINEL -->

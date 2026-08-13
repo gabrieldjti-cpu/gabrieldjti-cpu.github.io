@@ -35,7 +35,15 @@ document.addEventListener(
 
 
             mostrarErro(
-                "Erro ao conectar com o banco de dados."
+                "Não foi possível conectar ao banco de dados."
+            );
+
+
+            notificar(
+                "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+                "erro",
+                "Erro de conexão",
+                6000
             );
 
 
@@ -89,7 +97,10 @@ async function verificarUsuario() {
         const {
             data,
             error
-        } = await window.db.auth.getSession();
+        } =
+            await window.db
+                .auth
+                .getSession();
 
 
         if (error) {
@@ -100,8 +111,11 @@ async function verificarUsuario() {
             );
 
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Não foi possível verificar sua sessão.",
+                "erro",
+                "Erro de autenticação"
+            );
 
 
             return false;
@@ -109,12 +123,31 @@ async function verificarUsuario() {
         }
 
 
+        // ==================================
+        // NÃO LOGADO
+        // ==================================
+
         if (
             !data.session
         ) {
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Entre na sua conta para visualizar seus pedidos.",
+                "info",
+                "Login necessário",
+                2500
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                900
+            );
 
 
             return false;
@@ -143,8 +176,11 @@ async function verificarUsuario() {
         );
 
 
-        window.location.href =
-            "login.html";
+        notificar(
+            "Ocorreu um erro ao verificar sua conta.",
+            "erro",
+            "Erro de autenticação"
+        );
 
 
         return false;
@@ -202,51 +238,55 @@ async function carregarPedidos() {
         const {
             data,
             error
-        } = await window.db
+        } =
+            await window.db
 
-            .from("pedidos")
-
-            .select(`
-                id,
-                cliente_id,
-                loja_id,
-                status,
-                valor_total,
-                forma_pagamento,
-                observacoes,
-                created_at,
-
-                lojas (
-                    id,
-                    nome
-                ),
-
-                itens_pedido (
-                    id,
-                    produto_id,
-                    quantidade,
-                    preco_unitario,
-                    subtotal,
-
-                    produtos (
-                        id,
-                        nome,
-                        imagem_url
-                    )
+                .from(
+                    "pedidos"
                 )
-            `)
 
-            .eq(
-                "cliente_id",
-                usuario.id
-            )
+                .select(`
+                    id,
+                    cliente_id,
+                    loja_id,
+                    status,
+                    valor_total,
+                    forma_pagamento,
+                    observacoes,
+                    created_at,
 
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
+                    lojas (
+                        id,
+                        nome
+                    ),
+
+                    itens_pedido (
+                        id,
+                        produto_id,
+                        quantidade,
+                        preco_unitario,
+                        subtotal,
+
+                        produtos (
+                            id,
+                            nome,
+                            imagem_url
+                        )
+                    )
+                `)
+
+                .eq(
+                    "cliente_id",
+                    usuario.id
+                )
+
+                .order(
+                    "created_at",
+                    {
+                        ascending:
+                            false
+                    }
+                );
 
 
         if (error) {
@@ -259,6 +299,14 @@ async function carregarPedidos() {
 
             mostrarErro(
                 "Não foi possível carregar seus pedidos."
+            );
+
+
+            notificar(
+                "Não foi possível carregar seu histórico de pedidos.",
+                "erro",
+                "Erro ao carregar pedidos",
+                5000
             );
 
 
@@ -281,16 +329,25 @@ async function carregarPedidos() {
 
         aplicarFiltro();
 
+
     } catch (erro) {
 
         console.error(
-            "Erro inesperado:",
+            "Erro inesperado ao carregar pedidos:",
             erro
         );
 
 
         mostrarErro(
             "Ocorreu um erro ao carregar seus pedidos."
+        );
+
+
+        notificar(
+            "Ocorreu um erro inesperado ao carregar seus pedidos.",
+            "erro",
+            "Não foi possível carregar",
+            5000
         );
 
     }
@@ -329,7 +386,8 @@ function mostrarPedidos(
     ) {
 
         if (
-            filtroAtual === "todos"
+            filtroAtual ===
+            "todos"
         ) {
 
             lista.innerHTML = `
@@ -397,21 +455,11 @@ function mostrarPedidos(
     // ==================================
 
     lista.innerHTML =
-        "";
-
-
-    listaPedidos.forEach(
-        (pedido) => {
-
-            lista.insertAdjacentHTML(
-                "beforeend",
-                criarCardPedido(
-                    pedido
-                )
-            );
-
-        }
-    );
+        listaPedidos
+            .map(
+                criarCardPedido
+            )
+            .join("");
 
 
     configurarBotoesDetalhes();
@@ -477,11 +525,7 @@ function criarCardPedido(
             data-status="${status.filtro}"
         >
 
-
-            <!-- TOPO -->
-
             <div class="pedido-topo">
-
 
                 <div class="pedido-loja">
 
@@ -507,14 +551,10 @@ function criarCardPedido(
 
                 </span>
 
-
             </div>
 
 
-            <!-- CONTEÚDO -->
-
             <div class="pedido-conteudo">
-
 
                 <div class="numero-pedido">
 
@@ -533,10 +573,7 @@ function criarCardPedido(
                 </div>
 
 
-                <!-- INFORMAÇÕES -->
-
                 <div class="pedido-infos">
-
 
                     <div class="info-pedido">
 
@@ -571,11 +608,8 @@ function criarCardPedido(
 
                     </div>
 
-
                 </div>
 
-
-                <!-- TOTAL -->
 
                 <div class="pedido-total">
 
@@ -589,8 +623,6 @@ function criarCardPedido(
 
                 </div>
 
-
-                <!-- AÇÕES -->
 
                 <div class="pedido-acoes">
 
@@ -610,9 +642,7 @@ function criarCardPedido(
 
                 </div>
 
-
             </div>
-
 
         </article>
 
@@ -645,18 +675,21 @@ function calcularQuantidadeItens(
 
             const quantidade =
                 Number(
-                    item.quantidade || 0
+                    item.quantidade ||
+                    0
                 );
 
 
-            return total +
+            return (
+                total +
                 (
                     Number.isFinite(
                         quantidade
                     )
                         ? quantidade
                         : 0
-                );
+                )
+            );
 
         },
         0
@@ -684,10 +717,6 @@ function configurarFiltros() {
                 "click",
                 () => {
 
-                    // ==================================
-                    // REMOVER ATIVO
-                    // ==================================
-
                     botoes.forEach(
                         (item) => {
 
@@ -698,10 +727,6 @@ function configurarFiltros() {
                         }
                     );
 
-
-                    // ==================================
-                    // ATIVAR CLICADO
-                    // ==================================
 
                     botao.classList.add(
                         "ativo"
@@ -731,7 +756,8 @@ function configurarFiltros() {
 function aplicarFiltro() {
 
     if (
-        filtroAtual === "todos"
+        filtroAtual ===
+        "todos"
     ) {
 
         mostrarPedidos(
@@ -790,7 +816,8 @@ function obterDadosStatus(
     // ==================================
 
     if (
-        status === "pendente"
+        status ===
+        "pendente"
     ) {
 
         return {
@@ -814,7 +841,7 @@ function obterDadosStatus(
 
     // ==================================
     // PREPARANDO
-    // ==================================
+    // ==========================================
 
     if (
         status === "preparando" ||
@@ -844,7 +871,7 @@ function obterDadosStatus(
 
     // ==================================
     // FINALIZADO
-    // ==================================
+    // ==========================================
 
     if (
         status === "finalizado" ||
@@ -875,7 +902,7 @@ function obterDadosStatus(
 
     // ==================================
     // CANCELADO
-    // ==================================
+    // ==========================================
 
     if (
         status === "cancelado" ||
@@ -903,7 +930,7 @@ function obterDadosStatus(
 
     // ==================================
     // STATUS DESCONHECIDO
-    // ==================================
+    // ==========================================
 
     return {
 
@@ -945,7 +972,8 @@ function configurarBotoesDetalhes() {
                 () => {
 
                     const pedidoId =
-                        botao.dataset.pedidoId;
+                        botao.dataset
+                            .pedidoId;
 
 
                     abrirDetalhesPedido(
@@ -972,15 +1000,21 @@ function abrirDetalhesPedido(
     const pedido =
         pedidos.find(
             (item) =>
-                String(item.id) ===
-                String(pedidoId)
+                String(
+                    item.id
+                ) ===
+                String(
+                    pedidoId
+                )
         );
 
 
     if (!pedido) {
 
-        alert(
-            "Pedido não encontrado."
+        notificar(
+            "Não foi possível localizar os detalhes deste pedido.",
+            "erro",
+            "Pedido não encontrado"
         );
 
 
@@ -1012,6 +1046,18 @@ function abrirDetalhesPedido(
         !conteudo
     ) {
 
+        console.error(
+            "Elementos do modal de pedido não encontrados."
+        );
+
+
+        notificar(
+            "Não foi possível abrir os detalhes do pedido.",
+            "erro",
+            "Erro ao abrir pedido"
+        );
+
+
         return;
 
     }
@@ -1019,7 +1065,7 @@ function abrirDetalhesPedido(
 
     // ==================================
     // NÚMERO
-    // ==================================
+    // ==========================================
 
     if (numeroPedido) {
 
@@ -1033,7 +1079,7 @@ function abrirDetalhesPedido(
 
     // ==================================
     // DADOS
-    // ==================================
+    // ==========================================
 
     const nomeLoja =
         escaparHTML(
@@ -1062,7 +1108,7 @@ function abrirDetalhesPedido(
 
     // ==================================
     // ITENS
-    // ==================================
+    // ==========================================
 
     const itens =
         Array.isArray(
@@ -1114,7 +1160,7 @@ function abrirDetalhesPedido(
 
     // ==================================
     // OBSERVAÇÕES
-    // ==================================
+    // ==========================================
 
     let observacoesHTML =
         "";
@@ -1136,9 +1182,11 @@ function abrirDetalhesPedido(
 
                 </h3>
 
-                <p>${escaparHTML(
-                    pedido.observacoes
-                )}</p>
+                <p>
+                    ${formatarTextoMultilinha(
+                        pedido.observacoes
+                    )}
+                </p>
 
             </div>
 
@@ -1149,13 +1197,11 @@ function abrirDetalhesPedido(
 
     // ==================================
     // CONTEÚDO DO MODAL
-    // ==================================
+    // ==========================================
 
     conteudo.innerHTML = `
 
-
         <div class="detalhes-info">
-
 
             <div class="detalhe-box">
 
@@ -1208,7 +1254,6 @@ function abrirDetalhesPedido(
 
             </div>
 
-
         </div>
 
 
@@ -1224,7 +1269,6 @@ function abrirDetalhesPedido(
 
 
             ${itensHTML}
-
 
         </div>
 
@@ -1253,14 +1297,14 @@ function abrirDetalhesPedido(
 
     // ==================================
     // IMAGENS QUEBRADAS
-    // ==================================
+    // ==========================================
 
     configurarImagensModal();
 
 
     // ==================================
     // ABRIR
-    // ==================================
+    // ==========================================
 
     modal.classList.add(
         "aberto"
@@ -1295,13 +1339,15 @@ function criarItemDetalhe(
 
     const quantidade =
         Number(
-            item.quantidade || 0
+            item.quantidade ||
+            0
         );
 
 
     const preco =
         Number(
-            item.preco_unitario || 0
+            item.preco_unitario ||
+            0
         );
 
 
@@ -1317,7 +1363,7 @@ function criarItemDetalhe(
 
     // ==================================
     // IMAGEM
-    // ==================================
+    // ==========================================
 
     let imagemHTML =
         "";
@@ -1336,6 +1382,7 @@ function criarItemDetalhe(
                         produto.imagem_url
                     )}"
                     alt="${nome}"
+                    loading="lazy"
                 >
 
             </div>
@@ -1366,7 +1413,6 @@ function criarItemDetalhe(
 
         <div class="item-detalhe">
 
-
             ${imagemHTML}
 
 
@@ -1396,7 +1442,6 @@ function criarItemDetalhe(
                 )}
 
             </div>
-
 
         </div>
 
@@ -1447,7 +1492,8 @@ function configurarImagensModal() {
 
                 },
                 {
-                    once: true
+                    once:
+                        true
                 }
             );
 
@@ -1507,7 +1553,8 @@ function configurarModal() {
 
             if (
                 event.key ===
-                    "Escape" &&
+                    "Escape"
+                &&
                 modal?.classList.contains(
                     "aberto"
                 )
@@ -1590,6 +1637,18 @@ function mostrarErro(
                 )}
             </p>
 
+            <button
+                type="button"
+                class="btn-comprar"
+                onclick="carregarPedidos()"
+            >
+
+                <i class="fa-solid fa-rotate-right"></i>
+
+                Tentar novamente
+
+            </button>
+
         </div>
 
     `;
@@ -1607,7 +1666,8 @@ function formatarPagamento(
 
     const valor =
         String(
-            pagamento || ""
+            pagamento ||
+            ""
         )
             .toLowerCase();
 
@@ -1636,8 +1696,10 @@ function formatarPagamento(
 
         default:
 
-            return pagamento ||
-                "Não informado";
+            return (
+                pagamento ||
+                "Não informado"
+            );
 
     }
 
@@ -1659,7 +1721,9 @@ function formatarNumeroPedido(
     }
 
 
-    return String(id)
+    return String(
+        id
+    )
 
         .replaceAll(
             "-",
@@ -1740,7 +1804,8 @@ function formatarMoeda(
 ) {
 
     return Number(
-        valor || 0
+        valor ||
+        0
     )
         .toLocaleString(
             "pt-BR",
@@ -1757,6 +1822,25 @@ function formatarMoeda(
 
 
 // ==========================================
+// FORMATAR TEXTO MULTILINHA
+// ==========================================
+
+function formatarTextoMultilinha(
+    valor
+) {
+
+    return escaparHTML(
+        valor
+    )
+        .replaceAll(
+            "\n",
+            "<br>"
+        );
+
+}
+
+
+// ==========================================
 // NORMALIZAR TEXTO
 // ==========================================
 
@@ -1765,7 +1849,8 @@ function normalizarTexto(
 ) {
 
     return String(
-        valor || ""
+        valor ||
+        ""
     )
 
         .normalize(
@@ -1793,7 +1878,8 @@ function escaparHTML(
 ) {
 
     return String(
-        valor ?? ""
+        valor ??
+        ""
     )
 
         .replaceAll(
@@ -1822,3 +1908,48 @@ function escaparHTML(
         );
 
 }
+
+
+// ==========================================
+// FEEDBACK
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
+    );
+
+}
+
+
+// ==========================================
+// FUNÇÕES GLOBAIS
+// ==========================================
+
+window.carregarPedidos =
+    carregarPedidos;

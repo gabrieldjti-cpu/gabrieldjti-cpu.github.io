@@ -1,123 +1,285 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Carrinho | Comércio da Cidade</title>
-    <link rel="stylesheet" href="components/header.css" />
-    <link rel="stylesheet" href="css/carrinho.css" />
+<head>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta charset="UTF-8" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
+  <title>
+    Carrinho | Comércio da Cidade
+  </title>
 
-  <body>
-    <div id="header"></div>
 
-    <main class="container">
-      <div class="topo">
-        <div>
-          <h1>
+  <!-- ==================================
+       CSS
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="components/feedback.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/carrinho.css"
+  />
+
+
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+
+</head>
+
+
+<body>
+
+  <!-- ==================================
+       HEADER
+  =================================== -->
+
+  <div id="header"></div>
+
+
+  <!-- ==================================
+       CONTEÚDO
+  =================================== -->
+
+  <main class="container">
+
+    <div class="topo">
+
+      <div>
+
+        <h1>
+
+          <i class="fa-solid fa-cart-shopping"></i>
+
+          Meu Carrinho
+
+        </h1>
+
+        <p>
+          Confira seus produtos antes de finalizar a compra.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="carrinho-grid">
+
+
+      <!-- ==================================
+           PRODUTOS
+      =================================== -->
+
+      <section class="card">
+
+        <h2>
+
+          <i class="fa-solid fa-box"></i>
+
+          Produtos
+
+        </h2>
+
+
+        <div id="lista-carrinho">
+
+          <div class="carrinho-vazio">
+
             <i class="fa-solid fa-cart-shopping"></i>
 
-            Meu Carrinho
-          </h1>
+            <h3>
+              Seu carrinho está vazio.
+            </h3>
 
-          <p>Confira seus produtos antes de finalizar a compra.</p>
+            <p>
+              Adicione alguns produtos para continuar.
+            </p>
+
+            <a
+              href="index.html"
+              class="btn"
+            >
+
+              <i class="fa-solid fa-store"></i>
+
+              Continuar Comprando
+
+            </a>
+
+          </div>
+
         </div>
-      </div>
 
-      <div class="carrinho-grid">
-        <!-- PRODUTOS -->
+      </section>
 
-        <section class="card">
-          <h2>
-            <i class="fa-solid fa-box"></i>
 
+      <!-- ==================================
+           RESUMO
+      =================================== -->
+
+      <aside class="card resumo">
+
+        <h2>
+
+          <i class="fa-solid fa-receipt"></i>
+
+          Resumo do Pedido
+
+        </h2>
+
+
+        <div class="linha">
+
+          <span>
             Produtos
-          </h2>
+          </span>
 
-          <div id="lista-carrinho">
-            <div class="carrinho-vazio">
-              <i class="fa-solid fa-cart-shopping"></i>
+          <strong id="quantidade-itens">
+            0
+          </strong>
 
-              <h3>Seu carrinho está vazio.</h3>
+        </div>
 
-              <p>Adicione alguns produtos para continuar.</p>
 
-              <a href="index.html" class="btn">
-                <i class="fa-solid fa-store"></i>
+        <div class="linha">
 
-                Continuar Comprando
-              </a>
-            </div>
-          </div>
-        </section>
+          <span>
+            Subtotal
+          </span>
 
-        <!-- RESUMO -->
+          <strong id="subtotal">
+            R$ 0,00
+          </strong>
 
-        <aside class="card resumo">
-          <h2>
-            <i class="fa-solid fa-receipt"></i>
+        </div>
 
-            Resumo do Pedido
-          </h2>
 
-          <div class="linha">
-            <span>Produtos</span>
+        <div class="linha">
 
-            <strong id="quantidade-itens">0</strong>
-          </div>
+          <span>
+            Entrega
+          </span>
 
-          <div class="linha">
-            <span>Subtotal</span>
+          <strong>
+            Grátis
+          </strong>
 
-            <strong id="subtotal"> R$ 0,00 </strong>
-          </div>
+        </div>
 
-          <div class="linha">
-            <span>Entrega</span>
 
-            <strong> Grátis </strong>
-          </div>
+        <hr />
 
-          <hr />
 
-          <div class="linha total">
-            <span>Total</span>
+        <div class="linha total">
 
-            <strong id="total-geral"> R$ 0,00 </strong>
-          </div>
+          <span>
+            Total
+          </span>
 
-          <button id="btn-finalizar" class="btn">
-            <i class="fa-solid fa-credit-card"></i>
+          <strong id="total-geral">
+            R$ 0,00
+          </strong>
 
-            Finalizar Compra
-          </button>
+        </div>
 
-          <a href="index.html" class="btn-secundario">
-            <i class="fa-solid fa-arrow-left"></i>
 
-            Continuar Comprando
-          </a>
-        </aside>
-      </div>
-    </main>
+        <button
+          id="btn-finalizar"
+          class="btn"
+          type="button"
+        >
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+          <i class="fa-solid fa-credit-card"></i>
 
-    <script src="js/supabase.js"></script>
-    <script src="components/header.js"></script>
-    <script src="js/carrinho.js"></script>
-  </body>
+          Finalizar Compra
+
+        </button>
+
+
+        <a
+          href="index.html"
+          class="btn-secundario"
+        >
+
+          <i class="fa-solid fa-arrow-left"></i>
+
+          Continuar Comprando
+
+        </a>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/supabase.js"></script>
+
+
+  <!-- HEADER -->
+
+  <script src="components/header.js"></script>
+
+
+  <!-- FEEDBACK PERSONALIZADO -->
+
+  <script src="components/feedback.js"></script>
+
+
+  <!-- CARRINHO -->
+
+  <script src="js/carrinho.js"></script>
+
+</body>
+
 </html>

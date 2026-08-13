@@ -5,22 +5,63 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Entrar | Comércio da Cidade</title>
+    <title>
+        Entrar | Comércio da Cidade
+    </title>
 
-    <link rel="stylesheet" href="css/login.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- ==============================
+         CSS
+    =============================== -->
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="css/login.css"
+    >
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        rel="stylesheet"
+        href="components/feedback.css"
+    >
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- ==============================
+         GOOGLE FONTS
+    =============================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ==============================
+         FONT AWESOME
+    =============================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
 
 </head>
+
 
 <body>
 
@@ -28,21 +69,40 @@
 
         <div class="login-card">
 
+
+            <!-- ==============================
+                 LOGO
+            =============================== -->
+
             <div class="logo">
 
                 <i class="fa-solid fa-store"></i>
 
-                <h1>Comércio da Cidade</h1>
+                <h1>
+                    Comércio da Cidade
+                </h1>
 
-                <p>Entre na sua conta para continuar.</p>
+                <p>
+                    Entre na sua conta para continuar.
+                </p>
 
             </div>
 
+
+            <!-- ==============================
+                 FORMULÁRIO
+            =============================== -->
+
             <form id="loginForm">
+
+
+                <!-- EMAIL -->
 
                 <div class="input-group">
 
-                    <label for="email">E-mail</label>
+                    <label for="email">
+                        E-mail
+                    </label>
 
                     <div class="input">
 
@@ -52,15 +112,22 @@
                             type="email"
                             id="email"
                             placeholder="Digite seu e-mail"
-                            required>
+                            autocomplete="email"
+                            required
+                        >
 
                     </div>
 
                 </div>
 
+
+                <!-- SENHA -->
+
                 <div class="input-group">
 
-                    <label for="senha">Senha</label>
+                    <label for="senha">
+                        Senha
+                    </label>
 
                     <div class="input">
 
@@ -70,12 +137,17 @@
                             type="password"
                             id="senha"
                             placeholder="Digite sua senha"
-                            required>
+                            autocomplete="current-password"
+                            required
+                        >
+
 
                         <button
                             type="button"
                             id="toggleSenha"
-                            class="mostrar-senha">
+                            class="mostrar-senha"
+                            aria-label="Mostrar ou ocultar senha"
+                        >
 
                             <i class="fa-solid fa-eye"></i>
 
@@ -85,15 +157,24 @@
 
                 </div>
 
+
+                <!-- ==============================
+                     OPÇÕES
+                =============================== -->
+
                 <div class="opcoes">
 
                     <label>
 
-                        <input type="checkbox">
+                        <input
+                            type="checkbox"
+                            id="lembrar"
+                        >
 
                         Lembrar de mim
 
                     </label>
+
 
                     <a href="recuperar-senha.html">
 
@@ -103,9 +184,15 @@
 
                 </div>
 
+
+                <!-- ==============================
+                     BOTÃO
+                =============================== -->
+
                 <button
                     type="submit"
-                    class="btn-login">
+                    class="btn-login"
+                >
 
                     Entrar
 
@@ -113,12 +200,15 @@
 
             </form>
 
+
+            <!-- ==============================
+                 CADASTRO
+            =============================== -->
+
             <div class="cadastro">
 
                 <p>
-
                     Ainda não possui uma conta?
-
                 </p>
 
                 <a href="cadastro.html">
@@ -129,9 +219,15 @@
 
             </div>
 
+
+            <!-- ==============================
+                 VOLTAR
+            =============================== -->
+
             <a
                 href="index.html"
-                class="voltar">
+                class="voltar"
+            >
 
                 <i class="fa-solid fa-arrow-left"></i>
 
@@ -142,9 +238,29 @@
         </div>
 
     </main>
+
+
+    <!-- ==============================
+         SCRIPTS
+    =============================== -->
+
+
+    <!-- SUPABASE -->
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+    <!-- CONFIGURAÇÃO SUPABASE -->
+
     <script src="js/supabase.js"></script>
+
+
+    <!-- FEEDBACK PERSONALIZADO -->
+
+    <script src="components/feedback.js"></script>
+
+
+    <!-- LOGIN -->
 
     <script src="js/login.js"></script>
 

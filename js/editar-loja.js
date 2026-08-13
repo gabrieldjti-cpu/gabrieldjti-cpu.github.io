@@ -1,6 +1,7 @@
-// =======================================
-// EDITAR LOJA
-// =======================================
+// ==========================================
+// EDITAR-LOJA.JS
+// Comércio da Cidade
+// ==========================================
 
 let db = null;
 
@@ -10,10 +11,12 @@ let loja = null;
 
 let novaLogo = null;
 
+let previewTemporario = null;
 
-// =======================================
+
+// ==========================================
 // ELEMENTOS
-// =======================================
+// ==========================================
 
 let form = null;
 
@@ -30,30 +33,22 @@ let categoria = null;
 let btnSalvar = null;
 
 
-// =======================================
+// ==========================================
 // INICIAR
-// =======================================
+// ==========================================
 
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
         console.log(
-            "================================="
-        );
-
-        console.log(
-            "EDITAR LOJA INICIADO"
-        );
-
-        console.log(
-            "================================="
+            "Editar loja iniciado."
         );
 
 
-        // ===================================
+        // ==================================
         // ELEMENTOS
-        // ===================================
+        // ==================================
 
         form =
             document.getElementById(
@@ -97,15 +92,23 @@ document.addEventListener(
             );
 
 
-        // ===================================
-        // VERIFICAR FORMULÁRIO
-        // ===================================
+        // ==================================
+        // VERIFICAR ELEMENTOS
+        // ==================================
 
         if (!form) {
 
             console.error(
-                "ERRO: #formEditarLoja não encontrado."
+                "#formEditarLoja não encontrado."
             );
+
+
+            notificar(
+                "Não foi possível carregar o formulário de edição.",
+                "erro",
+                "Erro na página"
+            );
+
 
             return;
 
@@ -115,227 +118,332 @@ document.addEventListener(
         if (!categoria) {
 
             console.error(
-                "ERRO: #categoria não encontrado."
+                "#categoria não encontrado."
             );
+
+
+            notificar(
+                "O campo de categoria não foi encontrado.",
+                "erro",
+                "Erro na página"
+            );
+
 
             return;
 
         }
 
 
-        // ===================================
+        // ==================================
         // SUPABASE
-        // ===================================
+        // ==================================
 
-        db = window.db;
+        db =
+            window.db;
 
 
         if (!db) {
-
-            mostrarMensagem(
-                "Erro ao conectar com o Supabase.",
-                "erro"
-            );
-
 
             console.error(
                 "window.db não encontrado."
             );
 
 
+            notificar(
+                "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+                "erro",
+                "Erro de conexão",
+                6000
+            );
+
+
+            if (btnSalvar) {
+
+                btnSalvar.disabled =
+                    true;
+
+            }
+
+
             return;
 
         }
 
 
-        // ===================================
-        // VERIFICAR USUÁRIO
-        // ===================================
+        // ==================================
+        // USUÁRIO
+        // ==================================
 
-        try {
-
-            const {
-                data,
-                error
-            } = await db.auth.getUser();
+        const autenticado =
+            await verificarUsuario();
 
 
-            if (error) {
+        if (!autenticado) {
 
-                console.error(
-                    "Erro ao verificar usuário:",
-                    error
-                );
+            return;
 
-
-                window.location.href =
-                    "login.html";
+        }
 
 
-                return;
+        // ==================================
+        // ID DA LOJA
+        // ==================================
 
-            }
-
-
-            if (!data.user) {
-
-                window.location.href =
-                    "login.html";
-
-
-                return;
-
-            }
-
-
-            usuario =
-                data.user;
-
-
-            console.log(
-                "Usuário conectado:",
-                usuario.id
+        const params =
+            new URLSearchParams(
+                window.location.search
             );
 
 
-            // ===================================
-            // PEGAR ID DA URL
-            // ===================================
-
-            const params =
-                new URLSearchParams(
-                    window.location.search
-                );
+        const lojaId =
+            params.get(
+                "id"
+            );
 
 
-            const lojaId =
-                params.get("id");
+        console.log(
+            "ID da loja:",
+            lojaId
+        );
 
 
-            console.log(
-                "ID recebido pela URL:",
+        if (!lojaId) {
+
+            notificar(
+                "Não foi possível identificar qual loja deve ser editada.",
+                "erro",
+                "Loja não identificada"
+            );
+
+
+            if (btnSalvar) {
+
+                btnSalvar.disabled =
+                    true;
+
+            }
+
+
+            return;
+
+        }
+
+
+        // ==================================
+        // CARREGAR LOJA
+        // ==================================
+
+        const carregou =
+            await carregarLoja(
                 lojaId
             );
 
 
-            if (!lojaId) {
+        if (!carregou) {
 
-                mostrarMensagem(
-                    "ID da loja não encontrado.",
-                    "erro"
-                );
+            return;
 
-
-                console.error(
-                    "A URL não possui o parâmetro ?id="
-                );
+        }
 
 
-                return;
+        // ==================================
+        // CATEGORIAS
+        // ==================================
 
-            }
-
-
-            // ===================================
-            // CARREGAR LOJA
-            // ===================================
-
-            const carregou =
-                await carregarLoja(
-                    lojaId
-                );
+        await carregarCategorias();
 
 
-            if (!carregou) {
+        // ==================================
+        // EVENTO DA LOGO
+        // ==================================
 
-                return;
+        if (inputLogo) {
 
-            }
-
-
-            // ===================================
-            // CARREGAR CATEGORIAS
-            // ===================================
-
-            await carregarCategorias();
-
-
-            // ===================================
-            // SELECIONAR CATEGORIA ATUAL
-            // ===================================
-
-            if (
-                loja &&
-                loja.categoria_id
-            ) {
-
-                categoria.value =
-                    String(
-                        loja.categoria_id
-                    );
-
-            }
-
-
-            // ===================================
-            // EVENTO DA LOGO
-            // ===================================
-
-            if (inputLogo) {
-
-                inputLogo.addEventListener(
-                    "change",
-                    visualizarNovaLogo
-                );
-
-            }
-
-
-            // ===================================
-            // EVENTO DO FORMULÁRIO
-            // ===================================
-
-            form.addEventListener(
-                "submit",
-                salvarAlteracoes
-            );
-
-
-            console.log(
-                "Editar loja pronto."
-            );
-
-
-        } catch (erro) {
-
-            console.error(
-                "Erro ao iniciar página:",
-                erro
-            );
-
-
-            mostrarMensagem(
-                "Erro ao carregar a página.",
-                "erro"
+            inputLogo.addEventListener(
+                "change",
+                visualizarNovaLogo
             );
 
         }
+
+
+        // ==================================
+        // FORMULÁRIO
+        // ==================================
+
+        form.addEventListener(
+            "submit",
+            salvarAlteracoes
+        );
+
+
+        console.log(
+            "Editar loja pronto."
+        );
 
     }
 );
 
 
-// =======================================
+// ==========================================
+// VERIFICAR USUÁRIO
+// ==========================================
+
+async function verificarUsuario() {
+
+    try {
+
+        // ==================================
+        // SESSÃO
+        // ==================================
+
+        const {
+            data: sessaoData,
+            error: sessaoError
+        } =
+            await db.auth
+                .getSession();
+
+
+        if (sessaoError) {
+
+            console.error(
+                "Erro ao verificar sessão:",
+                sessaoError
+            );
+
+
+            notificar(
+                "Não foi possível verificar sua sessão.",
+                "erro",
+                "Erro de autenticação"
+            );
+
+
+            return false;
+
+        }
+
+
+        if (
+            !sessaoData.session
+        ) {
+
+            notificar(
+                "Entre na sua conta para editar sua loja.",
+                "info",
+                "Login necessário",
+                2500
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                900
+            );
+
+
+            return false;
+
+        }
+
+
+        // ==================================
+        // USUÁRIO
+        // ==================================
+
+        const {
+            data,
+            error
+        } =
+            await db.auth
+                .getUser();
+
+
+        if (
+            error ||
+            !data.user
+        ) {
+
+            console.error(
+                "Erro ao verificar usuário:",
+                error
+            );
+
+
+            notificar(
+                "Sua sessão não pôde ser validada. Entre novamente.",
+                "erro",
+                "Sessão inválida"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                1000
+            );
+
+
+            return false;
+
+        }
+
+
+        usuario =
+            data.user;
+
+
+        console.log(
+            "Usuário conectado:",
+            usuario.id
+        );
+
+
+        return true;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao verificar usuário:",
+            erro
+        );
+
+
+        notificar(
+            "Ocorreu um erro ao verificar sua conta.",
+            "erro",
+            "Erro de autenticação"
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+// ==========================================
 // CARREGAR LOJA
-// =======================================
+// ==========================================
 
 async function carregarLoja(
     lojaId
 ) {
 
-    console.log(
-        "Buscando loja:",
-        lojaId
+    atualizarMensagemInterna(
+        "Carregando dados da loja..."
     );
 
 
@@ -344,49 +452,49 @@ async function carregarLoja(
         const {
             data,
             error
-        } = await db
+        } =
+            await db
 
-            .from("lojas")
-
-            .select(`
-                *,
-                categorias!categoria_id(
-                    id,
-                    nome
+                .from(
+                    "lojas"
                 )
-            `)
 
-            .eq(
-                "id",
-                lojaId
-            )
+                .select(`
+                    *,
+                    categorias!categoria_id(
+                        id,
+                        nome
+                    )
+                `)
 
-            .eq(
-                "proprietario_id",
-                usuario.id
-            )
+                .eq(
+                    "id",
+                    lojaId
+                )
 
-            .maybeSingle();
+                .eq(
+                    "proprietario_id",
+                    usuario.id
+                )
 
-
-        console.log(
-            "Resultado da loja:",
-            data
-        );
+                .maybeSingle();
 
 
         if (error) {
 
             console.error(
-                "Erro Supabase:",
+                "Erro ao carregar loja:",
                 error
             );
 
 
-            mostrarMensagem(
-                "Erro ao carregar a loja: " +
-                error.message,
-                "erro"
+            limparMensagemInterna();
+
+
+            notificar(
+                "Não foi possível carregar os dados da loja.",
+                "erro",
+                "Erro ao carregar loja"
             );
 
 
@@ -397,14 +505,14 @@ async function carregarLoja(
 
         if (!data) {
 
-            console.error(
-                "Nenhuma loja encontrada."
-            );
+            limparMensagemInterna();
 
 
-            mostrarMensagem(
-                "Loja não encontrada ou você não possui permissão para editá-la.",
-                "erro"
+            notificar(
+                "A loja não foi encontrada ou você não possui permissão para editá-la.",
+                "erro",
+                "Loja não encontrada",
+                5500
             );
 
 
@@ -417,15 +525,12 @@ async function carregarLoja(
             data;
 
 
-        console.log(
-            "LOJA CARREGADA:",
-            loja
-        );
-
-
         preencherFormulario(
             loja
         );
+
+
+        limparMensagemInterna();
 
 
         return true;
@@ -439,9 +544,13 @@ async function carregarLoja(
         );
 
 
-        mostrarMensagem(
-            "Erro ao carregar os dados da loja.",
-            "erro"
+        limparMensagemInterna();
+
+
+        notificar(
+            "Ocorreu um erro ao carregar os dados da loja.",
+            "erro",
+            "Erro ao carregar"
         );
 
 
@@ -452,171 +561,69 @@ async function carregarLoja(
 }
 
 
-// =======================================
+// ==========================================
 // PREENCHER FORMULÁRIO
-// =======================================
+// ==========================================
 
 function preencherFormulario(
     dados
 ) {
 
-    console.log(
-        "Preenchendo formulário:",
-        dados
+    definirValor(
+        "nome",
+        dados.nome
     );
 
 
-    // ===================================
-    // NOME
-    // ===================================
-
-    const nome =
-        document.getElementById(
-            "nome"
-        );
+    definirValor(
+        "telefone",
+        dados.telefone
+    );
 
 
-    if (nome) {
-
-        nome.value =
-            dados.nome || "";
-
-    }
+    definirValor(
+        "whatsapp",
+        dados.whatsapp
+    );
 
 
-    // ===================================
-    // TELEFONE
-    // ===================================
-
-    const telefone =
-        document.getElementById(
-            "telefone"
-        );
+    definirValor(
+        "descricao",
+        dados.descricao
+    );
 
 
-    if (telefone) {
-
-        telefone.value =
-            dados.telefone || "";
-
-    }
+    definirValor(
+        "endereco",
+        dados.endereco
+    );
 
 
-    // ===================================
-    // WHATSAPP
-    // ===================================
-
-    const whatsapp =
-        document.getElementById(
-            "whatsapp"
-        );
+    definirValor(
+        "cidade",
+        dados.cidade
+    );
 
 
-    if (whatsapp) {
-
-        whatsapp.value =
-            dados.whatsapp || "";
-
-    }
-
-
-    // ===================================
-    // DESCRIÇÃO
-    // ===================================
-
-    const descricao =
-        document.getElementById(
-            "descricao"
-        );
+    definirValor(
+        "abertura",
+        formatarHora(
+            dados.horario_abertura
+        )
+    );
 
 
-    if (descricao) {
-
-        descricao.value =
-            dados.descricao || "";
-
-    }
-
-
-    // ===================================
-    // ENDEREÇO
-    // ===================================
-
-    const endereco =
-        document.getElementById(
-            "endereco"
-        );
+    definirValor(
+        "fechamento",
+        formatarHora(
+            dados.horario_fechamento
+        )
+    );
 
 
-    if (endereco) {
-
-        endereco.value =
-            dados.endereco || "";
-
-    }
-
-
-    // ===================================
-    // CIDADE
-    // ===================================
-
-    const cidade =
-        document.getElementById(
-            "cidade"
-        );
-
-
-    if (cidade) {
-
-        cidade.value =
-            dados.cidade || "";
-
-    }
-
-
-    // ===================================
-    // HORÁRIO ABERTURA
-    // ===================================
-
-    const abertura =
-        document.getElementById(
-            "abertura"
-        );
-
-
-    if (abertura) {
-
-        abertura.value =
-            formatarHora(
-                dados.horario_abertura
-            );
-
-    }
-
-
-    // ===================================
-    // HORÁRIO FECHAMENTO
-    // ===================================
-
-    const fechamento =
-        document.getElementById(
-            "fechamento"
-        );
-
-
-    if (fechamento) {
-
-        fechamento.value =
-            formatarHora(
-                dados.horario_fechamento
-            );
-
-    }
-
-
-    // ===================================
+    // ==================================
     // STATUS
-    // ===================================
+    // ==================================
 
     const ativa =
         document.getElementById(
@@ -634,9 +641,9 @@ function preencherFormulario(
     }
 
 
-    // ===================================
+    // ==================================
     // LOGO
-    // ===================================
+    // ==================================
 
     atualizarPreviewLogo(
         dados.logo_url
@@ -645,9 +652,34 @@ function preencherFormulario(
 }
 
 
-// =======================================
+// ==========================================
+// DEFINIR VALOR
+// ==========================================
+
+function definirValor(
+    id,
+    valor
+) {
+
+    const elemento =
+        document.getElementById(
+            id
+        );
+
+
+    if (elemento) {
+
+        elemento.value =
+            valor || "";
+
+    }
+
+}
+
+
+// ==========================================
 // ATUALIZAR PREVIEW DA LOGO
-// =======================================
+// ==========================================
 
 function atualizarPreviewLogo(
     url
@@ -660,10 +692,6 @@ function atualizarPreviewLogo(
     }
 
 
-    // ===================================
-    // POSSUI LOGO
-    // ===================================
-
     if (url) {
 
         previewLogo.src =
@@ -674,6 +702,10 @@ function atualizarPreviewLogo(
             false;
 
 
+        previewLogo.style.display =
+            "block";
+
+
         if (placeholderLogo) {
 
             placeholderLogo.style.display =
@@ -681,10 +713,6 @@ function atualizarPreviewLogo(
 
         }
 
-
-        // ===================================
-        // ERRO AO CARREGAR A IMAGEM
-        // ===================================
 
         previewLogo.onerror =
             () => {
@@ -696,6 +724,10 @@ function atualizarPreviewLogo(
 
                 previewLogo.hidden =
                     true;
+
+
+                previewLogo.style.display =
+                    "none";
 
 
                 previewLogo.removeAttribute(
@@ -718,12 +750,12 @@ function atualizarPreviewLogo(
     }
 
 
-    // ===================================
-    // NÃO POSSUI LOGO
-    // ===================================
-
     previewLogo.hidden =
         true;
+
+
+    previewLogo.style.display =
+        "none";
 
 
     previewLogo.removeAttribute(
@@ -741,9 +773,9 @@ function atualizarPreviewLogo(
 }
 
 
-// =======================================
+// ==========================================
 // FORMATAR HORA
-// =======================================
+// ==========================================
 
 function formatarHora(
     hora
@@ -756,11 +788,17 @@ function formatarHora(
     }
 
 
+    const texto =
+        String(
+            hora
+        );
+
+
     if (
-        hora.length >= 5
+        texto.length >= 5
     ) {
 
-        return hora.substring(
+        return texto.substring(
             0,
             5
         );
@@ -768,20 +806,19 @@ function formatarHora(
     }
 
 
-    return hora;
+    return texto;
 
 }
 
 
-// =======================================
+// ==========================================
 // CARREGAR CATEGORIAS
-// =======================================
+// ==========================================
 
 async function carregarCategorias() {
 
-    console.log(
-        "Carregando categorias..."
-    );
+    categoria.disabled =
+        true;
 
 
     categoria.innerHTML = `
@@ -800,67 +837,59 @@ async function carregarCategorias() {
         const {
             data,
             error
-        } = await db
+        } =
+            await db
 
-            .from("categorias")
+                .from(
+                    "categorias"
+                )
 
-            .select(
-                "id,nome"
-            )
+                .select(
+                    "id,nome"
+                )
 
-            .order(
-                "nome",
-                {
-                    ascending: true
-                }
-            );
+                .order(
+                    "nome",
+                    {
+                        ascending:
+                            true
+                    }
+                );
 
 
         if (error) {
 
-            console.error(
-                "Erro categorias:",
-                error
-            );
-
-
-            categoria.innerHTML = `
-
-                <option value="">
-
-                    Erro ao carregar categorias
-
-                </option>
-
-            `;
-
-
-            mostrarMensagem(
-                "Erro ao carregar categorias: " +
-                error.message,
-                "erro"
-            );
-
-
-            return;
+            throw error;
 
         }
 
 
+        const categorias =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
         if (
-            !data ||
-            data.length === 0
+            categorias.length === 0
         ) {
 
             categoria.innerHTML = `
 
                 <option value="">
 
-                    Nenhuma categoria cadastrada
+                    Nenhuma categoria disponível
 
                 </option>
 
             `;
+
+
+            notificar(
+                "Nenhuma categoria de loja está disponível no momento.",
+                "aviso",
+                "Categorias indisponíveis"
+            );
 
 
             return;
@@ -879,7 +908,7 @@ async function carregarCategorias() {
         `;
 
 
-        data.forEach(
+        categorias.forEach(
             (cat) => {
 
                 const option =
@@ -904,13 +933,16 @@ async function carregarCategorias() {
         );
 
 
-        // ===================================
-        // SELECIONAR CATEGORIA ATUAL
-        // ===================================
+        categoria.disabled =
+            false;
+
+
+        // ==================================
+        // CATEGORIA ATUAL
+        // ==================================
 
         if (
-            loja &&
-            loja.categoria_id
+            loja?.categoria_id
         ) {
 
             categoria.value =
@@ -939,21 +971,33 @@ async function carregarCategorias() {
 
         `;
 
+
+        categoria.disabled =
+            true;
+
+
+        notificar(
+            "Não foi possível carregar as categorias.",
+            "erro",
+            "Erro ao carregar categorias"
+        );
+
     }
 
 }
 
 
-// =======================================
+// ==========================================
 // VISUALIZAR NOVA LOGO
-// =======================================
+// ==========================================
 
 function visualizarNovaLogo(
     event
 ) {
 
     const arquivo =
-        event.target.files[0];
+        event.target
+            .files?.[0];
 
 
     if (!arquivo) {
@@ -962,8 +1006,12 @@ function visualizarNovaLogo(
             null;
 
 
+        liberarPreviewTemporario();
+
+
         atualizarPreviewLogo(
-            loja?.logo_url || null
+            loja?.logo_url ||
+            null
         );
 
 
@@ -972,9 +1020,9 @@ function visualizarNovaLogo(
     }
 
 
-    // ===================================
+    // ==================================
     // TIPOS PERMITIDOS
-    // ===================================
+    // ==================================
 
     const tiposPermitidos = [
 
@@ -993,9 +1041,10 @@ function visualizarNovaLogo(
         )
     ) {
 
-        mostrarMensagem(
-            "Use uma imagem JPG, PNG ou WEBP.",
-            "erro"
+        notificar(
+            "Escolha uma imagem nos formatos JPG, PNG ou WEBP.",
+            "aviso",
+            "Formato de imagem inválido"
         );
 
 
@@ -1007,8 +1056,12 @@ function visualizarNovaLogo(
             null;
 
 
+        liberarPreviewTemporario();
+
+
         atualizarPreviewLogo(
-            loja?.logo_url || null
+            loja?.logo_url ||
+            null
         );
 
 
@@ -1017,18 +1070,23 @@ function visualizarNovaLogo(
     }
 
 
-    // ===================================
+    // ==================================
     // TAMANHO MÁXIMO
-    // ===================================
+    // ==================================
+
+    const tamanhoMaximo =
+        5 * 1024 * 1024;
+
 
     if (
         arquivo.size >
-        5 * 1024 * 1024
+        tamanhoMaximo
     ) {
 
-        mostrarMensagem(
-            "A imagem deve ter no máximo 5 MB.",
-            "erro"
+        notificar(
+            "A logo deve possuir no máximo 5 MB.",
+            "aviso",
+            "Imagem muito grande"
         );
 
 
@@ -1040,8 +1098,12 @@ function visualizarNovaLogo(
             null;
 
 
+        liberarPreviewTemporario();
+
+
         atualizarPreviewLogo(
-            loja?.logo_url || null
+            loja?.logo_url ||
+            null
         );
 
 
@@ -1050,72 +1112,90 @@ function visualizarNovaLogo(
     }
 
 
-    // ===================================
-    // SALVAR NOVA LOGO
-    // ===================================
+    // ==================================
+    // NOVA LOGO
+    // ==================================
 
     novaLogo =
         arquivo;
 
 
-    // ===================================
-    // PREVIEW LOCAL
-    // ===================================
+    liberarPreviewTemporario();
 
-    const url =
+
+    previewTemporario =
         URL.createObjectURL(
             arquivo
         );
 
 
     atualizarPreviewLogo(
-        url
+        previewTemporario
     );
 
 
-    mostrarMensagem(
-        "Nova logo selecionada.",
-        "sucesso"
+    notificar(
+        "A nova logo foi selecionada. Clique em Salvar Alterações para confirmar.",
+        "info",
+        "Nova logo selecionada",
+        3500
     );
 
 }
 
 
-// =======================================
+// ==========================================
+// LIBERAR PREVIEW TEMPORÁRIO
+// ==========================================
+
+function liberarPreviewTemporario() {
+
+    if (
+        previewTemporario
+    ) {
+
+        URL.revokeObjectURL(
+            previewTemporario
+        );
+
+
+        previewTemporario =
+            null;
+
+    }
+
+}
+
+
+// ==========================================
 // ENVIAR LOGO
-// =======================================
+// ==========================================
 
 async function enviarLogo() {
 
     if (!novaLogo) {
 
-        return loja.logo_url || null;
+        return (
+            loja.logo_url ||
+            null
+        );
 
     }
 
 
-    // ===================================
-    // EXTENSÃO
-    // ===================================
-
     const extensao =
         novaLogo.name
+
             .split(".")
+
             .pop()
+
             .toLowerCase();
 
-
-    // ===================================
-    // NOME DO ARQUIVO
-    // ===================================
 
     const nomeArquivo =
         `${Date.now()}.${extensao}`;
 
-
-    // ===================================
-    // CAMINHO NO STORAGE
-    // ===================================
 
     const caminho =
         `lojas/${usuario.id}/${nomeArquivo}`;
@@ -1127,71 +1207,73 @@ async function enviarLogo() {
     );
 
 
-    // ===================================
+    // ==================================
     // UPLOAD
-    // ===================================
+    // ==================================
 
     const {
         error
-    } = await db.storage
+    } =
+        await db.storage
 
-        .from(
-            "logos-lojas"
-        )
+            .from(
+                "logos-lojas"
+            )
 
-        .upload(
-            caminho,
-            novaLogo,
-            {
-                cacheControl:
-                    "3600",
+            .upload(
+                caminho,
+                novaLogo,
+                {
 
-                upsert:
-                    false
-            }
-        );
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false
+
+                }
+            );
 
 
     if (error) {
 
         console.error(
-            "Erro upload:",
+            "Erro no upload:",
             error
         );
 
 
         throw new Error(
-            "Erro ao enviar a logo: " +
-            error.message
+            "Não foi possível enviar a nova logo."
         );
 
     }
 
 
-    // ===================================
-    // PEGAR URL PÚBLICA
-    // ===================================
+    // ==================================
+    // URL PÚBLICA
+    // ==================================
 
     const {
         data
-    } = db.storage
+    } =
+        db.storage
 
-        .from(
-            "logos-lojas"
-        )
+            .from(
+                "logos-lojas"
+            )
 
-        .getPublicUrl(
-            caminho
-        );
+            .getPublicUrl(
+                caminho
+            );
 
 
     if (
-        !data ||
-        !data.publicUrl
+        !data?.publicUrl
     ) {
 
         throw new Error(
-            "Não foi possível obter a URL da logo."
+            "Não foi possível obter a URL da nova logo."
         );
 
     }
@@ -1202,9 +1284,9 @@ async function enviarLogo() {
 }
 
 
-// =======================================
+// ==========================================
 // SALVAR ALTERAÇÕES
-// =======================================
+// ==========================================
 
 async function salvarAlteracoes(
     event
@@ -1215,9 +1297,10 @@ async function salvarAlteracoes(
 
     if (!loja) {
 
-        mostrarMensagem(
-            "Loja não encontrada.",
-            "erro"
+        notificar(
+            "Não foi possível identificar a loja que está sendo editada.",
+            "erro",
+            "Loja não encontrada"
         );
 
 
@@ -1226,9 +1309,220 @@ async function salvarAlteracoes(
     }
 
 
-    // ===================================
-    // DESABILITAR BOTÃO
-    // ===================================
+    // ==================================
+    // CAMPOS
+    // ==================================
+
+    const nome =
+        valorCampo(
+            "nome"
+        );
+
+
+    const categoriaId =
+        categoria?.value ||
+        "";
+
+
+    const telefone =
+        valorCampo(
+            "telefone"
+        );
+
+
+    const whatsapp =
+        valorCampo(
+            "whatsapp"
+        );
+
+
+    const descricao =
+        valorCampo(
+            "descricao"
+        );
+
+
+    const endereco =
+        valorCampo(
+            "endereco"
+        );
+
+
+    const cidade =
+        valorCampo(
+            "cidade"
+        );
+
+
+    const abertura =
+        valorCampo(
+            "abertura"
+        );
+
+
+    const fechamento =
+        valorCampo(
+            "fechamento"
+        );
+
+
+    const ativaElemento =
+        document.getElementById(
+            "ativa"
+        );
+
+
+    const ativa =
+        ativaElemento
+            ? ativaElemento.value ===
+              "true"
+            : loja.ativa;
+
+
+    // ==================================
+    // VALIDAR NOME
+    // ==================================
+
+    if (!nome) {
+
+        notificar(
+            "Digite o nome da loja.",
+            "aviso",
+            "Nome obrigatório"
+        );
+
+
+        focarCampo(
+            "nome"
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        nome.length < 3
+    ) {
+
+        notificar(
+            "O nome da loja deve possuir pelo menos 3 caracteres.",
+            "aviso",
+            "Nome muito curto"
+        );
+
+
+        focarCampo(
+            "nome"
+        );
+
+
+        return;
+
+    }
+
+
+    // ==================================
+    // CATEGORIA
+    // ==================================
+
+    if (!categoriaId) {
+
+        notificar(
+            "Selecione uma categoria para a loja.",
+            "aviso",
+            "Categoria obrigatória"
+        );
+
+
+        categoria?.focus();
+
+
+        return;
+
+    }
+
+
+    // ==================================
+    // TELEFONE
+    // ==================================
+
+    if (telefone) {
+
+        const numeros =
+            telefone.replace(
+                /\D/g,
+                ""
+            );
+
+
+        if (
+            numeros.length < 10
+        ) {
+
+            notificar(
+                "Digite um telefone válido com DDD.",
+                "aviso",
+                "Telefone inválido"
+            );
+
+
+            focarCampo(
+                "telefone"
+            );
+
+
+            return;
+
+        }
+
+    }
+
+
+    // ==================================
+    // WHATSAPP
+    // ==================================
+
+    if (whatsapp) {
+
+        const numeros =
+            whatsapp.replace(
+                /\D/g,
+                ""
+            );
+
+
+        if (
+            numeros.length < 10
+        ) {
+
+            notificar(
+                "Digite um número de WhatsApp válido com DDD.",
+                "aviso",
+                "WhatsApp inválido"
+            );
+
+
+            focarCampo(
+                "whatsapp"
+            );
+
+
+            return;
+
+        }
+
+    }
+
+
+    // ==================================
+    // BOTÃO
+    // ==================================
+
+    const conteudoOriginal =
+        btnSalvar?.innerHTML;
+
 
     if (btnSalvar) {
 
@@ -1247,130 +1541,27 @@ async function salvarAlteracoes(
     }
 
 
+    let salvamentoConcluido =
+        false;
+
+
     try {
 
-        // ===================================
-        // CAMPOS
-        // ===================================
-
-        const nome =
-            document
-                .getElementById(
-                    "nome"
-                )
-                .value
-                .trim();
-
-
-        const categoriaId =
-            categoria.value;
-
-
-        const telefone =
-            document
-                .getElementById(
-                    "telefone"
-                )
-                .value
-                .trim();
-
-
-        const whatsapp =
-            document
-                .getElementById(
-                    "whatsapp"
-                )
-                .value
-                .trim();
-
-
-        const descricao =
-            document
-                .getElementById(
-                    "descricao"
-                )
-                .value
-                .trim();
-
-
-        const endereco =
-            document
-                .getElementById(
-                    "endereco"
-                )
-                .value
-                .trim();
-
-
-        const cidade =
-            document
-                .getElementById(
-                    "cidade"
-                )
-                .value
-                .trim();
-
-
-        const abertura =
-            document
-                .getElementById(
-                    "abertura"
-                )
-                .value;
-
-
-        const fechamento =
-            document
-                .getElementById(
-                    "fechamento"
-                )
-                .value;
-
-
-        const ativaElemento =
-            document.getElementById(
-                "ativa"
-            );
-
-
-        const ativa =
-            ativaElemento
-                ? ativaElemento.value ===
-                  "true"
-                : loja.ativa;
-
-
-        // ===================================
-        // VALIDAÇÕES
-        // ===================================
-
-        if (!nome) {
-
-            throw new Error(
-                "Informe o nome da loja."
-            );
-
-        }
-
-
-        if (!categoriaId) {
-
-            throw new Error(
-                "Selecione uma categoria."
-            );
-
-        }
-
-
-        // ===================================
+        // ==================================
         // LOGO
-        // ===================================
+        // ==================================
 
         let logoUrl =
-            loja.logo_url || null;
+            loja.logo_url ||
+            null;
 
 
         if (novaLogo) {
+
+            atualizarMensagemInterna(
+                "Enviando nova logo..."
+            );
+
 
             logoUrl =
                 await enviarLogo();
@@ -1378,43 +1569,43 @@ async function salvarAlteracoes(
         }
 
 
-        // ===================================
+        atualizarMensagemInterna(
+            "Salvando alterações..."
+        );
+
+
+        // ==================================
         // DADOS
-        // ===================================
+        // ==================================
 
         const dadosAtualizados = {
 
-            nome:
-                nome,
+            nome,
 
             categoria_id:
                 Number(
                     categoriaId
                 ),
 
-            telefone:
-                telefone,
+            telefone,
 
-            whatsapp:
-                whatsapp,
+            whatsapp,
 
-            descricao:
-                descricao,
+            descricao,
 
-            endereco:
-                endereco,
+            endereco,
 
-            cidade:
-                cidade,
+            cidade,
 
             horario_abertura:
-                abertura || null,
+                abertura ||
+                null,
 
             horario_fechamento:
-                fechamento || null,
+                fechamento ||
+                null,
 
-            ativa:
-                ativa,
+            ativa,
 
             logo_url:
                 logoUrl
@@ -1422,61 +1613,64 @@ async function salvarAlteracoes(
         };
 
 
-        console.log(
-            "Dados para atualização:",
-            dadosAtualizados
-        );
-
-
-        // ===================================
-        // ATUALIZAR NO SUPABASE
-        // ===================================
+        // ==================================
+        // UPDATE
+        // ==================================
 
         const {
             data,
             error
-        } = await db
+        } =
+            await db
 
-            .from("lojas")
+                .from(
+                    "lojas"
+                )
 
-            .update(
-                dadosAtualizados
-            )
+                .update(
+                    dadosAtualizados
+                )
 
-            .eq(
-                "id",
-                loja.id
-            )
+                .eq(
+                    "id",
+                    loja.id
+                )
 
-            .eq(
-                "proprietario_id",
-                usuario.id
-            )
+                .eq(
+                    "proprietario_id",
+                    usuario.id
+                )
 
-            .select()
+                .select()
 
-            .single();
+                .single();
 
 
         if (error) {
 
             console.error(
-                "Erro UPDATE:",
+                "Erro ao atualizar loja:",
                 error
             );
 
 
+            throw error;
+
+        }
+
+
+        if (!data) {
+
             throw new Error(
-                "Erro ao atualizar loja: " +
-                error.message
+                "A loja não foi retornada após a atualização."
             );
 
         }
 
 
-        // ===================================
-        // ATUALIZAR OBJETO LOCAL
-        // ===================================
+        // ==================================
+        // ATUALIZAR LOCAL
+        // ==================================
 
         loja =
             data;
@@ -1486,28 +1680,61 @@ async function salvarAlteracoes(
             null;
 
 
-        // ===================================
-        // ATUALIZAR PREVIEW
-        // ===================================
+        liberarPreviewTemporario();
+
 
         atualizarPreviewLogo(
             loja.logo_url
         );
 
 
-        // ===================================
-        // SUCESSO
-        // ===================================
-
-        mostrarMensagem(
-            "Loja atualizada com sucesso!",
-            "sucesso"
+        localStorage.setItem(
+            "loja_id",
+            loja.id
         );
 
 
-        // ===================================
+        localStorage.setItem(
+            "nome_loja",
+            loja.nome
+        );
+
+
+        salvamentoConcluido =
+            true;
+
+
+        limparMensagemInterna();
+
+
+        // ==================================
+        // SUCESSO
+        // ==================================
+
+        if (btnSalvar) {
+
+            btnSalvar.innerHTML = `
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Alterações salvas
+
+            `;
+
+        }
+
+
+        notificar(
+            `"${loja.nome}" foi atualizada com sucesso.`,
+            "sucesso",
+            "Loja atualizada!",
+            3000
+        );
+
+
+        // ==================================
         // REDIRECIONAR
-        // ===================================
+        // ==================================
 
         setTimeout(
             () => {
@@ -1528,28 +1755,42 @@ async function salvarAlteracoes(
         );
 
 
-        mostrarMensagem(
-            erro.message ||
-            "Erro ao salvar alterações.",
-            "erro"
+        limparMensagemInterna();
+
+
+        notificar(
+            tratarErroEdicaoLoja(
+                erro
+            ),
+            "erro",
+            "Não foi possível salvar",
+            5500
         );
 
 
     } finally {
 
-        if (btnSalvar) {
+        // Não restaura o botão quando
+        // a alteração foi concluída.
+
+        if (
+            !salvamentoConcluido &&
+            btnSalvar
+        ) {
 
             btnSalvar.disabled =
                 false;
 
 
-            btnSalvar.innerHTML = `
+            btnSalvar.innerHTML =
+                conteudoOriginal ||
+                `
 
-                <i class="fa-solid fa-floppy-disk"></i>
+                    <i class="fa-solid fa-floppy-disk"></i>
 
-                Salvar Alterações
+                    Salvar Alterações
 
-            `;
+                `;
 
         }
 
@@ -1558,21 +1799,148 @@ async function salvarAlteracoes(
 }
 
 
-// =======================================
-// MOSTRAR MENSAGEM
-// =======================================
+// ==========================================
+// TRATAR ERROS
+// ==========================================
 
-function mostrarMensagem(
-    texto,
-    tipo
+function tratarErroEdicaoLoja(
+    erro
+) {
+
+    const texto =
+        String(
+            erro?.message ||
+            ""
+        )
+            .toLowerCase();
+
+
+    if (
+        texto.includes(
+            "row-level security"
+        )
+        ||
+        texto.includes(
+            "rls"
+        )
+    ) {
+
+        return (
+            "Sua conta não possui permissão para alterar essa loja."
+        );
+
+    }
+
+
+    if (
+        texto.includes(
+            "failed to fetch"
+        )
+        ||
+        texto.includes(
+            "network"
+        )
+    ) {
+
+        return (
+            "Não foi possível conectar ao servidor. Verifique sua internet."
+        );
+
+    }
+
+
+    if (
+        texto.includes(
+            "logo"
+        )
+        ||
+        texto.includes(
+            "storage"
+        )
+    ) {
+
+        return (
+            erro?.message ||
+            "Não foi possível enviar a nova logo."
+        );
+
+    }
+
+
+    return (
+        erro?.message ||
+        "Ocorreu um erro ao salvar as alterações."
+    );
+
+}
+
+
+// ==========================================
+// PEGAR VALOR
+// ==========================================
+
+function valorCampo(
+    id
+) {
+
+    return document
+        .getElementById(
+            id
+        )
+        ?.value
+        ?.trim()
+        ||
+        "";
+
+}
+
+
+// ==========================================
+// FOCAR CAMPO
+// ==========================================
+
+function focarCampo(
+    id
+) {
+
+    const campo =
+        document.getElementById(
+            id
+        );
+
+
+    if (!campo) {
+
+        return;
+
+    }
+
+
+    campo.focus();
+
+
+    campo.scrollIntoView(
+        {
+            behavior:
+                "smooth",
+
+            block:
+                "center"
+        }
+    );
+
+}
+
+
+// ==========================================
+// MENSAGEM INTERNA
+// ==========================================
+
+function atualizarMensagemInterna(
+    texto
 ) {
 
     if (!mensagem) {
-
-        console.log(
-            `[${tipo}] ${texto}`
-        );
-
 
         return;
 
@@ -1584,8 +1952,58 @@ function mostrarMensagem(
 
 
     mensagem.style.color =
-        tipo === "sucesso"
-            ? "#198754"
-            : "#dc3545";
+        "#6b7280";
+
+}
+
+
+function limparMensagemInterna() {
+
+    if (!mensagem) {
+
+        return;
+
+    }
+
+
+    mensagem.textContent =
+        "";
+
+}
+
+
+// ==========================================
+// FEEDBACK
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
+    );
 
 }

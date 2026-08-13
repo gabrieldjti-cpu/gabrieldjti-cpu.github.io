@@ -15,7 +15,9 @@
     </title>
 
 
-    <!-- HEADER -->
+    <!-- ==================================
+         HEADER
+    =================================== -->
 
     <link
         rel="stylesheet"
@@ -23,7 +25,19 @@
     >
 
 
-    <!-- CSS DA PÁGINA -->
+    <!-- ==================================
+         FEEDBACK
+    =================================== -->
+
+    <link
+        rel="stylesheet"
+        href="components/feedback.css"
+    >
+
+
+    <!-- ==================================
+         CSS DA PÁGINA
+    =================================== -->
 
     <link
         rel="stylesheet"
@@ -31,11 +45,19 @@
     >
 
 
-    <!-- GOOGLE FONTS -->
+    <!-- ==================================
+         GOOGLE FONTS
+    =================================== -->
 
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
     >
 
     <link
@@ -44,7 +66,9 @@
     >
 
 
-    <!-- FONT AWESOME -->
+    <!-- ==================================
+         FONT AWESOME
+    =================================== -->
 
     <link
         rel="stylesheet"
@@ -113,7 +137,10 @@
              FILTROS
         =================================== -->
 
-        <section class="filtros">
+        <section
+            class="filtros"
+            aria-label="Filtrar pedidos por status"
+        >
 
             <button
                 type="button"
@@ -187,6 +214,7 @@
         <section
             id="lista-pedidos"
             class="lista-pedidos"
+            aria-live="polite"
         >
 
 
@@ -218,6 +246,9 @@
     <div
         id="modal-pedido"
         class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-modal-pedido"
     >
 
         <div class="modal-overlay"></div>
@@ -232,7 +263,7 @@
 
                 <div>
 
-                    <h2>
+                    <h2 id="titulo-modal-pedido">
 
                         <i class="fa-solid fa-receipt"></i>
 
@@ -249,7 +280,7 @@
                     type="button"
                     id="btn-fechar-modal"
                     class="btn-fechar"
-                    aria-label="Fechar"
+                    aria-label="Fechar detalhes do pedido"
                 >
 
                     <i class="fa-solid fa-xmark"></i>
@@ -263,7 +294,7 @@
 
             <div id="conteudo-modal-pedido">
 
-                <!-- JS -->
+                <!-- Conteúdo carregado pelo JavaScript -->
 
             </div>
 
@@ -296,9 +327,7 @@
 
     <!-- SUPABASE -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
     <!-- CONFIGURAÇÃO SUPABASE -->
@@ -309,6 +338,11 @@
     <!-- HEADER -->
 
     <script src="components/header.js"></script>
+
+
+    <!-- FEEDBACK PERSONALIZADO -->
+
+    <script src="components/feedback.js"></script>
 
 
     <!-- MEUS PEDIDOS -->

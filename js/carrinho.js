@@ -18,7 +18,6 @@ document.addEventListener(
             "Carrinho iniciado."
         );
 
-
         carregarCarrinho();
 
         atualizarCarrinho();
@@ -73,12 +72,18 @@ function carregarCarrinho() {
         );
 
 
-        carrinho =
-            [];
+        carrinho = [];
 
 
         localStorage.removeItem(
             "carrinho"
+        );
+
+
+        notificar(
+            "Não foi possível carregar os produtos salvos no carrinho.",
+            "erro",
+            "Erro no carrinho"
         );
 
     }
@@ -102,7 +107,7 @@ function salvarCarrinho() {
         );
 
 
-        // Atualiza contador do header
+        // Atualizar contador do header
         if (
             typeof window
                 .atualizarContadorCarrinho ===
@@ -120,6 +125,13 @@ function salvarCarrinho() {
         console.error(
             "Erro ao salvar carrinho:",
             erro
+        );
+
+
+        notificar(
+            "Não foi possível salvar as alterações do carrinho.",
+            "erro",
+            "Erro ao salvar"
         );
 
     }
@@ -344,24 +356,19 @@ function atualizarCarrinho() {
 
                 <div class="grupo-loja">
 
-
                     <div class="cabecalho-loja">
 
                         <i class="fa-solid fa-store"></i>
 
                         <strong>
-
                             ${escaparHTML(
                                 grupo.nome
                             )}
-
                         </strong>
 
                     </div>
 
-
                     ${itensLoja}
-
 
                 </div>
 
@@ -551,12 +558,9 @@ function criarItemCarrinho(
     // ======================================
 
     const possuiEstoque =
-        produto.estoque !==
-            undefined &&
-        produto.estoque !==
-            null &&
-        produto.estoque !==
-            "";
+        produto.estoque !== undefined &&
+        produto.estoque !== null &&
+        produto.estoque !== "";
 
 
     const estoque =
@@ -645,7 +649,7 @@ function criarItemCarrinho(
     if (
         precoPromocional > 0 &&
         precoPromocional <
-            precoNormal
+        precoNormal
     ) {
 
         precoHTML = `
@@ -731,12 +735,10 @@ function criarItemCarrinho(
 
         <div class="item-carrinho">
 
-
             ${imagemHTML}
 
 
             <div class="dados-produto">
-
 
                 <h3>
                     ${nome}
@@ -769,12 +771,10 @@ function criarItemCarrinho(
 
                 ${precoHTML}
 
-
                 ${estoqueHTML}
 
 
                 <div class="controles-item">
-
 
                     <div class="quantidade">
 
@@ -790,9 +790,7 @@ function criarItemCarrinho(
 
 
                         <span>
-
                             ${quantidade}
-
                         </span>
 
 
@@ -826,9 +824,7 @@ function criarItemCarrinho(
 
                     </button>
 
-
                 </div>
-
 
             </div>
 
@@ -848,7 +844,6 @@ function criarItemCarrinho(
                 </strong>
 
             </div>
-
 
         </div>
 
@@ -953,12 +948,9 @@ function aumentarQuantidade(
     // ======================================
 
     const possuiEstoque =
-        produto.estoque !==
-            undefined &&
-        produto.estoque !==
-            null &&
-        produto.estoque !==
-            "";
+        produto.estoque !== undefined &&
+        produto.estoque !== null &&
+        produto.estoque !== "";
 
 
     const estoque =
@@ -978,8 +970,10 @@ function aumentarQuantidade(
             estoque <= 0
         ) {
 
-            alert(
-                "Este produto está sem estoque."
+            notificar(
+                `"${produto.nome || "Este produto"}" está sem estoque no momento.`,
+                "aviso",
+                "Produto indisponível"
             );
 
 
@@ -993,8 +987,10 @@ function aumentarQuantidade(
             estoque
         ) {
 
-            alert(
-                `Quantidade máxima disponível: ${estoque}.`
+            notificar(
+                `Você já adicionou a quantidade máxima disponível. Estoque: ${estoque}.`,
+                "aviso",
+                "Limite de estoque"
             );
 
 
@@ -1020,7 +1016,7 @@ function aumentarQuantidade(
 // DIMINUIR QUANTIDADE
 // ==========================================
 
-function diminuirQuantidade(
+async function diminuirQuantidade(
     index
 ) {
 
@@ -1059,13 +1055,16 @@ function diminuirQuantidade(
     }
 
 
-    const confirmar =
-        confirm(
-            `Remover "${produto.nome}" do carrinho?`
+    // Quando está em 1 unidade,
+    // diminuir significa remover.
+
+    const confirmou =
+        await confirmarRemocaoProduto(
+            produto
         );
 
 
-    if (!confirmar) {
+    if (!confirmou) {
 
         return;
 
@@ -1082,6 +1081,14 @@ function diminuirQuantidade(
 
     atualizarCarrinho();
 
+
+    notificar(
+        `"${produto.nome || "Produto"}" foi removido do carrinho.`,
+        "sucesso",
+        "Produto removido",
+        2500
+    );
+
 }
 
 
@@ -1089,7 +1096,7 @@ function diminuirQuantidade(
 // REMOVER PRODUTO
 // ==========================================
 
-function removerProduto(
+async function removerProduto(
     index
 ) {
 
@@ -1104,13 +1111,13 @@ function removerProduto(
     }
 
 
-    const confirmar =
-        confirm(
-            `Remover "${produto.nome}" do carrinho?`
+    const confirmou =
+        await confirmarRemocaoProduto(
+            produto
         );
 
 
-    if (!confirmar) {
+    if (!confirmou) {
 
         return;
 
@@ -1127,6 +1134,69 @@ function removerProduto(
 
     atualizarCarrinho();
 
+
+    notificar(
+        `"${produto.nome || "Produto"}" foi removido do carrinho.`,
+        "sucesso",
+        "Produto removido",
+        2500
+    );
+
+}
+
+
+// ==========================================
+// CONFIRMAR REMOÇÃO
+// ==========================================
+
+async function confirmarRemocaoProduto(
+    produto
+) {
+
+    const nome =
+        produto?.nome ||
+        "este produto";
+
+
+    if (
+        typeof window.confirmarAcao ===
+        "function"
+    ) {
+
+        return await window.confirmarAcao({
+
+            titulo:
+                "Remover produto?",
+
+            mensagem:
+                `Deseja remover "${nome}" do seu carrinho?`,
+
+            textoConfirmar:
+                "Sim, remover",
+
+            textoCancelar:
+                "Cancelar",
+
+            perigo:
+                true
+
+        });
+
+    }
+
+
+    // Fallback caso feedback.js
+    // não tenha sido carregado.
+
+    console.warn(
+        "feedback.js não foi carregado."
+    );
+
+
+    return window.confirm(
+        `Remover "${nome}" do carrinho?`
+    );
+
 }
 
 
@@ -1134,37 +1204,85 @@ function removerProduto(
 // LIMPAR CARRINHO
 // ==========================================
 
-function limparCarrinho() {
+async function limparCarrinho() {
 
     if (
         carrinho.length === 0
     ) {
 
-        return;
-
-    }
-
-
-    const confirmar =
-        confirm(
-            "Deseja remover todos os produtos do carrinho?"
+        notificar(
+            "Seu carrinho já está vazio.",
+            "info",
+            "Carrinho vazio"
         );
 
 
-    if (!confirmar) {
+        return;
+
+    }
+
+
+    let confirmou =
+        false;
+
+
+    if (
+        typeof window.confirmarAcao ===
+        "function"
+    ) {
+
+        confirmou =
+            await window.confirmarAcao({
+
+                titulo:
+                    "Esvaziar carrinho?",
+
+                mensagem:
+                    "Todos os produtos serão removidos do seu carrinho. Deseja continuar?",
+
+                textoConfirmar:
+                    "Sim, esvaziar",
+
+                textoCancelar:
+                    "Cancelar",
+
+                perigo:
+                    true
+
+            });
+
+
+    } else {
+
+        confirmou =
+            window.confirm(
+                "Deseja remover todos os produtos do carrinho?"
+            );
+
+    }
+
+
+    if (!confirmou) {
 
         return;
 
     }
 
 
-    carrinho =
-        [];
+    carrinho = [];
 
 
     salvarCarrinho();
 
     atualizarCarrinho();
+
+
+    notificar(
+        "Todos os produtos foram removidos.",
+        "sucesso",
+        "Carrinho esvaziado",
+        2500
+    );
 
 }
 
@@ -1296,6 +1414,7 @@ function atualizarAvisoMultiloja(
             <i class="fa-solid fa-circle-info"></i>
 
             Seu carrinho possui produtos de
+
             <strong>
                 ${quantidadeLojas} lojas
             </strong>.
@@ -1334,8 +1453,10 @@ function finalizarCompra() {
         carrinho.length === 0
     ) {
 
-        alert(
-            "Seu carrinho está vazio."
+        notificar(
+            "Adicione pelo menos um produto antes de continuar.",
+            "aviso",
+            "Carrinho vazio"
         );
 
 
@@ -1385,8 +1506,71 @@ function finalizarCompra() {
         );
 
 
-        alert(
-            "Alguns produtos do carrinho estão inválidos. Remova-os e adicione novamente."
+        notificar(
+            "Alguns produtos possuem informações inválidas. Remova esses itens e adicione-os novamente.",
+            "erro",
+            "Problema no carrinho",
+            5500
+        );
+
+
+        return;
+
+    }
+
+
+    // ======================================
+    // VALIDAR ESTOQUE LOCAL
+    // ======================================
+
+    const produtoSemEstoque =
+        carrinho.find(
+            (produto) => {
+
+                if (
+                    produto.estoque === undefined ||
+                    produto.estoque === null ||
+                    produto.estoque === ""
+                ) {
+
+                    return false;
+
+                }
+
+
+                const estoque =
+                    Number(
+                        produto.estoque
+                    );
+
+
+                const quantidade =
+                    normalizarQuantidade(
+                        produto.quantidade
+                    );
+
+
+                return (
+                    Number.isFinite(estoque) &&
+                    (
+                        estoque <= 0 ||
+                        quantidade > estoque
+                    )
+                );
+
+            }
+        );
+
+
+    if (
+        produtoSemEstoque
+    ) {
+
+        notificar(
+            `"${produtoSemEstoque.nome || "Um produto"}" não possui estoque suficiente para a quantidade escolhida.`,
+            "aviso",
+            "Estoque insuficiente",
+            5000
         );
 
 
@@ -1399,16 +1583,35 @@ function finalizarCompra() {
     // SALVAR PARA CHECKOUT
     // ======================================
 
-    localStorage.setItem(
-        "checkout",
-        JSON.stringify(
-            carrinho
-        )
-    );
+    try {
+
+        localStorage.setItem(
+            "checkout",
+            JSON.stringify(
+                carrinho
+            )
+        );
 
 
-    window.location.href =
-        "checkout.html";
+        window.location.href =
+            "checkout.html";
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao preparar checkout:",
+            erro
+        );
+
+
+        notificar(
+            "Não foi possível iniciar a finalização da compra.",
+            "erro",
+            "Erro no checkout"
+        );
+
+    }
 
 }
 
@@ -1474,6 +1677,43 @@ function escaparHTML(
             "'",
             "&#039;"
         );
+
+}
+
+
+// ==========================================
+// NOTIFICAÇÃO
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
+    );
 
 }
 

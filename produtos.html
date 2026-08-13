@@ -1,83 +1,247 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
 
-    <title>Produtos | Comércio da Cidade</title>
+  <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="css/produtos.css" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="components/header.css" />
+  <title>
+    Produtos | Comércio da Cidade
+  </title>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-  </head>
+  <!-- ==================================
+       CSS DO HEADER
+  =================================== -->
 
-  <body>
-    <div id="header"></div>
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
 
-    <main class="container">
-      <div class="topo">
-        <div>
-          <h1>
-            <i class="fa-solid fa-box"></i>
 
-            Meus Produtos
-          </h1>
+  <!-- ==================================
+       FEEDBACK PERSONALIZADO
+  =================================== -->
 
-          <p>Gerencie todos os produtos cadastrados na sua loja.</p>
-        </div>
+  <link
+    rel="stylesheet"
+    href="components/feedback.css"
+  />
 
-        <a href="novo-produto.html" class="btn">
+
+  <!-- ==================================
+       CSS DA PÁGINA
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="css/produtos.css"
+  />
+
+
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+
+</head>
+
+
+<body>
+
+
+  <!-- ==================================
+       HEADER
+  =================================== -->
+
+  <div id="header"></div>
+
+
+  <!-- ==================================
+       CONTEÚDO
+  =================================== -->
+
+  <main class="container">
+
+
+    <!-- ==================================
+         TOPO
+    =================================== -->
+
+    <div class="topo">
+
+
+      <div>
+
+        <h1>
+
+          <i class="fa-solid fa-box"></i>
+
+          Meus Produtos
+
+        </h1>
+
+        <p>
+          Gerencie todos os produtos cadastrados na sua loja.
+        </p>
+
+      </div>
+
+
+      <a
+        href="novo-produto.html"
+        class="btn"
+      >
+
+        <i class="fa-solid fa-plus"></i>
+
+        Novo Produto
+
+      </a>
+
+    </div>
+
+
+    <!-- ==================================
+         PESQUISA
+    =================================== -->
+
+    <div class="barra-pesquisa">
+
+      <input
+        type="text"
+        id="pesquisa"
+        placeholder="Pesquisar produto..."
+        autocomplete="off"
+        aria-label="Pesquisar produto"
+      />
+
+
+      <button
+        type="button"
+        aria-label="Pesquisar"
+      >
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- ==================================
+         LISTA DE PRODUTOS
+    =================================== -->
+
+    <div
+      id="lista-produtos"
+      class="lista-produtos"
+      aria-live="polite"
+    >
+
+
+      <!-- ESTADO INICIAL -->
+
+      <div class="sem-produtos">
+
+        <i class="fa-solid fa-box-open"></i>
+
+        <h2>
+          Nenhum produto cadastrado.
+        </h2>
+
+        <p>
+
+          Clique em
+
+          <strong>
+            Novo Produto
+          </strong>
+
+          para cadastrar o primeiro produto da sua loja.
+
+        </p>
+
+
+        <a
+          href="novo-produto.html"
+          class="btn"
+        >
+
           <i class="fa-solid fa-plus"></i>
 
-          Novo Produto
+          Cadastrar Produto
+
         </a>
+
       </div>
 
-      <div class="barra-pesquisa">
-        <input type="text" id="pesquisa" placeholder="Pesquisar produto..." />
+    </div>
 
-        <button>
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
+  </main>
 
-      <div id="lista-produtos" class="lista-produtos">
-        <div class="sem-produtos">
-          <i class="fa-solid fa-box-open"></i>
 
-          <h2>Nenhum produto cadastrado.</h2>
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
 
-          <p>
-            Clique em <strong>Novo Produto</strong> para cadastrar o primeiro
-            produto da sua loja.
-          </p>
 
-          <a href="novo-produto.html" class="btn">
-            <i class="fa-solid fa-plus"></i>
+  <!-- SUPABASE -->
 
-            Cadastrar Produto
-          </a>
-        </div>
-      </div>
-    </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="js/supabase.js"></script>
-    <script src="components/header.js"></script>
+  <!-- CONFIGURAÇÃO SUPABASE -->
 
-    <script src="js/produtos.js"></script>
-  </body>
+  <script src="js/supabase.js"></script>
+
+
+  <!-- HEADER -->
+
+  <script src="components/header.js"></script>
+
+
+  <!-- FEEDBACK PERSONALIZADO -->
+
+  <script src="components/feedback.js"></script>
+
+
+  <!-- PRODUTOS -->
+
+  <script src="js/produtos.js"></script>
+
+
+</body>
+
 </html>

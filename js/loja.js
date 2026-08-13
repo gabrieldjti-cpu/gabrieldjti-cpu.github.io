@@ -1,6 +1,7 @@
 // ==========================================
 // LOJA.JS
 // Página pública da loja
+// Comércio da Cidade
 // ==========================================
 
 let produtos = [];
@@ -33,9 +34,14 @@ document.addEventListener(
                 "Loja: Supabase não foi inicializado."
             );
 
-            alert(
-                "Erro ao conectar com o Supabase."
+
+            notificar(
+                "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+                "erro",
+                "Erro de conexão",
+                6000
             );
+
 
             return;
 
@@ -53,7 +59,9 @@ document.addEventListener(
 
 
         lojaId =
-            params.get("id");
+            params.get(
+                "id"
+            );
 
 
         console.log(
@@ -64,13 +72,23 @@ document.addEventListener(
 
         if (!lojaId) {
 
-            alert(
-                "Loja não encontrada."
+            notificar(
+                "Não foi possível identificar a loja que você está tentando acessar.",
+                "erro",
+                "Loja não encontrada",
+                3000
             );
 
 
-            window.location.href =
-                "index.html";
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                1000
+            );
 
 
             return;
@@ -134,28 +152,31 @@ async function carregarLoja() {
         const {
             data,
             error
-        } = await window.db
+        } =
+            await window.db
 
-            .from("lojas")
-
-            .select(`
-                *,
-                categorias(
-                    nome
+                .from(
+                    "lojas"
                 )
-            `)
 
-            .eq(
-                "id",
-                lojaId
-            )
+                .select(`
+                    *,
+                    categorias(
+                        nome
+                    )
+                `)
 
-            .eq(
-                "ativa",
-                true
-            )
+                .eq(
+                    "id",
+                    lojaId
+                )
 
-            .maybeSingle();
+                .eq(
+                    "ativa",
+                    true
+                )
+
+                .maybeSingle();
 
 
         // ==================================
@@ -170,8 +191,11 @@ async function carregarLoja() {
             );
 
 
-            alert(
-                "Erro ao carregar a loja."
+            notificar(
+                "Não foi possível carregar os dados desta loja.",
+                "erro",
+                "Erro ao carregar loja",
+                5000
             );
 
 
@@ -186,13 +210,23 @@ async function carregarLoja() {
 
         if (!data) {
 
-            alert(
-                "Loja não encontrada ou está indisponível."
+            notificar(
+                "Esta loja não foi encontrada ou está indisponível no momento.",
+                "aviso",
+                "Loja indisponível",
+                3500
             );
 
 
-            window.location.href =
-                "index.html";
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                1200
+            );
 
 
             return false;
@@ -223,7 +257,8 @@ async function carregarLoja() {
         if (nomeLoja) {
 
             nomeLoja.textContent =
-                data.nome || "Loja";
+                data.nome ||
+                "Loja";
 
         }
 
@@ -315,8 +350,11 @@ async function carregarLoja() {
         );
 
 
-        alert(
-            "Erro ao carregar os dados da loja."
+        notificar(
+            "Ocorreu um erro inesperado ao carregar esta loja.",
+            "erro",
+            "Não foi possível carregar",
+            5000
         );
 
 
@@ -407,8 +445,6 @@ function carregarLogoLoja(
             "none";
 
 
-        // Se URL da imagem estiver quebrada
-
         imagem.onerror =
             () => {
 
@@ -477,9 +513,6 @@ function configurarWhatsapp(
     }
 
 
-    // Prioriza o WhatsApp cadastrado.
-    // Se não houver, usa o telefone.
-
     const contato =
         loja.whatsapp ||
         loja.telefone;
@@ -497,8 +530,13 @@ function configurarWhatsapp(
 
 
     let numero =
-        String(contato)
-            .replace(/\D/g, "");
+        String(
+            contato
+        )
+            .replace(
+                /\D/g,
+                ""
+            );
 
 
     if (!numero) {
@@ -513,15 +551,18 @@ function configurarWhatsapp(
 
 
     // ==================================
-    // ADICIONAR DDI DO BRASIL
+    // DDI DO BRASIL
     // ==================================
 
     if (
-        !numero.startsWith("55")
+        !numero.startsWith(
+            "55"
+        )
     ) {
 
         numero =
-            "55" + numero;
+            "55" +
+            numero;
 
     }
 
@@ -602,28 +643,34 @@ async function carregarProdutos() {
         const {
             data,
             error
-        } = await window.db
+        } =
+            await window.db
 
-            .from("produtos")
+                .from(
+                    "produtos"
+                )
 
-            .select("*")
+                .select(
+                    "*"
+                )
 
-            .eq(
-                "loja_id",
-                lojaId
-            )
+                .eq(
+                    "loja_id",
+                    lojaId
+                )
 
-            .eq(
-                "ativo",
-                true
-            )
+                .eq(
+                    "ativo",
+                    true
+                )
 
-            .order(
-                "nome",
-                {
-                    ascending: true
-                }
-            );
+                .order(
+                    "nome",
+                    {
+                        ascending:
+                            true
+                    }
+                );
 
 
         if (error) {
@@ -634,19 +681,15 @@ async function carregarProdutos() {
             );
 
 
-            container.innerHTML = `
+            mostrarErroProdutos();
 
-                <div class="sem-produtos">
 
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <h2>
-                        Erro ao carregar produtos.
-                    </h2>
-
-                </div>
-
-            `;
+            notificar(
+                "Não foi possível carregar os produtos desta loja.",
+                "erro",
+                "Erro ao carregar produtos",
+                5000
+            );
 
 
             return;
@@ -655,7 +698,9 @@ async function carregarProdutos() {
 
 
         produtos =
-            data || [];
+            Array.isArray(data)
+                ? data
+                : [];
 
 
         mostrarProdutos(
@@ -671,21 +716,69 @@ async function carregarProdutos() {
         );
 
 
-        container.innerHTML = `
+        mostrarErroProdutos();
 
-            <div class="sem-produtos">
 
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <h2>
-                    Não foi possível carregar os produtos.
-                </h2>
-
-            </div>
-
-        `;
+        notificar(
+            "Ocorreu um erro inesperado ao carregar os produtos.",
+            "erro",
+            "Não foi possível carregar",
+            5000
+        );
 
     }
+
+}
+
+
+// ==========================================
+// ERRO AO CARREGAR PRODUTOS
+// ==========================================
+
+function mostrarErroProdutos() {
+
+    const container =
+        document.getElementById(
+            "listaProdutos"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="sem-produtos">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <h2>
+                Não foi possível carregar os produtos.
+            </h2>
+
+            <p>
+                Atualize a página e tente novamente.
+            </p>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="window.location.reload()"
+            >
+
+                <i class="fa-solid fa-rotate-right"></i>
+
+                Tentar novamente
+
+            </button>
+
+        </div>
+
+    `;
 
 }
 
@@ -695,7 +788,8 @@ async function carregarProdutos() {
 // ==========================================
 
 function mostrarProdutos(
-    lista
+    lista,
+    pesquisando = false
 ) {
 
     const container =
@@ -724,19 +818,48 @@ function mostrarProdutos(
         lista.length === 0
     ) {
 
-        container.innerHTML = `
+        if (pesquisando) {
 
-            <div class="sem-produtos">
+            container.innerHTML = `
 
-                <i class="fa-solid fa-box-open"></i>
+                <div class="sem-produtos">
 
-                <h2>
-                    Nenhum produto disponível.
-                </h2>
+                    <i class="fa-solid fa-magnifying-glass"></i>
 
-            </div>
+                    <h2>
+                        Nenhum produto encontrado.
+                    </h2>
 
-        `;
+                    <p>
+                        Tente pesquisar usando outro nome.
+                    </p>
+
+                </div>
+
+            `;
+
+
+        } else {
+
+            container.innerHTML = `
+
+                <div class="sem-produtos">
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    <h2>
+                        Nenhum produto disponível.
+                    </h2>
+
+                    <p>
+                        Esta loja ainda não possui produtos disponíveis.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
 
 
         return;
@@ -748,22 +871,16 @@ function mostrarProdutos(
     // PRODUTOS
     // ==================================
 
-    lista.forEach(
-        (produto) => {
+    const html =
+        lista
+            .map(
+                criarCardProduto
+            )
+            .join("");
 
-            const card =
-                criarCardProduto(
-                    produto
-                );
 
-
-            container.insertAdjacentHTML(
-                "beforeend",
-                card
-            );
-
-        }
-    );
+    container.innerHTML =
+        html;
 
 }
 
@@ -803,8 +920,11 @@ function criarCardProduto(
 
 
     const estoque =
-        Number(
-            produto.estoque || 0
+        Math.max(
+            0,
+            Number(
+                produto.estoque || 0
+            )
         );
 
 
@@ -825,14 +945,18 @@ function criarCardProduto(
             <div class="preco">
 
                 R$
-                ${formatarPreco(precoPromocional)}
+                ${formatarPreco(
+                    precoPromocional
+                )}
 
             </div>
 
             <div class="preco-antigo">
 
                 R$
-                ${formatarPreco(preco)}
+                ${formatarPreco(
+                    preco
+                )}
 
             </div>
 
@@ -846,7 +970,9 @@ function criarCardProduto(
             <div class="preco">
 
                 R$
-                ${formatarPreco(preco)}
+                ${formatarPreco(
+                    preco
+                )}
 
             </div>
 
@@ -862,14 +988,18 @@ function criarCardProduto(
     let imagemHTML;
 
 
-    if (produto.imagem_url) {
+    if (
+        produto.imagem_url
+    ) {
 
         imagemHTML = `
 
             <div class="area-imagem-produto">
 
                 <img
-                    src="${escaparHTML(produto.imagem_url)}"
+                    src="${escaparHTML(
+                        produto.imagem_url
+                    )}"
                     alt="${nome}"
                     class="imagem-produto"
                     loading="lazy"
@@ -968,14 +1098,18 @@ function criarCardProduto(
 
         <div
             class="produto"
-            data-nome="${nome.toLowerCase()}"
+            data-nome="${escaparHTML(
+                normalizarTexto(
+                    produto.nome ||
+                    ""
+                )
+            )}"
         >
 
             ${imagemHTML}
 
 
             <div class="conteudo">
-
 
                 <h3>
                     ${nome}
@@ -999,7 +1133,6 @@ function criarCardProduto(
 
 
                 ${botaoHTML}
-
 
             </div>
 
@@ -1031,11 +1164,16 @@ function mostrarPlaceholderProduto(
         );
 
 
+    imagem.style.display =
+        "none";
+
+
+    imagem.removeAttribute(
+        "src"
+    );
+
+
     if (!area) {
-
-        imagem.style.display =
-            "none";
-
 
         return;
 
@@ -1046,15 +1184,6 @@ function mostrarPlaceholderProduto(
         area.querySelector(
             ".imagem-produto-placeholder"
         );
-
-
-    imagem.style.display =
-        "none";
-
-
-    imagem.removeAttribute(
-        "src"
-    );
 
 
     if (placeholder) {
@@ -1087,9 +1216,21 @@ function pesquisarProdutos() {
 
 
     const texto =
-        pesquisa.value
-            .trim()
-            .toLowerCase();
+        normalizarTexto(
+            pesquisa.value
+        );
+
+
+    if (!texto) {
+
+        mostrarProdutos(
+            produtos
+        );
+
+
+        return;
+
+    }
 
 
     const filtrados =
@@ -1097,22 +1238,25 @@ function pesquisarProdutos() {
             (produto) => {
 
                 const nome =
-                    String(
-                        produto.nome || ""
-                    )
-                        .toLowerCase();
+                    normalizarTexto(
+                        produto.nome
+                    );
 
 
                 const descricao =
-                    String(
-                        produto.descricao || ""
-                    )
-                        .toLowerCase();
+                    normalizarTexto(
+                        produto.descricao
+                    );
 
 
                 return (
-                    nome.includes(texto) ||
-                    descricao.includes(texto)
+                    nome.includes(
+                        texto
+                    )
+                    ||
+                    descricao.includes(
+                        texto
+                    )
                 );
 
             }
@@ -1120,7 +1264,8 @@ function pesquisarProdutos() {
 
 
     mostrarProdutos(
-        filtrados
+        filtrados,
+        true
     );
 
 }
@@ -1137,15 +1282,21 @@ function adicionarCarrinho(
     const produto =
         produtos.find(
             (produto) =>
-                String(produto.id) ===
-                String(id)
+                String(
+                    produto.id
+                ) ===
+                String(
+                    id
+                )
         );
 
 
     if (!produto) {
 
-        alert(
-            "Produto não encontrado."
+        notificar(
+            "Este produto não foi encontrado ou não está mais disponível.",
+            "erro",
+            "Produto não encontrado"
         );
 
 
@@ -1165,11 +1316,17 @@ function adicionarCarrinho(
 
 
     if (
+        !Number.isFinite(
+            estoque
+        )
+        ||
         estoque <= 0
     ) {
 
-        alert(
-            "Este produto está sem estoque."
+        notificar(
+            `"${produto.nome || "Este produto"}" está sem estoque no momento.`,
+            "aviso",
+            "Produto indisponível"
         );
 
 
@@ -1187,24 +1344,18 @@ function adicionarCarrinho(
 
     try {
 
-        carrinho =
+        const dados =
             JSON.parse(
                 localStorage.getItem(
                     "carrinho"
                 )
-            ) || [];
+            );
 
 
-        if (
-            !Array.isArray(
-                carrinho
-            )
-        ) {
-
-            carrinho =
-                [];
-
-        }
+        carrinho =
+            Array.isArray(dados)
+                ? dados
+                : [];
 
 
     } catch (erro) {
@@ -1218,6 +1369,11 @@ function adicionarCarrinho(
         carrinho =
             [];
 
+
+        localStorage.removeItem(
+            "carrinho"
+        );
+
     }
 
 
@@ -1228,27 +1384,43 @@ function adicionarCarrinho(
     const existente =
         carrinho.find(
             (item) =>
-                String(item.id) ===
-                    String(produto.id) &&
-                String(item.loja_id) ===
-                    String(lojaId)
+                String(
+                    item.id
+                ) ===
+                    String(
+                        produto.id
+                    )
+                &&
+                String(
+                    item.loja_id
+                ) ===
+                    String(
+                        lojaId
+                    )
         );
 
 
     if (existente) {
 
         const quantidadeAtual =
-            Number(
-                existente.quantidade || 1
+            Math.max(
+                1,
+                Number(
+                    existente.quantidade ||
+                    1
+                )
             );
 
 
         if (
-            quantidadeAtual >= estoque
+            quantidadeAtual >=
+            estoque
         ) {
 
-            alert(
-                "Você já adicionou a quantidade máxima disponível deste produto."
+            notificar(
+                `Você já adicionou todas as ${estoque} unidade(s) disponíveis deste produto.`,
+                "aviso",
+                "Limite de estoque"
             );
 
 
@@ -1259,6 +1431,46 @@ function adicionarCarrinho(
 
         existente.quantidade =
             quantidadeAtual + 1;
+
+
+        // Atualiza dados que podem
+        // ter mudado no produto.
+
+        existente.nome =
+            produto.nome;
+
+
+        existente.descricao =
+            produto.descricao ||
+            "";
+
+
+        existente.preco =
+            Number(
+                produto.preco || 0
+            );
+
+
+        existente.preco_promocional =
+            produto.preco_promocional
+                ? Number(
+                    produto.preco_promocional
+                )
+                : null;
+
+
+        existente.imagem_url =
+            produto.imagem_url ||
+            null;
+
+
+        existente.estoque =
+            estoque;
+
+
+        existente.nome_loja =
+            lojaAtual?.nome ||
+            "Loja";
 
 
     } else {
@@ -1279,7 +1491,8 @@ function adicionarCarrinho(
                 produto.nome,
 
             descricao:
-                produto.descricao || "",
+                produto.descricao ||
+                "",
 
             preco:
                 Number(
@@ -1294,7 +1507,8 @@ function adicionarCarrinho(
                     : null,
 
             imagem_url:
-                produto.imagem_url || null,
+                produto.imagem_url ||
+                null,
 
             estoque:
                 estoque,
@@ -1311,12 +1525,34 @@ function adicionarCarrinho(
     // SALVAR
     // ==================================
 
-    localStorage.setItem(
-        "carrinho",
-        JSON.stringify(
-            carrinho
-        )
-    );
+    try {
+
+        localStorage.setItem(
+            "carrinho",
+            JSON.stringify(
+                carrinho
+            )
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao salvar carrinho:",
+            erro
+        );
+
+
+        notificar(
+            "Não foi possível adicionar o produto ao carrinho.",
+            "erro",
+            "Erro no carrinho"
+        );
+
+
+        return;
+
+    }
 
 
     // ==================================
@@ -1335,9 +1571,68 @@ function adicionarCarrinho(
     }
 
 
-    alert(
-        "Produto adicionado ao carrinho!"
-    );
+    // ==================================
+    // SUCESSO
+    // ==================================
+
+    const quantidadeNoCarrinho =
+        existente
+            ? existente.quantidade
+            : 1;
+
+
+    if (
+        quantidadeNoCarrinho > 1
+    ) {
+
+        notificar(
+            `"${produto.nome}" agora possui ${quantidadeNoCarrinho} unidades no seu carrinho.`,
+            "sucesso",
+            "Carrinho atualizado",
+            2800
+        );
+
+
+    } else {
+
+        notificar(
+            `"${produto.nome}" foi adicionado ao seu carrinho.`,
+            "sucesso",
+            "Produto adicionado!",
+            2800
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// NORMALIZAR TEXTO
+// Ignora maiúsculas e acentos
+// ==========================================
+
+function normalizarTexto(
+    valor
+) {
+
+    return String(
+        valor ??
+        ""
+    )
+
+        .normalize(
+            "NFD"
+        )
+
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+
+        .trim()
+
+        .toLowerCase();
 
 }
 
@@ -1376,7 +1671,8 @@ function escaparHTML(
 ) {
 
     return String(
-        valor ?? ""
+        valor ??
+        ""
     )
 
         .replaceAll(
@@ -1403,6 +1699,43 @@ function escaparHTML(
             "'",
             "&#039;"
         );
+
+}
+
+
+// ==========================================
+// FEEDBACK
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
+    );
 
 }
 

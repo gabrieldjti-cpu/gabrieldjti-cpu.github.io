@@ -1,0 +1,411 @@
+/* ==========================================
+   FEEDBACK / ALERTAS
+========================================== */
+
+.feedback-container {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+
+    z-index: 99999;
+
+    width: min(380px, calc(100% - 30px));
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    pointer-events: none;
+}
+
+
+/* ==========================================
+   TOAST
+========================================== */
+
+.feedback-toast {
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background: #fff;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, .15);
+
+    pointer-events: auto;
+
+    animation:
+        feedbackEntrar .3s ease;
+
+    border-left: 5px solid #2563eb;
+}
+
+
+.feedback-toast.saindo {
+    animation:
+        feedbackSair .25s ease forwards;
+}
+
+
+/* ==========================================
+   ÍCONE
+========================================== */
+
+.feedback-icone {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 17px;
+}
+
+
+/* ==========================================
+   CONTEÚDO
+========================================== */
+
+.feedback-conteudo {
+    flex: 1;
+    min-width: 0;
+}
+
+
+.feedback-conteudo strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1f2937;
+
+    font-size: 14px;
+}
+
+
+.feedback-conteudo p {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   FECHAR
+========================================== */
+
+.feedback-fechar {
+    width: 28px;
+    height: 28px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #94a3b8;
+
+    cursor: pointer;
+}
+
+
+.feedback-fechar:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+
+/* ==========================================
+   TIPOS
+========================================== */
+
+/* SUCESSO */
+
+.feedback-toast.sucesso {
+    border-left-color: #16a34a;
+}
+
+.feedback-toast.sucesso .feedback-icone {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+
+/* ERRO */
+
+.feedback-toast.erro {
+    border-left-color: #dc2626;
+}
+
+.feedback-toast.erro .feedback-icone {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* AVISO */
+
+.feedback-toast.aviso {
+    border-left-color: #f59e0b;
+}
+
+.feedback-toast.aviso .feedback-icone {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+
+/* INFO */
+
+.feedback-toast.info {
+    border-left-color: #2563eb;
+}
+
+.feedback-toast.info .feedback-icone {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+
+/* ==========================================
+   MODAL DE CONFIRMAÇÃO
+========================================== */
+
+.feedback-modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 100000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(15, 23, 42, .58);
+
+    backdrop-filter: blur(3px);
+}
+
+
+.feedback-modal.aberto {
+    display: flex;
+}
+
+
+.feedback-modal-box {
+    width: min(430px, 100%);
+
+    padding: 28px;
+
+    border-radius: 20px;
+
+    background: #fff;
+
+    text-align: center;
+
+    box-shadow:
+        0 25px 70px
+        rgba(0, 0, 0, .25);
+
+    animation:
+        feedbackModalEntrar .25s ease;
+}
+
+
+/* ÍCONE DO MODAL */
+
+.feedback-modal-icone {
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #fee2e2;
+
+    color: #dc2626;
+
+    font-size: 27px;
+}
+
+
+.feedback-modal-box h3 {
+    margin-bottom: 8px;
+
+    color: #1f2937;
+
+    font-size: 21px;
+}
+
+
+.feedback-modal-box p {
+    margin-bottom: 25px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   BOTÕES DO MODAL
+========================================== */
+
+.feedback-modal-botoes {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+}
+
+
+.feedback-modal-botoes button {
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+
+.feedback-btn-cancelar {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+
+.feedback-btn-cancelar:hover {
+    background: #e2e8f0;
+}
+
+
+.feedback-btn-confirmar {
+    background: #dc2626;
+    color: #fff;
+}
+
+
+.feedback-btn-confirmar:hover {
+    background: #b91c1c;
+}
+
+
+/* ==========================================
+   ANIMAÇÕES
+========================================== */
+
+@keyframes feedbackEntrar {
+
+    from {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+
+@keyframes feedbackSair {
+
+    to {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+
+}
+
+
+@keyframes feedbackModalEntrar {
+
+    from {
+        opacity: 0;
+        transform: scale(.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+}
+
+
+/* ==========================================
+   CELULAR
+========================================== */
+
+@media(max-width:600px) {
+
+    .feedback-container {
+        top: 75px;
+        right: 15px;
+        left: 15px;
+
+        width: auto;
+    }
+
+
+    .feedback-toast {
+        padding: 14px;
+    }
+
+
+    .feedback-modal-box {
+        padding: 24px 20px;
+    }
+
+
+    .feedback-modal-botoes {
+        grid-template-columns: 1fr;
+    }
+
+}
