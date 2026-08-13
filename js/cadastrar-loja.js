@@ -3,44 +3,28 @@
 // Comércio da Cidade
 // ==========================================
 
+const form = document.getElementById("formLoja");
 
-// ==========================================
-// ELEMENTOS
-// ==========================================
+const mensagem = document.getElementById("mensagem");
 
-const form =
+const categoria = document.getElementById("categoria");
+
+const inputLogo = document.getElementById("logo");
+
+const previewLogo = document.getElementById(
+    "preview-logo"
+);
+
+const previewLogoPlaceholder =
     document.getElementById(
-        "formLoja"
-    );
-
-const mensagem =
-    document.getElementById(
-        "mensagem"
-    );
-
-const categoria =
-    document.getElementById(
-        "categoria"
-    );
-
-const inputLogo =
-    document.getElementById(
-        "logo"
-    );
-
-const previewLogo =
-    document.getElementById(
-        "preview-logo"
+        "preview-logo-placeholder"
     );
 
 const botao =
     form?.querySelector(
         'button[type="submit"]'
-    )
-    ||
-    document.querySelector(
-        ".btn"
-    );
+    ) ||
+    document.querySelector(".btn");
 
 
 let usuario = null;
@@ -54,16 +38,11 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        // ==================================
-        // SUPABASE
-        // ==================================
-
         if (!window.db) {
 
             console.error(
                 "Supabase não foi inicializado."
             );
-
 
             notificar(
                 "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
@@ -72,23 +51,15 @@ document.addEventListener(
                 6000
             );
 
-
             if (botao) {
 
-                botao.disabled =
-                    true;
+                botao.disabled = true;
 
             }
 
-
             return;
-
         }
 
-
-        // ==================================
-        // VERIFICAR SESSÃO
-        // ==================================
 
         const autenticado =
             await verificarUsuario();
@@ -101,10 +72,6 @@ document.addEventListener(
         }
 
 
-        // ==================================
-        // VERIFICAR LOJA EXISTENTE
-        // ==================================
-
         const possuiLoja =
             await verificarLojaExistente();
 
@@ -116,16 +83,7 @@ document.addEventListener(
         }
 
 
-        // ==================================
-        // CATEGORIAS
-        // ==================================
-
         await carregarCategorias();
-
-
-        // ==================================
-        // PREVIEW
-        // ==================================
 
         configurarPreviewLogo();
 
@@ -157,25 +115,36 @@ async function verificarUsuario() {
                 error
             );
 
-
             notificar(
                 "Não foi possível verificar sua sessão.",
                 "erro",
                 "Erro de autenticação"
             );
 
-
             return false;
 
         }
 
 
-        if (
-            !data.session
-        ) {
+        if (!data.session) {
 
-            window.location.href =
-                "login.html";
+            notificar(
+                "Entre na sua conta para cadastrar uma loja.",
+                "info",
+                "Login necessário",
+                2200
+            );
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "login.html";
+
+                },
+                800
+            );
 
 
             return false;
@@ -223,20 +192,21 @@ async function verificarLojaExistente() {
         const {
             data: lojaExistente,
             error
-        } = await window.db
+        } =
+            await window.db
 
-            .from("lojas")
+                .from("lojas")
 
-            .select(
-                "id,nome"
-            )
+                .select(
+                    "id,nome"
+                )
 
-            .eq(
-                "proprietario_id",
-                usuario.id
-            )
+                .eq(
+                    "proprietario_id",
+                    usuario.id
+                )
 
-            .maybeSingle();
+                .maybeSingle();
 
 
         if (error) {
@@ -259,9 +229,7 @@ async function verificarLojaExistente() {
         }
 
 
-        if (
-            !lojaExistente
-        ) {
+        if (!lojaExistente) {
 
             return false;
 
@@ -278,9 +246,7 @@ async function verificarLojaExistente() {
         );
 
 
-        if (
-            lojaExistente.nome
-        ) {
+        if (lojaExistente.nome) {
 
             localStorage.setItem(
                 "nome_loja",
@@ -298,30 +264,20 @@ async function verificarLojaExistente() {
         );
 
 
-        if (mensagem) {
-
-            mensagem.textContent =
-                "";
-
-        }
+        atualizarMensagem("");
 
 
-        if (form) {
+        form
+            ?.querySelectorAll(
+                "input, select, textarea, button"
+            )
+            .forEach(
+                (elemento) => {
 
-            form
-                .querySelectorAll(
-                    "input, select, textarea, button"
-                )
-                .forEach(
-                    (elemento) => {
+                    elemento.disabled = true;
 
-                        elemento.disabled =
-                            true;
-
-                    }
-                );
-
-        }
+                }
+            );
 
 
         setTimeout(
@@ -365,24 +321,18 @@ async function carregarCategorias() {
             "Campo categoria não encontrado."
         );
 
-
         return;
 
     }
 
 
-    categoria.disabled =
-        true;
+    categoria.disabled = true;
 
 
     categoria.innerHTML = `
-
         <option value="">
-
             Carregando categorias...
-
         </option>
-
     `;
 
 
@@ -391,20 +341,23 @@ async function carregarCategorias() {
         const {
             data,
             error
-        } = await window.db
+        } =
+            await window.db
 
-            .from("categorias")
+                .from(
+                    "categorias"
+                )
 
-            .select(
-                "id,nome"
-            )
+                .select(
+                    "id,nome"
+                )
 
-            .order(
-                "nome",
-                {
-                    ascending: true
-                }
-            );
+                .order(
+                    "nome",
+                    {
+                        ascending: true
+                    }
+                );
 
 
         if (error) {
@@ -414,21 +367,17 @@ async function carregarCategorias() {
         }
 
 
-        categoria.innerHTML = `
-
-            <option value="">
-
-                Selecione uma categoria
-
-            </option>
-
-        `;
-
-
         const categorias =
             Array.isArray(data)
                 ? data
                 : [];
+
+
+        categoria.innerHTML = `
+            <option value="">
+                Selecione uma categoria
+            </option>
+        `;
 
 
         categorias.forEach(
@@ -457,7 +406,7 @@ async function carregarCategorias() {
 
 
         categoria.disabled =
-            false;
+            categorias.length === 0;
 
 
         if (
@@ -482,13 +431,9 @@ async function carregarCategorias() {
 
 
         categoria.innerHTML = `
-
             <option value="">
-
                 Erro ao carregar categorias
-
             </option>
-
         `;
 
 
@@ -530,6 +475,8 @@ function configurarPreviewLogo() {
 
 
             if (!arquivo) {
+
+                limparPreviewLogo();
 
                 return;
 
@@ -617,26 +564,35 @@ function configurarPreviewLogo() {
 
 
             leitor.onload =
-                function (
-                    event
-                ) {
+                (event) => {
+
+                    if (!previewLogo) {
+
+                        return;
+
+                    }
+
+
+                    previewLogo.src =
+                        event.target.result;
+
+
+                    previewLogo.hidden =
+                        false;
+
+
+                    previewLogo.style.display =
+                        "block";
+
 
                     if (
-                        previewLogo
+                        previewLogoPlaceholder
                     ) {
 
-                        previewLogo.src =
-                            event
-                                .target
-                                .result;
-
-
-                        previewLogo.style.display =
-                            "block";
-
-
-                        previewLogo.hidden =
-                            false;
+                        previewLogoPlaceholder
+                            .style
+                            .display =
+                                "none";
 
                     }
 
@@ -644,7 +600,7 @@ function configurarPreviewLogo() {
 
 
             leitor.onerror =
-                function () {
+                () => {
 
                     notificar(
                         "Não foi possível visualizar a imagem selecionada.",
@@ -655,6 +611,9 @@ function configurarPreviewLogo() {
 
                     inputLogo.value =
                         "";
+
+
+                    limparPreviewLogo();
 
                 };
 
@@ -675,24 +634,33 @@ function configurarPreviewLogo() {
 
 function limparPreviewLogo() {
 
-    if (!previewLogo) {
+    if (previewLogo) {
 
-        return;
+        previewLogo.removeAttribute(
+            "src"
+        );
+
+
+        previewLogo.style.display =
+            "none";
+
+
+        previewLogo.hidden =
+            true;
 
     }
 
 
-    previewLogo.removeAttribute(
-        "src"
-    );
+    if (
+        previewLogoPlaceholder
+    ) {
 
+        previewLogoPlaceholder
+            .style
+            .display =
+                "flex";
 
-    previewLogo.style.display =
-        "none";
-
-
-    previewLogo.hidden =
-        true;
+    }
 
 }
 
@@ -704,8 +672,7 @@ function limparPreviewLogo() {
 async function enviarLogo() {
 
     if (
-        !inputLogo ||
-        !inputLogo.files?.length
+        !inputLogo?.files?.length
     ) {
 
         return null;
@@ -717,10 +684,6 @@ async function enviarLogo() {
         inputLogo.files[0];
 
 
-    // ==================================
-    // EXTENSÃO
-    // ==================================
-
     const extensao =
         arquivo.name
 
@@ -731,17 +694,9 @@ async function enviarLogo() {
             .toLowerCase();
 
 
-    // ==================================
-    // NOME ÚNICO
-    // ==================================
-
     const nomeArquivo =
         `${Date.now()}.${extensao}`;
 
-
-    // ==================================
-    // CAMINHO
-    // ==================================
 
     const caminho =
         `lojas/${usuario.id}/${nomeArquivo}`;
@@ -752,10 +707,6 @@ async function enviarLogo() {
         caminho
     );
 
-
-    // ==================================
-    // UPLOAD
-    // ==================================
 
     const {
         data,
@@ -803,10 +754,6 @@ async function enviarLogo() {
         data
     );
 
-
-    // ==================================
-    // URL PÚBLICA
-    // ==================================
 
     const {
         data: urlData
@@ -921,7 +868,7 @@ if (form) {
 
 
             // ==================================
-            // VALIDAÇÃO
+            // VALIDAÇÃO DO NOME
             // ==================================
 
             if (!nome) {
@@ -964,6 +911,10 @@ if (form) {
             }
 
 
+            // ==================================
+            // CATEGORIA
+            // ==================================
+
             if (
                 !categoria?.value
             ) {
@@ -976,6 +927,62 @@ if (form) {
 
 
                 categoria?.focus();
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // TELEFONE
+            // ==================================
+
+            if (
+                telefone &&
+                somenteNumeros(
+                    telefone
+                ).length < 10
+            ) {
+
+                notificar(
+                    "Informe um telefone válido com DDD.",
+                    "aviso",
+                    "Telefone inválido"
+                );
+
+
+                focarCampo(
+                    "telefone"
+                );
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // WHATSAPP
+            // ==================================
+
+            if (
+                whatsapp &&
+                somenteNumeros(
+                    whatsapp
+                ).length < 10
+            ) {
+
+                notificar(
+                    "Informe um WhatsApp válido com DDD.",
+                    "aviso",
+                    "WhatsApp inválido"
+                );
+
+
+                focarCampo(
+                    "whatsapp"
+                );
 
 
                 return;
@@ -1008,12 +1015,7 @@ if (form) {
             }
 
 
-            if (mensagem) {
-
-                mensagem.textContent =
-                    "";
-
-            }
+            atualizarMensagem("");
 
 
             let cadastroConcluido =
@@ -1106,19 +1108,20 @@ if (form) {
                 const {
                     data,
                     error
-                } = await window.db
+                } =
+                    await window.db
 
-                    .from(
-                        "lojas"
-                    )
+                        .from(
+                            "lojas"
+                        )
 
-                    .insert(
-                        dadosLoja
-                    )
+                        .insert(
+                            dadosLoja
+                        )
 
-                    .select()
+                        .select()
 
-                    .single();
+                        .single();
 
 
                 if (error) {
@@ -1159,7 +1162,8 @@ if (form) {
 
                 localStorage.setItem(
                     "nome_loja",
-                    data.nome
+                    data.nome ||
+                    nome
                 );
 
 
@@ -1169,4 +1173,333 @@ if (form) {
 
                 atualizarMensagem(
                     ""
- 
+                );
+
+
+                notificar(
+                    "Sua loja foi cadastrada com sucesso.",
+                    "sucesso",
+                    "Loja cadastrada!",
+                    3500
+                );
+
+
+                if (botao) {
+
+                    botao.innerHTML = `
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Loja cadastrada!
+
+                    `;
+
+                }
+
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            "painel-loja.html";
+
+                    },
+                    1200
+                );
+
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro ao cadastrar loja:",
+                    erro
+                );
+
+
+                atualizarMensagem(
+                    ""
+                );
+
+
+                notificar(
+                    tratarErroCadastro(
+                        erro
+                    ),
+                    "erro",
+                    "Não foi possível cadastrar a loja",
+                    5500
+                );
+
+
+            } finally {
+
+                if (
+                    botao &&
+                    !cadastroConcluido
+                ) {
+
+                    botao.disabled =
+                        false;
+
+
+                    botao.innerHTML =
+                        conteudoOriginal ||
+                        "Cadastrar Loja";
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// TRATAR ERROS
+// ==========================================
+
+function tratarErroCadastro(
+    erro
+) {
+
+    const texto =
+        String(
+            erro?.message ||
+            ""
+        )
+            .toLowerCase();
+
+
+    // ==================================
+    // RLS / PERMISSÃO
+    // ==================================
+
+    if (
+        texto.includes(
+            "row-level security"
+        ) ||
+        texto.includes(
+            "rls"
+        ) ||
+        texto.includes(
+            "permission denied"
+        )
+    ) {
+
+        return (
+            "Sua conta não possui permissão para cadastrar esta loja."
+        );
+
+    }
+
+
+    // ==================================
+    // DUPLICIDADE
+    // ==================================
+
+    if (
+        texto.includes(
+            "duplicate"
+        ) ||
+        texto.includes(
+            "unique"
+        )
+    ) {
+
+        return (
+            "Já existe um registro com esses dados."
+        );
+
+    }
+
+
+    // ==================================
+    // REDE
+    // ==================================
+
+    if (
+        texto.includes(
+            "failed to fetch"
+        ) ||
+        texto.includes(
+            "network"
+        )
+    ) {
+
+        return (
+            "Não foi possível conectar ao servidor. Verifique sua internet."
+        );
+
+    }
+
+
+    // ==================================
+    // STORAGE
+    // ==================================
+
+    if (
+        texto.includes(
+            "storage"
+        ) ||
+        texto.includes(
+            "bucket"
+        )
+    ) {
+
+        return (
+            "Não foi possível enviar a logo da loja. Verifique as permissões do armazenamento."
+        );
+
+    }
+
+
+    // ==================================
+    // PADRÃO
+    // ==================================
+
+    return (
+        erro?.message ||
+        "Ocorreu um erro ao cadastrar a loja. Tente novamente."
+    );
+
+}
+
+
+// ==========================================
+// ATUALIZAR MENSAGEM
+// ==========================================
+
+function atualizarMensagem(
+    texto = ""
+) {
+
+    if (!mensagem) {
+
+        return;
+
+    }
+
+
+    mensagem.textContent =
+        texto;
+
+}
+
+
+// ==========================================
+// OBTER VALOR
+// ==========================================
+
+function obterValor(
+    id
+) {
+
+    const elemento =
+        document.getElementById(
+            id
+        );
+
+
+    return String(
+        elemento?.value ||
+        ""
+    )
+        .trim();
+
+}
+
+
+// ==========================================
+// SOMENTE NÚMEROS
+// ==========================================
+
+function somenteNumeros(
+    valor
+) {
+
+    return String(
+        valor ||
+        ""
+    )
+        .replace(
+            /\D/g,
+            ""
+        );
+
+}
+
+
+// ==========================================
+// FOCAR CAMPO
+// ==========================================
+
+function focarCampo(
+    id
+) {
+
+    const elemento =
+        document.getElementById(
+            id
+        );
+
+
+    if (!elemento) {
+
+        return;
+
+    }
+
+
+    elemento.focus();
+
+
+    elemento.scrollIntoView({
+
+        behavior:
+            "smooth",
+
+        block:
+            "center"
+
+    });
+
+}
+
+
+// ==========================================
+// FEEDBACK
+// ==========================================
+
+function notificar(
+    texto,
+    tipo = "info",
+    titulo = null,
+    duracao = 4000
+) {
+
+    if (
+        typeof window.mostrarAlerta ===
+        "function"
+    ) {
+
+        window.mostrarAlerta(
+            texto,
+            tipo,
+            titulo,
+            duracao
+        );
+
+
+        return;
+
+    }
+
+
+    console.warn(
+        `[${tipo}] ${titulo || ""}`,
+        texto
+    );
+
+}

@@ -4,7 +4,6 @@
 // ==========================================
 
 let usuario = null;
-
 let loja = null;
 
 
@@ -31,14 +30,12 @@ document.addEventListener(
                 "Supabase não encontrado."
             );
 
-
             notificar(
                 "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
                 "erro",
                 "Erro de conexão",
                 6000
             );
-
 
             return;
 
@@ -78,10 +75,6 @@ async function verificarUsuario() {
 
     try {
 
-        // ==================================
-        // SESSÃO
-        // ==================================
-
         const {
             data: sessaoData,
             error: sessaoError
@@ -98,22 +91,16 @@ async function verificarUsuario() {
                 sessaoError
             );
 
-
             notificar(
                 "Não foi possível verificar sua sessão.",
                 "erro",
                 "Erro de autenticação"
             );
 
-
             return false;
 
         }
 
-
-        // ==================================
-        // NÃO LOGADO
-        // ==================================
 
         if (!sessaoData.session) {
 
@@ -123,7 +110,6 @@ async function verificarUsuario() {
                 "Login necessário",
                 2500
             );
-
 
             setTimeout(
                 () => {
@@ -135,15 +121,10 @@ async function verificarUsuario() {
                 900
             );
 
-
             return false;
 
         }
 
-
-        // ==================================
-        // USUÁRIO
-        // ==================================
 
         const {
             data,
@@ -164,13 +145,11 @@ async function verificarUsuario() {
                 error
             );
 
-
             notificar(
                 "Sua sessão não pôde ser validada. Entre novamente.",
                 "erro",
                 "Sessão inválida"
             );
-
 
             setTimeout(
                 () => {
@@ -181,7 +160,6 @@ async function verificarUsuario() {
                 },
                 1000
             );
-
 
             return false;
 
@@ -208,13 +186,11 @@ async function verificarUsuario() {
             erro
         );
 
-
         notificar(
             "Ocorreu um erro ao verificar sua conta.",
             "erro",
             "Erro de autenticação"
         );
-
 
         return false;
 
@@ -263,12 +239,6 @@ async function carregarLoja() {
 
         if (error) {
 
-            console.error(
-                "Erro ao carregar loja:",
-                error
-            );
-
-
             throw error;
 
         }
@@ -283,7 +253,6 @@ async function carregarLoja() {
             localStorage.removeItem(
                 "loja_id"
             );
-
 
             localStorage.removeItem(
                 "nome_loja"
@@ -327,11 +296,9 @@ async function carregarLoja() {
             loja.id
         );
 
-
         localStorage.setItem(
             "nome_loja",
-            loja.nome ||
-            ""
+            loja.nome || ""
         );
 
 
@@ -348,10 +315,8 @@ async function carregarLoja() {
 
         definirTexto(
             "nome-loja",
-            loja.nome ||
-            "-"
+            loja.nome || "-"
         );
-
 
         definirTexto(
             "categoria-loja",
@@ -359,13 +324,10 @@ async function carregarLoja() {
             "Sem categoria"
         );
 
-
         definirTexto(
             "cidade-loja",
-            loja.cidade ||
-            "-"
+            loja.cidade || "-"
         );
-
 
         definirTexto(
             "telefone-loja",
@@ -376,7 +338,7 @@ async function carregarLoja() {
 
 
         // ==================================
-        // STATUS
+        // STATUS DA LOJA
         // ==================================
 
         const statusLoja =
@@ -410,17 +372,13 @@ async function carregarLoja() {
 
 
         // ==================================
-        // ESTATÍSTICAS
+        // PEDIDOS E ESTATÍSTICAS
         // ==================================
 
-        await carregarEstatisticas();
-
-
-        // ==================================
-        // PEDIDOS
-        // ==================================
-
-        await carregarPedidos();
+        await Promise.all([
+            carregarPedidos(),
+            carregarEstatisticas()
+        ]);
 
 
     } catch (erro) {
@@ -429,7 +387,6 @@ async function carregarLoja() {
             "Erro ao carregar loja:",
             erro
         );
-
 
         notificar(
             tratarErroPainel(
@@ -497,31 +454,21 @@ function carregarLogoLoja() {
             "Elementos da logo não encontrados."
         );
 
-
         return;
 
     }
 
 
-    // ==================================
-    // POSSUI LOGO
-    // ==================================
-
-    if (
-        loja?.logo_url
-    ) {
+    if (loja?.logo_url) {
 
         imagem.src =
             loja.logo_url;
 
-
         imagem.hidden =
             false;
 
-
         imagem.style.display =
             "block";
-
 
         placeholder.style.display =
             "none";
@@ -534,19 +481,15 @@ function carregarLogoLoja() {
                     "Erro ao carregar logo da loja."
                 );
 
-
                 imagem.hidden =
                     true;
-
 
                 imagem.style.display =
                     "none";
 
-
                 imagem.removeAttribute(
                     "src"
                 );
-
 
                 placeholder.style.display =
                     "flex";
@@ -559,22 +502,15 @@ function carregarLogoLoja() {
     }
 
 
-    // ==================================
-    // SEM LOGO
-    // ==================================
-
     imagem.hidden =
         true;
-
 
     imagem.style.display =
         "none";
 
-
     imagem.removeAttribute(
         "src"
     );
-
 
     placeholder.style.display =
         "flex";
@@ -675,8 +611,7 @@ async function carregarProdutos() {
                 .order(
                     "created_at",
                     {
-                        ascending:
-                            false
+                        ascending: false
                     }
                 );
 
@@ -693,10 +628,6 @@ async function carregarProdutos() {
                 ? data
                 : [];
 
-
-        // ==================================
-        // TOTAL
-        // ==================================
 
         definirTexto(
             "total-produtos",
@@ -836,8 +767,7 @@ function criarCardProduto(
 
     const id =
         escaparHTML(
-            produto.id ||
-            ""
+            produto.id || ""
         );
 
 
@@ -866,8 +796,7 @@ function criarCardProduto(
 
     const preco =
         Number(
-            produto.preco ||
-            0
+            produto.preco || 0
         );
 
 
@@ -887,8 +816,7 @@ function criarCardProduto(
         Math.max(
             0,
             Number(
-                produto.estoque ||
-                0
+                produto.estoque || 0
             )
         );
 
@@ -901,9 +829,7 @@ function criarCardProduto(
         "";
 
 
-    if (
-        produto.imagem_url
-    ) {
+    if (produto.imagem_url) {
 
         imagemHTML = `
 
@@ -1096,10 +1022,13 @@ function criarCardProduto(
                 <button
                     type="button"
                     class="btn-excluir"
-                    onclick="excluirProduto('${id}', '${escaparJS(
-                        produto.nome ||
-                        "Produto"
-                    )}')"
+                    onclick="excluirProduto(
+                        '${id}',
+                        '${escaparJS(
+                            produto.nome ||
+                            "Produto"
+                        )}'
+                    )"
                 >
 
                     <i class="fa-solid fa-trash"></i>
@@ -1166,8 +1095,7 @@ function configurarImagensProdutos() {
 
                 },
                 {
-                    once:
-                        true
+                    once: true
                 }
             );
 
@@ -1192,7 +1120,6 @@ function editarProduto(
             "erro",
             "Produto não encontrado"
         );
-
 
         return;
 
@@ -1224,7 +1151,6 @@ async function excluirProduto(
             "Produto não encontrado"
         );
 
-
         return;
 
     }
@@ -1238,54 +1164,54 @@ async function excluirProduto(
             "Loja não encontrada"
         );
 
-
         return;
 
     }
 
 
     // ==================================
-    // CONFIRMAÇÃO
+    // CONFIRMAÇÃO PERSONALIZADA
     // ==================================
 
-    let confirmou =
-        false;
-
-
     if (
-        typeof window.confirmarAcao ===
+        typeof window.confirmarAcao !==
         "function"
     ) {
 
-        confirmou =
-            await window.confirmarAcao({
+        console.error(
+            "Sistema de confirmação não carregado."
+        );
 
-                titulo:
-                    "Excluir produto?",
+        notificar(
+            "Não foi possível abrir a confirmação.",
+            "erro",
+            "Erro no sistema"
+        );
 
-                mensagem:
-                    `Deseja realmente excluir "${nomeProduto}"? Essa ação não poderá ser desfeita.`,
-
-                textoConfirmar:
-                    "Sim, excluir",
-
-                textoCancelar:
-                    "Cancelar",
-
-                perigo:
-                    true
-
-            });
-
-
-    } else {
-
-        confirmou =
-            window.confirm(
-                `Deseja excluir "${nomeProduto}"?`
-            );
+        return;
 
     }
+
+
+    const confirmou =
+        await window.confirmarAcao({
+
+            titulo:
+                "Excluir produto?",
+
+            mensagem:
+                `Deseja realmente excluir "${nomeProduto}"? Essa ação não poderá ser desfeita.`,
+
+            textoConfirmar:
+                "Sim, excluir",
+
+            textoCancelar:
+                "Cancelar",
+
+            perigo:
+                true
+
+        });
 
 
     if (!confirmou) {
@@ -1326,10 +1252,6 @@ async function excluirProduto(
         }
 
 
-        // ==================================
-        // SUCESSO
-        // ==================================
-
         notificar(
             `"${nomeProduto}" foi excluído com sucesso.`,
             "sucesso",
@@ -1337,10 +1259,6 @@ async function excluirProduto(
             3000
         );
 
-
-        // ==================================
-        // ATUALIZAR PAINEL
-        // ==================================
 
         await carregarProdutos();
 
@@ -1385,14 +1303,11 @@ async function carregarEstatisticas() {
 
 
         // ==================================
-        // TOTAL DE PRODUTOS
+        // PRODUTOS
         // ==================================
 
-        const {
-            count: quantidadeProdutos,
-            error: erroProdutos
-        } =
-            await window.db
+        const consultaProdutos =
+            window.db
 
                 .from(
                     "produtos"
@@ -1401,11 +1316,8 @@ async function carregarEstatisticas() {
                 .select(
                     "*",
                     {
-                        count:
-                            "exact",
-
-                        head:
-                            true
+                        count: "exact",
+                        head: true
                     }
                 )
 
@@ -1415,11 +1327,48 @@ async function carregarEstatisticas() {
                 );
 
 
-        if (erroProdutos) {
+        // ==================================
+        // PEDIDOS
+        // ==================================
+
+        const consultaPedidos =
+            window.db
+
+                .from(
+                    "pedidos"
+                )
+
+                .select(`
+                    id,
+                    status,
+                    valor_total
+                `)
+
+                .eq(
+                    "loja_id",
+                    loja.id
+                );
+
+
+        const [
+            resultadoProdutos,
+            resultadoPedidos
+        ] =
+            await Promise.all([
+                consultaProdutos,
+                consultaPedidos
+            ]);
+
+
+        // ==================================
+        // TOTAL PRODUTOS
+        // ==================================
+
+        if (resultadoProdutos.error) {
 
             console.error(
                 "Erro ao contar produtos:",
-                erroProdutos
+                resultadoProdutos.error
             );
 
         }
@@ -1427,27 +1376,95 @@ async function carregarEstatisticas() {
 
         definirTexto(
             "total-produtos",
-            quantidadeProdutos ||
-            0
+            resultadoProdutos.count || 0
         );
 
 
         // ==================================
-        // PEDIDOS
+        // TOTAL PEDIDOS
         // ==================================
-        // Por enquanto mantemos esses valores.
-        // Depois ligaremos ao banco de pedidos.
-        // ==================================
+
+        if (resultadoPedidos.error) {
+
+            throw resultadoPedidos.error;
+
+        }
+
+
+        const pedidos =
+            Array.isArray(
+                resultadoPedidos.data
+            )
+                ? resultadoPedidos.data
+                : [];
+
 
         definirTexto(
             "total-pedidos",
-            "0"
+            pedidos.length
         );
+
+
+        // ==================================
+        // TOTAL DE VENDAS
+        //
+        // Somente pedidos que já foram pagos.
+        // aguardando_pagamento não entra.
+        // cancelado também não entra.
+        // ==================================
+
+        const statusQueContamComoVenda =
+            new Set([
+                "pago",
+                "em_preparacao",
+                "enviado",
+                "entregue"
+            ]);
+
+
+        const totalVendas =
+            pedidos.reduce(
+                (
+                    total,
+                    pedido
+                ) => {
+
+                    const status =
+                        normalizarStatusPedido(
+                            pedido.status
+                        );
+
+
+                    if (
+                        !statusQueContamComoVenda
+                            .has(
+                                status
+                            )
+                    ) {
+
+                        return total;
+
+                    }
+
+
+                    return (
+                        total +
+                        Number(
+                            pedido.valor_total ||
+                            0
+                        )
+                    );
+
+                },
+                0
+            );
 
 
         definirTexto(
             "total-vendas",
-            "R$ 0,00"
+            formatarMoeda(
+                totalVendas
+            )
         );
 
 
@@ -1458,13 +1475,23 @@ async function carregarEstatisticas() {
             erro
         );
 
+
+        notificar(
+            tratarErroPainel(
+                erro
+            ),
+            "erro",
+            "Erro nas estatísticas",
+            4500
+        );
+
     }
 
 }
 
 
 // ==========================================
-// CARREGAR PEDIDOS
+// CARREGAR PEDIDOS RECENTES
 // ==========================================
 
 async function carregarPedidos() {
@@ -1482,30 +1509,1410 @@ async function carregarPedidos() {
     }
 
 
-    // Por enquanto esta parte continua como
-    // estava no projeto. Depois podemos
-    // conectar aos pedidos reais da loja.
+    // ==================================
+    // CARREGANDO
+    // ==================================
 
     lista.innerHTML = `
 
         <div class="sem-pedidos">
 
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-spinner fa-spin"></i>
 
             <h3>
-                Nenhum pedido recebido
+                Carregando pedidos...
             </h3>
-
-            <p>
-
-                Quando algum cliente fizer
-                um pedido, ele aparecerá aqui.
-
-            </p>
 
         </div>
 
     `;
+
+
+    try {
+
+        if (!loja?.id) {
+
+            return;
+
+        }
+
+
+        const {
+            data,
+            error
+        } =
+            await window.db
+
+                .from(
+                    "pedidos"
+                )
+
+                .select(`
+                    id,
+                    cliente_id,
+                    loja_id,
+                    status,
+                    valor_total,
+                    forma_pagamento,
+                    observacoes,
+                    created_at,
+
+                    itens_pedido (
+                        id,
+                        produto_id,
+                        quantidade,
+                        preco_unitario,
+                        subtotal,
+
+                        produtos (
+                            id,
+                            nome,
+                            imagem_url
+                        )
+                    )
+                `)
+
+                .eq(
+                    "loja_id",
+                    loja.id
+                )
+
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                )
+
+                .limit(
+                    5
+                );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        const pedidos =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        // ==================================
+        // SEM PEDIDOS
+        // ==================================
+
+        if (
+            pedidos.length === 0
+        ) {
+
+            lista.innerHTML = `
+
+                <div class="sem-pedidos">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <h3>
+                        Nenhum pedido recebido
+                    </h3>
+
+                    <p>
+                        Quando algum cliente fizer
+                        um pedido, ele aparecerá aqui.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        // ==================================
+        // MOSTRAR PEDIDOS
+        // ==================================
+
+        lista.innerHTML =
+            pedidos
+                .map(
+                    criarCardPedido
+                )
+                .join("");
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar pedidos:",
+            erro
+        );
+
+
+        lista.innerHTML = `
+
+            <div class="sem-pedidos">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <h3>
+                    Erro ao carregar pedidos
+                </h3>
+
+                <p>
+                    Não foi possível buscar os pedidos
+                    da sua loja.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="carregarPedidos()"
+                >
+
+                    <i class="fa-solid fa-rotate-right"></i>
+
+                    Tentar novamente
+
+                </button>
+
+            </div>
+
+        `;
+
+
+        notificar(
+            tratarErroPainel(
+                erro
+            ),
+            "erro",
+            "Erro ao carregar pedidos",
+            5000
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// CRIAR CARD DO PEDIDO
+// ==========================================
+
+function criarCardPedido(
+    pedido
+) {
+
+    const id =
+        String(
+            pedido.id || ""
+        );
+
+
+    const idSeguro =
+        escaparHTML(
+            id
+        );
+
+
+    const status =
+        normalizarStatusPedido(
+            pedido.status
+        );
+
+
+    const itens =
+        Array.isArray(
+            pedido.itens_pedido
+        )
+            ? pedido.itens_pedido
+            : [];
+
+
+    const totalItens =
+        itens.reduce(
+            (
+                total,
+                item
+            ) => {
+
+                return (
+                    total +
+                    Number(
+                        item.quantidade ||
+                        0
+                    )
+                );
+
+            },
+            0
+        );
+
+
+    const numeroPedido =
+        obterNumeroPedido(
+            id
+        );
+
+
+    const dataPedido =
+        formatarDataHora(
+            pedido.created_at
+        );
+
+
+    const pagamento =
+        formatarPagamento(
+            pedido.forma_pagamento
+        );
+
+
+    const statusTexto =
+        formatarStatusPedido(
+            status
+        );
+
+
+    const classeStatus =
+        obterClasseStatusPedido(
+            status
+        );
+
+
+    const acao =
+        obterAcaoProximoStatus(
+            status
+        );
+
+
+    const itensHTML =
+        itens.length > 0
+
+            ? itens
+                .map(
+                    criarItemDetalhePedido
+                )
+                .join("")
+
+            : `
+
+                <div class="pedido-item-vazio">
+
+                    Nenhum item encontrado.
+
+                </div>
+
+            `;
+
+
+    let observacoesHTML =
+        "";
+
+
+    if (
+        pedido.observacoes &&
+        String(
+            pedido.observacoes
+        ).trim()
+    ) {
+
+        observacoesHTML = `
+
+            <div class="pedido-observacoes">
+
+                <strong>
+
+                    <i class="fa-solid fa-comment"></i>
+
+                    Informações do pedido
+
+                </strong>
+
+                <p>
+                    ${formatarTextoMultilinha(
+                        pedido.observacoes
+                    )}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    let botaoStatusHTML =
+        "";
+
+
+    if (acao) {
+
+        botaoStatusHTML = `
+
+            <button
+                type="button"
+                class="btn btn-status-pedido"
+                onclick="
+                    avancarStatusPedido(
+                        '${escaparJS(
+                            id
+                        )}',
+                        '${escaparJS(
+                            status
+                        )}'
+                    )
+                "
+            >
+
+                <i class="${acao.icone}"></i>
+
+                ${acao.texto}
+
+            </button>
+
+        `;
+
+    }
+
+
+    return `
+
+        <article
+            class="pedido-card"
+            data-pedido-id="${idSeguro}"
+        >
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="pedido-cabecalho">
+
+                <div>
+
+                    <h3 class="pedido-numero">
+
+                        <i class="fa-solid fa-receipt"></i>
+
+                        Pedido #${numeroPedido}
+
+                    </h3>
+
+                    <span class="pedido-data">
+
+                        ${dataPedido}
+
+                    </span>
+
+                </div>
+
+
+                <span
+                    class="status-pedido ${classeStatus}"
+                >
+
+                    ${statusTexto}
+
+                </span>
+
+            </div>
+
+
+            <!-- RESUMO -->
+
+            <div class="pedido-resumo">
+
+
+                <div class="pedido-resumo-item">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                    <div>
+
+                        <small>
+                            Pagamento
+                        </small>
+
+                        <strong>
+                            ${escaparHTML(
+                                pagamento
+                            )}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="pedido-resumo-item">
+
+                    <i class="fa-solid fa-box"></i>
+
+                    <div>
+
+                        <small>
+                            Itens
+                        </small>
+
+                        <strong>
+
+                            ${totalItens}
+
+                            ${
+                                totalItens === 1
+                                    ? "item"
+                                    : "itens"
+                            }
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="pedido-resumo-item">
+
+                    <i class="fa-solid fa-sack-dollar"></i>
+
+                    <div>
+
+                        <small>
+                            Total
+                        </small>
+
+                        <strong>
+
+                            ${formatarMoeda(
+                                pedido.valor_total
+                            )}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AÇÕES -->
+
+            <div class="pedido-acoes">
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="
+                        alternarDetalhesPedido(
+                            '${escaparJS(
+                                id
+                            )}',
+                            this
+                        )
+                    "
+                >
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    Ver detalhes
+
+                </button>
+
+
+                ${botaoStatusHTML}
+
+            </div>
+
+
+            <!-- DETALHES -->
+
+            <div
+                id="detalhes-pedido-${idSeguro}"
+                class="pedido-detalhes"
+                hidden
+            >
+
+                <h4>
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    Produtos do pedido
+
+                </h4>
+
+
+                <div class="pedido-itens">
+
+                    ${itensHTML}
+
+                </div>
+
+
+                ${observacoesHTML}
+
+            </div>
+
+
+        </article>
+
+    `;
+
+}
+
+
+// ==========================================
+// CRIAR ITEM DO PEDIDO
+// ==========================================
+
+function criarItemDetalhePedido(
+    item
+) {
+
+    let produto =
+        item?.produtos;
+
+
+    if (
+        Array.isArray(
+            produto
+        )
+    ) {
+
+        produto =
+            produto[0];
+
+    }
+
+
+    const nome =
+        escaparHTML(
+            produto?.nome ||
+            "Produto"
+        );
+
+
+    const quantidade =
+        Math.max(
+            0,
+            Number(
+                item?.quantidade ||
+                0
+            )
+        );
+
+
+    const preco =
+        Number(
+            item?.preco_unitario ||
+            0
+        );
+
+
+    const subtotal =
+        Number(
+            item?.subtotal ||
+            (
+                preco *
+                quantidade
+            )
+        );
+
+
+    let imagemHTML =
+        `
+
+            <div class="pedido-item-sem-imagem">
+
+                <i class="fa-solid fa-box"></i>
+
+            </div>
+
+        `;
+
+
+    if (produto?.imagem_url) {
+
+        imagemHTML = `
+
+            <img
+                src="${escaparHTML(
+                    produto.imagem_url
+                )}"
+                alt="${nome}"
+                class="pedido-item-imagem"
+                loading="lazy"
+                onerror="
+                    this.style.display='none';
+                "
+            >
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="pedido-item">
+
+            <div class="pedido-item-foto">
+
+                ${imagemHTML}
+
+            </div>
+
+
+            <div class="pedido-item-info">
+
+                <strong>
+                    ${nome}
+                </strong>
+
+                <small>
+
+                    ${quantidade}
+
+                    ×
+
+                    ${formatarMoeda(
+                        preco
+                    )}
+
+                </small>
+
+            </div>
+
+
+            <strong class="pedido-item-subtotal">
+
+                ${formatarMoeda(
+                    subtotal
+                )}
+
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+// ==========================================
+// MOSTRAR / OCULTAR DETALHES
+// ==========================================
+
+function alternarDetalhesPedido(
+    pedidoId,
+    botao = null
+) {
+
+    const detalhes =
+        document.getElementById(
+            `detalhes-pedido-${pedidoId}`
+        );
+
+
+    if (!detalhes) {
+
+        notificar(
+            "Não foi possível abrir os detalhes deste pedido.",
+            "erro",
+            "Pedido não encontrado"
+        );
+
+        return;
+
+    }
+
+
+    const vaiAbrir =
+        detalhes.hidden;
+
+
+    detalhes.hidden =
+        !vaiAbrir;
+
+
+    if (botao) {
+
+        botao.innerHTML =
+            vaiAbrir
+                ? `
+
+                    <i class="fa-solid fa-eye-slash"></i>
+
+                    Ocultar detalhes
+
+                `
+                : `
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    Ver detalhes
+
+                `;
+
+    }
+
+}
+
+
+// ==========================================
+// AVANÇAR STATUS DO PEDIDO
+// ==========================================
+
+async function avancarStatusPedido(
+    pedidoId,
+    statusAtual
+) {
+
+    if (
+        !pedidoId ||
+        !loja?.id
+    ) {
+
+        notificar(
+            "Não foi possível identificar este pedido.",
+            "erro",
+            "Pedido inválido"
+        );
+
+        return;
+
+    }
+
+
+    const statusNormalizado =
+        normalizarStatusPedido(
+            statusAtual
+        );
+
+
+    const proximoStatus =
+        obterProximoStatusPedido(
+            statusNormalizado
+        );
+
+
+    if (!proximoStatus) {
+
+        notificar(
+            "Este pedido não possui uma próxima etapa.",
+            "info",
+            "Status final"
+        );
+
+        return;
+
+    }
+
+
+    const acao =
+        obterAcaoProximoStatus(
+            statusNormalizado
+        );
+
+
+    // ==================================
+    // CONFIRMAÇÃO
+    // ==================================
+
+    if (
+        typeof window.confirmarAcao !==
+        "function"
+    ) {
+
+        console.error(
+            "Sistema de confirmação não carregado."
+        );
+
+        notificar(
+            "Não foi possível abrir a confirmação.",
+            "erro",
+            "Erro no sistema"
+        );
+
+        return;
+
+    }
+
+
+    const confirmou =
+        await window.confirmarAcao({
+
+            titulo:
+                acao?.titulo ||
+                "Atualizar pedido?",
+
+            mensagem:
+                `O pedido #${obterNumeroPedido(
+                    pedidoId
+                )} passará de "${formatarStatusPedido(
+                    statusNormalizado
+                )}" para "${formatarStatusPedido(
+                    proximoStatus
+                )}". Deseja continuar?`,
+
+            textoConfirmar:
+                acao?.textoConfirmar ||
+                "Confirmar",
+
+            textoCancelar:
+                "Cancelar",
+
+            perigo:
+                false
+
+        });
+
+
+    if (!confirmou) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await window.db
+
+                .from(
+                    "pedidos"
+                )
+
+                .update({
+                    status:
+                        proximoStatus
+                })
+
+                .eq(
+                    "id",
+                    pedidoId
+                )
+
+                .eq(
+                    "loja_id",
+                    loja.id
+                )
+
+                // Protege contra status alterado
+                // em outra aba/dispositivo.
+                .eq(
+                    "status",
+                    statusNormalizado
+                )
+
+                .select(`
+                    id,
+                    status
+                `)
+
+                .maybeSingle();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (!data) {
+
+            notificar(
+                "O status deste pedido pode ter sido alterado em outra tela. Atualize os pedidos e tente novamente.",
+                "aviso",
+                "Pedido atualizado"
+            );
+
+            await carregarPedidos();
+
+            await carregarEstatisticas();
+
+            return;
+
+        }
+
+
+        // ==================================
+        // SUCESSO
+        // ==================================
+
+        notificar(
+            `Pedido #${obterNumeroPedido(
+                pedidoId
+            )} atualizado para "${formatarStatusPedido(
+                proximoStatus
+            )}".`,
+            "sucesso",
+            "Status atualizado!",
+            3500
+        );
+
+
+        // ==================================
+        // ATUALIZAR PAINEL
+        // ==================================
+
+        await Promise.all([
+            carregarPedidos(),
+            carregarEstatisticas()
+        ]);
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao atualizar pedido:",
+            erro
+        );
+
+
+        notificar(
+            tratarErroPainel(
+                erro
+            ),
+            "erro",
+            "Não foi possível atualizar o pedido",
+            5500
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// PRÓXIMO STATUS
+// ==========================================
+
+function obterProximoStatusPedido(
+    status
+) {
+
+    const fluxo = {
+
+        aguardando_pagamento:
+            "pago",
+
+        pago:
+            "em_preparacao",
+
+        em_preparacao:
+            "enviado",
+
+        enviado:
+            "entregue"
+
+    };
+
+
+    return (
+        fluxo[
+            normalizarStatusPedido(
+                status
+            )
+        ] ||
+        null
+    );
+
+}
+
+
+// ==========================================
+// AÇÃO DO PRÓXIMO STATUS
+// ==========================================
+
+function obterAcaoProximoStatus(
+    status
+) {
+
+    const statusNormalizado =
+        normalizarStatusPedido(
+            status
+        );
+
+
+    const acoes = {
+
+        aguardando_pagamento: {
+
+            texto:
+                "Marcar como pago",
+
+            titulo:
+                "Confirmar pagamento?",
+
+            textoConfirmar:
+                "Sim, marcar como pago",
+
+            icone:
+                "fa-solid fa-circle-dollar-to-slot"
+
+        },
+
+
+        pago: {
+
+            texto:
+                "Iniciar preparação",
+
+            titulo:
+                "Iniciar preparação?",
+
+            textoConfirmar:
+                "Iniciar preparação",
+
+            icone:
+                "fa-solid fa-box-open"
+
+        },
+
+
+        em_preparacao: {
+
+            texto:
+                "Marcar como enviado",
+
+            titulo:
+                "Pedido enviado?",
+
+            textoConfirmar:
+                "Sim, marcar como enviado",
+
+            icone:
+                "fa-solid fa-truck"
+
+        },
+
+
+        enviado: {
+
+            texto:
+                "Marcar como entregue",
+
+            titulo:
+                "Confirmar entrega?",
+
+            textoConfirmar:
+                "Sim, marcar como entregue",
+
+            icone:
+                "fa-solid fa-circle-check"
+
+        }
+
+    };
+
+
+    return (
+        acoes[
+            statusNormalizado
+        ] ||
+        null
+    );
+
+}
+
+
+// ==========================================
+// NORMALIZAR STATUS
+// ==========================================
+
+function normalizarStatusPedido(
+    status
+) {
+
+    const valor =
+        String(
+            status || ""
+        )
+            .trim()
+            .toLowerCase()
+            .replaceAll(
+                " ",
+                "_"
+            );
+
+
+    // Compatibilidade com pedidos antigos.
+
+    const antigos = {
+
+        pendente:
+            "aguardando_pagamento",
+
+        preparando:
+            "em_preparacao",
+
+        finalizado:
+            "entregue",
+
+        cancelado:
+            "cancelado"
+
+    };
+
+
+    return (
+        antigos[valor] ||
+        valor
+    );
+
+}
+
+
+// ==========================================
+// TEXTO DO STATUS
+// ==========================================
+
+function formatarStatusPedido(
+    status
+) {
+
+    const textos = {
+
+        aguardando_pagamento:
+            "Aguardando pagamento",
+
+        pago:
+            "Pago",
+
+        em_preparacao:
+            "Em preparação",
+
+        enviado:
+            "Enviado",
+
+        entregue:
+            "Entregue",
+
+        cancelado:
+            "Cancelado"
+
+    };
+
+
+    const normalizado =
+        normalizarStatusPedido(
+            status
+        );
+
+
+    return (
+        textos[normalizado] ||
+        "Status desconhecido"
+    );
+
+}
+
+
+// ==========================================
+// CLASSE DO STATUS
+// ==========================================
+
+function obterClasseStatusPedido(
+    status
+) {
+
+    const normalizado =
+        normalizarStatusPedido(
+            status
+        );
+
+
+    const classes = {
+
+        aguardando_pagamento:
+            "status-aguardando",
+
+        pago:
+            "status-pago",
+
+        em_preparacao:
+            "status-preparacao",
+
+        enviado:
+            "status-enviado",
+
+        entregue:
+            "status-entregue",
+
+        cancelado:
+            "status-cancelado"
+
+    };
+
+
+    return (
+        classes[normalizado] ||
+        "status-desconhecido"
+    );
+
+}
+
+
+// ==========================================
+// FORMA DE PAGAMENTO
+// ==========================================
+
+function formatarPagamento(
+    pagamento
+) {
+
+    const valor =
+        String(
+            pagamento || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const pagamentos = {
+
+        pix:
+            "PIX",
+
+        credito:
+            "Cartão de Crédito",
+
+        debito:
+            "Cartão de Débito",
+
+        dinheiro:
+            "Dinheiro"
+
+    };
+
+
+    return (
+        pagamentos[valor] ||
+        pagamento ||
+        "Não informado"
+    );
+
+}
+
+
+// ==========================================
+// NÚMERO DO PEDIDO
+// ==========================================
+
+function obterNumeroPedido(
+    id
+) {
+
+    const texto =
+        String(
+            id || ""
+        );
+
+
+    if (!texto) {
+
+        return "--------";
+
+    }
+
+
+    return (
+        texto
+            .replaceAll(
+                "-",
+                ""
+            )
+            .slice(
+                0,
+                8
+            )
+            .toUpperCase()
+    );
+
+}
+
+
+// ==========================================
+// DATA / HORA
+// ==========================================
+
+function formatarDataHora(
+    data
+) {
+
+    if (!data) {
+
+        return "-";
+
+    }
+
+
+    const objeto =
+        new Date(
+            data
+        );
+
+
+    if (
+        Number.isNaN(
+            objeto.getTime()
+        )
+    ) {
+
+        return "-";
+
+    }
+
+
+    return objeto.toLocaleString(
+        "pt-BR",
+        {
+            day:
+                "2-digit",
+
+            month:
+                "2-digit",
+
+            year:
+                "numeric",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit"
+        }
+    );
+
+}
+
+
+// ==========================================
+// TEXTO COM QUEBRAS DE LINHA
+// ==========================================
+
+function formatarTextoMultilinha(
+    valor
+) {
+
+    return escaparHTML(
+        valor
+    )
+        .replace(
+            /\r?\n/g,
+            "<br>"
+        );
 
 }
 
@@ -1520,8 +2927,7 @@ function tratarErroPainel(
 
     const texto =
         String(
-            erro?.message ||
-            ""
+            erro?.message || ""
         )
             .toLowerCase();
 
@@ -1533,15 +2939,42 @@ function tratarErroPainel(
     if (
         texto.includes(
             "row-level security"
-        )
-        ||
+        ) ||
         texto.includes(
             "rls"
+        ) ||
+        texto.includes(
+            "permission denied"
         )
     ) {
 
         return (
             "Sua conta não possui permissão para realizar esta ação."
+        );
+
+    }
+
+
+    // ==================================
+    // STATUS
+    // ==================================
+
+    if (
+        texto.includes(
+            "pedidos_status_check"
+        ) ||
+        (
+            texto.includes(
+                "check constraint"
+            ) &&
+            texto.includes(
+                "status"
+            )
+        )
+    ) {
+
+        return (
+            "Este status não é permitido para o pedido."
         );
 
     }
@@ -1554,15 +2987,14 @@ function tratarErroPainel(
     if (
         texto.includes(
             "foreign key"
-        )
-        ||
+        ) ||
         texto.includes(
             "violates foreign key"
         )
     ) {
 
         return (
-            "Este produto está relacionado a outros registros e não pode ser excluído dessa forma."
+            "Este registro está relacionado a outros dados do sistema e não pode ser alterado dessa forma."
         );
 
     }
@@ -1575,8 +3007,7 @@ function tratarErroPainel(
     if (
         texto.includes(
             "failed to fetch"
-        )
-        ||
+        ) ||
         texto.includes(
             "network"
         )
@@ -1588,10 +3019,6 @@ function tratarErroPainel(
 
     }
 
-
-    // ==================================
-    // PADRÃO
-    // ==================================
 
     return (
         erro?.message ||
@@ -1610,8 +3037,7 @@ function formatarMoeda(
 ) {
 
     return Number(
-        valor ||
-        0
+        valor || 0
     )
         .toLocaleString(
             "pt-BR",
@@ -1636,8 +3062,7 @@ function escaparHTML(
 ) {
 
     return String(
-        valor ??
-        ""
+        valor ?? ""
     )
 
         .replaceAll(
@@ -1677,21 +3102,24 @@ function escaparJS(
 ) {
 
     return String(
-        valor ??
-        ""
+        valor ?? ""
     )
+
         .replaceAll(
             "\\",
             "\\\\"
         )
+
         .replaceAll(
             "'",
             "\\'"
         )
+
         .replaceAll(
             "\n",
             " "
         )
+
         .replaceAll(
             "\r",
             " "
@@ -1723,7 +3151,6 @@ function notificar(
             duracao
         );
 
-
         return;
 
     }
@@ -1744,10 +3171,20 @@ function notificar(
 window.editarProduto =
     editarProduto;
 
-
 window.excluirProduto =
     excluirProduto;
 
-
 window.carregarProdutos =
     carregarProdutos;
+
+window.carregarPedidos =
+    carregarPedidos;
+
+window.carregarEstatisticas =
+    carregarEstatisticas;
+
+window.alternarDetalhesPedido =
+    alternarDetalhesPedido;
+
+window.avancarStatusPedido =
+    avancarStatusPedido;

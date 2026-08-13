@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Pedidos da Loja | Comércio da Cidade
+  </title>
+
+
+  <!-- ==================================
+       CSS
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="components/header.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="components/feedback.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/pedidos-loja.css"
+  />
+
+
+  <!-- ==================================
+       GOOGLE FONTS
+  =================================== -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+
+  <!-- ==================================
+       FONT AWESOME
+  =================================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+
+</head>
+
+
+<body>
+
+
+  <!-- ==================================
+       HEADER
+  =================================== -->
+
+  <div id="header"></div>
+
+
+  <!-- ==================================
+       CONTEÚDO
+  =================================== -->
+
+  <main class="container">
+
+
+    <!-- ==================================
+         TOPO
+    =================================== -->
+
+    <div class="topo-pagina">
+
+      <div>
+
+        <h1>
+
+          <i class="fa-solid fa-clipboard-list"></i>
+
+          Gestão de Pedidos
+
+        </h1>
+
+        <p id="nome-loja-pedidos">
+          Gerencie os pedidos recebidos pela sua loja.
+        </p>
+
+      </div>
+
+
+      <a
+        href="painel-loja.html"
+        class="btn-voltar"
+      >
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Voltar ao Painel
+
+      </a>
+
+    </div>
+
+
+    <!-- ==================================
+         ESTATÍSTICAS
+    =================================== -->
+
+    <section class="estatisticas-pedidos">
+
+
+      <!-- TOTAL -->
+
+      <div class="estatistica-card">
+
+        <div class="estatistica-icone">
+
+          <i class="fa-solid fa-receipt"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Total de Pedidos
+          </span>
+
+          <strong id="estat-total-pedidos">
+            0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- AGUARDANDO -->
+
+      <div class="estatistica-card">
+
+        <div class="estatistica-icone">
+
+          <i class="fa-solid fa-clock"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Aguardando Pagamento
+          </span>
+
+          <strong id="estat-aguardando">
+            0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- EM ANDAMENTO -->
+
+      <div class="estatistica-card">
+
+        <div class="estatistica-icone">
+
+          <i class="fa-solid fa-box-open"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Em Andamento
+          </span>
+
+          <strong id="estat-andamento">
+            0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- VENDAS -->
+
+      <div class="estatistica-card">
+
+        <div class="estatistica-icone">
+
+          <i class="fa-solid fa-sack-dollar"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Total em Vendas
+          </span>
+
+          <strong id="estat-vendas">
+            R$ 0,00
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================
+         CONTROLES
+    =================================== -->
+
+    <section class="controles">
+
+
+      <!-- PESQUISA -->
+
+      <div class="pesquisa">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          id="pesquisa-pedidos"
+          placeholder="Pesquisar pedido, produto ou pagamento..."
+          autocomplete="off"
+        />
+
+      </div>
+
+
+      <!-- ATUALIZAR -->
+
+      <button
+        type="button"
+        id="btn-atualizar-pedidos"
+        class="btn-atualizar"
+      >
+
+        <i class="fa-solid fa-rotate-right"></i>
+
+        Atualizar
+
+      </button>
+
+    </section>
+
+
+    <!-- ==================================
+         FILTROS
+    =================================== -->
+
+    <section
+      class="filtros"
+      aria-label="Filtrar pedidos"
+    >
+
+      <button
+        type="button"
+        class="filtro ativo"
+        data-status="todos"
+      >
+        Todos
+      </button>
+
+
+      <button
+        type="button"
+        class="filtro"
+        data-status="aguardando_pagamento"
+      >
+
+        <i class="fa-solid fa-clock"></i>
+
+        Aguardando
+
+      </button>
+
+
+      <button
+        type="button"
+        class="filtro"
+        data-status="pago"
+      >
+
+        <i class="fa-solid fa-circle-dollar-to-slot"></i>
+
+        Pagos
+
+      </button>
+
+
+      <button
+        type="button"
+        class="filtro"
+        data-status="em_preparacao"
+      >
+
+        <i class="fa-solid fa-box-open"></i>
+
+        Preparando
+
+      </button>
+
+
+      <button
+        type="button"
+        class="filtro"
+        data-status="enviado"
+      >
+
+        <i class="fa-solid fa-truck"></i>
+
+        Enviados
+
+      </button>
+
+
+      <button
+        type="button"
+        class="filtro"
+        data-status="entregue"
+      >
+
+        <i class="fa-solid fa-circle-check"></i>
+
+        Entregues
+
+      </button>
+
+
+      <button
+        type="button"
+        class="filtro"
+        data-status="cancelado"
+      >
+
+        <i class="fa-solid fa-circle-xmark"></i>
+
+        Cancelados
+
+      </button>
+
+    </section>
+
+
+    <!-- ==================================
+         RESULTADO
+    =================================== -->
+
+    <div class="resultado-topo">
+
+      <h2>
+
+        <i class="fa-solid fa-list"></i>
+
+        Pedidos
+
+      </h2>
+
+      <span id="quantidade-resultados">
+        0 pedidos
+      </span>
+
+    </div>
+
+
+    <!-- ==================================
+         LISTA
+    =================================== -->
+
+    <section
+      id="lista-pedidos-loja"
+      class="lista-pedidos"
+      aria-live="polite"
+    >
+
+      <div class="estado-pedidos">
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        <h3>
+          Carregando pedidos...
+        </h3>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- ==================================
+       MODAL DETALHES
+  =================================== -->
+
+  <div
+    id="modal-detalhes-pedido"
+    class="modal-pedido"
+    aria-hidden="true"
+  >
+
+    <div
+      class="modal-overlay"
+      data-fechar-modal
+    ></div>
+
+
+    <div
+      class="modal-conteudo"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-titulo"
+    >
+
+
+      <!-- CABEÇALHO -->
+
+      <div class="modal-topo">
+
+        <div>
+
+          <h2 id="modal-titulo">
+
+            <i class="fa-solid fa-receipt"></i>
+
+            Detalhes do Pedido
+
+          </h2>
+
+          <span id="modal-numero-pedido"></span>
+
+        </div>
+
+
+        <button
+          type="button"
+          id="btn-fechar-modal"
+          class="btn-fechar-modal"
+          aria-label="Fechar"
+        >
+
+          <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- CONTEÚDO -->
+
+      <div id="modal-conteudo-pedido"></div>
+
+
+    </div>
+
+  </div>
+
+  <!-- ==================================
+     MODAL DE CANCELAMENTO
+=================================== -->
+
+<div
+    id="modal-cancelar-pedido"
+    class="modal-pedido"
+    aria-hidden="true"
+>
+
+    <div
+        class="modal-overlay"
+        data-fechar-cancelamento
+    ></div>
+
+
+    <div
+        class="modal-conteudo modal-cancelamento"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-modal-cancelamento"
+    >
+
+        <!-- CABEÇALHO -->
+
+        <div class="modal-topo">
+
+            <div>
+
+                <h2 id="titulo-modal-cancelamento">
+
+                    <i class="fa-solid fa-ban"></i>
+
+                    Cancelar Pedido
+
+                </h2>
+
+                <span id="numero-pedido-cancelamento">
+                    Pedido
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="btn-fechar-cancelamento"
+                class="btn-fechar-modal"
+                aria-label="Fechar"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- CONTEÚDO -->
+
+        <div class="cancelamento-conteudo">
+
+            <div class="aviso-cancelamento">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <div>
+
+                    <strong>
+                        Atenção
+                    </strong>
+
+                    <p>
+                        Ao cancelar este pedido, os produtos
+                        serão devolvidos automaticamente ao estoque.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="campo-cancelamento">
+
+                <label for="motivo-cancelamento">
+
+                    Motivo do cancelamento
+
+                    <span>*</span>
+
+                </label>
+
+
+                <textarea
+                    id="motivo-cancelamento"
+                    maxlength="500"
+                    rows="5"
+                    placeholder="Ex.: Cliente solicitou o cancelamento do pedido."
+                ></textarea>
+
+
+                <div class="contador-motivo">
+
+                    <span>
+                        Mínimo de 5 caracteres
+                    </span>
+
+                    <span id="contador-motivo-cancelamento">
+                        0/500
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="acoes-cancelamento">
+
+                <button
+                    type="button"
+                    id="btn-voltar-cancelamento"
+                    class="btn-pedido btn-detalhes"
+                >
+
+                    Voltar
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="btn-confirmar-cancelamento"
+                    class="btn-pedido btn-confirmar-cancelamento"
+                >
+
+                    <i class="fa-solid fa-ban"></i>
+
+                    Cancelar Pedido
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+  <!-- ==================================
+       FOOTER
+  =================================== -->
+
+  <footer>
+
+    <p>
+      © 2026 Comércio da Cidade -
+      Todos os direitos reservados.
+    </p>
+
+  </footer>
+
+
+  <!-- ==================================
+       SCRIPTS
+  =================================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/supabase.js"></script>
+
+  <script src="components/header.js"></script>
+
+  <script src="components/feedback.js"></script>
+
+  <script src="js/pedidos-loja.js"></script>
+
+
+</body>
+
+</html>
