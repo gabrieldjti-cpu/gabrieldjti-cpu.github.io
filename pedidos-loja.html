@@ -630,6 +630,145 @@
     </div>
 
 </div>
+<!-- ==================================
+     MODAL DE RASTREIO
+=================================== -->
+
+<div
+    id="modal-rastreio-pedido"
+    class="modal-pedido"
+    aria-hidden="true"
+>
+
+    <div
+        class="modal-overlay"
+        data-fechar-rastreio
+    ></div>
+
+
+    <div
+        class="modal-conteudo modal-rastreio"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-modal-rastreio"
+    >
+
+        <div class="modal-topo">
+
+            <div>
+
+                <h2 id="titulo-modal-rastreio">
+
+                    <i class="fa-solid fa-truck-fast"></i>
+
+                    Enviar Pedido
+
+                </h2>
+
+                <span id="numero-pedido-rastreio">
+                    Pedido
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="btn-fechar-rastreio"
+                class="btn-fechar-modal"
+                aria-label="Fechar"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="rastreio-conteudo">
+
+
+            <div class="aviso-rastreio">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <div>
+
+                    <strong>
+                        Código de rastreio obrigatório
+                    </strong>
+
+                    <p>
+                        Informe o código usado para acompanhar
+                        a entrega deste pedido.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="campo-rastreio">
+
+                <label for="codigo-rastreio">
+
+                    Código de rastreio
+
+                    <span>*</span>
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="codigo-rastreio"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="Ex.: BR123456789 ou ENTREGA-001"
+                />
+
+
+                <small>
+                    Digite entre 3 e 100 caracteres.
+                </small>
+
+            </div>
+
+
+            <div class="acoes-rastreio">
+
+                <button
+                    type="button"
+                    id="btn-voltar-rastreio"
+                    class="btn-pedido btn-detalhes"
+                >
+
+                    Voltar
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="btn-confirmar-rastreio"
+                    class="btn-pedido btn-confirmar-rastreio"
+                >
+
+                    <i class="fa-solid fa-truck"></i>
+
+                    Marcar como Enviado
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
 
 
   <!-- ==================================

@@ -9,7 +9,9 @@ let pedidos = [];
 
 let filtroAtual = "todos";
 let pesquisaAtual = "";
+
 let pedidoCancelamentoId = null;
+let pedidoRastreioId = null;
 
 
 // ==========================================
@@ -33,7 +35,6 @@ async function iniciarPagina() {
         );
 
         return;
-
     }
 
 
@@ -45,9 +46,7 @@ async function iniciarPagina() {
 
 
     if (!autenticado) {
-
         return;
-
     }
 
 
@@ -56,14 +55,11 @@ async function iniciarPagina() {
 
 
     if (!possuiLoja) {
-
         return;
-
     }
 
 
     await carregarPedidos();
-
 }
 
 
@@ -108,7 +104,6 @@ async function verificarUsuario() {
 
 
             return false;
-
         }
 
 
@@ -132,7 +127,6 @@ async function verificarUsuario() {
                     "Usuário não encontrado."
                 )
             );
-
         }
 
 
@@ -159,9 +153,7 @@ async function verificarUsuario() {
 
 
         return false;
-
     }
-
 }
 
 
@@ -198,9 +190,7 @@ async function carregarLoja() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -225,7 +215,6 @@ async function carregarLoja() {
 
 
             return false;
-
         }
 
 
@@ -243,7 +232,6 @@ async function carregarLoja() {
 
             nomeElemento.textContent =
                 `Pedidos recebidos por ${loja.nome}.`;
-
         }
 
 
@@ -280,9 +268,7 @@ async function carregarLoja() {
 
 
         return false;
-
     }
-
 }
 
 
@@ -302,9 +288,7 @@ async function carregarPedidos() {
         !lista ||
         !loja?.id
     ) {
-
         return;
-
     }
 
 
@@ -348,9 +332,13 @@ async function carregarPedidos() {
                     forma_pagamento,
                     observacoes,
                     created_at,
+
                     motivo_cancelamento,
                     cancelado_em,
                     cancelado_por,
+
+                    codigo_rastreio,
+                    enviado_em,
 
                     itens_pedido (
                         id,
@@ -386,9 +374,7 @@ async function carregarPedidos() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -439,9 +425,7 @@ async function carregarPedidos() {
             "erro",
             "Erro ao carregar pedidos"
         );
-
     }
-
 }
 
 
@@ -458,9 +442,7 @@ function renderizarPedidos() {
 
 
     if (!lista) {
-
         return;
-
     }
 
 
@@ -500,7 +482,6 @@ function renderizarPedidos() {
 
 
         return;
-
     }
 
 
@@ -517,7 +498,6 @@ function renderizarPedidos() {
 
 
     configurarEventosCards();
-
 }
 
 
@@ -541,14 +521,11 @@ function pedidoPassaNosFiltros(
     ) {
 
         return false;
-
     }
 
 
     if (!pesquisaAtual) {
-
         return true;
-
     }
 
 
@@ -584,7 +561,6 @@ function pedidoPassaNosFiltros(
 
                         produto =
                             produto[0];
-
                     }
 
 
@@ -592,7 +568,6 @@ function pedidoPassaNosFiltros(
                         produto?.nome ||
                         ""
                     );
-
                 }
             )
 
@@ -617,6 +592,8 @@ function pedidoPassaNosFiltros(
 
                 pedido.motivo_cancelamento,
 
+                pedido.codigo_rastreio,
+
                 nomesProdutos
             ]
 
@@ -627,14 +604,12 @@ function pedidoPassaNosFiltros(
                 .join(
                     " "
                 )
-
         );
 
 
     return texto.includes(
         termo
     );
-
 }
 
 
@@ -699,7 +674,7 @@ function criarCardPedido(
 
 
     // ==================================
-    // BOTÃO AVANÇAR STATUS
+    // BOTÃO AVANÇAR
     // ==================================
 
     let botaoAvancar =
@@ -726,7 +701,6 @@ function criarCardPedido(
             </button>
 
         `;
-
     }
 
 
@@ -769,7 +743,6 @@ function criarCardPedido(
             </button>
 
         `;
-
     }
 
 
@@ -781,14 +754,9 @@ function criarCardPedido(
 
         <article class="pedido-card">
 
-
-            <!-- TOPO -->
-
             <div class="pedido-topo">
 
-
                 <div class="pedido-identificacao">
-
 
                     <div class="pedido-icone">
 
@@ -800,11 +768,8 @@ function criarCardPedido(
                     <div>
 
                         <h3>
-
                             Pedido #${numero}
-
                         </h3>
-
 
                         <small>
 
@@ -815,7 +780,6 @@ function criarCardPedido(
                         </small>
 
                     </div>
-
 
                 </div>
 
@@ -832,14 +796,10 @@ function criarCardPedido(
 
                 </span>
 
-
             </div>
 
 
-            <!-- DADOS -->
-
             <div class="pedido-dados">
-
 
                 <div class="pedido-dado">
 
@@ -914,14 +874,10 @@ function criarCardPedido(
 
                 </div>
 
-
             </div>
 
 
-            <!-- AÇÕES -->
-
             <div class="pedido-acoes">
-
 
                 <button
                     type="button"
@@ -941,17 +897,13 @@ function criarCardPedido(
 
                 ${botaoAvancar}
 
-
                 ${botaoCancelar}
 
-
             </div>
-
 
         </article>
 
     `;
-
 }
 
 
@@ -960,11 +912,6 @@ function criarCardPedido(
 // ==========================================
 
 function configurarEventosCards() {
-
-
-    // ==================================
-    // DETALHES
-    // ==================================
 
     document
 
@@ -982,17 +929,11 @@ function configurarEventosCards() {
                         abrirDetalhesPedido(
                             botao.dataset.id
                         );
-
                     }
                 );
-
             }
         );
 
-
-    // ==================================
-    // AVANÇAR
-    // ==================================
 
     document
 
@@ -1010,17 +951,11 @@ function configurarEventosCards() {
                         avancarStatusPedido(
                             botao.dataset.id
                         );
-
                     }
                 );
-
             }
         );
 
-
-    // ==================================
-    // CANCELAR
-    // ==================================
 
     document
 
@@ -1038,13 +973,10 @@ function configurarEventosCards() {
                         abrirModalCancelamento(
                             botao.dataset.id
                         );
-
                     }
                 );
-
             }
         );
-
 }
 
 
@@ -1076,9 +1008,7 @@ function abrirDetalhesPedido(
             "Erro"
         );
 
-
         return;
-
     }
 
 
@@ -1106,7 +1036,6 @@ function abrirDetalhesPedido(
     ) {
 
         return;
-
     }
 
 
@@ -1116,7 +1045,6 @@ function abrirDetalhesPedido(
             `Pedido #${obterNumeroPedido(
                 pedido.id
             )}`;
-
     }
 
 
@@ -1139,7 +1067,6 @@ function abrirDetalhesPedido(
 
     document.body.style.overflow =
         "hidden";
-
 }
 
 
@@ -1169,11 +1096,9 @@ function criarDetalhesPedido(
         itens.length
 
             ? itens
-
                 .map(
                     criarItemPedido
                 )
-
                 .join(
                     ""
                 )
@@ -1206,7 +1131,6 @@ function criarDetalhesPedido(
 
             <div class="observacoes-pedido">
 
-
                 <h4>
 
                     <i class="fa-solid fa-location-dot"></i>
@@ -1214,7 +1138,6 @@ function criarDetalhesPedido(
                     Entrega e Observações
 
                 </h4>
-
 
                 <p>
 
@@ -1228,11 +1151,75 @@ function criarDetalhesPedido(
 
                 </p>
 
+            </div>
+
+        `;
+    }
+
+
+    // ==================================
+    // RASTREIO
+    // ==================================
+
+    let rastreioHTML =
+        "";
+
+
+    if (
+        pedido.codigo_rastreio
+    ) {
+
+        rastreioHTML = `
+
+            <div class="rastreio-pedido">
+
+                <h4>
+
+                    <i class="fa-solid fa-truck-fast"></i>
+
+                    Rastreamento
+
+                </h4>
+
+
+                <p>
+
+                    <strong>
+                        Código:
+                    </strong>
+
+                    <code>
+                        ${escaparHTML(
+                            pedido.codigo_rastreio
+                        )}
+                    </code>
+
+                </p>
+
+
+                ${
+                    pedido.enviado_em
+                        ? `
+
+                            <p>
+
+                                <strong>
+                                    Enviado em:
+                                </strong>
+
+                                ${formatarDataHora(
+                                    pedido.enviado_em
+                                )}
+
+                            </p>
+
+                        `
+                        : ""
+                }
 
             </div>
 
         `;
-
     }
 
 
@@ -1252,7 +1239,6 @@ function criarDetalhesPedido(
         cancelamentoHTML = `
 
             <div class="observacoes-pedido">
-
 
                 <h4>
 
@@ -1297,18 +1283,15 @@ function criarDetalhesPedido(
                         : ""
                 }
 
-
             </div>
 
         `;
-
     }
 
 
     return `
 
         <div class="detalhes-grid">
-
 
             <div class="detalhe-box">
 
@@ -1415,7 +1398,6 @@ function criarDetalhesPedido(
 
             </div>
 
-
         </div>
 
 
@@ -1437,11 +1419,11 @@ function criarDetalhesPedido(
 
         ${observacoesHTML}
 
+        ${rastreioHTML}
 
         ${cancelamentoHTML}
 
     `;
-
 }
 
 
@@ -1465,7 +1447,6 @@ function criarItemPedido(
 
         produto =
             produto[0];
-
     }
 
 
@@ -1494,10 +1475,6 @@ function criarItemPedido(
             preco * quantidade
         );
 
-
-    // ==================================
-    // IMAGEM
-    // ==================================
 
     let imagem = `
 
@@ -1529,14 +1506,12 @@ function criarItemPedido(
             >
 
         `;
-
     }
 
 
     return `
 
         <div class="modal-item">
-
 
             ${imagem}
 
@@ -1575,11 +1550,9 @@ function criarItemPedido(
 
             </strong>
 
-
         </div>
 
     `;
-
 }
 
 
@@ -1611,9 +1584,7 @@ async function avancarStatusPedido(
             "Erro"
         );
 
-
         return;
-
     }
 
 
@@ -1632,19 +1603,34 @@ async function avancarStatusPedido(
     if (!acao) {
 
         notificar(
-            "Este pedido já está em um status final.",
+            "Este pedido não possui uma próxima etapa disponível para o lojista.",
             "info",
             "Sem próxima etapa"
         );
 
-
         return;
-
     }
 
 
     // ==================================
-    // CONFIRMAÇÃO PERSONALIZADA
+    // EM PREPARAÇÃO EXIGE RASTREIO
+    // ==================================
+
+    if (
+        statusAtual ===
+        "em_preparacao"
+    ) {
+
+        abrirModalRastreio(
+            pedido.id
+        );
+
+        return;
+    }
+
+
+    // ==================================
+    // CONFIRMAÇÃO
     // ==================================
 
     if (
@@ -1658,9 +1644,7 @@ async function avancarStatusPedido(
             "Erro"
         );
 
-
         return;
-
     }
 
 
@@ -1692,11 +1676,29 @@ async function avancarStatusPedido(
 
 
     if (!confirmou) {
-
         return;
-
     }
 
+
+    await atualizarStatusViaRPC(
+        pedido.id,
+        acao.proximo,
+        null,
+        true
+    );
+}
+
+
+// ==========================================
+// ATUALIZAR STATUS VIA RPC
+// ==========================================
+
+async function atualizarStatusViaRPC(
+    pedidoId,
+    novoStatus,
+    codigoRastreio = null,
+    mostrarSucesso = true
+) {
 
     try {
 
@@ -1704,84 +1706,46 @@ async function avancarStatusPedido(
             data,
             error
         } =
-            await window.db
+            await window.db.rpc(
+                "atualizar_status_pedido_loja",
+                {
 
-                .from(
-                    "pedidos"
-                )
+                    p_pedido_id:
+                        pedidoId,
 
-                .update({
+                    p_novo_status:
+                        novoStatus,
 
-                    status:
-                        acao.proximo
+                    p_codigo_rastreio:
+                        codigoRastreio
 
-                })
-
-                .eq(
-                    "id",
-                    pedido.id
-                )
-
-                .eq(
-                    "loja_id",
-                    loja.id
-                )
-
-                .eq(
-                    "status",
-                    statusAtual
-                )
-
-                .select(`
-                    id,
-                    status
-                `)
-
-                .maybeSingle();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        if (!data) {
-
-            notificar(
-                "O pedido pode ter sido atualizado em outra tela. Vamos recarregar os dados.",
-                "aviso",
-                "Pedido alterado"
+                }
             );
 
 
-            await carregarPedidos();
-
-
-            return;
-
+        if (error) {
+            throw error;
         }
 
 
-        pedido.status =
-            data.status;
+        if (mostrarSucesso) {
+
+            notificar(
+                `Pedido #${obterNumeroPedido(
+                    pedidoId
+                )} atualizado para "${formatarStatus(
+                    novoStatus
+                )}".`,
+                "sucesso",
+                "Status atualizado!"
+            );
+        }
 
 
-        notificar(
-            `Pedido #${obterNumeroPedido(
-                pedido.id
-            )} atualizado para "${formatarStatus(
-                data.status
-            )}".`,
-            "sucesso",
-            "Status atualizado!"
-        );
+        await carregarPedidos();
 
 
-        atualizarEstatisticas();
-
-        renderizarPedidos();
+        return data;
 
 
     } catch (erro) {
@@ -1793,15 +1757,116 @@ async function avancarStatusPedido(
 
 
         notificar(
-            tratarErro(
+            tratarErroStatusPedido(
                 erro
             ),
             "erro",
-            "Não foi possível atualizar o pedido"
+            "Não foi possível atualizar o pedido",
+            5000
         );
 
+
+        return null;
+    }
+}
+
+
+// ==========================================
+// ERROS DE STATUS
+// ==========================================
+
+function tratarErroStatusPedido(
+    erro
+) {
+
+    const texto =
+        String(
+            erro?.message ||
+            ""
+        )
+            .toLowerCase();
+
+
+    if (
+        texto.includes(
+            "código de rastreio"
+        )
+        ||
+        texto.includes(
+            "codigo de rastreio"
+        )
+    ) {
+
+        return (
+            erro?.message ||
+            "Informe um código de rastreio válido."
+        );
     }
 
+
+    if (
+        texto.includes(
+            "transição de status"
+        )
+        ||
+        texto.includes(
+            "transicao de status"
+        )
+    ) {
+
+        return (
+            "Esta alteração de status não é permitida."
+        );
+    }
+
+
+    if (
+        texto.includes(
+            "não possui permissão"
+        )
+        ||
+        texto.includes(
+            "nao possui permissao"
+        )
+        ||
+        texto.includes(
+            "permission"
+        )
+    ) {
+
+        return (
+            "Sua conta não possui permissão para atualizar este pedido."
+        );
+    }
+
+
+    if (
+        texto.includes(
+            "cancelado"
+        )
+    ) {
+
+        return (
+            "Pedidos cancelados não podem ter o status alterado."
+        );
+    }
+
+
+    if (
+        texto.includes(
+            "entregue"
+        )
+    ) {
+
+        return (
+            "Pedidos já entregues não podem ter o status alterado."
+        );
+    }
+
+
+    return tratarErro(
+        erro
+    );
 }
 
 
@@ -1862,36 +1927,16 @@ function obterAcaoStatus(
                 "enviado",
 
             texto:
-                "Marcar como Enviado",
+                "Informar Rastreio e Enviar",
 
             titulo:
-                "Confirmar envio?",
+                "Enviar pedido",
 
             textoConfirmar:
                 "Marcar como Enviado",
 
             icone:
                 "fa-solid fa-truck"
-
-        },
-
-
-        enviado: {
-
-            proximo:
-                "entregue",
-
-            texto:
-                "Marcar como Entregue",
-
-            titulo:
-                "Confirmar entrega?",
-
-            textoConfirmar:
-                "Marcar como Entregue",
-
-            icone:
-                "fa-solid fa-circle-check"
 
         }
 
@@ -1907,9 +1952,427 @@ function obterAcaoStatus(
         ] ||
 
         null
+    );
+}
 
+
+// ==========================================
+// ABRIR MODAL DE RASTREIO
+// ==========================================
+
+function abrirModalRastreio(
+    pedidoId
+) {
+
+    const pedido =
+        pedidos.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    pedidoId
+                )
+        );
+
+
+    if (!pedido) {
+
+        notificar(
+            "Pedido não encontrado.",
+            "erro",
+            "Erro"
+        );
+
+        return;
+    }
+
+
+    const status =
+        normalizarStatus(
+            pedido.status
+        );
+
+
+    if (
+        status !==
+        "em_preparacao"
+    ) {
+
+        notificar(
+            "Somente pedidos em preparação podem ser marcados como enviados.",
+            "aviso",
+            "Envio indisponível"
+        );
+
+        return;
+    }
+
+
+    const modal =
+        document.getElementById(
+            "modal-rastreio-pedido"
+        );
+
+
+    const numero =
+        document.getElementById(
+            "numero-pedido-rastreio"
+        );
+
+
+    const campo =
+        document.getElementById(
+            "codigo-rastreio"
+        );
+
+
+    if (
+        !modal ||
+        !campo
+    ) {
+
+        console.error(
+            "Modal de rastreio não encontrado no HTML."
+        );
+
+
+        notificar(
+            "Não foi possível abrir o formulário de rastreio.",
+            "erro",
+            "Erro"
+        );
+
+        return;
+    }
+
+
+    pedidoRastreioId =
+        pedido.id;
+
+
+    if (numero) {
+
+        numero.textContent =
+            `Pedido #${obterNumeroPedido(
+                pedido.id
+            )}`;
+    }
+
+
+    campo.value =
+        pedido.codigo_rastreio ||
+        "";
+
+
+    modal.classList.add(
+        "aberto"
     );
 
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    setTimeout(
+        () => {
+
+            campo.focus();
+        },
+        100
+    );
+}
+
+
+// ==========================================
+// FECHAR MODAL DE RASTREIO
+// ==========================================
+
+function fecharModalRastreio() {
+
+    const modal =
+        document.getElementById(
+            "modal-rastreio-pedido"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.classList.remove(
+        "aberto"
+    );
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    pedidoRastreioId =
+        null;
+
+
+    const campo =
+        document.getElementById(
+            "codigo-rastreio"
+        );
+
+
+    if (campo) {
+        campo.value = "";
+    }
+
+
+    atualizarBloqueioScroll();
+}
+
+
+// ==========================================
+// CONFIRMAR ENVIO
+// ==========================================
+
+async function confirmarEnvioPedido() {
+
+    if (
+        !pedidoRastreioId
+    ) {
+
+        notificar(
+            "Pedido não identificado.",
+            "erro",
+            "Erro"
+        );
+
+        return;
+    }
+
+
+    const pedido =
+        pedidos.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    pedidoRastreioId
+                )
+        );
+
+
+    if (!pedido) {
+
+        notificar(
+            "Pedido não encontrado. Atualize a lista e tente novamente.",
+            "erro",
+            "Pedido não encontrado"
+        );
+
+
+        fecharModalRastreio();
+
+        return;
+    }
+
+
+    if (
+        normalizarStatus(
+            pedido.status
+        ) !==
+        "em_preparacao"
+    ) {
+
+        notificar(
+            "Este pedido não está mais em preparação.",
+            "aviso",
+            "Status alterado"
+        );
+
+
+        fecharModalRastreio();
+
+        await carregarPedidos();
+
+        return;
+    }
+
+
+    const campo =
+        document.getElementById(
+            "codigo-rastreio"
+        );
+
+
+    const botao =
+        document.getElementById(
+            "btn-confirmar-rastreio"
+        );
+
+
+    const codigo =
+        String(
+            campo?.value ||
+            ""
+        )
+            .trim();
+
+
+    if (
+        codigo.length < 3
+    ) {
+
+        notificar(
+            "Informe um código de rastreio com pelo menos 3 caracteres.",
+            "aviso",
+            "Código obrigatório"
+        );
+
+
+        campo?.focus();
+
+        return;
+    }
+
+
+    if (
+        codigo.length > 100
+    ) {
+
+        notificar(
+            "O código de rastreio deve possuir no máximo 100 caracteres.",
+            "aviso",
+            "Código inválido"
+        );
+
+
+        campo?.focus();
+
+        return;
+    }
+
+
+    if (
+        typeof window.confirmarAcao !==
+        "function"
+    ) {
+
+        notificar(
+            "O sistema de confirmação não está disponível.",
+            "erro",
+            "Erro"
+        );
+
+        return;
+    }
+
+
+    const confirmou =
+        await window.confirmarAcao({
+
+            titulo:
+                "Confirmar envio?",
+
+            mensagem:
+                `O pedido será marcado como enviado com o código de rastreio "${codigo}".`,
+
+            textoConfirmar:
+                "Confirmar Envio",
+
+            textoCancelar:
+                "Voltar",
+
+            perigo:
+                false
+
+        });
+
+
+    if (!confirmou) {
+        return;
+    }
+
+
+    const pedidoId =
+        pedidoRastreioId;
+
+
+    const conteudoOriginal =
+        botao?.innerHTML;
+
+
+    if (botao) {
+
+        botao.disabled =
+            true;
+
+
+        botao.innerHTML = `
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            Enviando...
+
+        `;
+    }
+
+
+    try {
+
+        const resultado =
+            await atualizarStatusViaRPC(
+                pedidoId,
+                "enviado",
+                codigo,
+                false
+            );
+
+
+        if (!resultado) {
+            return;
+        }
+
+
+        fecharModalRastreio();
+
+
+        notificar(
+            `Pedido #${obterNumeroPedido(
+                pedidoId
+            )} enviado com o código de rastreio ${codigo}.`,
+            "sucesso",
+            "Pedido enviado!",
+            4500
+        );
+
+
+    } finally {
+
+        if (botao) {
+
+            botao.disabled =
+                false;
+
+
+            botao.innerHTML =
+                conteudoOriginal ||
+                `
+
+                    <i class="fa-solid fa-truck"></i>
+
+                    Marcar como Enviado
+
+                `;
+        }
+    }
 }
 
 
@@ -1941,9 +2404,7 @@ function abrirModalCancelamento(
             "Erro"
         );
 
-
         return;
-
     }
 
 
@@ -1956,9 +2417,7 @@ function abrirModalCancelamento(
     const statusPermitidos = [
 
         "aguardando_pagamento",
-
         "pago",
-
         "em_preparacao"
 
     ];
@@ -1976,9 +2435,7 @@ function abrirModalCancelamento(
             "Cancelamento indisponível"
         );
 
-
         return;
-
     }
 
 
@@ -2016,9 +2473,7 @@ function abrirModalCancelamento(
             "Erro"
         );
 
-
         return;
-
     }
 
 
@@ -2032,7 +2487,6 @@ function abrirModalCancelamento(
             `Pedido #${obterNumeroPedido(
                 pedido.id
             )}`;
-
     }
 
 
@@ -2062,11 +2516,9 @@ function abrirModalCancelamento(
         () => {
 
             motivo.focus();
-
         },
         100
     );
-
 }
 
 
@@ -2083,9 +2535,7 @@ function fecharModalCancelamento() {
 
 
     if (!modal) {
-
         return;
-
     }
 
 
@@ -2111,33 +2561,13 @@ function fecharModalCancelamento() {
 
 
     if (motivo) {
-
-        motivo.value =
-            "";
-
+        motivo.value = "";
     }
 
 
     atualizarContadorMotivo();
 
-
-    const modalDetalhes =
-        document.getElementById(
-            "modal-detalhes-pedido"
-        );
-
-
-    if (
-        !modalDetalhes?.classList.contains(
-            "aberto"
-        )
-    ) {
-
-        document.body.style.overflow =
-            "";
-
-    }
-
+    atualizarBloqueioScroll();
 }
 
 
@@ -2160,9 +2590,7 @@ function atualizarContadorMotivo() {
 
 
     if (!contador) {
-
         return;
-
     }
 
 
@@ -2173,7 +2601,6 @@ function atualizarContadorMotivo() {
 
     contador.textContent =
         `${quantidade}/500`;
-
 }
 
 
@@ -2193,15 +2620,9 @@ async function confirmarCancelamentoPedido() {
             "Erro"
         );
 
-
         return;
-
     }
 
-
-    // ==================================
-    // BUSCAR PEDIDO LOCAL
-    // ==================================
 
     const pedido =
         pedidos.find(
@@ -2226,15 +2647,9 @@ async function confirmarCancelamentoPedido() {
 
         fecharModalCancelamento();
 
-
         return;
-
     }
 
-
-    // ==================================
-    // VERIFICAR STATUS NOVAMENTE
-    // ==================================
 
     const statusAtual =
         normalizarStatus(
@@ -2261,18 +2676,11 @@ async function confirmarCancelamentoPedido() {
 
         fecharModalCancelamento();
 
-
         await carregarPedidos();
 
-
         return;
-
     }
 
-
-    // ==================================
-    // ELEMENTOS
-    // ==================================
 
     const campoMotivo =
         document.getElementById(
@@ -2294,10 +2702,6 @@ async function confirmarCancelamentoPedido() {
             .trim();
 
 
-    // ==================================
-    // VALIDAÇÃO DO MOTIVO
-    // ==================================
-
     if (
         motivo.length < 5
     ) {
@@ -2311,9 +2715,7 @@ async function confirmarCancelamentoPedido() {
 
         campoMotivo?.focus();
 
-
         return;
-
     }
 
 
@@ -2330,15 +2732,9 @@ async function confirmarCancelamentoPedido() {
 
         campoMotivo?.focus();
 
-
         return;
-
     }
 
-
-    // ==================================
-    // CONFIRMAÇÃO PERSONALIZADA
-    // ==================================
 
     if (
         typeof window.confirmarAcao !==
@@ -2351,9 +2747,7 @@ async function confirmarCancelamentoPedido() {
             "Erro"
         );
 
-
         return;
-
     }
 
 
@@ -2379,15 +2773,9 @@ async function confirmarCancelamentoPedido() {
 
 
     if (!confirmou) {
-
         return;
-
     }
 
-
-    // ==================================
-    // BOTÃO CARREGANDO
-    // ==================================
 
     const conteudoOriginal =
         botao?.innerHTML;
@@ -2406,7 +2794,6 @@ async function confirmarCancelamentoPedido() {
             Cancelando...
 
         `;
-
     }
 
 
@@ -2415,10 +2802,6 @@ async function confirmarCancelamentoPedido() {
 
 
     try {
-
-        // ==================================
-        // RPC SEGURA
-        // ==================================
 
         const {
             data,
@@ -2441,9 +2824,7 @@ async function confirmarCancelamentoPedido() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -2453,16 +2834,8 @@ async function confirmarCancelamentoPedido() {
         );
 
 
-        // ==================================
-        // FECHAR MODAL
-        // ==================================
-
         fecharModalCancelamento();
 
-
-        // ==================================
-        // SUCESSO
-        // ==================================
 
         notificar(
             `Pedido #${obterNumeroPedido(
@@ -2473,10 +2846,6 @@ async function confirmarCancelamentoPedido() {
             4500
         );
 
-
-        // ==================================
-        // RECARREGAR DO BANCO
-        // ==================================
 
         await carregarPedidos();
 
@@ -2516,11 +2885,8 @@ async function confirmarCancelamentoPedido() {
                     Cancelar Pedido
 
                 `;
-
         }
-
     }
-
 }
 
 
@@ -2540,10 +2906,6 @@ function tratarErroCancelamento(
             .toLowerCase();
 
 
-    // ==================================
-    // JÁ CANCELADO
-    // ==================================
-
     if (
         texto.includes(
             "já foi cancelado"
@@ -2553,13 +2915,8 @@ function tratarErroCancelamento(
         return (
             "Este pedido já foi cancelado."
         );
-
     }
 
-
-    // ==================================
-    // JÁ ENVIADO / ENTREGUE
-    // ==================================
 
     if (
         texto.includes(
@@ -2574,13 +2931,8 @@ function tratarErroCancelamento(
         return (
             "Este pedido não pode mais ser cancelado porque já foi enviado ou entregue."
         );
-
     }
 
-
-    // ==================================
-    // MOTIVO
-    // ==================================
 
     if (
         texto.includes(
@@ -2592,13 +2944,8 @@ function tratarErroCancelamento(
             erro?.message ||
             "Informe um motivo válido para o cancelamento."
         );
-
     }
 
-
-    // ==================================
-    // PERMISSÃO
-    // ==================================
 
     if (
         texto.includes(
@@ -2613,14 +2960,12 @@ function tratarErroCancelamento(
         return (
             "Pedido não encontrado ou sua conta não possui permissão para cancelá-lo."
         );
-
     }
 
 
     return tratarErro(
         erro
     );
-
 }
 
 
@@ -2630,20 +2975,11 @@ function tratarErroCancelamento(
 
 function atualizarEstatisticas() {
 
-
-    // ==================================
-    // TOTAL
-    // ==================================
-
     definirTexto(
         "estat-total-pedidos",
         pedidos.length
     );
 
-
-    // ==================================
-    // AGUARDANDO PAGAMENTO
-    // ==================================
 
     const aguardando =
         pedidos.filter(
@@ -2661,10 +2997,6 @@ function atualizarEstatisticas() {
         aguardando
     );
 
-
-    // ==================================
-    // EM ANDAMENTO
-    // ==================================
 
     const statusAndamento =
         new Set([
@@ -2692,10 +3024,6 @@ function atualizarEstatisticas() {
     );
 
 
-    // ==================================
-    // VENDAS
-    // ==================================
-
     const statusVenda =
         new Set([
             "pago",
@@ -2721,7 +3049,6 @@ function atualizarEstatisticas() {
                 ) {
 
                     return total;
-
                 }
 
 
@@ -2744,7 +3071,6 @@ function atualizarEstatisticas() {
             vendas
         )
     );
-
 }
 
 
@@ -2753,7 +3079,6 @@ function atualizarEstatisticas() {
 // ==========================================
 
 function configurarEventos() {
-
 
     // ==================================
     // FILTROS
@@ -2786,7 +3111,6 @@ function configurarEventos() {
                                         .remove(
                                             "ativo"
                                         );
-
                                 }
                             );
 
@@ -2802,10 +3126,8 @@ function configurarEventos() {
 
 
                         renderizarPedidos();
-
                     }
                 );
-
             }
         );
 
@@ -2829,7 +3151,6 @@ function configurarEventos() {
 
 
             renderizarPedidos();
-
         }
     );
 
@@ -2885,9 +3206,7 @@ function configurarEventos() {
                         Atualizar
 
                     `;
-
             }
-
         }
     );
 
@@ -2921,7 +3240,6 @@ function configurarEventos() {
                     "click",
                     fecharModal
                 );
-
             }
         );
 
@@ -2967,7 +3285,6 @@ function configurarEventos() {
                     "click",
                     fecharModalCancelamento
                 );
-
             }
         );
 
@@ -2997,7 +3314,89 @@ function configurarEventos() {
 
 
     // ==================================
-    // TECLA ESC
+    // MODAL DE RASTREIO
+    // ==================================
+
+    document
+
+        .getElementById(
+            "btn-fechar-rastreio"
+        )
+
+        ?.addEventListener(
+            "click",
+            fecharModalRastreio
+        );
+
+
+    document
+
+        .getElementById(
+            "btn-voltar-rastreio"
+        )
+
+        ?.addEventListener(
+            "click",
+            fecharModalRastreio
+        );
+
+
+    document
+
+        .querySelectorAll(
+            "[data-fechar-rastreio]"
+        )
+
+        .forEach(
+            elemento => {
+
+                elemento.addEventListener(
+                    "click",
+                    fecharModalRastreio
+                );
+            }
+        );
+
+
+    document
+
+        .getElementById(
+            "btn-confirmar-rastreio"
+        )
+
+        ?.addEventListener(
+            "click",
+            confirmarEnvioPedido
+        );
+
+
+    // Enter no campo de rastreio.
+
+    document
+
+        .getElementById(
+            "codigo-rastreio"
+        )
+
+        ?.addEventListener(
+            "keydown",
+            evento => {
+
+                if (
+                    evento.key ===
+                    "Enter"
+                ) {
+
+                    evento.preventDefault();
+
+                    confirmarEnvioPedido();
+                }
+            }
+        );
+
+
+    // ==================================
+    // ESC
     // ==================================
 
     document.addEventListener(
@@ -3010,7 +3409,6 @@ function configurarEventos() {
             ) {
 
                 return;
-
             }
 
 
@@ -3018,9 +3416,9 @@ function configurarEventos() {
 
             fecharModalCancelamento();
 
+            fecharModalRastreio();
         }
     );
-
 }
 
 
@@ -3037,9 +3435,7 @@ function fecharModal() {
 
 
     if (!modal) {
-
         return;
-
     }
 
 
@@ -3054,25 +3450,26 @@ function fecharModal() {
     );
 
 
-    const modalCancelamento =
-        document.getElementById(
-            "modal-cancelar-pedido"
+    atualizarBloqueioScroll();
+}
+
+
+// ==========================================
+// CONTROLE DO SCROLL DOS MODAIS
+// ==========================================
+
+function atualizarBloqueioScroll() {
+
+    const existeModalAberto =
+        document.querySelector(
+            ".modal-pedido.aberto"
         );
 
 
-    if (
-        !modalCancelamento
-            ?.classList
-            .contains(
-                "aberto"
-            )
-    ) {
-
-        document.body.style.overflow =
-            "";
-
-    }
-
+    document.body.style.overflow =
+        existeModalAberto
+            ? "hidden"
+            : "";
 }
 
 
@@ -3119,9 +3516,7 @@ function obterNomeCliente(
                 resultado[1]
                     .trim()
             );
-
         }
-
     }
 
 
@@ -3149,7 +3544,6 @@ function obterNomeCliente(
             ? `Cliente #${clienteId}`
             : "Cliente"
     );
-
 }
 
 
@@ -3177,8 +3571,6 @@ function normalizarStatus(
             );
 
 
-    // Compatibilidade com pedidos antigos.
-
     const antigos = {
 
         pendente:
@@ -3197,7 +3589,6 @@ function normalizarStatus(
         antigos[valor] ||
         valor
     );
-
 }
 
 
@@ -3244,7 +3635,6 @@ function formatarStatus(
         ] ||
         "Desconhecido"
     );
-
 }
 
 
@@ -3287,7 +3677,6 @@ function classeStatus(
         ] ||
         "status-desconhecido"
     );
-
 }
 
 
@@ -3332,7 +3721,6 @@ function formatarPagamento(
         pagamento ||
         "Não informado"
     );
-
 }
 
 
@@ -3366,7 +3754,6 @@ function obterNumeroPedido(
 
         "--------"
     );
-
 }
 
 
@@ -3379,9 +3766,7 @@ function formatarDataHora(
 ) {
 
     if (!valor) {
-
         return "-";
-
     }
 
 
@@ -3398,7 +3783,6 @@ function formatarDataHora(
     ) {
 
         return "-";
-
     }
 
 
@@ -3423,7 +3807,6 @@ function formatarDataHora(
 
         }
     );
-
 }
 
 
@@ -3451,7 +3834,6 @@ function formatarMoeda(
 
             }
         );
-
 }
 
 
@@ -3471,7 +3853,6 @@ function atualizarQuantidadeResultados(
                 : "pedidos"
         }`
     );
-
 }
 
 
@@ -3494,9 +3875,7 @@ function definirTexto(
 
         elemento.textContent =
             texto;
-
     }
-
 }
 
 
@@ -3523,7 +3902,6 @@ function normalizarTexto(
         )
 
         .toLowerCase();
-
 }
 
 
@@ -3564,7 +3942,6 @@ function escaparHTML(
             "'",
             "&#039;"
         );
-
 }
 
 
@@ -3584,10 +3961,6 @@ function tratarErro(
             .toLowerCase();
 
 
-    // ==================================
-    // PERMISSÃO / RLS
-    // ==================================
-
     if (
         texto.includes(
             "row-level security"
@@ -3601,13 +3974,8 @@ function tratarErro(
         return (
             "Sua conta não possui permissão para acessar estes pedidos."
         );
-
     }
 
-
-    // ==================================
-    // STATUS
-    // ==================================
 
     if (
         texto.includes(
@@ -3618,13 +3986,20 @@ function tratarErro(
         return (
             "O status informado não é válido."
         );
-
     }
 
 
-    // ==================================
-    // REDE
-    // ==================================
+    if (
+        texto.includes(
+            "pedidos_codigo_rastreio_check"
+        )
+    ) {
+
+        return (
+            "O código de rastreio informado não é válido."
+        );
+    }
+
 
     if (
         texto.includes(
@@ -3639,19 +4014,13 @@ function tratarErro(
         return (
             "Não foi possível conectar ao servidor. Verifique sua internet."
         );
-
     }
 
-
-    // ==================================
-    // PADRÃO
-    // ==================================
 
     return (
         erro?.message ||
         "Ocorreu um erro inesperado."
     );
-
 }
 
 
@@ -3680,7 +4049,6 @@ function notificar(
 
 
         return;
-
     }
 
 
@@ -3688,5 +4056,4 @@ function notificar(
         `[${tipo}] ${titulo || ""}`,
         texto
     );
-
 }
