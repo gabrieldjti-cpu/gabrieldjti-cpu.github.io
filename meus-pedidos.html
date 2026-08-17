@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="pt-BR">
 
 <head>
@@ -9,6 +10,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
+
 
     <title>
         Meus Pedidos | Comércio da Cidade
@@ -89,7 +91,7 @@
 
 
     <!-- ======================================
-         CONTEÚDO
+         CONTEÚDO PRINCIPAL
     ======================================= -->
 
     <main class="container">
@@ -111,9 +113,12 @@
 
                 </h1>
 
+
                 <p>
+
                     Acompanhe suas compras realizadas
                     no Comércio da Cidade.
+
                 </p>
 
             </div>
@@ -142,55 +147,98 @@
             aria-label="Filtrar pedidos por status"
         >
 
+
+            <!-- TODOS -->
+
             <button
                 type="button"
                 class="filtro ativo"
                 data-status="todos"
             >
 
+                <i class="fa-solid fa-list"></i>
+
                 Todos
 
             </button>
 
 
+            <!-- AGUARDANDO PAGAMENTO -->
+
             <button
                 type="button"
                 class="filtro"
-                data-status="pendente"
+                data-status="aguardando_pagamento"
             >
 
                 <i class="fa-solid fa-clock"></i>
 
-                Pendentes
+                Aguardando
 
             </button>
 
 
+            <!-- PAGO -->
+
             <button
                 type="button"
                 class="filtro"
-                data-status="preparando"
+                data-status="pago"
+            >
+
+                <i class="fa-solid fa-circle-dollar-to-slot"></i>
+
+                Pagos
+
+            </button>
+
+
+            <!-- EM PREPARAÇÃO -->
+
+            <button
+                type="button"
+                class="filtro"
+                data-status="em_preparacao"
             >
 
                 <i class="fa-solid fa-box-open"></i>
 
-                Preparando
+                Em preparação
 
             </button>
 
+
+            <!-- ENVIADO -->
 
             <button
                 type="button"
                 class="filtro"
-                data-status="finalizado"
+                data-status="enviado"
+            >
+
+                <i class="fa-solid fa-truck-fast"></i>
+
+                Enviados
+
+            </button>
+
+
+            <!-- ENTREGUE -->
+
+            <button
+                type="button"
+                class="filtro"
+                data-status="entregue"
             >
 
                 <i class="fa-solid fa-circle-check"></i>
 
-                Finalizados
+                Entregues
 
             </button>
 
+
+            <!-- CANCELADO -->
 
             <button
                 type="button"
@@ -203,6 +251,7 @@
                 Cancelados
 
             </button>
+
 
         </section>
 
@@ -218,16 +267,17 @@
         >
 
 
-            <!-- CARREGANDO -->
-
             <div class="carregando">
 
                 <i
                     class="fa-solid fa-spinner fa-spin"
                 ></i>
 
+
                 <p>
+
                     Carregando seus pedidos...
+
                 </p>
 
             </div>
@@ -240,7 +290,7 @@
 
 
     <!-- ======================================
-         MODAL DE DETALHES
+         MODAL DE DETALHES DO PEDIDO
     ======================================= -->
 
     <div
@@ -248,11 +298,17 @@
         class="modal"
         role="dialog"
         aria-modal="true"
+        aria-hidden="true"
         aria-labelledby="titulo-modal-pedido"
     >
 
+
+        <!-- OVERLAY -->
+
         <div class="modal-overlay"></div>
 
+
+        <!-- CONTEÚDO -->
 
         <div class="modal-conteudo">
 
@@ -270,6 +326,7 @@
                         Detalhes do Pedido
 
                     </h2>
+
 
                     <span id="modal-numero-pedido"></span>
 
@@ -290,16 +347,298 @@
             </div>
 
 
-            <!-- CONTEÚDO -->
+            <!-- CONTEÚDO DINÂMICO -->
 
             <div id="conteudo-modal-pedido">
 
-                <!-- Conteúdo carregado pelo JavaScript -->
+                <!--
+                    Conteúdo inserido por
+                    js/meus-pedidos.js
+                -->
 
             </div>
 
 
         </div>
+
+
+    </div>
+
+
+    <!-- ======================================
+         MODAL DE AVALIAÇÃO
+    ======================================= -->
+
+    <div
+        id="modal-avaliacao"
+        class="modal modal-avaliacao"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+        aria-labelledby="titulo-avaliacao"
+    >
+
+
+        <!-- OVERLAY -->
+
+        <div
+            class="modal-overlay"
+            data-fechar-avaliacao
+        ></div>
+
+
+        <!-- CONTEÚDO -->
+
+        <div
+            class="
+                modal-conteudo
+                avaliacao-conteudo
+            "
+        >
+
+
+            <!-- ==================================
+                 CABEÇALHO
+            =================================== -->
+
+            <div class="modal-topo">
+
+                <div>
+
+                    <h2 id="titulo-avaliacao">
+
+                        <i class="fa-solid fa-star"></i>
+
+                        Avaliar produto
+
+                    </h2>
+
+
+                    <span id="nome-produto-avaliacao">
+
+                        Produto
+
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btn-fechar-avaliacao"
+                    class="btn-fechar"
+                    aria-label="Fechar avaliação"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- ==================================
+                 CORPO
+            =================================== -->
+
+            <div class="avaliacao-corpo">
+
+
+                <!-- PERGUNTA -->
+
+                <div class="avaliacao-pergunta">
+
+                    <strong>
+
+                        Como foi sua experiência?
+
+                    </strong>
+
+
+                    <p>
+
+                        Selecione uma nota
+                        de 1 a 5 estrelas.
+
+                    </p>
+
+                </div>
+
+
+                <!-- ==================================
+                     ESTRELAS
+                =================================== -->
+
+                <div
+                    class="estrelas-avaliacao"
+                    aria-label="Nota da avaliação"
+                >
+
+
+                    <!-- 1 -->
+
+                    <button
+                        type="button"
+                        data-nota="1"
+                        aria-label="1 estrela"
+                        aria-pressed="false"
+                    >
+
+                        <i class="fa-solid fa-star"></i>
+
+                    </button>
+
+
+                    <!-- 2 -->
+
+                    <button
+                        type="button"
+                        data-nota="2"
+                        aria-label="2 estrelas"
+                        aria-pressed="false"
+                    >
+
+                        <i class="fa-solid fa-star"></i>
+
+                    </button>
+
+
+                    <!-- 3 -->
+
+                    <button
+                        type="button"
+                        data-nota="3"
+                        aria-label="3 estrelas"
+                        aria-pressed="false"
+                    >
+
+                        <i class="fa-solid fa-star"></i>
+
+                    </button>
+
+
+                    <!-- 4 -->
+
+                    <button
+                        type="button"
+                        data-nota="4"
+                        aria-label="4 estrelas"
+                        aria-pressed="false"
+                    >
+
+                        <i class="fa-solid fa-star"></i>
+
+                    </button>
+
+
+                    <!-- 5 -->
+
+                    <button
+                        type="button"
+                        data-nota="5"
+                        aria-label="5 estrelas"
+                        aria-pressed="false"
+                    >
+
+                        <i class="fa-solid fa-star"></i>
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- TEXTO DA NOTA -->
+
+                <div
+                    id="nota-avaliacao-texto"
+                    class="nota-avaliacao-texto"
+                    aria-live="polite"
+                >
+
+                    Nenhuma nota selecionada
+
+                </div>
+
+
+                <!-- ==================================
+                     COMENTÁRIO
+                =================================== -->
+
+                <div class="campo-comentario-avaliacao">
+
+
+                    <label for="comentario-avaliacao">
+
+                        Comentário
+
+                        <span>
+                            opcional
+                        </span>
+
+                    </label>
+
+
+                    <textarea
+                        id="comentario-avaliacao"
+                        maxlength="1000"
+                        rows="5"
+                        placeholder="Conte como foi sua experiência com este produto..."
+                    ></textarea>
+
+
+                    <div
+                        id="contador-comentario-avaliacao"
+                        class="contador-avaliacao"
+                    >
+
+                        0/1000
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ==================================
+                     AÇÕES
+                =================================== -->
+
+                <div class="acoes-avaliacao">
+
+
+                    <button
+                        type="button"
+                        id="btn-cancelar-avaliacao"
+                        class="btn-secundario-avaliacao"
+                    >
+
+                        Voltar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btn-publicar-avaliacao"
+                        class="btn-publicar-avaliacao"
+                    >
+
+                        <i class="fa-solid fa-paper-plane"></i>
+
+                        Publicar avaliação
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
 
     </div>
 
@@ -327,7 +666,9 @@
 
     <!-- SUPABASE -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
 
 
     <!-- CONFIGURAÇÃO SUPABASE -->
@@ -340,7 +681,7 @@
     <script src="components/header.js"></script>
 
 
-    <!-- FEEDBACK PERSONALIZADO -->
+    <!-- FEEDBACK -->
 
     <script src="components/feedback.js"></script>
 
