@@ -3,12 +3,12 @@
 
 <head>
 
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  />
+  >
 
   <title>
     Loja | Comércio da Cidade
@@ -22,17 +22,17 @@
   <link
     rel="stylesheet"
     href="components/header.css"
-  />
+  >
 
   <link
     rel="stylesheet"
     href="components/feedback.css"
-  />
+  >
 
   <link
     rel="stylesheet"
     href="css/loja.css"
-  />
+  >
 
 
   <!-- ==================================
@@ -42,18 +42,18 @@
   <link
     rel="preconnect"
     href="https://fonts.googleapis.com"
-  />
+  >
 
   <link
     rel="preconnect"
     href="https://fonts.gstatic.com"
     crossorigin
-  />
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet"
-  />
+  >
 
 
   <!-- ==================================
@@ -63,7 +63,7 @@
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-  />
+  >
 
 </head>
 
@@ -92,65 +92,86 @@
     <section class="loja-info">
 
 
-      <!-- LOGO -->
+      <!-- ==================================
+           LOGO
+      =================================== -->
 
       <img
         id="logoLoja"
         alt="Logo da loja"
         style="display: none;"
-      />
+      >
 
 
       <div>
 
 
-        <!-- NOME -->
+        <!-- ==================================
+             NOME
+        =================================== -->
 
         <h1 id="nomeLoja">
+
           Carregando...
+
         </h1>
 
 
-        <!-- CATEGORIA -->
+        <!-- ==================================
+             CATEGORIA
+        =================================== -->
 
         <p>
 
           <i class="fa-solid fa-layer-group"></i>
 
-          <span id="categoriaLoja"></span>
+          <span id="categoriaLoja">
+            Carregando...
+          </span>
 
         </p>
 
 
-        <!-- CIDADE -->
+        <!-- ==================================
+             CIDADE
+        =================================== -->
 
         <p>
 
           <i class="fa-solid fa-location-dot"></i>
 
-          <span id="cidadeLoja"></span>
+          <span id="cidadeLoja">
+            Carregando...
+          </span>
 
         </p>
 
 
-        <!-- TELEFONE -->
+        <!-- ==================================
+             TELEFONE
+        =================================== -->
 
         <p>
 
           <i class="fa-solid fa-phone"></i>
 
-          <span id="telefoneLoja"></span>
+          <span id="telefoneLoja">
+            Carregando...
+          </span>
 
         </p>
 
 
-        <!-- WHATSAPP -->
+        <!-- ==================================
+             WHATSAPP
+        =================================== -->
 
         <a
           id="btnWhatsapp"
           class="btn-whatsapp"
           target="_blank"
           rel="noopener noreferrer"
+          style="display: none;"
         >
 
           <i class="fa-brands fa-whatsapp"></i>
@@ -159,7 +180,9 @@
 
         </a>
 
+
       </div>
+
 
     </section>
 
@@ -168,15 +191,18 @@
          PESQUISA
     =================================== -->
 
-    <section class="pesquisa">
+    <section
+      class="pesquisa"
+      aria-label="Pesquisar produtos"
+    >
 
       <input
-        type="text"
+        type="search"
         id="pesquisa"
         placeholder="Pesquisar produtos..."
         autocomplete="off"
         aria-label="Pesquisar produtos desta loja"
-      />
+      >
 
     </section>
 
@@ -187,31 +213,155 @@
 
     <section>
 
+
       <h2>
+
         Produtos
+
       </h2>
 
 
       <div
         id="listaProdutos"
         class="produtos"
+        aria-live="polite"
       >
+
 
         <div class="carregando">
 
-          <i class="fa-solid fa-spinner fa-spin"></i>
+          <i
+            class="fa-solid fa-spinner fa-spin"
+          ></i>
 
           <p>
+
             Carregando produtos...
+
           </p>
 
         </div>
 
+
       </div>
+
 
     </section>
 
+
   </main>
+
+
+  <!-- ======================================
+       MODAL DE AVALIAÇÕES
+  ======================================= -->
+
+  <div
+    id="modalAvaliacoes"
+    class="modal-avaliacoes"
+    aria-hidden="true"
+  >
+
+
+    <!-- ==================================
+         OVERLAY
+    =================================== -->
+
+    <div
+      class="modal-avaliacoes-overlay"
+      data-fechar-avaliacoes
+    ></div>
+
+
+    <!-- ==================================
+         CONTEÚDO DO MODAL
+    =================================== -->
+
+    <div
+      class="modal-avaliacoes-conteudo"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloModalAvaliacoes"
+    >
+
+
+      <!-- ==================================
+           TOPO
+      =================================== -->
+
+      <div class="modal-avaliacoes-topo">
+
+
+        <div>
+
+
+          <h2 id="tituloModalAvaliacoes">
+
+            <i class="fa-solid fa-star"></i>
+
+            Avaliações do produto
+
+          </h2>
+
+
+          <span id="nomeProdutoAvaliacoes">
+
+            Produto
+
+          </span>
+
+
+        </div>
+
+
+        <button
+          type="button"
+          id="btnFecharAvaliacoes"
+          class="btn-fechar-avaliacoes"
+          aria-label="Fechar avaliações"
+        >
+
+          <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+      </div>
+
+
+      <!-- ==================================
+           CONTEÚDO DINÂMICO
+      =================================== -->
+
+      <div
+        id="conteudoAvaliacoes"
+        class="conteudo-avaliacoes"
+        aria-live="polite"
+      >
+
+
+        <div class="carregando-avaliacoes">
+
+          <i
+            class="fa-solid fa-spinner fa-spin"
+          ></i>
+
+          <span>
+
+            Carregando avaliações...
+
+          </span>
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
 
 
   <!-- ==================================
@@ -221,7 +371,9 @@
   <footer>
 
     <p>
+
       © 2026 Comércio da Cidade
+
     </p>
 
   </footer>
@@ -232,27 +384,39 @@
   =================================== -->
 
 
-  <!-- SUPABASE -->
+  <!-- ==================================
+       SUPABASE
+  =================================== -->
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
 
 
-  <!-- CONFIGURAÇÃO SUPABASE -->
+  <!-- ==================================
+       CONFIGURAÇÃO SUPABASE
+  =================================== -->
 
   <script src="js/supabase.js"></script>
 
 
-  <!-- HEADER -->
+  <!-- ==================================
+       HEADER
+  =================================== -->
 
   <script src="components/header.js"></script>
 
 
-  <!-- FEEDBACK PERSONALIZADO -->
+  <!-- ==================================
+       FEEDBACK
+  =================================== -->
 
   <script src="components/feedback.js"></script>
 
 
-  <!-- LOJA -->
+  <!-- ==================================
+       LOJA
+  =================================== -->
 
   <script src="js/loja.js"></script>
 

@@ -12,6 +12,14 @@ let lojaAtual = null;
 
 
 // ==========================================
+// RESUMOS DAS AVALIAÇÕES
+// ==========================================
+
+const resumosAvaliacoes =
+    new Map();
+
+
+// ==========================================
 // INICIAR
 // ==========================================
 
@@ -44,7 +52,6 @@ document.addEventListener(
 
 
             return;
-
         }
 
 
@@ -92,8 +99,14 @@ document.addEventListener(
 
 
             return;
-
         }
+
+
+        // ==================================
+        // CONFIGURAR MODAL DE AVALIAÇÕES
+        // ==================================
+
+        configurarAvaliacoes();
 
 
         // ==================================
@@ -107,7 +120,6 @@ document.addEventListener(
         if (!lojaCarregada) {
 
             return;
-
         }
 
 
@@ -134,7 +146,6 @@ document.addEventListener(
                 "input",
                 pesquisarProdutos
             );
-
         }
 
     }
@@ -179,10 +190,6 @@ async function carregarLoja() {
                 .maybeSingle();
 
 
-        // ==================================
-        // ERRO
-        // ==================================
-
         if (error) {
 
             console.error(
@@ -200,12 +207,11 @@ async function carregarLoja() {
 
 
             return false;
-
         }
 
 
         // ==================================
-        // LOJA NÃO ENCONTRADA
+        // NÃO ENCONTRADA
         // ==================================
 
         if (!data) {
@@ -230,7 +236,6 @@ async function carregarLoja() {
 
 
             return false;
-
         }
 
 
@@ -259,7 +264,6 @@ async function carregarLoja() {
             nomeLoja.textContent =
                 data.nome ||
                 "Loja";
-
         }
 
 
@@ -278,7 +282,6 @@ async function carregarLoja() {
             categoriaLoja.textContent =
                 data.categorias?.nome ||
                 "Sem categoria";
-
         }
 
 
@@ -297,7 +300,6 @@ async function carregarLoja() {
             cidadeLoja.textContent =
                 data.cidade ||
                 "Não informada";
-
         }
 
 
@@ -317,7 +319,6 @@ async function carregarLoja() {
                 data.telefone ||
                 data.whatsapp ||
                 "Não informado";
-
         }
 
 
@@ -359,9 +360,7 @@ async function carregarLoja() {
 
 
         return false;
-
     }
-
 }
 
 
@@ -382,13 +381,8 @@ function carregarLogoLoja(
     if (!imagem) {
 
         return;
-
     }
 
-
-    // ==================================
-    // LOCALIZAR / CRIAR PLACEHOLDER
-    // ==================================
 
     let placeholder =
         document.getElementById(
@@ -423,7 +417,6 @@ function carregarLogoLoja(
             "afterend",
             placeholder
         );
-
     }
 
 
@@ -464,17 +457,15 @@ function carregarLogoLoja(
 
                 placeholder.style.display =
                     "flex";
-
             };
 
 
         return;
-
     }
 
 
     // ==================================
-    // NÃO POSSUI LOGO
+    // SEM LOGO
     // ==================================
 
     imagem.style.display =
@@ -488,7 +479,6 @@ function carregarLogoLoja(
 
     placeholder.style.display =
         "flex";
-
 }
 
 
@@ -509,7 +499,6 @@ function configurarWhatsapp(
     if (!botao) {
 
         return;
-
     }
 
 
@@ -525,7 +514,6 @@ function configurarWhatsapp(
 
 
         return;
-
     }
 
 
@@ -546,7 +534,6 @@ function configurarWhatsapp(
 
 
         return;
-
     }
 
 
@@ -563,7 +550,6 @@ function configurarWhatsapp(
         numero =
             "55" +
             numero;
-
     }
 
 
@@ -591,7 +577,6 @@ function configurarWhatsapp(
 
     botao.style.display =
         "";
-
 }
 
 
@@ -615,7 +600,6 @@ async function carregarProdutos() {
 
 
         return;
-
     }
 
 
@@ -675,32 +659,25 @@ async function carregarProdutos() {
 
         if (error) {
 
-            console.error(
-                "Erro ao carregar produtos:",
-                error
-            );
-
-
-            mostrarErroProdutos();
-
-
-            notificar(
-                "Não foi possível carregar os produtos desta loja.",
-                "erro",
-                "Erro ao carregar produtos",
-                5000
-            );
-
-
-            return;
-
+            throw error;
         }
 
 
         produtos =
-            Array.isArray(data)
+            Array.isArray(
+                data
+            )
                 ? data
                 : [];
+
+
+        // ==================================
+        // CARREGAR MÉDIAS
+        // ==================================
+
+        await carregarResumosAvaliacoes(
+            produtos
+        );
 
 
         mostrarProdutos(
@@ -711,7 +688,7 @@ async function carregarProdutos() {
     } catch (erro) {
 
         console.error(
-            "Erro inesperado ao carregar produtos:",
+            "Erro ao carregar produtos:",
             erro
         );
 
@@ -720,14 +697,1371 @@ async function carregarProdutos() {
 
 
         notificar(
-            "Ocorreu um erro inesperado ao carregar os produtos.",
+            "Não foi possível carregar os produtos desta loja.",
             "erro",
-            "Não foi possível carregar",
+            "Erro ao carregar produtos",
             5000
         );
+    }
+}
 
+
+// ==========================================
+// CARREGAR RESUMOS DAS AVALIAÇÕES
+// ==========================================
+
+async function carregarResumosAvaliacoes(
+    listaProdutos
+) {
+
+    resumosAvaliacoes.clear();
+
+
+    if (
+        !Array.isArray(
+            listaProdutos
+        )
+        ||
+        listaProdutos.length === 0
+    ) {
+
+        return;
     }
 
+
+    const ids =
+        [
+            ...new Set(
+
+                listaProdutos
+
+                    .map(
+                        produto =>
+                            produto.id
+                    )
+
+                    .filter(
+                        Boolean
+                    )
+
+            )
+        ];
+
+
+    const resultados =
+        await Promise.all(
+
+            ids.map(
+
+                async produtoId => {
+
+                    try {
+
+                        const {
+                            data,
+                            error
+                        } =
+                            await window.db.rpc(
+                                "obter_resumo_avaliacoes_produto",
+                                {
+                                    p_produto_id:
+                                        produtoId
+                                }
+                            );
+
+
+                        if (error) {
+
+                            throw error;
+                        }
+
+
+                        const resumo =
+                            Array.isArray(
+                                data
+                            )
+                                ? data[0]
+                                : data;
+
+
+                        return {
+
+                            produtoId:
+                                String(
+                                    produtoId
+                                ),
+
+                            resumo: {
+
+                                media:
+                                    Number(
+                                        resumo?.media ||
+                                        0
+                                    ),
+
+                                total:
+                                    Number(
+                                        resumo?.total ||
+                                        0
+                                    ),
+
+                                nota_5:
+                                    Number(
+                                        resumo?.nota_5 ||
+                                        0
+                                    ),
+
+                                nota_4:
+                                    Number(
+                                        resumo?.nota_4 ||
+                                        0
+                                    ),
+
+                                nota_3:
+                                    Number(
+                                        resumo?.nota_3 ||
+                                        0
+                                    ),
+
+                                nota_2:
+                                    Number(
+                                        resumo?.nota_2 ||
+                                        0
+                                    ),
+
+                                nota_1:
+                                    Number(
+                                        resumo?.nota_1 ||
+                                        0
+                                    )
+
+                            }
+
+                        };
+
+
+                    } catch (erro) {
+
+                        console.warn(
+                            `Não foi possível carregar as avaliações do produto ${produtoId}:`,
+                            erro
+                        );
+
+
+                        return {
+
+                            produtoId:
+                                String(
+                                    produtoId
+                                ),
+
+                            resumo: {
+
+                                media:
+                                    0,
+
+                                total:
+                                    0,
+
+                                nota_5:
+                                    0,
+
+                                nota_4:
+                                    0,
+
+                                nota_3:
+                                    0,
+
+                                nota_2:
+                                    0,
+
+                                nota_1:
+                                    0
+
+                            }
+
+                        };
+                    }
+                }
+            )
+        );
+
+
+    resultados.forEach(
+        resultado => {
+
+            resumosAvaliacoes.set(
+                resultado.produtoId,
+                resultado.resumo
+            );
+        }
+    );
+
+
+    console.log(
+        "Resumos de avaliações:",
+        resumosAvaliacoes
+    );
+}
+
+
+// ==========================================
+// OBTER RESUMO DE UM PRODUTO
+// ==========================================
+
+function obterResumoAvaliacao(
+    produtoId
+) {
+
+    return (
+        resumosAvaliacoes.get(
+            String(
+                produtoId
+            )
+        )
+        ||
+        {
+
+            media:
+                0,
+
+            total:
+                0,
+
+            nota_5:
+                0,
+
+            nota_4:
+                0,
+
+            nota_3:
+                0,
+
+            nota_2:
+                0,
+
+            nota_1:
+                0
+
+        }
+    );
+}
+
+
+// ==========================================
+// CRIAR RESUMO VISUAL DA AVALIAÇÃO
+// ==========================================
+
+function criarResumoAvaliacaoHTML(
+    produto
+) {
+
+    const resumo =
+        obterResumoAvaliacao(
+            produto.id
+        );
+
+
+    const media =
+        Number(
+            resumo.media ||
+            0
+        );
+
+
+    const total =
+        Number(
+            resumo.total ||
+            0
+        );
+
+
+    // ==================================
+    // SEM AVALIAÇÕES
+    // ==================================
+
+    if (
+        total <= 0
+    ) {
+
+        return `
+
+            <div
+                class="
+                    avaliacao-produto
+                    sem-avaliacoes
+                "
+            >
+
+                <div class="estrelas-produto">
+
+                    ${criarEstrelasMediaHTML(
+                        0
+                    )}
+
+                </div>
+
+
+                <span>
+                    Sem avaliações
+                </span>
+
+            </div>
+
+        `;
+    }
+
+
+    // ==================================
+    // COM AVALIAÇÕES
+    // ==================================
+
+    return `
+
+        <button
+            type="button"
+            class="
+                avaliacao-produto
+                avaliacao-produto-clicavel
+            "
+            data-ver-avaliacoes
+            data-produto-id="${escaparHTML(
+                produto.id
+            )}"
+            aria-label="Ver avaliações de ${escaparHTML(
+                produto.nome ||
+                "produto"
+            )}"
+        >
+
+            <div class="estrelas-produto">
+
+                ${criarEstrelasMediaHTML(
+                    media
+                )}
+
+            </div>
+
+
+            <strong>
+
+                ${formatarMediaAvaliacao(
+                    media
+                )}
+
+            </strong>
+
+
+            <span>
+
+                ${total}
+
+                ${
+                    total === 1
+                        ? "avaliação"
+                        : "avaliações"
+                }
+
+            </span>
+
+
+            <i
+                class="
+                    fa-solid
+                    fa-chevron-right
+                    seta-avaliacoes
+                "
+                aria-hidden="true"
+            ></i>
+
+        </button>
+
+    `;
+}
+
+
+// ==========================================
+// ESTRELAS DA MÉDIA
+// ==========================================
+
+function criarEstrelasMediaHTML(
+    media
+) {
+
+    const valor =
+        Math.max(
+            0,
+            Math.min(
+                5,
+                Number(
+                    media ||
+                    0
+                )
+            )
+        );
+
+
+    let html =
+        "";
+
+
+    for (
+        let estrela = 1;
+        estrela <= 5;
+        estrela++
+    ) {
+
+        // ==================================
+        // CHEIA
+        // ==================================
+
+        if (
+            valor >=
+            estrela
+        ) {
+
+            html += `
+
+                <i
+                    class="fa-solid fa-star"
+                    aria-hidden="true"
+                ></i>
+
+            `;
+
+
+            continue;
+        }
+
+
+        // ==================================
+        // METADE
+        // ==================================
+
+        if (
+            valor >=
+            estrela - 0.5
+        ) {
+
+            html += `
+
+                <i
+                    class="fa-solid fa-star-half-stroke"
+                    aria-hidden="true"
+                ></i>
+
+            `;
+
+
+            continue;
+        }
+
+
+        // ==================================
+        // VAZIA
+        // ==================================
+
+        html += `
+
+            <i
+                class="fa-regular fa-star"
+                aria-hidden="true"
+            ></i>
+
+        `;
+    }
+
+
+    return html;
+}
+
+
+// ==========================================
+// FORMATAR MÉDIA
+// ==========================================
+
+function formatarMediaAvaliacao(
+    valor
+) {
+
+    return Number(
+        valor ||
+        0
+    )
+        .toLocaleString(
+            "pt-BR",
+            {
+
+                minimumFractionDigits:
+                    1,
+
+                maximumFractionDigits:
+                    1
+
+            }
+        );
+}
+
+
+// ==========================================
+// CONFIGURAR SISTEMA DE AVALIAÇÕES
+// ==========================================
+
+function configurarAvaliacoes() {
+
+    const listaProdutos =
+        document.getElementById(
+            "listaProdutos"
+        );
+
+
+    const modal =
+        document.getElementById(
+            "modalAvaliacoes"
+        );
+
+
+    const botaoFechar =
+        document.getElementById(
+            "btnFecharAvaliacoes"
+        );
+
+
+    // ==================================
+    // CLIQUE NA AVALIAÇÃO DO PRODUTO
+    // ==================================
+
+    listaProdutos?.addEventListener(
+        "click",
+        evento => {
+
+            const botao =
+                evento.target.closest(
+                    "[data-ver-avaliacoes]"
+                );
+
+
+            if (!botao) {
+
+                return;
+            }
+
+
+            const produtoId =
+                botao.dataset.produtoId;
+
+
+            if (!produtoId) {
+
+                return;
+            }
+
+
+            abrirAvaliacoesProduto(
+                produtoId
+            );
+        }
+    );
+
+
+    // ==================================
+    // BOTÃO X
+    // ==================================
+
+    botaoFechar?.addEventListener(
+        "click",
+        fecharModalAvaliacoes
+    );
+
+
+    // ==================================
+    // OVERLAY
+    // ==================================
+
+    modal
+        ?.querySelectorAll(
+            "[data-fechar-avaliacoes]"
+        )
+        .forEach(
+            elemento => {
+
+                elemento.addEventListener(
+                    "click",
+                    fecharModalAvaliacoes
+                );
+            }
+        );
+
+
+    // ==================================
+    // ESC
+    // ==================================
+
+    document.addEventListener(
+        "keydown",
+        evento => {
+
+            if (
+                evento.key !==
+                "Escape"
+            ) {
+
+                return;
+            }
+
+
+            if (
+                modal?.classList.contains(
+                    "aberto"
+                )
+            ) {
+
+                fecharModalAvaliacoes();
+            }
+        }
+    );
+}
+
+
+// ==========================================
+// ABRIR AVALIAÇÕES DO PRODUTO
+// ==========================================
+
+async function abrirAvaliacoesProduto(
+    produtoId
+) {
+
+    const produto =
+        produtos.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    produtoId
+                )
+        );
+
+
+    if (!produto) {
+
+        notificar(
+            "Não foi possível localizar este produto.",
+            "erro",
+            "Produto não encontrado"
+        );
+
+
+        return;
+    }
+
+
+    const modal =
+        document.getElementById(
+            "modalAvaliacoes"
+        );
+
+
+    const nomeProduto =
+        document.getElementById(
+            "nomeProdutoAvaliacoes"
+        );
+
+
+    const conteudo =
+        document.getElementById(
+            "conteudoAvaliacoes"
+        );
+
+
+    if (
+        !modal ||
+        !conteudo
+    ) {
+
+        console.error(
+            "Elementos do modal de avaliações não encontrados."
+        );
+
+
+        notificar(
+            "Não foi possível abrir as avaliações.",
+            "erro",
+            "Erro"
+        );
+
+
+        return;
+    }
+
+
+    // ==================================
+    // NOME DO PRODUTO
+    // ==================================
+
+    if (nomeProduto) {
+
+        nomeProduto.textContent =
+            produto.nome ||
+            "Produto";
+    }
+
+
+    // ==================================
+    // CARREGANDO
+    // ==================================
+
+    conteudo.innerHTML = `
+
+        <div class="carregando-avaliacoes">
+
+            <i
+                class="fa-solid fa-spinner fa-spin"
+            ></i>
+
+            <span>
+                Carregando avaliações...
+            </span>
+
+        </div>
+
+    `;
+
+
+    // ==================================
+    // ABRIR MODAL
+    // ==================================
+
+    modal.classList.add(
+        "aberto"
+    );
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    // ==================================
+    // BUSCAR AVALIAÇÕES
+    // ==================================
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await window.db.rpc(
+                "listar_avaliacoes_produto",
+                {
+                    p_produto_id:
+                        produto.id
+                }
+            );
+
+
+        if (error) {
+
+            throw error;
+        }
+
+
+        const avaliacoes =
+            Array.isArray(
+                data
+            )
+                ? data
+                : [];
+
+
+        const resumo =
+            obterResumoAvaliacao(
+                produto.id
+            );
+
+
+        console.log(
+            "Avaliações do produto:",
+            avaliacoes
+        );
+
+
+        conteudo.innerHTML =
+            criarConteudoAvaliacoesHTML(
+                resumo,
+                avaliacoes
+            );
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar avaliações:",
+            erro
+        );
+
+
+        conteudo.innerHTML = `
+
+            <div class="erro-avaliacoes">
+
+                <i
+                    class="fa-solid fa-triangle-exclamation"
+                ></i>
+
+                <strong>
+
+                    Não foi possível carregar
+                    as avaliações.
+
+                </strong>
+
+                <p>
+
+                    Tente novamente em alguns
+                    instantes.
+
+                </p>
+
+            </div>
+
+        `;
+
+
+        notificar(
+            "Não foi possível carregar as avaliações deste produto.",
+            "erro",
+            "Erro nas avaliações",
+            4500
+        );
+    }
+}
+
+
+// ==========================================
+// CRIAR CONTEÚDO DO MODAL
+// ==========================================
+
+function criarConteudoAvaliacoesHTML(
+    resumo,
+    avaliacoes
+) {
+
+    const media =
+        Number(
+            resumo?.media ||
+            0
+        );
+
+
+    const total =
+        Number(
+            resumo?.total ||
+            0
+        );
+
+
+    const lista =
+        Array.isArray(
+            avaliacoes
+        )
+            ? avaliacoes
+            : [];
+
+
+    // ==================================
+    // RESUMO
+    // ==================================
+
+    const resumoHTML = `
+
+        <section class="resumo-avaliacoes">
+
+
+            <div class="nota-geral-avaliacoes">
+
+                <strong>
+
+                    ${formatarMediaAvaliacao(
+                        media
+                    )}
+
+                </strong>
+
+
+                <div
+                    class="estrelas-resumo-modal"
+                    aria-label="Média ${formatarMediaAvaliacao(
+                        media
+                    )} de 5 estrelas"
+                >
+
+                    ${criarEstrelasMediaHTML(
+                        media
+                    )}
+
+                </div>
+
+
+                <span>
+
+                    ${total}
+
+                    ${
+                        total === 1
+                            ? "avaliação"
+                            : "avaliações"
+                    }
+
+                </span>
+
+            </div>
+
+
+            <div class="distribuicao-avaliacoes">
+
+                ${criarDistribuicaoAvaliacoesHTML(
+                    resumo
+                )}
+
+            </div>
+
+
+        </section>
+
+    `;
+
+
+    // ==================================
+    // SEM AVALIAÇÕES
+    // ==================================
+
+    if (
+        total <= 0 ||
+        lista.length === 0
+    ) {
+
+        return `
+
+            ${resumoHTML}
+
+
+            <div class="nenhuma-avaliacao-modal">
+
+                <i class="fa-regular fa-star"></i>
+
+                <h3>
+                    Ainda não há avaliações.
+                </h3>
+
+                <p>
+
+                    Este produto ainda não recebeu
+                    avaliações dos clientes.
+
+                </p>
+
+            </div>
+
+        `;
+    }
+
+
+    // ==================================
+    // LISTA DE AVALIAÇÕES
+    // ==================================
+
+    const listaHTML =
+        lista
+            .map(
+                criarAvaliacaoPublicaHTML
+            )
+            .join(
+                ""
+            );
+
+
+    return `
+
+        ${resumoHTML}
+
+
+        <section class="lista-avaliacoes-publicas">
+
+            <h3>
+
+                <i class="fa-solid fa-comments"></i>
+
+                Avaliações dos clientes
+
+            </h3>
+
+
+            ${listaHTML}
+
+        </section>
+
+    `;
+}
+
+
+// ==========================================
+// DISTRIBUIÇÃO DAS NOTAS
+// ==========================================
+
+function criarDistribuicaoAvaliacoesHTML(
+    resumo
+) {
+
+    const total =
+        Number(
+            resumo?.total ||
+            0
+        );
+
+
+    let html =
+        "";
+
+
+    for (
+        let nota = 5;
+        nota >= 1;
+        nota--
+    ) {
+
+        const quantidade =
+            Number(
+                resumo?.[
+                    `nota_${nota}`
+                ] ||
+                0
+            );
+
+
+        const percentual =
+            total > 0
+                ? (
+                    quantidade /
+                    total
+                ) * 100
+                : 0;
+
+
+        const percentualSeguro =
+            Math.min(
+                100,
+                Math.max(
+                    0,
+                    percentual
+                )
+            );
+
+
+        html += `
+
+            <div class="linha-distribuicao">
+
+                <span class="nota-distribuicao">
+
+                    ${nota}
+
+                    <i class="fa-solid fa-star"></i>
+
+                </span>
+
+
+                <div
+                    class="barra-distribuicao"
+                    aria-label="${nota} estrelas: ${quantidade} avaliação ou avaliações"
+                >
+
+                    <div
+                        class="barra-distribuicao-preenchida"
+                        style="width:${percentualSeguro}%"
+                    ></div>
+
+                </div>
+
+
+                <span class="quantidade-distribuicao">
+
+                    ${quantidade}
+
+                </span>
+
+            </div>
+
+        `;
+    }
+
+
+    return html;
+}
+
+
+// ==========================================
+// CRIAR AVALIAÇÃO PÚBLICA
+// ==========================================
+
+function criarAvaliacaoPublicaHTML(
+    avaliacao
+) {
+
+    const nota =
+        Math.max(
+            1,
+            Math.min(
+                5,
+                Number(
+                    avaliacao?.nota ||
+                    1
+                )
+            )
+        );
+
+
+    const comentario =
+        String(
+            avaliacao?.comentario ||
+            ""
+        )
+            .trim();
+
+
+    const resposta =
+        String(
+            avaliacao?.resposta_loja ||
+            ""
+        )
+            .trim();
+
+
+    const data =
+        formatarDataAvaliacao(
+            avaliacao?.criado_em
+        );
+
+
+    return `
+
+        <article class="avaliacao-publica">
+
+
+            <!-- ==================================
+                 TOPO
+            =================================== -->
+
+            <div class="avaliacao-publica-topo">
+
+
+                <div>
+
+
+                    <div
+                        class="estrelas-avaliacao-publica"
+                        aria-label="${nota} de 5 estrelas"
+                    >
+
+                        ${criarEstrelasMediaHTML(
+                            nota
+                        )}
+
+                    </div>
+
+
+                    <span class="compra-verificada">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Compra verificada
+
+                    </span>
+
+
+                </div>
+
+
+                ${
+                    data
+                        ? `
+
+                            <time>
+
+                                ${escaparHTML(
+                                    data
+                                )}
+
+                            </time>
+
+                        `
+                        : ""
+                }
+
+
+            </div>
+
+
+            <!-- ==================================
+                 COMENTÁRIO
+            =================================== -->
+
+            ${
+                comentario
+                    ? `
+
+                        <p class="comentario-avaliacao-publica">
+
+                            ${escaparHTML(
+                                comentario
+                            )}
+
+                        </p>
+
+                    `
+                    : `
+
+                        <p
+                            class="
+                                comentario-avaliacao-publica
+                                sem-comentario
+                            "
+                        >
+
+                            Cliente avaliou este produto
+                            sem deixar comentário.
+
+                        </p>
+
+                    `
+            }
+
+
+            <!-- ==================================
+                 RESPOSTA DA LOJA
+            =================================== -->
+
+            ${
+                resposta
+                    ? `
+
+                        <div class="resposta-loja-avaliacao">
+
+                            <strong>
+
+                                <i class="fa-solid fa-store"></i>
+
+                                Resposta da loja
+
+                            </strong>
+
+
+                            <p>
+
+                                ${escaparHTML(
+                                    resposta
+                                )}
+
+                            </p>
+
+                        </div>
+
+                    `
+                    : ""
+            }
+
+
+        </article>
+
+    `;
+}
+
+
+// ==========================================
+// FORMATAR DATA DA AVALIAÇÃO
+// ==========================================
+
+function formatarDataAvaliacao(
+    data
+) {
+
+    if (!data) {
+
+        return "";
+    }
+
+
+    const objeto =
+        new Date(
+            data
+        );
+
+
+    if (
+        Number.isNaN(
+            objeto.getTime()
+        )
+    ) {
+
+        return "";
+    }
+
+
+    return objeto.toLocaleDateString(
+        "pt-BR",
+        {
+
+            day:
+                "2-digit",
+
+            month:
+                "2-digit",
+
+            year:
+                "numeric"
+
+        }
+    );
+}
+
+
+// ==========================================
+// FECHAR MODAL DE AVALIAÇÕES
+// ==========================================
+
+function fecharModalAvaliacoes() {
+
+    const modal =
+        document.getElementById(
+            "modalAvaliacoes"
+        );
+
+
+    if (!modal) {
+
+        return;
+    }
+
+
+    modal.classList.remove(
+        "aberto"
+    );
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    document.body.style.overflow =
+        "";
 }
 
 
@@ -746,7 +2080,6 @@ function mostrarErroProdutos() {
     if (!container) {
 
         return;
-
     }
 
 
@@ -779,7 +2112,6 @@ function mostrarErroProdutos() {
         </div>
 
     `;
-
 }
 
 
@@ -801,7 +2133,6 @@ function mostrarProdutos(
     if (!container) {
 
         return;
-
     }
 
 
@@ -858,30 +2189,25 @@ function mostrarProdutos(
                 </div>
 
             `;
-
         }
 
 
         return;
-
     }
 
-
-    // ==================================
-    // PRODUTOS
-    // ==================================
 
     const html =
         lista
             .map(
                 criarCardProduto
             )
-            .join("");
+            .join(
+                ""
+            );
 
 
     container.innerHTML =
         html;
-
 }
 
 
@@ -909,13 +2235,15 @@ function criarCardProduto(
 
     const preco =
         Number(
-            produto.preco || 0
+            produto.preco ||
+            0
         );
 
 
     const precoPromocional =
         Number(
-            produto.preco_promocional || 0
+            produto.preco_promocional ||
+            0
         );
 
 
@@ -923,8 +2251,19 @@ function criarCardProduto(
         Math.max(
             0,
             Number(
-                produto.estoque || 0
+                produto.estoque ||
+                0
             )
+        );
+
+
+    // ==================================
+    // AVALIAÇÃO
+    // ==================================
+
+    const avaliacaoHTML =
+        criarResumoAvaliacaoHTML(
+            produto
         );
 
 
@@ -977,7 +2316,6 @@ function criarCardProduto(
             </div>
 
         `;
-
     }
 
 
@@ -1037,12 +2375,11 @@ function criarCardProduto(
             </div>
 
         `;
-
     }
 
 
     // ==================================
-    // BOTÃO
+    // BOTÃO DO CARRINHO
     // ==================================
 
     let botaoHTML;
@@ -1086,7 +2423,6 @@ function criarCardProduto(
             </button>
 
         `;
-
     }
 
 
@@ -1121,6 +2457,9 @@ function criarCardProduto(
                 </p>
 
 
+                ${avaliacaoHTML}
+
+
                 ${precoHTML}
 
 
@@ -1139,7 +2478,6 @@ function criarCardProduto(
         </div>
 
     `;
-
 }
 
 
@@ -1154,7 +2492,6 @@ function mostrarPlaceholderProduto(
     if (!imagem) {
 
         return;
-
     }
 
 
@@ -1176,7 +2513,6 @@ function mostrarPlaceholderProduto(
     if (!area) {
 
         return;
-
     }
 
 
@@ -1190,9 +2526,7 @@ function mostrarPlaceholderProduto(
 
         placeholder.style.display =
             "flex";
-
     }
-
 }
 
 
@@ -1211,7 +2545,6 @@ function pesquisarProdutos() {
     if (!pesquisa) {
 
         return;
-
     }
 
 
@@ -1229,13 +2562,12 @@ function pesquisarProdutos() {
 
 
         return;
-
     }
 
 
     const filtrados =
         produtos.filter(
-            (produto) => {
+            produto => {
 
                 const nome =
                     normalizarTexto(
@@ -1258,7 +2590,6 @@ function pesquisarProdutos() {
                         texto
                     )
                 );
-
             }
         );
 
@@ -1267,7 +2598,6 @@ function pesquisarProdutos() {
         filtrados,
         true
     );
-
 }
 
 
@@ -1281,7 +2611,7 @@ function adicionarCarrinho(
 
     const produto =
         produtos.find(
-            (produto) =>
+            produto =>
                 String(
                     produto.id
                 ) ===
@@ -1301,7 +2631,6 @@ function adicionarCarrinho(
 
 
         return;
-
     }
 
 
@@ -1311,7 +2640,8 @@ function adicionarCarrinho(
 
     const estoque =
         Number(
-            produto.estoque || 0
+            produto.estoque ||
+            0
         );
 
 
@@ -1331,7 +2661,6 @@ function adicionarCarrinho(
 
 
         return;
-
     }
 
 
@@ -1339,7 +2668,8 @@ function adicionarCarrinho(
     // CARRINHO
     // ==================================
 
-    let carrinho = [];
+    let carrinho =
+        [];
 
 
     try {
@@ -1353,7 +2683,9 @@ function adicionarCarrinho(
 
 
         carrinho =
-            Array.isArray(dados)
+            Array.isArray(
+                dados
+            )
                 ? dados
                 : [];
 
@@ -1373,7 +2705,6 @@ function adicionarCarrinho(
         localStorage.removeItem(
             "carrinho"
         );
-
     }
 
 
@@ -1383,7 +2714,7 @@ function adicionarCarrinho(
 
     const existente =
         carrinho.find(
-            (item) =>
+            item =>
                 String(
                     item.id
                 ) ===
@@ -1425,16 +2756,13 @@ function adicionarCarrinho(
 
 
             return;
-
         }
 
 
         existente.quantidade =
-            quantidadeAtual + 1;
+            quantidadeAtual +
+            1;
 
-
-        // Atualiza dados que podem
-        // ter mudado no produto.
 
         existente.nome =
             produto.nome;
@@ -1447,7 +2775,8 @@ function adicionarCarrinho(
 
         existente.preco =
             Number(
-                produto.preco || 0
+                produto.preco ||
+                0
             );
 
 
@@ -1496,7 +2825,8 @@ function adicionarCarrinho(
 
             preco:
                 Number(
-                    produto.preco || 0
+                    produto.preco ||
+                    0
                 ),
 
             preco_promocional:
@@ -1517,12 +2847,11 @@ function adicionarCarrinho(
                 1
 
         });
-
     }
 
 
     // ==================================
-    // SALVAR
+    // SALVAR CARRINHO
     // ==================================
 
     try {
@@ -1551,12 +2880,11 @@ function adicionarCarrinho(
 
 
         return;
-
     }
 
 
     // ==================================
-    // ATUALIZAR HEADER
+    // CONTADOR DO HEADER
     // ==================================
 
     if (
@@ -1567,12 +2895,11 @@ function adicionarCarrinho(
 
         window
             .atualizarContadorCarrinho();
-
     }
 
 
     // ==================================
-    // SUCESSO
+    // FEEDBACK
     // ==================================
 
     const quantidadeNoCarrinho =
@@ -1601,15 +2928,12 @@ function adicionarCarrinho(
             "Produto adicionado!",
             2800
         );
-
     }
-
 }
 
 
 // ==========================================
 // NORMALIZAR TEXTO
-// Ignora maiúsculas e acentos
 // ==========================================
 
 function normalizarTexto(
@@ -1633,7 +2957,6 @@ function normalizarTexto(
         .trim()
 
         .toLowerCase();
-
 }
 
 
@@ -1646,19 +2969,21 @@ function formatarPreco(
 ) {
 
     return Number(
-        valor || 0
+        valor ||
+        0
     )
         .toLocaleString(
             "pt-BR",
             {
+
                 minimumFractionDigits:
                     2,
 
                 maximumFractionDigits:
                     2
+
             }
         );
-
 }
 
 
@@ -1699,7 +3024,6 @@ function escaparHTML(
             "'",
             "&#039;"
         );
-
 }
 
 
@@ -1728,7 +3052,6 @@ function notificar(
 
 
         return;
-
     }
 
 
@@ -1736,7 +3059,6 @@ function notificar(
         `[${tipo}] ${titulo || ""}`,
         texto
     );
-
 }
 
 

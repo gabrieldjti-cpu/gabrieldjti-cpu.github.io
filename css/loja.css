@@ -1,6 +1,7 @@
 /* ==========================================
    LOJA.CSS
    Página pública da loja
+   Comércio da Cidade
 ========================================== */
 
 
@@ -9,30 +10,58 @@
 ========================================== */
 
 * {
+
     margin: 0;
+
     padding: 0;
+
     box-sizing: border-box;
+
 }
 
 
 body {
-    font-family: 'Poppins', sans-serif;
 
-    background: #f4f6f9;
+    font-family:
+        'Poppins',
+        sans-serif;
 
-    color: #333;
+    background:
+        #f4f6f9;
+
+    color:
+        #333;
+
 }
 
 
 a {
-    text-decoration: none;
 
-    color: inherit;
+    text-decoration:
+        none;
+
+    color:
+        inherit;
+
+}
+
+
+button,
+input,
+textarea,
+select {
+
+    font-family:
+        inherit;
+
 }
 
 
 button {
-    font-family: inherit;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
 }
 
 
@@ -48,11 +77,16 @@ button {
 ========================================== */
 
 .container {
-    width: 95%;
 
-    max-width: 1200px;
+    width:
+        95%;
 
-    margin: 30px auto;
+    max-width:
+        1200px;
+
+    margin:
+        30px auto;
+
 }
 
 
@@ -61,23 +95,32 @@ button {
 ========================================== */
 
 .loja-info {
-    background: #fff;
 
-    border-radius: 18px;
+    display:
+        flex;
 
-    padding: 28px;
+    align-items:
+        center;
 
-    display: flex;
+    gap:
+        28px;
 
-    gap: 28px;
+    margin-bottom:
+        30px;
 
-    align-items: center;
+    padding:
+        28px;
+
+    border-radius:
+        18px;
+
+    background:
+        #fff;
 
     box-shadow:
         0 5px 20px
         rgba(0, 0, 0, .08);
 
-    margin-bottom: 30px;
 }
 
 
@@ -86,19 +129,29 @@ button {
 ========================================== */
 
 .loja-info #logoLoja {
-    width: 130px;
 
-    height: 130px;
+    width:
+        130px;
 
-    flex-shrink: 0;
+    height:
+        130px;
 
-    object-fit: cover;
+    flex-shrink:
+        0;
 
-    border-radius: 50%;
+    object-fit:
+        cover;
 
-    border: 4px solid #198754;
+    border:
+        4px solid
+        #198754;
 
-    background: #f5f5f5;
+    border-radius:
+        50%;
+
+    background:
+        #f5f5f5;
+
 }
 
 
@@ -107,36 +160,52 @@ button {
 ========================================== */
 
 .logo-loja-placeholder {
-    width: 130px;
 
-    height: 130px;
+    width:
+        130px;
 
-    flex-shrink: 0;
+    height:
+        130px;
 
-    display: flex;
+    flex-shrink:
+        0;
 
-    align-items: center;
+    display:
+        flex;
 
-    justify-content: center;
+    align-items:
+        center;
 
-    border-radius: 50%;
-
-    background: #eef8f2;
-
-    color: #198754;
+    justify-content:
+        center;
 
     border:
         3px dashed
         #8fc7a6;
+
+    border-radius:
+        50%;
+
+    background:
+        #eef8f2;
+
+    color:
+        #198754;
+
 }
 
 
 .logo-loja-placeholder i {
-    width: auto !important;
 
-    font-size: 48px;
+    width:
+        auto !important;
 
-    color: #198754;
+    color:
+        #198754;
+
+    font-size:
+        48px;
+
 }
 
 
@@ -145,33 +214,50 @@ button {
 ========================================== */
 
 .loja-info h1 {
-    margin-bottom: 12px;
 
-    color: #198754;
+    margin-bottom:
+        12px;
 
-    font-size: 30px;
+    color:
+        #198754;
 
-    line-height: 1.25;
+    font-size:
+        30px;
+
+    line-height:
+        1.25;
+
 }
 
 
 .loja-info p {
-    margin: 8px 0;
 
-    color: #555;
+    margin:
+        8px 0;
 
-    line-height: 1.5;
+    color:
+        #555;
+
+    line-height:
+        1.5;
+
 }
 
 
 .loja-info p i {
-    width: 22px;
 
-    margin-right: 3px;
+    width:
+        22px;
 
-    color: #198754;
+    margin-right:
+        3px;
 
-    text-align: center;
+    color:
+        #198754;
+
+    text-align:
+        center;
+
 }
 
 
@@ -180,36 +266,52 @@ button {
 ========================================== */
 
 .btn-whatsapp {
-    display: inline-flex;
 
-    align-items: center;
+    display:
+        inline-flex;
 
-    justify-content: center;
+    align-items:
+        center;
 
-    gap: 8px;
+    justify-content:
+        center;
 
-    margin-top: 18px;
+    gap:
+        8px;
 
-    padding: 12px 20px;
+    margin-top:
+        18px;
 
-    border-radius: 9px;
+    padding:
+        12px 20px;
 
-    background: #25d366;
+    border-radius:
+        9px;
 
-    color: #fff;
+    background:
+        #25d366;
 
-    font-weight: 600;
+    color:
+        #fff;
+
+    font-weight:
+        600;
 
     transition:
         background .3s,
         transform .3s;
+
 }
 
 
 .btn-whatsapp:hover {
-    background: #1ebe5b;
 
-    transform: translateY(-2px);
+    background:
+        #1ebe5b;
+
+    transform:
+        translateY(-2px);
+
 }
 
 
@@ -218,45 +320,65 @@ button {
 ========================================== */
 
 .pesquisa {
-    display: flex;
 
-    gap: 10px;
+    display:
+        flex;
 
-    margin-bottom: 30px;
+    gap:
+        10px;
+
+    margin-bottom:
+        30px;
+
 }
 
 
 .pesquisa input {
-    flex: 1;
 
-    min-width: 0;
+    flex:
+        1;
 
-    padding: 14px 16px;
+    min-width:
+        0;
 
-    border: 1px solid #ddd;
+    padding:
+        14px 16px;
 
-    border-radius: 10px;
+    border:
+        1px solid
+        #ddd;
 
-    background: #fff;
+    border-radius:
+        10px;
 
-    font-family: inherit;
+    outline:
+        none;
 
-    font-size: 15px;
+    background:
+        #fff;
 
-    color: #333;
+    color:
+        #333;
 
-    transition: .3s;
+    font-size:
+        15px;
+
+    transition:
+        border-color .3s,
+        box-shadow .3s;
+
 }
 
 
 .pesquisa input:focus {
-    outline: none;
 
-    border-color: #198754;
+    border-color:
+        #198754;
 
     box-shadow:
         0 0 0 4px
         rgba(25, 135, 84, .12);
+
 }
 
 
@@ -265,9 +387,13 @@ button {
 ========================================== */
 
 section h2 {
-    margin-bottom: 20px;
 
-    color: #198754;
+    margin-bottom:
+        20px;
+
+    color:
+        #198754;
+
 }
 
 
@@ -276,7 +402,9 @@ section h2 {
 ========================================== */
 
 .produtos {
-    display: grid;
+
+    display:
+        grid;
 
     grid-template-columns:
         repeat(
@@ -284,7 +412,9 @@ section h2 {
             minmax(260px, 1fr)
         );
 
-    gap: 25px;
+    gap:
+        25px;
+
 }
 
 
@@ -293,11 +423,19 @@ section h2 {
 ========================================== */
 
 .produto {
-    background: #fff;
 
-    border-radius: 16px;
+    overflow:
+        hidden;
 
-    overflow: hidden;
+    border:
+        1px solid
+        rgba(0, 0, 0, .04);
+
+    border-radius:
+        16px;
+
+    background:
+        #fff;
 
     box-shadow:
         0 5px 15px
@@ -306,15 +444,19 @@ section h2 {
     transition:
         transform .3s,
         box-shadow .3s;
+
 }
 
 
 .produto:hover {
-    transform: translateY(-5px);
+
+    transform:
+        translateY(-5px);
 
     box-shadow:
         0 10px 25px
         rgba(0, 0, 0, .12);
+
 }
 
 
@@ -323,19 +465,28 @@ section h2 {
 ========================================== */
 
 .area-imagem-produto {
-    width: 100%;
 
-    height: 220px;
+    width:
+        100%;
 
-    display: flex;
+    height:
+        220px;
 
-    align-items: center;
+    display:
+        flex;
 
-    justify-content: center;
+    align-items:
+        center;
 
-    overflow: hidden;
+    justify-content:
+        center;
 
-    background: #f3f5f7;
+    overflow:
+        hidden;
+
+    background:
+        #f3f5f7;
+
 }
 
 
@@ -344,13 +495,19 @@ section h2 {
 ========================================== */
 
 .imagem-produto {
-    width: 100%;
 
-    height: 100%;
+    width:
+        100%;
 
-    display: block;
+    height:
+        100%;
 
-    object-fit: cover;
+    display:
+        block;
+
+    object-fit:
+        cover;
+
 }
 
 
@@ -359,26 +516,42 @@ section h2 {
 ========================================== */
 
 .imagem-produto-placeholder {
-    width: 100%;
 
-    height: 100%;
+    width:
+        100%;
 
-    display: flex;
+    height:
+        100%;
 
-    align-items: center;
+    display:
+        flex;
 
-    justify-content: center;
+    align-items:
+        center;
 
-    background: #f1f8f4;
+    justify-content:
+        center;
 
-    color: #198754;
+    background:
+        #f1f8f4;
+
+    color:
+        #198754;
+
 }
 
 
 .imagem-produto-placeholder i {
-    font-size: 55px;
 
-    opacity: .8;
+    color:
+        #198754;
+
+    font-size:
+        55px;
+
+    opacity:
+        .8;
+
 }
 
 
@@ -387,31 +560,274 @@ section h2 {
 ========================================== */
 
 .produto .conteudo {
-    padding: 18px;
+
+    padding:
+        18px;
+
 }
 
 
 .produto h3 {
-    margin-bottom: 10px;
 
-    color: #292929;
+    margin-bottom:
+        10px;
 
-    font-size: 19px;
+    color:
+        #292929;
 
-    line-height: 1.35;
+    font-size:
+        19px;
+
+    line-height:
+        1.35;
+
 }
 
 
 .produto p {
-    min-height: 42px;
 
-    margin-bottom: 12px;
+    min-height:
+        42px;
 
-    color: #666;
+    margin-bottom:
+        12px;
 
-    font-size: 14px;
+    color:
+        #666;
 
-    line-height: 1.5;
+    font-size:
+        14px;
+
+    line-height:
+        1.5;
+
+}
+
+
+/* ==========================================
+   AVALIAÇÃO DO PRODUTO
+========================================== */
+
+.avaliacao-produto {
+
+    min-height:
+        26px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        5px;
+
+    margin:
+        8px 0 13px;
+
+}
+
+
+/* ==========================================
+   ESTRELAS DO CARD
+========================================== */
+
+.estrelas-produto {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        2px;
+
+    color:
+        #f59e0b;
+
+    font-size:
+        13px;
+
+}
+
+
+.estrelas-produto i {
+
+    line-height:
+        1;
+
+}
+
+
+/* ==========================================
+   MÉDIA
+========================================== */
+
+.avaliacao-produto strong {
+
+    color:
+        #92400e;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+}
+
+
+/* ==========================================
+   QUANTIDADE
+========================================== */
+
+.avaliacao-produto > span {
+
+    color:
+        #6b7280;
+
+    font-size:
+        10px;
+
+    font-weight:
+        500;
+
+}
+
+
+/* ==========================================
+   SEM AVALIAÇÕES
+========================================== */
+
+.avaliacao-produto.sem-avaliacoes
+.estrelas-produto {
+
+    color:
+        #cbd5e1;
+
+}
+
+
+.avaliacao-produto.sem-avaliacoes
+> span {
+
+    color:
+        #94a3b8;
+
+}
+
+
+/* ==========================================
+   AVALIAÇÃO CLICÁVEL
+========================================== */
+
+.avaliacao-produto-clicavel {
+
+    width:
+        fit-content;
+
+    max-width:
+        100%;
+
+    padding:
+        6px 8px;
+
+    margin-left:
+        -8px;
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    outline:
+        none;
+
+    background:
+        transparent;
+
+    cursor:
+        pointer;
+
+    color:
+        inherit;
+
+    text-align:
+        left;
+
+    appearance:
+        none;
+
+    transition:
+        background .2s,
+        transform .2s;
+
+}
+
+
+.avaliacao-produto-clicavel:hover {
+
+    background:
+        #fffbeb;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.avaliacao-produto-clicavel:active {
+
+    transform:
+        translateY(0);
+
+}
+
+
+.avaliacao-produto-clicavel:focus-visible {
+
+    outline:
+        3px solid
+        rgba(245, 158, 11, .25);
+
+    outline-offset:
+        2px;
+
+}
+
+
+/* ==========================================
+   SETA DAS AVALIAÇÕES
+========================================== */
+
+.seta-avaliacoes {
+
+    margin-left:
+        2px;
+
+    color:
+        #94a3b8;
+
+    font-size:
+        9px;
+
+    transition:
+        transform .2s;
+
+}
+
+
+.avaliacao-produto-clicavel:hover
+.seta-avaliacoes {
+
+    transform:
+        translateX(2px);
+
 }
 
 
@@ -420,13 +836,19 @@ section h2 {
 ========================================== */
 
 .preco {
-    margin-bottom: 4px;
 
-    color: #198754;
+    margin-bottom:
+        4px;
 
-    font-size: 22px;
+    color:
+        #198754;
 
-    font-weight: 700;
+    font-size:
+        22px;
+
+    font-weight:
+        700;
+
 }
 
 
@@ -435,13 +857,19 @@ section h2 {
 ========================================== */
 
 .preco-antigo {
-    margin-bottom: 12px;
 
-    color: #999;
+    margin-bottom:
+        12px;
 
-    font-size: 14px;
+    color:
+        #999;
 
-    text-decoration: line-through;
+    font-size:
+        14px;
+
+    text-decoration:
+        line-through;
+
 }
 
 
@@ -450,11 +878,16 @@ section h2 {
 ========================================== */
 
 .estoque {
-    margin-bottom: 15px;
 
-    color: #666;
+    margin-bottom:
+        15px;
 
-    font-size: 14px;
+    color:
+        #666;
+
+    font-size:
+        14px;
+
 }
 
 
@@ -463,34 +896,49 @@ section h2 {
 ========================================== */
 
 .btn-comprar {
-    width: 100%;
 
-    padding: 13px;
+    width:
+        100%;
 
-    border: none;
+    padding:
+        13px;
 
-    border-radius: 9px;
+    border:
+        none;
 
-    background: #198754;
+    border-radius:
+        9px;
 
-    color: #fff;
+    background:
+        #198754;
 
-    cursor: pointer;
+    color:
+        #fff;
 
-    font-size: 15px;
+    cursor:
+        pointer;
 
-    font-weight: 600;
+    font-size:
+        15px;
+
+    font-weight:
+        600;
 
     transition:
         background .3s,
         transform .3s;
+
 }
 
 
 .btn-comprar:hover {
-    background: #146c43;
 
-    transform: translateY(-1px);
+    background:
+        #146c43;
+
+    transform:
+        translateY(-1px);
+
 }
 
 
@@ -499,22 +947,33 @@ section h2 {
 ========================================== */
 
 .btn-comprar:disabled {
-    background: #adb5bd;
 
-    color: #fff;
+    background:
+        #adb5bd;
 
-    cursor: not-allowed;
+    color:
+        #fff;
 
-    opacity: .8;
+    cursor:
+        not-allowed;
 
-    transform: none;
+    opacity:
+        .8;
+
+    transform:
+        none;
+
 }
 
 
 .btn-comprar:disabled:hover {
-    background: #adb5bd;
 
-    transform: none;
+    background:
+        #adb5bd;
+
+    transform:
+        none;
+
 }
 
 
@@ -523,32 +982,48 @@ section h2 {
 ========================================== */
 
 .carregando {
-    grid-column: 1 / -1;
 
-    min-height: 180px;
+    grid-column:
+        1 / -1;
 
-    display: flex;
+    min-height:
+        180px;
 
-    flex-direction: column;
+    display:
+        flex;
 
-    align-items: center;
+    flex-direction:
+        column;
 
-    justify-content: center;
+    align-items:
+        center;
 
-    gap: 12px;
+    justify-content:
+        center;
 
-    padding: 30px;
+    gap:
+        12px;
 
-    text-align: center;
+    padding:
+        30px;
 
-    color: #666;
+    text-align:
+        center;
+
+    color:
+        #666;
+
 }
 
 
 .carregando i {
-    color: #198754;
 
-    font-size: 34px;
+    color:
+        #198754;
+
+    font-size:
+        34px;
+
 }
 
 
@@ -557,40 +1032,1071 @@ section h2 {
 ========================================== */
 
 .sem-produtos {
-    grid-column: 1 / -1;
 
-    background: #fff;
+    grid-column:
+        1 / -1;
 
-    border-radius: 15px;
+    padding:
+        40px;
 
-    padding: 40px;
+    border-radius:
+        15px;
 
-    text-align: center;
+    background:
+        #fff;
+
+    text-align:
+        center;
 
     box-shadow:
         0 5px 20px
         rgba(0, 0, 0, .08);
+
 }
 
 
 .sem-produtos i {
-    margin-bottom: 20px;
 
-    color: #198754;
+    margin-bottom:
+        20px;
 
-    font-size: 55px;
+    color:
+        #198754;
+
+    font-size:
+        55px;
+
 }
 
 
 .sem-produtos h2 {
-    margin-bottom: 10px;
 
-    color: #333;
+    margin-bottom:
+        10px;
+
+    color:
+        #333;
+
 }
 
 
 .sem-produtos p {
-    color: #666;
+
+    color:
+        #666;
+
+}
+
+
+/* ==========================================
+   MODAL DE AVALIAÇÕES
+========================================== */
+
+.modal-avaliacoes {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        2500;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        20px;
+
+}
+
+
+/* ==========================================
+   MODAL ABERTO
+========================================== */
+
+.modal-avaliacoes.aberto {
+
+    display:
+        flex;
+
+}
+
+
+/* ==========================================
+   OVERLAY
+========================================== */
+
+.modal-avaliacoes-overlay {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        rgba(15, 23, 42, .62);
+
+    backdrop-filter:
+        blur(3px);
+
+}
+
+
+/* ==========================================
+   CONTEÚDO DO MODAL
+========================================== */
+
+.modal-avaliacoes-conteudo {
+
+    position:
+        relative;
+
+    z-index:
+        1;
+
+    width:
+        min(
+            700px,
+            100%
+        );
+
+    max-height:
+        calc(100vh - 40px);
+
+    overflow-y:
+        auto;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .1);
+
+    border-radius:
+        18px;
+
+    background:
+        #fff;
+
+    box-shadow:
+        0 25px 65px
+        rgba(0, 0, 0, .25);
+
+    animation:
+        abrirModalAvaliacoes
+        .22s ease;
+
+}
+
+
+/* ==========================================
+   TOPO DO MODAL
+========================================== */
+
+.modal-avaliacoes-topo {
+
+    position:
+        sticky;
+
+    top:
+        0;
+
+    z-index:
+        4;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        20px;
+
+    border-bottom:
+        1px solid
+        #e5e7eb;
+
+    background:
+        #fff;
+
+}
+
+
+/* ==========================================
+   TÍTULO DO MODAL
+========================================== */
+
+.modal-avaliacoes-topo h2 {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    margin:
+        0;
+
+    color:
+        #92400e;
+
+    font-size:
+        20px;
+
+    line-height:
+        1.3;
+
+}
+
+
+.modal-avaliacoes-topo h2 i {
+
+    color:
+        #f59e0b;
+
+}
+
+
+/* ==========================================
+   NOME DO PRODUTO
+========================================== */
+
+#nomeProdutoAvaliacoes {
+
+    display:
+        block;
+
+    max-width:
+        500px;
+
+    margin-top:
+        4px;
+
+    overflow:
+        hidden;
+
+    color:
+        #6b7280;
+
+    font-size:
+        12px;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+}
+
+
+/* ==========================================
+   BOTÃO FECHAR MODAL
+========================================== */
+
+.btn-fechar-avaliacoes {
+
+    width:
+        40px;
+
+    height:
+        40px;
+
+    flex-shrink:
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        none;
+
+    border-radius:
+        10px;
+
+    background:
+        #f1f5f9;
+
+    color:
+        #374151;
+
+    cursor:
+        pointer;
+
+    font-size:
+        17px;
+
+    transition:
+        background .2s,
+        color .2s,
+        transform .2s;
+
+}
+
+
+.btn-fechar-avaliacoes:hover {
+
+    background:
+        #fee2e2;
+
+    color:
+        #dc2626;
+
+    transform:
+        rotate(3deg);
+
+}
+
+
+.btn-fechar-avaliacoes:focus-visible {
+
+    outline:
+        3px solid
+        rgba(25, 135, 84, .20);
+
+    outline-offset:
+        2px;
+
+}
+
+
+/* ==========================================
+   CONTEÚDO DAS AVALIAÇÕES
+========================================== */
+
+.conteudo-avaliacoes {
+
+    padding:
+        22px;
+
+}
+
+
+/* ==========================================
+   CARREGANDO AVALIAÇÕES
+========================================== */
+
+.carregando-avaliacoes {
+
+    min-height:
+        250px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        10px;
+
+    color:
+        #6b7280;
+
+    font-size:
+        13px;
+
+    text-align:
+        center;
+
+}
+
+
+.carregando-avaliacoes i {
+
+    color:
+        #198754;
+
+    font-size:
+        30px;
+
+}
+
+
+/* ==========================================
+   RESUMO DAS AVALIAÇÕES
+========================================== */
+
+.resumo-avaliacoes {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        180px
+        minmax(0, 1fr);
+
+    align-items:
+        center;
+
+    gap:
+        28px;
+
+    padding-bottom:
+        24px;
+
+    border-bottom:
+        1px solid
+        #e5e7eb;
+
+}
+
+
+/* ==========================================
+   NOTA GERAL
+========================================== */
+
+.nota-geral-avaliacoes {
+
+    text-align:
+        center;
+
+}
+
+
+.nota-geral-avaliacoes > strong {
+
+    display:
+        block;
+
+    color:
+        #111827;
+
+    font-size:
+        46px;
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+
+}
+
+
+/* ==========================================
+   ESTRELAS DO RESUMO
+========================================== */
+
+.estrelas-resumo-modal {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    gap:
+        3px;
+
+    margin-top:
+        10px;
+
+    color:
+        #f59e0b;
+
+    font-size:
+        17px;
+
+}
+
+
+.nota-geral-avaliacoes > span {
+
+    display:
+        block;
+
+    margin-top:
+        7px;
+
+    color:
+        #6b7280;
+
+    font-size:
+        11px;
+
+}
+
+
+/* ==========================================
+   DISTRIBUIÇÃO DE NOTAS
+========================================== */
+
+.distribuicao-avaliacoes {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        8px;
+
+}
+
+
+/* ==========================================
+   LINHA DA DISTRIBUIÇÃO
+========================================== */
+
+.linha-distribuicao {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        40px
+        minmax(0, 1fr)
+        32px;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+}
+
+
+/* ==========================================
+   NÚMERO DA NOTA
+========================================== */
+
+.nota-distribuicao {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        3px;
+
+    color:
+        #475569;
+
+    font-size:
+        11px;
+
+    font-weight:
+        600;
+
+}
+
+
+.nota-distribuicao i {
+
+    color:
+        #f59e0b;
+
+    font-size:
+        9px;
+
+}
+
+
+/* ==========================================
+   BARRA
+========================================== */
+
+.barra-distribuicao {
+
+    height:
+        9px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        999px;
+
+    background:
+        #e5e7eb;
+
+}
+
+
+/* ==========================================
+   PREENCHIMENTO
+========================================== */
+
+.barra-distribuicao-preenchida {
+
+    height:
+        100%;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fbbf24,
+            #f59e0b
+        );
+
+    transition:
+        width .3s ease;
+
+}
+
+
+/* ==========================================
+   QUANTIDADE
+========================================== */
+
+.quantidade-distribuicao {
+
+    color:
+        #64748b;
+
+    font-size:
+        10px;
+
+    font-weight:
+        600;
+
+    text-align:
+        right;
+
+}
+
+
+/* ==========================================
+   LISTA DAS AVALIAÇÕES
+========================================== */
+
+.lista-avaliacoes-publicas {
+
+    margin-top:
+        24px;
+
+}
+
+
+.lista-avaliacoes-publicas > h3 {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        15px;
+
+    color:
+        #1f2937;
+
+    font-size:
+        16px;
+
+}
+
+
+/* ==========================================
+   AVALIAÇÃO INDIVIDUAL
+========================================== */
+
+.avaliacao-publica {
+
+    padding:
+        18px 0;
+
+    border-bottom:
+        1px solid
+        #e5e7eb;
+
+}
+
+
+.avaliacao-publica:last-child {
+
+    border-bottom:
+        none;
+
+}
+
+
+/* ==========================================
+   TOPO DA AVALIAÇÃO
+========================================== */
+
+.avaliacao-publica-topo {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        12px;
+
+}
+
+
+/* ==========================================
+   ESTRELAS DA AVALIAÇÃO
+========================================== */
+
+.estrelas-avaliacao-publica {
+
+    display:
+        flex;
+
+    gap:
+        2px;
+
+    color:
+        #f59e0b;
+
+    font-size:
+        13px;
+
+}
+
+
+/* ==========================================
+   COMPRA VERIFICADA
+========================================== */
+
+.compra-verificada {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    margin-top:
+        6px;
+
+    color:
+        #15803d;
+
+    font-size:
+        10px;
+
+    font-weight:
+        600;
+
+}
+
+
+.compra-verificada i {
+
+    color:
+        #16a34a;
+
+}
+
+
+/* ==========================================
+   DATA DA AVALIAÇÃO
+========================================== */
+
+.avaliacao-publica time {
+
+    flex-shrink:
+        0;
+
+    color:
+        #94a3b8;
+
+    font-size:
+        10px;
+
+}
+
+
+/* ==========================================
+   COMENTÁRIO
+========================================== */
+
+.comentario-avaliacao-publica {
+
+    min-height:
+        auto !important;
+
+    margin-top:
+        12px !important;
+
+    margin-bottom:
+        0 !important;
+
+    color:
+        #374151 !important;
+
+    font-size:
+        13px !important;
+
+    line-height:
+        1.7 !important;
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+/* ==========================================
+   SEM COMENTÁRIO
+========================================== */
+
+.comentario-avaliacao-publica.sem-comentario {
+
+    color:
+        #94a3b8 !important;
+
+    font-style:
+        italic;
+
+}
+
+
+/* ==========================================
+   RESPOSTA DA LOJA
+========================================== */
+
+.resposta-loja-avaliacao {
+
+    margin-top:
+        14px;
+
+    margin-left:
+        20px;
+
+    padding:
+        13px 14px;
+
+    border-left:
+        3px solid
+        #198754;
+
+    border-radius:
+        0 9px 9px 0;
+
+    background:
+        #f0fdf4;
+
+}
+
+
+/* ==========================================
+   TÍTULO DA RESPOSTA
+========================================== */
+
+.resposta-loja-avaliacao strong {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    color:
+        #15803d;
+
+    font-size:
+        11px;
+
+}
+
+
+/* ==========================================
+   TEXTO DA RESPOSTA
+========================================== */
+
+.resposta-loja-avaliacao p {
+
+    min-height:
+        auto !important;
+
+    margin:
+        6px 0 0 !important;
+
+    color:
+        #475569 !important;
+
+    font-size:
+        12px !important;
+
+    line-height:
+        1.6 !important;
+
+}
+
+
+/* ==========================================
+   NENHUMA AVALIAÇÃO
+========================================== */
+
+.nenhuma-avaliacao-modal {
+
+    padding:
+        55px 20px;
+
+    text-align:
+        center;
+
+}
+
+
+.nenhuma-avaliacao-modal > i {
+
+    margin-bottom:
+        12px;
+
+    color:
+        #cbd5e1;
+
+    font-size:
+        45px;
+
+}
+
+
+.nenhuma-avaliacao-modal h3 {
+
+    color:
+        #334155;
+
+    font-size:
+        17px;
+
+}
+
+
+.nenhuma-avaliacao-modal p {
+
+    min-height:
+        auto;
+
+    margin-top:
+        5px;
+
+    color:
+        #94a3b8;
+
+    font-size:
+        12px;
+
+}
+
+
+/* ==========================================
+   ERRO NAS AVALIAÇÕES
+========================================== */
+
+.erro-avaliacoes {
+
+    min-height:
+        250px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        8px;
+
+    padding:
+        20px;
+
+    text-align:
+        center;
+
+}
+
+
+.erro-avaliacoes i {
+
+    color:
+        #dc2626;
+
+    font-size:
+        35px;
+
+}
+
+
+.erro-avaliacoes strong {
+
+    color:
+        #b91c1c;
+
+    font-size:
+        14px;
+
+}
+
+
+.erro-avaliacoes p {
+
+    min-height:
+        auto;
+
+    margin:
+        0;
+
+    color:
+        #6b7280;
+
+    font-size:
+        12px;
+
 }
 
 
@@ -599,13 +2105,65 @@ section h2 {
 ========================================== */
 
 footer {
-    margin-top: 60px;
 
-    padding: 25px 20px;
+    margin-top:
+        60px;
 
-    text-align: center;
+    padding:
+        25px 20px;
 
-    color: #777;
+    text-align:
+        center;
+
+    color:
+        #777;
+
+}
+
+
+/* ==========================================
+   FOCO / ACESSIBILIDADE
+========================================== */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+
+    outline-offset:
+        3px;
+
+}
+
+
+/* ==========================================
+   ANIMAÇÃO DO MODAL
+========================================== */
+
+@keyframes abrirModalAvaliacoes {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(12px)
+            scale(.98);
+
+    }
+
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
 }
 
 
@@ -616,39 +2174,69 @@ footer {
 @media (max-width: 768px) {
 
     .container {
-        width: calc(100% - 30px);
 
-        margin: 25px auto;
+        width:
+            calc(100% - 30px);
+
+        margin:
+            25px auto;
+
     }
 
 
     .loja-info {
-        flex-direction: column;
 
-        text-align: center;
+        flex-direction:
+            column;
 
-        padding: 24px;
+        padding:
+            24px;
+
+        text-align:
+            center;
+
     }
 
 
     .loja-info h1 {
-        font-size: 27px;
+
+        font-size:
+            27px;
+
     }
 
 
     .pesquisa {
-        flex-direction: column;
+
+        flex-direction:
+            column;
+
     }
 
 
     .produtos {
+
         grid-template-columns:
             repeat(
                 2,
                 minmax(0, 1fr)
             );
 
-        gap: 18px;
+        gap:
+            18px;
+
+    }
+
+
+    .resumo-avaliacoes {
+
+        grid-template-columns:
+            155px
+            minmax(0, 1fr);
+
+        gap:
+            20px;
+
     }
 
 }
@@ -661,73 +2249,226 @@ footer {
 @media (max-width: 550px) {
 
     .container {
-        width: calc(100% - 24px);
 
-        margin: 20px auto;
+        width:
+            calc(100% - 24px);
+
+        margin:
+            20px auto;
+
     }
 
 
     .loja-info {
-        padding: 20px;
 
-        gap: 18px;
+        gap:
+            18px;
 
-        border-radius: 15px;
+        padding:
+            20px;
+
+        border-radius:
+            15px;
+
     }
 
 
     .loja-info #logoLoja,
     .logo-loja-placeholder {
-        width: 110px;
 
-        height: 110px;
+        width:
+            110px;
+
+        height:
+            110px;
+
     }
 
 
     .logo-loja-placeholder i {
-        font-size: 40px;
+
+        font-size:
+            40px;
+
     }
 
 
     .loja-info h1 {
-        font-size: 24px;
+
+        font-size:
+            24px;
+
     }
 
 
     .loja-info p {
-        font-size: 14px;
+
+        font-size:
+            14px;
+
     }
 
 
     .btn-whatsapp {
-        width: 100%;
+
+        width:
+            100%;
+
     }
 
 
     .produtos {
-        grid-template-columns: 1fr;
 
-        gap: 16px;
+        grid-template-columns:
+            1fr;
+
+        gap:
+            16px;
+
     }
 
 
     .area-imagem-produto {
-        height: 210px;
+
+        height:
+            210px;
+
     }
 
 
     .produto .conteudo {
-        padding: 16px;
+
+        padding:
+            16px;
+
     }
 
 
     .produto p {
-        min-height: auto;
+
+        min-height:
+            auto;
+
     }
 
 
     .sem-produtos {
-        padding: 30px 18px;
+
+        padding:
+            30px 18px;
+
+    }
+
+
+    /* ==================================
+       AVALIAÇÕES
+    ================================== */
+
+    .estrelas-produto {
+
+        font-size:
+            12px;
+
+    }
+
+
+    .avaliacao-produto strong {
+
+        font-size:
+            11px;
+
+    }
+
+
+    /* ==================================
+       MODAL
+    ================================== */
+
+    .modal-avaliacoes {
+
+        padding:
+            10px;
+
+    }
+
+
+    .modal-avaliacoes-conteudo {
+
+        max-height:
+            calc(100vh - 20px);
+
+        border-radius:
+            15px;
+
+    }
+
+
+    .modal-avaliacoes-topo {
+
+        padding:
+            16px;
+
+    }
+
+
+    .modal-avaliacoes-topo h2 {
+
+        font-size:
+            18px;
+
+    }
+
+
+    #nomeProdutoAvaliacoes {
+
+        max-width:
+            260px;
+
+    }
+
+
+    .conteudo-avaliacoes {
+
+        padding:
+            18px 15px;
+
+    }
+
+
+    .resumo-avaliacoes {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            20px;
+
+    }
+
+
+    .nota-geral-avaliacoes > strong {
+
+        font-size:
+            40px;
+
+    }
+
+
+    .linha-distribuicao {
+
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            28px;
+
+    }
+
+
+    .resposta-loja-avaliacao {
+
+        margin-left:
+            8px;
+
     }
 
 }
@@ -741,24 +2482,61 @@ footer {
 
     .loja-info #logoLoja,
     .logo-loja-placeholder {
-        width: 95px;
 
-        height: 95px;
+        width:
+            95px;
+
+        height:
+            95px;
+
     }
 
 
     .logo-loja-placeholder i {
-        font-size: 35px;
+
+        font-size:
+            35px;
+
     }
 
 
     .loja-info h1 {
-        font-size: 21px;
+
+        font-size:
+            21px;
+
     }
 
 
     .area-imagem-produto {
-        height: 190px;
+
+        height:
+            190px;
+
+    }
+
+
+    .modal-avaliacoes-topo h2 {
+
+        font-size:
+            16px;
+
+    }
+
+
+    #nomeProdutoAvaliacoes {
+
+        max-width:
+            190px;
+
+    }
+
+
+    .avaliacao-publica-topo {
+
+        flex-direction:
+            column;
+
     }
 
 }
