@@ -137,6 +137,19 @@ A migration 005 cria `listar_lojas_historico_cliente()`, que retorna apenas loja
 
 **Situação:** frontend e SQL versionados. Falta aplicar a migration 005 e testar filtros, paginação e recompra com produtos ativos, sem estoque, inativos e com preço alterado.
 
+### Casos de teste do RF-12
+
+1. cliente com mais de 20 pedidos navega entre as páginas;
+2. filtro de 30/90/365 dias retorna somente pedidos do período;
+3. filtro de loja não retorna pedidos de outra loja;
+4. produto ativo e com estoque volta para o carrinho usando o preço atual;
+5. produto que teve o preço alterado não reutiliza o preço histórico;
+6. produto inativo/removido não é adicionado;
+7. produto sem estoque não é adicionado;
+8. quantidade pedida maior que o estoque atual é reduzida ao disponível;
+9. item já presente no carrinho é somado sem ultrapassar o estoque;
+10. loja inativa impede a recompra do pedido.
+
 ---
 
 ## Migrations pendentes de aplicação
