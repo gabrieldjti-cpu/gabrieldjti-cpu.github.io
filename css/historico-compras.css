@@ -382,6 +382,8 @@ body {
     gap: 18px;
     padding: 18px 20px;
     border-top: 1px solid #edf0f3;
+    text-align: left;
+    color: inherit;
 }
 
 .historico-total span {
@@ -445,7 +447,7 @@ body {
     color: #6b7280;
 }
 
-footer {
+body > footer {
     padding: 24px 16px;
     text-align: center;
     color: #7b8794;
