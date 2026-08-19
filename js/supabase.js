@@ -30,7 +30,7 @@ if (!window.supabase) {
 // =======================================
 // EXTENSÕES MODULARES DE PÁGINAS
 // =======================================
-// Mantém os recursos novos isolados dos scripts legados grandes.
+// Mantém recursos novos isolados dos scripts legados grandes.
 // As extensões são carregadas somente nas páginas correspondentes.
 
 function carregarExtensoesDaPagina() {
@@ -50,8 +50,10 @@ function carregarExtensoesDaPagina() {
             css:
                 "css/cancelamento-cliente.css",
 
-            script:
+            scripts: [
                 "js/meus-pedidos-cancelamento.js",
+                "js/cancelamento-observer-fix.js"
+            ],
 
             iniciar:
                 "iniciarCancelamentoCliente"
@@ -64,8 +66,10 @@ function carregarExtensoesDaPagina() {
             css:
                 "css/cancelamento-cliente.css",
 
-            script:
+            scripts: [
                 "js/pedidos-loja-solicitacoes.js",
+                "js/cancelamento-observer-fix.js"
+            ],
 
             iniciar:
                 "iniciarSolicitacoesCancelamentoLoja"
@@ -111,14 +115,61 @@ function carregarExtensoesDaPagina() {
     }
 
 
-    const carregarScript =
+    const scripts =
+        Array.isArray(
+            extensao.scripts
+        )
+            ? extensao.scripts
+            : [];
+
+
+    const iniciarExtensao =
         () => {
 
+            const iniciar =
+                window[
+                    extensao.iniciar
+                ];
+
+
             if (
-                document.querySelector(
-                    `script[src="${extensao.script}"]`
-                )
+                typeof iniciar ===
+                "function"
             ) {
+
+                iniciar();
+            }
+        };
+
+
+    const carregarScript =
+        (indice = 0) => {
+
+            if (
+                indice >=
+                scripts.length
+            ) {
+
+                iniciarExtensao();
+                return;
+            }
+
+
+            const caminho =
+                scripts[indice];
+
+
+            const existente =
+                document.querySelector(
+                    `script[src="${caminho}"]`
+                );
+
+
+            if (existente) {
+
+                carregarScript(
+                    indice + 1
+                );
 
                 return;
             }
@@ -131,25 +182,15 @@ function carregarExtensoesDaPagina() {
 
 
             script.src =
-                extensao.script;
+                caminho;
 
 
             script.onload =
                 () => {
 
-                    const iniciar =
-                        window[
-                            extensao.iniciar
-                        ];
-
-
-                    if (
-                        typeof iniciar ===
-                        "function"
-                    ) {
-
-                        iniciar();
-                    }
+                    carregarScript(
+                        indice + 1
+                    );
                 };
 
 
@@ -157,13 +198,22 @@ function carregarExtensoesDaPagina() {
                 () => {
 
                     console.error(
-                        `Não foi possível carregar ${extensao.script}.`
+                        `Não foi possível carregar ${caminho}.`
                     );
                 };
 
 
             document.body.appendChild(
                 script
+            );
+        };
+
+
+    const iniciarCarregamento =
+        () => {
+
+            carregarScript(
+                0
             );
         };
 
@@ -175,7 +225,7 @@ function carregarExtensoesDaPagina() {
 
         document.addEventListener(
             "DOMContentLoaded",
-            carregarScript,
+            iniciarCarregamento,
             {
                 once: true
             }
@@ -184,7 +234,7 @@ function carregarExtensoesDaPagina() {
 
     } else {
 
-        carregarScript();
+        iniciarCarregamento();
     }
 }
 
