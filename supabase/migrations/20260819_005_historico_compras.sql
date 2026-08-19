@@ -23,12 +23,12 @@ begin
     return query
     select distinct
         l.id,
-        l.nome
+        l.nome::text
     from public.pedidos p
     join public.lojas l
         on l.id = p.loja_id
     where p.cliente_id = v_uid
-    order by l.nome;
+    order by l.nome::text;
 end;
 $$;
 
