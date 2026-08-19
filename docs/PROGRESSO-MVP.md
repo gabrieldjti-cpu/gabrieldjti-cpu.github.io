@@ -129,7 +129,8 @@ Parte de endereços do RF-04 implementada:
 - `endereco_entrega` guarda um snapshot JSON do endereço usado na compra;
 - editar um endereço depois não altera o endereço registrado em pedidos antigos;
 - novo RPC `finalizar_checkout_endereco` valida que o endereço pertence ao cliente e executa o checkout em uma única transação;
-- `anon` não pode executar o checkout com endereço.
+- o RPC legado `finalizar_checkout` deixou de ser executável por `anon` e `authenticated`, impedindo bypass da exigência de endereço;
+- somente `finalizar_checkout_endereco` fica exposto ao cliente autenticado para novas compras.
 
 Arquivos principais:
 
@@ -139,6 +140,7 @@ Arquivos principais:
 - `css/enderecos-cliente.css`
 - `js/supabase.js`
 - `supabase/migrations/20260819175053_rf04_enderecos_cliente.sql`
+- `supabase/migrations/20260819180010_rf04_exigir_endereco_checkout.sql`
 
 **Situação:** banco aplicado e estrutura validada; frontend versionado. Falta teste ponta a ponta autenticado de cadastro/edição/exclusão/padrão e criação real de pedido com snapshot do endereço.
 
@@ -152,11 +154,12 @@ Hardening já aplicado:
 
 - RLS habilitado em `categorias_produtos`;
 - leitura pública limitada às categorias ativas;
-- `anon` não executa `finalizar_checkout`;
+- `finalizar_checkout` legado não é executável diretamente por `anon` nem `authenticated`;
+- checkout autenticado passa pelo RPC `finalizar_checkout_endereco`, que valida propriedade e completude do endereço;
 - funções internas `handle_new_user` e `vincular_lojista_automatico` usam `search_path = public` e não ficam expostas para execução direta pela API;
 - nenhuma `service_role` foi adicionada ao frontend.
 
-O histórico oficial do Supabase agora está alinhado aos nomes dos arquivos locais.
+O histórico oficial do Supabase está alinhado aos nomes dos arquivos locais.
 
 ## Migrations aplicadas e registradas
 
@@ -167,6 +170,7 @@ O histórico oficial do Supabase agora está alinhado aos nomes dos arquivos loc
 5. `20260819174202_historico_compras.sql`
 6. `20260819174218_seguranca_supabase.sql`
 7. `20260819175053_rf04_enderecos_cliente.sql`
+8. `20260819180010_rf04_exigir_endereco_checkout.sql`
 
 Os antigos nomes com timestamp repetido `20260819_00X` foram substituídos pelos timestamps oficiais registrados no histórico remoto do Supabase.
 
