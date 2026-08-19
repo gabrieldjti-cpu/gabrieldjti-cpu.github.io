@@ -52,6 +52,7 @@ function carregarExtensoesDaPagina() {
 
             scripts: [
                 "js/meus-pedidos-cancelamento.js",
+                "js/meus-pedidos-historico.js",
                 "js/cancelamento-observer-fix.js"
             ],
 
