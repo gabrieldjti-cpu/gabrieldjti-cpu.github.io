@@ -68,7 +68,9 @@ begin
         update public.produtos p
         set estoque = coalesce(p.estoque, 0) + itens.quantidade
         from (
-            select ip.produto_id, sum(ip.quantidade)::integer as quantidade
+            select
+                ip.produto_id,
+                sum(ip.quantidade)::integer as quantidade
             from public.itens_pedido ip
             where ip.pedido_id = old.id
             group by ip.produto_id
@@ -80,9 +82,11 @@ begin
 end;
 $$;
 
-revoke all on function public.proteger_cancelamento_pedido() from public, anon, authenticated;
+revoke all on function public.proteger_cancelamento_pedido()
+from public, anon, authenticated;
 
-drop trigger if exists trg_proteger_cancelamento_pedido on public.pedidos;
+drop trigger if exists trg_proteger_cancelamento_pedido
+on public.pedidos;
 
 create trigger trg_proteger_cancelamento_pedido
 before update of status on public.pedidos
@@ -117,18 +121,22 @@ begin
         raise exception 'Usuário não autenticado.';
     end if;
 
-    select p.*, l.proprietario_id
-    into v_pedido, v_proprietario
-    from public.pedidos p
-    join public.lojas l on l.id = p.loja_id
-    where p.id = p_pedido_id
-    for update of p;
+    select *
+    into v_pedido
+    from public.pedidos
+    where id = p_pedido_id
+    for update;
 
     if not found then
         raise exception 'Pedido não encontrado.';
     end if;
 
-    if v_proprietario <> v_uid then
+    select l.proprietario_id
+    into v_proprietario
+    from public.lojas l
+    where l.id = v_pedido.loja_id;
+
+    if v_proprietario is null or v_proprietario <> v_uid then
         raise exception 'Sua conta não possui permissão para atualizar este pedido.';
     end if;
 
@@ -154,7 +162,8 @@ begin
         end if;
 
         update public.pedidos
-        set status = 'enviado',
+        set
+            status = 'enviado',
             codigo_rastreio = v_rastreio,
             enviado_em = now()
         where id = v_pedido.id;
@@ -168,13 +177,20 @@ begin
         'sucesso', true,
         'pedido_id', v_pedido.id,
         'status', v_novo_status,
-        'codigo_rastreio', case when v_novo_status = 'enviado' then v_rastreio else null end
+        'codigo_rastreio',
+            case
+                when v_novo_status = 'enviado' then v_rastreio
+                else null
+            end
     );
 end;
 $$;
 
-revoke all on function public.atualizar_status_pedido_loja(uuid, text, text) from public, anon;
-grant execute on function public.atualizar_status_pedido_loja(uuid, text, text) to authenticated;
+revoke all on function public.atualizar_status_pedido_loja(uuid, text, text)
+from public, anon;
+
+grant execute on function public.atualizar_status_pedido_loja(uuid, text, text)
+to authenticated;
 
 -- ============================================================
 -- CANCELAMENTO DIRETO PELO LOJISTA
@@ -204,18 +220,22 @@ begin
         raise exception 'O motivo do cancelamento deve ter entre 5 e 500 caracteres.';
     end if;
 
-    select p.*, l.proprietario_id
-    into v_pedido, v_proprietario
-    from public.pedidos p
-    join public.lojas l on l.id = p.loja_id
-    where p.id = p_pedido_id
-    for update of p;
+    select *
+    into v_pedido
+    from public.pedidos
+    where id = p_pedido_id
+    for update;
 
     if not found then
         raise exception 'Pedido não encontrado.';
     end if;
 
-    if v_proprietario <> v_uid then
+    select l.proprietario_id
+    into v_proprietario
+    from public.lojas l
+    where l.id = v_pedido.loja_id;
+
+    if v_proprietario is null or v_proprietario <> v_uid then
         raise exception 'Sua conta não possui permissão para cancelar este pedido.';
     end if;
 
@@ -228,7 +248,8 @@ begin
     end if;
 
     update public.pedidos
-    set motivo_cancelamento = v_motivo,
+    set
+        motivo_cancelamento = v_motivo,
         status = 'cancelado'
     where id = v_pedido.id;
 
@@ -240,8 +261,11 @@ begin
 end;
 $$;
 
-revoke all on function public.cancelar_pedido_loja(uuid, text) from public, anon;
-grant execute on function public.cancelar_pedido_loja(uuid, text) to authenticated;
+revoke all on function public.cancelar_pedido_loja(uuid, text)
+from public, anon;
+
+grant execute on function public.cancelar_pedido_loja(uuid, text)
+to authenticated;
 
 -- ============================================================
 -- CONFIRMAÇÃO DE ENTREGA PELO CLIENTE
@@ -290,7 +314,8 @@ begin
     end if;
 
     update public.pedidos
-    set status = 'entregue',
+    set
+        status = 'entregue',
         entregue_em = now(),
         entregue_confirmado_por = v_uid
     where id = v_pedido.id;
@@ -303,7 +328,10 @@ begin
 end;
 $$;
 
-revoke all on function public.confirmar_entrega_cliente(uuid) from public, anon;
-grant execute on function public.confirmar_entrega_cliente(uuid) to authenticated;
+revoke all on function public.confirmar_entrega_cliente(uuid)
+from public, anon;
+
+grant execute on function public.confirmar_entrega_cliente(uuid)
+to authenticated;
 
 commit;

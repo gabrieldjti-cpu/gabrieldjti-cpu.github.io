@@ -36,10 +36,49 @@ create index if not exists idx_solicitacoes_cancelamento_loja_status
 create index if not exists idx_solicitacoes_cancelamento_cliente
     on public.solicitacoes_cancelamento(cliente_id, criado_em desc);
 
-alter table public.solicitacoes_cancelamento enable row level security;
+alter table public.solicitacoes_cancelamento
+    enable row level security;
 
 -- O frontend usa somente RPCs SECURITY DEFINER para esta tabela.
--- Não criamos políticas de acesso direto para anon/authenticated.
+-- Não são concedidas políticas de acesso direto a anon/authenticated.
+
+-- ============================================================
+-- EVITA ENVIO ENQUANTO HÁ SOLICITAÇÃO PENDENTE
+-- ============================================================
+
+create or replace function public.bloquear_envio_com_cancelamento_pendente()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+    if
+        old.status = 'em_preparacao'
+        and new.status = 'enviado'
+        and exists (
+            select 1
+            from public.solicitacoes_cancelamento s
+            where s.pedido_id = old.id
+              and s.status = 'pendente'
+        )
+    then
+        raise exception 'Existe uma solicitação de cancelamento pendente para este pedido.';
+    end if;
+
+    return new;
+end;
+$$;
+
+revoke all on function public.bloquear_envio_com_cancelamento_pendente()
+from public, anon, authenticated;
+
+drop trigger if exists trg_bloquear_envio_cancelamento_pendente
+on public.pedidos;
+
+create trigger trg_bloquear_envio_cancelamento_pendente
+before update of status on public.pedidos
+for each row
+execute function public.bloquear_envio_com_cancelamento_pendente();
 
 -- ============================================================
 -- CANCELAMENTO DIRETO PELO CLIENTE
@@ -91,7 +130,8 @@ begin
     end if;
 
     update public.pedidos
-    set motivo_cancelamento = v_motivo,
+    set
+        motivo_cancelamento = v_motivo,
         status = 'cancelado'
     where id = v_pedido.id;
 
@@ -103,8 +143,11 @@ begin
 end;
 $$;
 
-revoke all on function public.cancelar_pedido_cliente(uuid, text) from public, anon;
-grant execute on function public.cancelar_pedido_cliente(uuid, text) to authenticated;
+revoke all on function public.cancelar_pedido_cliente(uuid, text)
+from public, anon;
+
+grant execute on function public.cancelar_pedido_cliente(uuid, text)
+to authenticated;
 
 -- ============================================================
 -- SOLICITAR CANCELAMENTO DURANTE A PREPARAÇÃO
@@ -123,7 +166,6 @@ declare
     v_uid uuid := auth.uid();
     v_pedido public.pedidos%rowtype;
     v_motivo text := trim(coalesce(p_motivo, ''));
-    v_existente public.solicitacoes_cancelamento%rowtype;
     v_solicitacao public.solicitacoes_cancelamento%rowtype;
 begin
     if v_uid is null then
@@ -152,12 +194,11 @@ begin
         raise exception 'A solicitação de cancelamento só pode ser criada para pedidos em preparação.';
     end if;
 
-    select *
-    into v_existente
-    from public.solicitacoes_cancelamento
-    where pedido_id = v_pedido.id;
-
-    if found then
+    if exists (
+        select 1
+        from public.solicitacoes_cancelamento s
+        where s.pedido_id = v_pedido.id
+    ) then
         raise exception 'Já existe uma solicitação de cancelamento para este pedido.';
     end if;
 
@@ -173,7 +214,8 @@ begin
         v_pedido.loja_id,
         v_motivo
     )
-    returning * into v_solicitacao;
+    returning *
+    into v_solicitacao;
 
     return jsonb_build_object(
         'sucesso', true,
@@ -184,8 +226,11 @@ begin
 end;
 $$;
 
-revoke all on function public.solicitar_cancelamento_cliente(uuid, text) from public, anon;
-grant execute on function public.solicitar_cancelamento_cliente(uuid, text) to authenticated;
+revoke all on function public.solicitar_cancelamento_cliente(uuid, text)
+from public, anon;
+
+grant execute on function public.solicitar_cancelamento_cliente(uuid, text)
+to authenticated;
 
 -- ============================================================
 -- CONSULTA DO CLIENTE
@@ -227,8 +272,11 @@ begin
 end;
 $$;
 
-revoke all on function public.listar_solicitacoes_cancelamento_cliente() from public, anon;
-grant execute on function public.listar_solicitacoes_cancelamento_cliente() to authenticated;
+revoke all on function public.listar_solicitacoes_cancelamento_cliente()
+from public, anon;
+
+grant execute on function public.listar_solicitacoes_cancelamento_cliente()
+to authenticated;
 
 -- ============================================================
 -- CONSULTA DO LOJISTA
@@ -265,7 +313,8 @@ begin
         s.criado_em,
         s.respondido_em
     from public.solicitacoes_cancelamento s
-    join public.lojas l on l.id = s.loja_id
+    join public.lojas l
+      on l.id = s.loja_id
     where l.proprietario_id = v_uid
     order by
         case when s.status = 'pendente' then 0 else 1 end,
@@ -273,8 +322,11 @@ begin
 end;
 $$;
 
-revoke all on function public.listar_solicitacoes_cancelamento_loja() from public, anon;
-grant execute on function public.listar_solicitacoes_cancelamento_loja() to authenticated;
+revoke all on function public.listar_solicitacoes_cancelamento_loja()
+from public, anon;
+
+grant execute on function public.listar_solicitacoes_cancelamento_loja()
+to authenticated;
 
 -- ============================================================
 -- RESPOSTA DO LOJISTA
@@ -303,18 +355,22 @@ begin
         raise exception 'Usuário não autenticado.';
     end if;
 
-    select s.*, l.proprietario_id
-    into v_solicitacao, v_proprietario
-    from public.solicitacoes_cancelamento s
-    join public.lojas l on l.id = s.loja_id
-    where s.id = p_solicitacao_id
-    for update of s;
+    select *
+    into v_solicitacao
+    from public.solicitacoes_cancelamento
+    where id = p_solicitacao_id
+    for update;
 
     if not found then
         raise exception 'Solicitação de cancelamento não encontrada.';
     end if;
 
-    if v_proprietario <> v_uid then
+    select l.proprietario_id
+    into v_proprietario
+    from public.lojas l
+    where l.id = v_solicitacao.loja_id;
+
+    if v_proprietario is null or v_proprietario <> v_uid then
         raise exception 'Sua conta não possui permissão para responder esta solicitação.';
     end if;
 
@@ -338,12 +394,14 @@ begin
         end if;
 
         update public.pedidos
-        set motivo_cancelamento = v_solicitacao.motivo,
+        set
+            motivo_cancelamento = v_solicitacao.motivo,
             status = 'cancelado'
         where id = v_pedido.id;
 
         update public.solicitacoes_cancelamento
-        set status = 'aprovada',
+        set
+            status = 'aprovada',
             resposta_loja = case
                 when v_resposta = '' then 'Cancelamento aprovado pela loja.'
                 else v_resposta
@@ -358,7 +416,8 @@ begin
         end if;
 
         update public.solicitacoes_cancelamento
-        set status = 'recusada',
+        set
+            status = 'recusada',
             resposta_loja = v_resposta,
             respondido_em = now(),
             respondido_por = v_uid
@@ -374,7 +433,10 @@ begin
 end;
 $$;
 
-revoke all on function public.responder_solicitacao_cancelamento_loja(uuid, boolean, text) from public, anon;
-grant execute on function public.responder_solicitacao_cancelamento_loja(uuid, boolean, text) to authenticated;
+revoke all on function public.responder_solicitacao_cancelamento_loja(uuid, boolean, text)
+from public, anon;
+
+grant execute on function public.responder_solicitacao_cancelamento_loja(uuid, boolean, text)
+to authenticated;
 
 commit;
