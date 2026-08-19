@@ -25,3 +25,168 @@ if (!window.supabase) {
     console.log(window.db);
 
 }
+
+
+// =======================================
+// EXTENSÕES MODULARES DE PÁGINAS
+// =======================================
+// Mantém os recursos novos isolados dos scripts legados grandes.
+// As extensões são carregadas somente nas páginas correspondentes.
+
+function carregarExtensoesDaPagina() {
+
+    const pagina =
+        window.location.pathname
+            .split("/")
+            .pop()
+        ||
+        "index.html";
+
+
+    const extensoes = {
+
+        "meus-pedidos.html": {
+
+            css:
+                "css/cancelamento-cliente.css",
+
+            script:
+                "js/meus-pedidos-cancelamento.js",
+
+            iniciar:
+                "iniciarCancelamentoCliente"
+
+        },
+
+
+        "pedidos-loja.html": {
+
+            css:
+                "css/cancelamento-cliente.css",
+
+            script:
+                "js/pedidos-loja-solicitacoes.js",
+
+            iniciar:
+                "iniciarSolicitacoesCancelamentoLoja"
+
+        }
+
+    };
+
+
+    const extensao =
+        extensoes[pagina];
+
+
+    if (!extensao) {
+        return;
+    }
+
+
+    if (
+        extensao.css &&
+        !document.querySelector(
+            `link[href="${extensao.css}"]`
+        )
+    ) {
+
+        const link =
+            document.createElement(
+                "link"
+            );
+
+
+        link.rel =
+            "stylesheet";
+
+
+        link.href =
+            extensao.css;
+
+
+        document.head.appendChild(
+            link
+        );
+    }
+
+
+    const carregarScript =
+        () => {
+
+            if (
+                document.querySelector(
+                    `script[src="${extensao.script}"]`
+                )
+            ) {
+
+                return;
+            }
+
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+
+            script.src =
+                extensao.script;
+
+
+            script.onload =
+                () => {
+
+                    const iniciar =
+                        window[
+                            extensao.iniciar
+                        ];
+
+
+                    if (
+                        typeof iniciar ===
+                        "function"
+                    ) {
+
+                        iniciar();
+                    }
+                };
+
+
+            script.onerror =
+                () => {
+
+                    console.error(
+                        `Não foi possível carregar ${extensao.script}.`
+                    );
+                };
+
+
+            document.body.appendChild(
+                script
+            );
+        };
+
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            carregarScript,
+            {
+                once: true
+            }
+        );
+
+
+    } else {
+
+        carregarScript();
+    }
+}
+
+
+carregarExtensoesDaPagina();
