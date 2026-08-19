@@ -142,9 +142,24 @@ Arquivos principais:
 - `supabase/migrations/20260819175053_rf04_enderecos_cliente.sql`
 - `supabase/migrations/20260819180010_rf04_exigir_endereco_checkout.sql`
 
-**Situação:** banco aplicado e estrutura validada; frontend versionado. Falta teste ponta a ponta autenticado de cadastro/edição/exclusão/padrão e criação real de pedido com snapshot do endereço.
+**Situação:** ✅ **parte de múltiplos endereços validada ponta a ponta em ambiente autenticado.**
 
-**Observação:** RF-04 completo ainda inclui foto de perfil e exclusão de conta por soft delete, que permanecem como pendências separadas.
+Testes executados e aprovados:
+
+1. criação de novo endereço;
+2. edição mantendo o mesmo registro;
+3. definição e troca de endereço padrão;
+4. garantia de apenas um endereço padrão ativo por cliente;
+5. sincronização do endereço padrão com `profiles`;
+6. exclusão por soft delete (`ativo = false` e `excluido_em` preenchido);
+7. seleção de endereço completo no checkout;
+8. finalização real de pedido com `endereco_id`;
+9. gravação de snapshot em `pedidos.endereco_entrega`;
+10. edição posterior do endereço sem alterar o snapshot do pedido antigo.
+
+A validação confirmou também que o total e os itens do pedido permaneceram coerentes com o checkout.
+
+**Observação:** RF-04 completo ainda inclui foto de perfil e exclusão de conta por soft delete, que permanecem como pendências separadas. Portanto, o RF-04 geral continua parcial, mas o subfluxo de múltiplos endereços está concluído.
 
 ---
 
@@ -176,13 +191,11 @@ Os antigos nomes com timestamp repetido `20260819_00X` foram substituídos pelos
 
 ## Próximas prioridades do MVP
 
-Depois dos testes deste bloco:
-
-1. aprovação básica de lojas e dashboard administrativo;
-2. alertas de estoque baixo;
-3. paginação das demais listagens maiores que 20 registros;
-4. revisão geral de RLS/policies duplicadas e índices de foreign keys;
-5. concluir as partes restantes do RF-04: foto de perfil e soft delete da conta.
+1. concluir as partes restantes do RF-04: foto de perfil e soft delete da conta;
+2. aprovação básica de lojas e dashboard administrativo;
+3. alertas de estoque baixo;
+4. paginação das demais listagens maiores que 20 registros;
+5. revisão geral de RLS/policies duplicadas e índices de foreign keys.
 
 ## Regra de merge
 
@@ -193,5 +206,4 @@ A branch não deve ser mesclada na `main` até que:
 - resposta de avaliação seja validada publicamente;
 - cancelamento seja testado incluindo restauração de estoque;
 - histórico seja testado com filtros, paginação e recompra;
-- RF-04 seja testado criando, editando, excluindo e selecionando endereços e finalizando um pedido real;
 - o diff grande herdado de `js/painel-loja.js` seja revisado.
