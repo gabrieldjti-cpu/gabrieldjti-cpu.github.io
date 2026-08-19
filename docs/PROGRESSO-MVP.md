@@ -6,7 +6,7 @@
 **Referência:** `PRD-Marketplace.md`
 
 Este documento registra o avanço posterior à auditoria inicial de `docs/STATUS-PRD.md`.
-Os requisitos abaixo **não são promovidos automaticamente para ✅ Concluído** enquanto os fluxos que dependem do Supabase não forem aplicados e testados de ponta a ponta.
+Um requisito só deve ser tratado como totalmente concluído depois dos testes funcionais correspondentes.
 
 ## Implementado nesta branch
 
@@ -28,15 +28,13 @@ Fluxo preparado:
 5. senha é atualizada com `auth.updateUser`;
 6. usuário retorna ao login.
 
-**Situação:** implementação pronta na branch; falta confirmar Redirect URLs e executar teste real de e-mail/recuperação no Supabase.
+**Situação:** implementação pronta na branch; falta confirmar Redirect URLs e executar teste real de e-mail/recuperação.
 
 ---
 
 ### RF-10 / RF-20 — Ciclo seguro e cancelamento de pedidos
 
-O painel resumido do lojista foi atualizado para usar o fluxo seguro já desenvolvido para pedidos.
-
-Fluxo esperado:
+Fluxo versionado:
 
 ```text
 aguardando_pagamento
@@ -46,141 +44,150 @@ aguardando_pagamento
 → entregue
 ```
 
-Regras versionadas:
+Regras:
 
 - lojista confirma pagamento;
 - lojista inicia preparação;
 - envio exige rastreio;
 - lojista não define `entregue`;
 - cliente confirma recebimento;
-- pedido cancelado não pode voltar a um status ativo;
+- pedido cancelado não volta a status ativo;
 - cancelamento restaura estoque uma única vez;
-- envio fica bloqueado quando existe solicitação de cancelamento pendente.
+- envio fica bloqueado quando existe solicitação de cancelamento pendente;
+- cliente cancela diretamente antes da preparação;
+- em preparação, cliente cria solicitação para decisão do lojista.
 
-Cancelamento do cliente:
-
-- `aguardando_pagamento`: cancelamento direto;
-- `pago`: cancelamento direto;
-- `em_preparacao`: cria solicitação para decisão do lojista;
-- lojista pode aprovar ou recusar;
-- recusa exige justificativa;
-- aprovação cancela o pedido e aciona a restauração de estoque.
-
-Arquivos principais:
-
-- `js/painel-loja.js`
-- `css/cancelamento-cliente.css`
-- `js/meus-pedidos-cancelamento.js`
-- `js/pedidos-loja-solicitacoes.js`
-- `js/cancelamento-observer-fix.js`
-- `supabase/migrations/20260819_001_fluxo_seguro_pedidos.sql`
-- `supabase/migrations/20260819_003_cancelamento_cliente.sql`
-- `supabase/migrations/20260819_004_evitar_trigger_cancelamento_duplicado.sql`
-
-**Situação:** frontend e SQL versionados; falta aplicar as migrations e executar testes autenticados de cliente/lojista.
+**Situação:** migrations aplicadas e registradas no Supabase; testes autenticados de cliente/lojista ainda pendentes.
 
 ---
 
 ### RF-11 — Resposta do lojista às avaliações
 
-Implementação adicionada:
+Implementação:
 
-- página `avaliacoes-loja.html`;
+- `avaliacoes-loja.html`;
 - resumo com total, média e avaliações sem resposta;
-- filtro por respondidas/pendentes;
-- pesquisa;
-- visualização da nota e comentário;
+- filtro e pesquisa;
 - resposta pública de até 1000 caracteres;
-- edição da resposta existente;
-- acesso pelo painel da loja;
-- RPC valida que avaliação → produto → loja pertence ao usuário autenticado.
+- validação server-side de avaliação → produto → loja → proprietário.
 
-Arquivos:
-
-- `avaliacoes-loja.html`
-- `css/avaliacoes-loja.css`
-- `js/avaliacoes-loja.js`
-- `supabase/migrations/20260819_002_avaliacoes_loja.sql`
-
-**Situação:** implementação versionada; falta aplicar a migration e validar resposta real aparecendo na página pública.
+**Situação:** migration aplicada; falta validar o fluxo completo com lojista autenticado e resposta aparecendo na página pública.
 
 ---
 
 ### RF-12 — Histórico de compras e Comprar novamente
 
-Implementação adicionada:
+Implementação:
 
-- nova página `historico-compras.html`;
-- histórico paginado em blocos de 20 pedidos;
-- filtro por período: 30 dias, 90 dias, 12 meses ou todo o histórico;
-- filtro por loja usando RPC autenticada;
-- exibição de loja, data, status, itens, preços históricos e total;
-- botão **Comprar novamente**;
-- recompra consulta novamente a loja e os produtos antes de alterar o carrinho;
-- produto inativo, removido ou sem estoque não é incluído;
+- `historico-compras.html`;
+- paginação de 20 pedidos;
+- filtros por período e loja;
+- preços históricos na visualização;
+- recompra consulta loja, produto, preço e estoque atuais;
+- produto inativo/removido/sem estoque é ignorado;
 - quantidade é limitada ao estoque atual;
-- preço e preço promocional usados no carrinho são sempre os valores atuais do produto;
-- itens já existentes no carrinho são somados sem ultrapassar o estoque atual;
-- após a recompra, o cliente pode ir ao carrinho ou continuar no histórico;
-- `meus-pedidos.html` recebe o atalho **Histórico de Compras** por extensão modular, sem reescrever o arquivo legado.
+- itens existentes no carrinho não ultrapassam o estoque;
+- atalho adicionado a `meus-pedidos.html` por extensão modular.
 
-Arquivos:
-
-- `historico-compras.html`
-- `css/historico-compras.css`
-- `js/historico-compras.js`
-- `js/meus-pedidos-historico.js`
-- `js/supabase.js`
-- `supabase/migrations/20260819_005_historico_compras.sql`
-
-A migration 005 cria `listar_lojas_historico_cliente()`, que retorna apenas lojas relacionadas a pedidos do usuário autenticado e não expõe histórico de outros clientes.
-
-**Situação:** frontend e SQL versionados. Falta aplicar a migration 005 e testar filtros, paginação e recompra com produtos ativos, sem estoque, inativos e com preço alterado.
+**Situação:** migration aplicada; testes funcionais de filtros, paginação e recompra ainda pendentes.
 
 ### Casos de teste do RF-12
 
-1. cliente com mais de 20 pedidos navega entre as páginas;
-2. filtro de 30/90/365 dias retorna somente pedidos do período;
-3. filtro de loja não retorna pedidos de outra loja;
-4. produto ativo e com estoque volta para o carrinho usando o preço atual;
-5. produto que teve o preço alterado não reutiliza o preço histórico;
-6. produto inativo/removido não é adicionado;
-7. produto sem estoque não é adicionado;
-8. quantidade pedida maior que o estoque atual é reduzida ao disponível;
-9. item já presente no carrinho é somado sem ultrapassar o estoque;
-10. loja inativa impede a recompra do pedido.
+1. cliente com mais de 20 pedidos navega entre páginas;
+2. filtros 30/90/365 dias;
+3. filtro por loja;
+4. recompra usa preço atual;
+5. preço histórico não volta para o carrinho;
+6. produto inativo/removido é ignorado;
+7. produto sem estoque é ignorado;
+8. quantidade é reduzida ao estoque disponível;
+9. item já no carrinho não ultrapassa estoque;
+10. loja inativa impede recompra.
 
 ---
 
-## Migrations pendentes de aplicação
+### RF-04 — Múltiplos endereços do cliente
 
-Aplicar em ordem:
+Parte de endereços do RF-04 implementada:
 
-1. `20260819_001_fluxo_seguro_pedidos.sql`
-2. `20260819_002_avaliacoes_loja.sql`
-3. `20260819_003_cancelamento_cliente.sql`
-4. `20260819_004_evitar_trigger_cancelamento_duplicado.sql`
-5. `20260819_005_historico_compras.sql`
+- nova tabela `enderecos_cliente`;
+- cliente pode adicionar, editar e excluir endereço por soft delete;
+- cliente pode definir um endereço padrão;
+- índice parcial garante no máximo um endereço padrão ativo por cliente;
+- RLS permite leitura apenas dos próprios endereços;
+- alterações passam por RPCs autenticadas que validam `auth.uid()`;
+- endereço legado de `profiles` é importado quando existe;
+- endereço legado sem CEP/UF fica marcado como incompleto até ser editado;
+- endereço padrão é sincronizado com os campos legados de `profiles` para compatibilidade;
+- gerenciamento aparece dentro de `perfil.html` via extensão modular;
+- campos antigos de endereço do modal de edição do perfil ficam ocultos para evitar duas fontes de verdade;
+- checkout lista os endereços salvos;
+- cliente pode cadastrar/editar um endereço sem sair do checkout;
+- checkout exige endereço completo com CEP e UF;
+- campos de endereço do checkout passam a ser preenchidos pela seleção e ficam somente leitura;
+- `pedidos` recebe `endereco_id` e `endereco_entrega`;
+- `endereco_entrega` guarda um snapshot JSON do endereço usado na compra;
+- editar um endereço depois não altera o endereço registrado em pedidos antigos;
+- novo RPC `finalizar_checkout_endereco` valida que o endereço pertence ao cliente e executa o checkout em uma única transação;
+- `anon` não pode executar o checkout com endereço.
 
-A migration 004 existe para compatibilidade com o banco atual, caso o trigger de restauração de estoque já tenha sido criado manualmente antes de as migrations serem versionadas.
+Arquivos principais:
+
+- `js/enderecos-cliente.js`
+- `js/perfil-enderecos.js`
+- `js/checkout-enderecos.js`
+- `css/enderecos-cliente.css`
+- `js/supabase.js`
+- `supabase/migrations/20260819175053_rf04_enderecos_cliente.sql`
+
+**Situação:** banco aplicado e estrutura validada; frontend versionado. Falta teste ponta a ponta autenticado de cadastro/edição/exclusão/padrão e criação real de pedido com snapshot do endereço.
+
+**Observação:** RF-04 completo ainda inclui foto de perfil e exclusão de conta por soft delete, que permanecem como pendências separadas.
+
+---
+
+## Segurança e versionamento do Supabase
+
+Hardening já aplicado:
+
+- RLS habilitado em `categorias_produtos`;
+- leitura pública limitada às categorias ativas;
+- `anon` não executa `finalizar_checkout`;
+- funções internas `handle_new_user` e `vincular_lojista_automatico` usam `search_path = public` e não ficam expostas para execução direta pela API;
+- nenhuma `service_role` foi adicionada ao frontend.
+
+O histórico oficial do Supabase agora está alinhado aos nomes dos arquivos locais.
+
+## Migrations aplicadas e registradas
+
+1. `20260819174044_fluxo_seguro_pedidos.sql`
+2. `20260819174110_avaliacoes_loja.sql`
+3. `20260819174137_cancelamento_cliente.sql`
+4. `20260819174150_evitar_trigger_cancelamento_duplicado.sql`
+5. `20260819174202_historico_compras.sql`
+6. `20260819174218_seguranca_supabase.sql`
+7. `20260819175053_rf04_enderecos_cliente.sql`
+
+Os antigos nomes com timestamp repetido `20260819_00X` foram substituídos pelos timestamps oficiais registrados no histórico remoto do Supabase.
 
 ## Próximas prioridades do MVP
 
 Depois dos testes deste bloco:
 
-1. múltiplos endereços do cliente;
-2. aprovação básica de lojas e dashboard administrativo;
-3. alertas de estoque baixo;
-4. paginação das demais listagens maiores que 20 registros;
-5. revisão geral de RLS e versionamento das demais regras de banco.
+1. aprovação básica de lojas e dashboard administrativo;
+2. alertas de estoque baixo;
+3. paginação das demais listagens maiores que 20 registros;
+4. revisão geral de RLS/policies duplicadas e índices de foreign keys;
+5. concluir as partes restantes do RF-04: foto de perfil e soft delete da conta.
 
 ## Regra de merge
 
 A branch não deve ser mesclada na `main` até que:
 
-- as migrations sejam aplicadas em ambiente controlado;
 - os fluxos principais sejam testados com cliente e lojista autenticados;
-- a recuperação de senha seja validada com e-mail real;
-- a resposta de avaliação seja validada publicamente;
-- o cancelamento seja testado incluindo restauração de estoque e concorrência de status;
-- o histórico seja testado com filtros, paginação e recompra usando estoque/preço atuais.
+- recuperação de senha seja validada com e-mail real;
+- resposta de avaliação seja validada publicamente;
+- cancelamento seja testado incluindo restauração de estoque;
+- histórico seja testado com filtros, paginação e recompra;
+- RF-04 seja testado criando, editando, excluindo e selecionando endereços e finalizando um pedido real;
+- o diff grande herdado de `js/painel-loja.js` seja revisado.
