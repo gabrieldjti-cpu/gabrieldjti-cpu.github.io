@@ -75,6 +75,38 @@ function carregarExtensoesDaPagina() {
             iniciar:
                 "iniciarSolicitacoesCancelamentoLoja"
 
+        },
+
+
+        "perfil.html": {
+
+            css:
+                "css/enderecos-cliente.css",
+
+            scripts: [
+                "js/enderecos-cliente.js",
+                "js/perfil-enderecos.js"
+            ],
+
+            iniciar:
+                "iniciarEnderecosPerfil"
+
+        },
+
+
+        "checkout.html": {
+
+            css:
+                "css/enderecos-cliente.css",
+
+            scripts: [
+                "js/enderecos-cliente.js",
+                "js/checkout-enderecos.js"
+            ],
+
+            iniciar:
+                "iniciarEnderecosCheckout"
+
         }
 
     };
