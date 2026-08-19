@@ -1,0 +1,4 @@
+-- Comércio da Cidade
+-- Alias versionado da migration de fluxo seguro já registrada no Supabase em 20260819174044.
+-- O conteúdo operacional permanece documentado no histórico da PR e no banco remoto.
+-- Este arquivo existe para manter o versionamento local alinhado ao histórico oficial.
