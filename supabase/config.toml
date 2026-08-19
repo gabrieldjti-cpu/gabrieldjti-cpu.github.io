@@ -1,0 +1,4 @@
+# Supabase CLI configuration
+# Safe to version. Remote project linking remains local in supabase/.temp/.
+
+project_id = "gabrieldjti-cpu.github.io"
