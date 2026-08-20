@@ -40,4 +40,4 @@ Este documento registra a validação funcional do subfluxo de múltiplos endere
 
 ✅ **O subfluxo de múltiplos endereços do RF-04 foi validado ponta a ponta e pode ser considerado concluído.**
 
-O RF-04 geral permanece **parcial** porque o PRD ainda prevê foto de perfil e exclusão de conta por soft delete.
+As partes restantes do RF-04 — foto de perfil e exclusão de conta por soft delete — já foram implementadas posteriormente e possuem checklist funcional próprio em `docs/TESTES-RF04-FOTO-CONTA.md`. Elas devem ser testadas antes de marcar o RF-04 geral como totalmente concluído.
