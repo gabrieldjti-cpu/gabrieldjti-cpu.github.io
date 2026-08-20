@@ -28,6 +28,128 @@ if (!window.supabase) {
 
 
 // =======================================
+// GUARDA DE CONTA EXCLUÍDA — RF-04
+// =======================================
+
+let verificandoContaRF04 = false;
+
+function paginaAtualRF04() {
+    return window.location.pathname.split("/").pop() || "index.html";
+}
+
+function limparDadosLocaisDaContaRF04() {
+    localStorage.removeItem("loja_id");
+    localStorage.removeItem("nome_loja");
+    localStorage.removeItem("carrinho");
+}
+
+async function verificarContaAtivaRF04(opcoes = {}) {
+    if (!window.db || verificandoContaRF04) return true;
+
+    verificandoContaRF04 = true;
+
+    try {
+        const { data: sessaoData, error: sessaoError } =
+            await window.db.auth.getSession();
+
+        if (sessaoError || !sessaoData?.session) {
+            return true;
+        }
+
+        const { data: ativa, error } =
+            await window.db.rpc("minha_conta_ativa");
+
+        if (error) {
+            console.warn("Não foi possível verificar o estado da conta:", error);
+            return true;
+        }
+
+        if (ativa === false) {
+            limparDadosLocaisDaContaRF04();
+            sessionStorage.setItem("conta_excluida_rf04", "1");
+
+            await window.db.auth.signOut();
+
+            if (opcoes.redirecionar !== false) {
+                const destino = "login.html?conta=excluida";
+                const pagina = paginaAtualRF04();
+
+                if (pagina !== "login.html" || !window.location.search.includes("conta=excluida")) {
+                    window.location.href = destino;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    } catch (erro) {
+        console.warn("Falha ao verificar conta ativa:", erro);
+        return true;
+    } finally {
+        verificandoContaRF04 = false;
+    }
+}
+
+window.verificarContaAtivaRF04 = verificarContaAtivaRF04;
+
+function notificarContaExcluidaRF04() {
+    if (paginaAtualRF04() !== "login.html") return;
+
+    const parametros = new URLSearchParams(window.location.search);
+    const excluida =
+        parametros.get("conta") === "excluida" ||
+        sessionStorage.getItem("conta_excluida_rf04") === "1";
+
+    if (!excluida) return;
+
+    sessionStorage.removeItem("conta_excluida_rf04");
+
+    const mostrar = () => {
+        if (typeof window.mostrarAlerta === "function") {
+            window.mostrarAlerta(
+                "Esta conta foi excluída e não pode mais ser utilizada.",
+                "info",
+                "Conta excluída",
+                6000
+            );
+
+            if (window.location.search.includes("conta=excluida")) {
+                window.history.replaceState({}, "", "login.html");
+            }
+
+            return;
+        }
+
+        setTimeout(mostrar, 120);
+    };
+
+    setTimeout(mostrar, 0);
+}
+
+function iniciarGuardaContaRF04() {
+    verificarContaAtivaRF04({ redirecionar: true });
+    notificarContaExcluidaRF04();
+}
+
+if (window.db) {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", iniciarGuardaContaRF04, { once: true });
+    } else {
+        iniciarGuardaContaRF04();
+    }
+
+    window.db.auth.onAuthStateChange((evento, sessao) => {
+        if (evento === "SIGNED_IN" && sessao) {
+            setTimeout(() => {
+                verificarContaAtivaRF04({ redirecionar: true });
+            }, 0);
+        }
+    });
+}
+
+
+// =======================================
 // EXTENSÕES MODULARES DE PÁGINAS
 // =======================================
 // Mantém recursos novos isolados dos scripts legados grandes.
@@ -85,7 +207,8 @@ function carregarExtensoesDaPagina() {
 
             scripts: [
                 "js/enderecos-cliente.js",
-                "js/perfil-enderecos.js"
+                "js/perfil-enderecos.js",
+                "js/perfil-conta.js"
             ],
 
             iniciar:
