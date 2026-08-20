@@ -106,60 +106,97 @@ Implementação:
 
 ---
 
-### RF-04 — Múltiplos endereços do cliente
+### RF-04 — Perfil
 
-Parte de endereços do RF-04 implementada:
+#### Múltiplos endereços
 
-- nova tabela `enderecos_cliente`;
-- cliente pode adicionar, editar e excluir endereço por soft delete;
-- cliente pode definir um endereço padrão;
-- índice parcial garante no máximo um endereço padrão ativo por cliente;
-- RLS permite leitura apenas dos próprios endereços;
-- alterações passam por RPCs autenticadas que validam `auth.uid()`;
-- endereço legado de `profiles` é importado quando existe;
-- endereço legado sem CEP/UF fica marcado como incompleto até ser editado;
-- endereço padrão é sincronizado com os campos legados de `profiles` para compatibilidade;
-- gerenciamento aparece dentro de `perfil.html` via extensão modular;
-- campos antigos de endereço do modal de edição do perfil ficam ocultos para evitar duas fontes de verdade;
-- checkout lista os endereços salvos;
-- cliente pode cadastrar/editar um endereço sem sair do checkout;
-- checkout exige endereço completo com CEP e UF;
-- campos de endereço do checkout passam a ser preenchidos pela seleção e ficam somente leitura;
-- `pedidos` recebe `endereco_id` e `endereco_entrega`;
-- `endereco_entrega` guarda um snapshot JSON do endereço usado na compra;
-- editar um endereço depois não altera o endereço registrado em pedidos antigos;
-- novo RPC `finalizar_checkout_endereco` valida que o endereço pertence ao cliente e executa o checkout em uma única transação;
-- o RPC legado `finalizar_checkout` deixou de ser executável por `anon` e `authenticated`, impedindo bypass da exigência de endereço;
-- somente `finalizar_checkout_endereco` fica exposto ao cliente autenticado para novas compras.
+Implementado e validado:
 
-Arquivos principais:
+- tabela `enderecos_cliente`;
+- adicionar, editar e excluir endereço por soft delete;
+- definir e trocar endereço padrão;
+- no máximo um endereço padrão ativo por cliente;
+- leitura somente dos próprios endereços;
+- importação do endereço legado de `profiles`;
+- endereço legado sem CEP/UF marcado como incompleto;
+- sincronização do endereço padrão com os campos legados do perfil;
+- gerenciamento em `perfil.html`;
+- cadastro/edição também dentro do checkout;
+- checkout exige endereço completo;
+- `pedidos.endereco_id` referencia o endereço selecionado;
+- `pedidos.endereco_entrega` guarda snapshot do endereço da compra;
+- edição posterior do endereço não altera pedidos antigos;
+- `finalizar_checkout_endereco` valida propriedade e completude do endereço;
+- RPC legado `finalizar_checkout` sem execução para `anon`/`authenticated`.
 
-- `js/enderecos-cliente.js`
-- `js/perfil-enderecos.js`
-- `js/checkout-enderecos.js`
-- `css/enderecos-cliente.css`
-- `js/supabase.js`
-- `supabase/migrations/20260819175053_rf04_enderecos_cliente.sql`
-- `supabase/migrations/20260819180010_rf04_exigir_endereco_checkout.sql`
+**Situação:** ✅ subfluxo de múltiplos endereços validado ponta a ponta em ambiente autenticado.
 
-**Situação:** ✅ **parte de múltiplos endereços validada ponta a ponta em ambiente autenticado.**
+Testes aprovados:
 
-Testes executados e aprovados:
+1. criação;
+2. edição mantendo o mesmo ID;
+3. definição/troca do padrão;
+4. único padrão ativo;
+5. sincronização com `profiles`;
+6. soft delete de endereço;
+7. seleção no checkout;
+8. pedido real com `endereco_id`;
+9. snapshot em `endereco_entrega`;
+10. snapshot preservado após editar endereço cadastrado.
 
-1. criação de novo endereço;
-2. edição mantendo o mesmo registro;
-3. definição e troca de endereço padrão;
-4. garantia de apenas um endereço padrão ativo por cliente;
-5. sincronização do endereço padrão com `profiles`;
-6. exclusão por soft delete (`ativo = false` e `excluido_em` preenchido);
-7. seleção de endereço completo no checkout;
-8. finalização real de pedido com `endereco_id`;
-9. gravação de snapshot em `pedidos.endereco_entrega`;
-10. edição posterior do endereço sem alterar o snapshot do pedido antigo.
+#### Foto de perfil
 
-A validação confirmou também que o total e os itens do pedido permaneceram coerentes com o checkout.
+Implementado:
 
-**Observação:** RF-04 completo ainda inclui foto de perfil e exclusão de conta por soft delete, que permanecem como pendências separadas. Portanto, o RF-04 geral continua parcial, mas o subfluxo de múltiplos endereços está concluído.
+- usa a coluna existente `profiles.foto_url` para armazenar o caminho do avatar;
+- bucket `avatars` com limite de 5 MB;
+- formatos JPEG, PNG e WebP;
+- escrita restrita à pasta do usuário autenticado;
+- upload, troca e remoção da foto dentro do perfil;
+- avatar antigo é removido quando possível;
+- remoção volta ao ícone padrão;
+- atualização de `foto_url` ocorre pela RPC `atualizar_foto_perfil`.
+
+Arquivos:
+
+- `js/perfil-conta.js`;
+- `css/perfil-conta.css`;
+- `js/supabase.js`.
+
+#### Exclusão de conta por soft delete
+
+Implementado:
+
+- `profiles.ativo`;
+- `profiles.excluido_em`;
+- RPC autenticada `excluir_minha_conta`;
+- perfil e histórico são preservados;
+- endereços ativos são desativados;
+- lojas pertencentes à conta são desativadas;
+- foto deixa de ser referenciada pelo perfil;
+- sessão é encerrada no frontend;
+- carrinho e dados locais de loja são limpos;
+- conta excluída é detectada após autenticação e desconectada automaticamente;
+- confirmação destrutiva exige confirmação visual e digitação de `EXCLUIR`;
+- `authenticated` não pode alterar diretamente `ativo`, `excluido_em`, `tipo_usuario` ou `foto_url`.
+
+Migration:
+
+- `supabase/migrations/20260820130058_rf04_foto_soft_delete_conta.sql`.
+
+Validação estrutural aprovada:
+
+- colunas `ativo` e `excluido_em` existem;
+- bucket `avatars` existe e possui limite de 5 MB;
+- políticas de Storage restringem INSERT/UPDATE/DELETE à pasta do próprio usuário;
+- `anon` não executa as RPCs de conta;
+- `authenticated` executa `minha_conta_ativa`, `atualizar_foto_perfil` e `excluir_minha_conta`;
+- `authenticated` pode editar os campos básicos permitidos do perfil;
+- `authenticated` não possui `UPDATE` direto em `ativo`, `excluido_em` nem `foto_url`.
+
+**Situação geral do RF-04:** implementação prevista no requisito está versionada. Falta executar os testes funcionais autenticados de upload/troca/remoção da foto e de exclusão de uma **conta de teste** antes de marcar o RF-04 como totalmente concluído.
+
+Checklist: `docs/TESTES-RF04-FOTO-CONTA.md`.
 
 ---
 
@@ -170,8 +207,10 @@ Hardening já aplicado:
 - RLS habilitado em `categorias_produtos`;
 - leitura pública limitada às categorias ativas;
 - `finalizar_checkout` legado não é executável diretamente por `anon` nem `authenticated`;
-- checkout autenticado passa pelo RPC `finalizar_checkout_endereco`, que valida propriedade e completude do endereço;
+- checkout autenticado passa pelo RPC `finalizar_checkout_endereco`;
 - funções internas `handle_new_user` e `vincular_lojista_automatico` usam `search_path = public` e não ficam expostas para execução direta pela API;
+- flags sensíveis do perfil não podem ser alteradas diretamente pelo navegador;
+- upload de avatar fica isolado pela pasta do `auth.uid()`;
 - nenhuma `service_role` foi adicionada ao frontend.
 
 O histórico oficial do Supabase está alinhado aos nomes dos arquivos locais.
@@ -186,12 +225,11 @@ O histórico oficial do Supabase está alinhado aos nomes dos arquivos locais.
 6. `20260819174218_seguranca_supabase.sql`
 7. `20260819175053_rf04_enderecos_cliente.sql`
 8. `20260819180010_rf04_exigir_endereco_checkout.sql`
-
-Os antigos nomes com timestamp repetido `20260819_00X` foram substituídos pelos timestamps oficiais registrados no histórico remoto do Supabase.
+9. `20260820130058_rf04_foto_soft_delete_conta.sql`
 
 ## Próximas prioridades do MVP
 
-1. concluir as partes restantes do RF-04: foto de perfil e soft delete da conta;
+1. testar foto de perfil e soft delete com conta de teste para fechar o RF-04;
 2. aprovação básica de lojas e dashboard administrativo;
 3. alertas de estoque baixo;
 4. paginação das demais listagens maiores que 20 registros;
@@ -206,4 +244,5 @@ A branch não deve ser mesclada na `main` até que:
 - resposta de avaliação seja validada publicamente;
 - cancelamento seja testado incluindo restauração de estoque;
 - histórico seja testado com filtros, paginação e recompra;
+- foto de perfil e soft delete de conta do RF-04 sejam testados em conta de teste;
 - o diff grande herdado de `js/painel-loja.js` seja revisado.
