@@ -73,31 +73,40 @@ O painel passa a explicar ao lojista se a loja está pendente, aprovada, rejeita
 - ✅ policy pública de `lojas` exige loja aprovada e ativa;
 - ✅ policy pública de `produtos` exige produto ativo de loja aprovada/ativa, preservando visão do proprietário sobre seus próprios produtos.
 
-## Testes funcionais pendentes
+## Testes funcionais
 
-> É necessário escolher uma conta existente para receber `tipo_usuario = 'admin'` antes dos testes do dashboard.
+A conta **Administrador Comércio da Cidade** foi criada e promovida para `tipo_usuario = 'admin'` exclusivamente para os testes administrativos.
 
 | Caso | Resultado |
 |---|---|
-| Usuário comum cria nova loja | ⏳ Pendente |
-| Nova loja fica `pendente` e `ativa = false` | ⏳ Pendente |
-| Loja pendente não aparece na home | ⏳ Pendente |
+| Usuário comum cria nova loja | ✅ Aprovado |
+| Nova loja fica `pendente` e `ativa = false` | ✅ Aprovado — confirmado no banco |
+| Loja pendente não aparece na home | ⏳ Pendente de confirmação específica no navegador |
 | Produtos da loja pendente não aparecem publicamente | ⏳ Pendente |
 | Proprietário continua vendo a própria loja e produtos | ⏳ Pendente |
 | Painel do lojista mostra aviso “aguardando aprovação” | ⏳ Pendente |
-| Proprietário não consegue se autoaprovar | ⏳ Pendente |
+| Proprietário não consegue se autoaprovar | ⏳ Pendente funcional — proteção estrutural validada |
 | Usuário comum não acessa dashboard admin | ⏳ Pendente |
-| Admin faz login e vai ao dashboard | ⏳ Pendente |
-| Admin vê métricas e lista de lojas | ⏳ Pendente |
-| Admin aprova loja pendente | ⏳ Pendente |
-| Loja aprovada passa a aparecer na home | ⏳ Pendente |
+| Admin faz login e vai ao dashboard | ✅ Aprovado |
+| Admin vê métricas e lista de lojas | ⏳ Pendente de validação completa |
+| Admin aprova loja pendente pelo botão do dashboard | ⏳ Pendente — nesta rodada a aprovação foi aplicada diretamente no banco com autorização do responsável pelo projeto |
+| Fluxo de status `pendente` → `aprovada` ativa a loja | ✅ Aprovado |
+| Loja aprovada passa a aparecer na home | ✅ Aprovado — confirmado no navegador |
 | Admin rejeita loja informando motivo | ⏳ Pendente |
 | Lojista vê motivo da rejeição | ⏳ Pendente |
 | Admin suspende loja aprovada | ⏳ Pendente |
 | Loja suspensa desaparece do catálogo | ⏳ Pendente |
 | Checkout bloqueia carrinho antigo de loja suspensa | ⏳ Pendente |
-| Histórico administrativo registra as mudanças | ⏳ Pendente |
+| Histórico administrativo registra a aprovação | ✅ Aprovado — confirmado no banco |
+
+## Fluxo principal validado nesta rodada
+
+O caminho abaixo foi validado de ponta a ponta quanto ao estado da loja e publicação pública:
+
+`cadastro da loja` → `pendente / inativa` → `aprovada / ativa` → `visível na home`
+
+A aprovação desta rodada foi executada diretamente no banco, com autorização explícita do responsável pelo projeto, registrando `aprovado_por` e o histórico administrativo. Portanto, o comportamento do **botão Aprovar do dashboard** ainda precisa de um teste funcional separado.
 
 ## Situação
 
-A implementação estrutural e o frontend inicial estão prontos na branch. O próximo passo é definir a conta administrativa e executar os testes funcionais acima antes de integrar na `main`.
+O fluxo principal de cadastro, estado pendente, aprovação e publicação está validado. Ainda faltam os testes funcionais específicos do dashboard para aprovação via botão, rejeição, suspensão, reabertura, bloqueio de usuário comum e efeitos no catálogo/checkout antes de integrar esta funcionalidade na `main`.
