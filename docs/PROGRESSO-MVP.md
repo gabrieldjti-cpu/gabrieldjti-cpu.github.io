@@ -1,14 +1,14 @@
 # Progresso do MVP
 
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
-**Branch:** `feat/concluir-mvp-prd`  
+**Branch:** `main`  
 **Base:** `main`  
 **Referência:** `PRD-Marketplace.md`
 
 Este documento registra o avanço posterior à auditoria inicial de `docs/STATUS-PRD.md`.
 Um requisito só deve ser tratado como totalmente concluído depois dos testes funcionais correspondentes.
 
-## Implementado nesta branch
+## Implementado
 
 ### RF-03 — Recuperação de senha
 
@@ -106,7 +106,7 @@ Implementação:
 
 ---
 
-### RF-04 — Perfil
+### RF-04 — Perfil ✅ CONCLUÍDO
 
 #### Múltiplos endereços
 
@@ -176,7 +176,7 @@ Testes aprovados:
 7. remoção da foto zera `foto_url`;
 8. após remover, não sobra arquivo de avatar na pasta do usuário.
 
-Ainda faltam os testes negativos de arquivo acima de 5 MB e formato não permitido, sem bloquear o fluxo principal já validado.
+Testes negativos de arquivo acima de 5 MB e formato não permitido continuam recomendados para regressão, mas não bloqueiam o requisito.
 
 #### Exclusão de conta por soft delete
 
@@ -199,6 +199,17 @@ Migration:
 
 - `supabase/migrations/20260820130058_rf04_foto_soft_delete_conta.sql`.
 
+Validação funcional aprovada com conta descartável:
+
+1. conta estava ativa antes do teste;
+2. confirmação de exclusão executou o soft delete;
+3. `profiles.ativo` passou para `false`;
+4. `profiles.excluido_em` recebeu timestamp;
+5. `foto_url` ficou `null`;
+6. registro do usuário no Auth foi preservado;
+7. sessão foi encerrada pelo frontend;
+8. nova tentativa de login foi detectada como conta excluída, exibiu a mensagem correspondente e encerrou a sessão rapidamente.
+
 Validação estrutural aprovada:
 
 - colunas `ativo` e `excluido_em` existem;
@@ -209,7 +220,7 @@ Validação estrutural aprovada:
 - `authenticated` pode editar os campos básicos permitidos do perfil;
 - `authenticated` não possui `UPDATE` direto em `ativo`, `excluido_em` nem `foto_url`.
 
-**Situação geral do RF-04:** múltiplos endereços e foto de perfil estão validados. A exclusão de conta por soft delete está implementada e estruturalmente validada, mas ainda precisa de teste funcional com uma conta descartável para o RF-04 ser marcado como totalmente concluído.
+**Situação geral do RF-04:** ✅ **CONCLUÍDO no MVP.** Múltiplos endereços, foto de perfil e exclusão lógica de conta foram implementados e tiveram seus fluxos principais validados.
 
 Checklist: `docs/TESTES-RF04-FOTO-CONTA.md`.
 
@@ -242,19 +253,18 @@ Hardening já aplicado:
 
 ## Próximas prioridades do MVP
 
-1. testar soft delete com uma conta de teste para fechar o RF-04;
-2. aprovação básica de lojas e dashboard administrativo;
-3. alertas de estoque baixo;
-4. paginação das demais listagens maiores que 20 registros;
-5. revisão geral de RLS/policies duplicadas e índices de foreign keys.
+1. aprovação básica de lojas e dashboard administrativo;
+2. alertas de estoque baixo;
+3. paginação das demais listagens maiores que 20 registros;
+4. revisão geral de RLS/policies duplicadas e índices de foreign keys;
+5. concluir os testes pendentes dos demais requisitos já implementados.
 
 ## Integração com `main`
 
-Por solicitação do responsável pelo projeto, esta branch pode ser integrada à `main` antes do teste funcional do soft delete. As pendências de validação permanecem explicitamente documentadas e devem ser testadas depois da integração.
+A evolução realizada na branch `feat/concluir-mvp-prd` já foi integrada à `main` pela PR #4.
 
 Ainda permanecem pendentes no MVP:
 
-- teste funcional da exclusão de conta em conta descartável;
 - recuperação de senha com e-mail real;
 - testes autenticados completos de cliente/lojista;
 - validação pública da resposta de avaliação;
