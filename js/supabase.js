@@ -230,6 +230,33 @@ function carregarExtensoesDaPagina() {
             iniciar:
                 "iniciarEnderecosCheckout"
 
+        },
+
+
+        "login.html": {
+
+            scripts: [
+                "js/login-admin-redirect.js"
+            ],
+
+            iniciar:
+                "iniciarRedirecionamentoAdminLogin"
+
+        },
+
+
+        "painel-loja.html": {
+
+            css:
+                "css/painel-loja-aprovacao.css",
+
+            scripts: [
+                "js/painel-loja-aprovacao.js"
+            ],
+
+            iniciar:
+                "iniciarAprovacaoPainelLoja"
+
         }
 
     };
