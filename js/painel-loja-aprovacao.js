@@ -123,3 +123,15 @@ function escaparAprovacaoHTML(valor) {
 }
 
 window.iniciarAprovacaoPainelLoja = iniciarAprovacaoPainelLoja;
+
+function agendarAprovacaoPainelLoja() {
+    setTimeout(() => {
+        iniciarAprovacaoPainelLoja();
+    }, 0);
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", agendarAprovacaoPainelLoja, { once: true });
+} else {
+    agendarAprovacaoPainelLoja();
+}
