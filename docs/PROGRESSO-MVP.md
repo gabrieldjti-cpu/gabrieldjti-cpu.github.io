@@ -28,7 +28,7 @@ Fluxo preparado:
 5. senha é atualizada com `auth.updateUser`;
 6. usuário retorna ao login.
 
-**Situação:** implementação pronta na branch; falta confirmar Redirect URLs e executar teste real de e-mail/recuperação.
+**Situação:** implementação pronta; falta confirmar Redirect URLs e executar teste real de e-mail/recuperação.
 
 ---
 
@@ -148,7 +148,7 @@ Testes aprovados:
 
 Implementado:
 
-- usa a coluna existente `profiles.foto_url` para armazenar o caminho do avatar;
+- usa `profiles.foto_url` para armazenar o caminho do avatar;
 - bucket `avatars` com limite de 5 MB;
 - formatos JPEG, PNG e WebP;
 - escrita restrita à pasta do usuário autenticado;
@@ -162,6 +162,21 @@ Arquivos:
 - `js/perfil-conta.js`;
 - `css/perfil-conta.css`;
 - `js/supabase.js`.
+
+**Situação:** ✅ fluxo principal de foto de perfil validado no navegador e confirmado no banco.
+
+Testes aprovados:
+
+1. controles de foto aparecem no perfil;
+2. upload de imagem válida;
+3. avatar aparece após upload;
+4. foto permanece após recarregar a página;
+5. troca atualiza `foto_url`;
+6. arquivo anterior é removido do Storage;
+7. remoção da foto zera `foto_url`;
+8. após remover, não sobra arquivo de avatar na pasta do usuário.
+
+Ainda faltam os testes negativos de arquivo acima de 5 MB e formato não permitido, sem bloquear o fluxo principal já validado.
 
 #### Exclusão de conta por soft delete
 
@@ -194,7 +209,7 @@ Validação estrutural aprovada:
 - `authenticated` pode editar os campos básicos permitidos do perfil;
 - `authenticated` não possui `UPDATE` direto em `ativo`, `excluido_em` nem `foto_url`.
 
-**Situação geral do RF-04:** implementação prevista no requisito está versionada. Falta executar os testes funcionais autenticados de upload/troca/remoção da foto e de exclusão de uma **conta de teste** antes de marcar o RF-04 como totalmente concluído.
+**Situação geral do RF-04:** múltiplos endereços e foto de perfil estão validados. A exclusão de conta por soft delete está implementada e estruturalmente validada, mas ainda precisa de teste funcional com uma conta descartável para o RF-04 ser marcado como totalmente concluído.
 
 Checklist: `docs/TESTES-RF04-FOTO-CONTA.md`.
 
@@ -213,8 +228,6 @@ Hardening já aplicado:
 - upload de avatar fica isolado pela pasta do `auth.uid()`;
 - nenhuma `service_role` foi adicionada ao frontend.
 
-O histórico oficial do Supabase está alinhado aos nomes dos arquivos locais.
-
 ## Migrations aplicadas e registradas
 
 1. `20260819174044_fluxo_seguro_pedidos.sql`
@@ -229,20 +242,21 @@ O histórico oficial do Supabase está alinhado aos nomes dos arquivos locais.
 
 ## Próximas prioridades do MVP
 
-1. testar foto de perfil e soft delete com conta de teste para fechar o RF-04;
+1. testar soft delete com uma conta de teste para fechar o RF-04;
 2. aprovação básica de lojas e dashboard administrativo;
 3. alertas de estoque baixo;
 4. paginação das demais listagens maiores que 20 registros;
 5. revisão geral de RLS/policies duplicadas e índices de foreign keys.
 
-## Regra de merge
+## Integração com `main`
 
-A branch não deve ser mesclada na `main` até que:
+Por solicitação do responsável pelo projeto, esta branch pode ser integrada à `main` antes do teste funcional do soft delete. As pendências de validação permanecem explicitamente documentadas e devem ser testadas depois da integração.
 
-- os fluxos principais sejam testados com cliente e lojista autenticados;
-- recuperação de senha seja validada com e-mail real;
-- resposta de avaliação seja validada publicamente;
-- cancelamento seja testado incluindo restauração de estoque;
-- histórico seja testado com filtros, paginação e recompra;
-- foto de perfil e soft delete de conta do RF-04 sejam testados em conta de teste;
-- o diff grande herdado de `js/painel-loja.js` seja revisado.
+Ainda permanecem pendentes no MVP:
+
+- teste funcional da exclusão de conta em conta descartável;
+- recuperação de senha com e-mail real;
+- testes autenticados completos de cliente/lojista;
+- validação pública da resposta de avaliação;
+- testes do RF-12;
+- revisão do diff grande herdado de `js/painel-loja.js`.
