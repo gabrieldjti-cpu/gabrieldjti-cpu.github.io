@@ -1,509 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel da Loja | Comércio da Cidade</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/painel-loja.css">
+    <link rel="stylesheet" href="css/painel-loja-aprovacao.css">
 
-    <title>
-        Painel da Loja | Comércio da Cidade
-    </title>
-
-
-    <!-- ==================================
-         CSS DO HEADER
-    =================================== -->
-
-    <link
-        rel="stylesheet"
-        href="components/header.css"
-    >
-
-
-    <!-- ==================================
-         FEEDBACK PERSONALIZADO
-    =================================== -->
-
-    <link
-        rel="stylesheet"
-        href="components/feedback.css"
-    >
-
-
-    <!-- ==================================
-         CSS DO PAINEL
-    =================================== -->
-
-    <link
-        rel="stylesheet"
-        href="css/painel-loja.css"
-    >
-
-
-    <!-- ==================================
-         GOOGLE FONTS
-    =================================== -->
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-
-    <!-- ==================================
-         FONT AWESOME
-    =================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-
-
 <body>
+    <div id="header"></div>
 
-
-<!-- ======================================
-     HEADER
-====================================== -->
-
-<div id="header"></div>
-
-
-<!-- ======================================
-     CONTEÚDO
-====================================== -->
-
-<main class="container">
-
-
-    <!-- ==================================
-         DADOS DA LOJA
-    =================================== -->
-
-    <section class="card">
-
-        <div class="topo-card">
-
-            <h2>
-
-                <i class="fa-solid fa-shop"></i>
-
-                Minha Loja
-
-            </h2>
-
-
-            <div class="acoes-produtos">
-
-                <a
-                    href="avaliacoes-loja.html"
-                    class="btn btn-secundario"
-                >
-
-                    <i class="fa-solid fa-star"></i>
-
-                    Avaliações
-
-                </a>
-
-
-                <button
-                    id="btnEditarLoja"
-                    class="btn"
-                    type="button"
-                >
-
-                    <i class="fa-solid fa-pen-to-square"></i>
-
-                    Editar Loja
-
-                </button>
-
+    <main class="container">
+        <section class="card">
+            <div class="topo-card">
+                <h2><i class="fa-solid fa-shop"></i> Minha Loja</h2>
+                <div class="acoes-produtos">
+                    <a href="avaliacoes-loja.html" class="btn btn-secundario">
+                        <i class="fa-solid fa-star"></i> Avaliações
+                    </a>
+                    <button id="btnEditarLoja" class="btn" type="button">
+                        <i class="fa-solid fa-pen-to-square"></i> Editar Loja
+                    </button>
+                </div>
             </div>
 
-        </div>
-
-
-        <!-- ==================================
-             LOGO + INFORMAÇÕES
-        =================================== -->
-
-        <div class="dados-loja-painel">
-
-
-            <!-- LOGO -->
-
-            <div class="area-logo-loja">
-
-
-                <img
-                    id="logo-loja"
-                    class="logo-loja-painel"
-                    alt="Logo da loja"
-                    hidden
-                >
-
-
-                <div
-                    id="logo-loja-placeholder"
-                    class="logo-loja-placeholder"
-                >
-
-                    <i class="fa-solid fa-store"></i>
-
+            <div class="dados-loja-painel">
+                <div class="area-logo-loja">
+                    <img id="logo-loja" class="logo-loja-painel" alt="Logo da loja" hidden>
+                    <div id="logo-loja-placeholder" class="logo-loja-placeholder">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
                 </div>
 
+                <div class="info-loja">
+                    <p><strong>Nome:</strong> <span id="nome-loja">Carregando...</span></p>
+                    <p><strong>Categoria:</strong> <span id="categoria-loja">Carregando...</span></p>
+                    <p><strong>Cidade:</strong> <span id="cidade-loja">Carregando...</span></p>
+                    <p><strong>Telefone:</strong> <span id="telefone-loja">Carregando...</span></p>
+                    <p><strong>Status:</strong> <span id="status-loja">Carregando...</span></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="topo-card">
+                <h2><i class="fa-solid fa-box"></i> Últimos Produtos</h2>
+                <div class="acoes-produtos">
+                    <a href="novo-produto.html" class="btn">
+                        <i class="fa-solid fa-plus"></i> Novo Produto
+                    </a>
+                    <a href="produtos.html" class="btn btn-secundario">
+                        <i class="fa-solid fa-list"></i> Ver Todos
+                    </a>
+                </div>
             </div>
 
-
-            <!-- INFORMAÇÕES -->
-
-            <div class="info-loja">
-
-
-                <p>
-
-                    <strong>
-                        Nome:
-                    </strong>
-
-                    <span id="nome-loja">
-                        Carregando...
-                    </span>
-
-                </p>
-
-
-                <p>
-
-                    <strong>
-                        Categoria:
-                    </strong>
-
-                    <span id="categoria-loja">
-                        Carregando...
-                    </span>
-
-                </p>
-
-
-                <p>
-
-                    <strong>
-                        Cidade:
-                    </strong>
-
-                    <span id="cidade-loja">
-                        Carregando...
-                    </span>
-
-                </p>
-
-
-                <p>
-
-                    <strong>
-                        Telefone:
-                    </strong>
-
-                    <span id="telefone-loja">
-                        Carregando...
-                    </span>
-
-                </p>
-
-
-                <p>
-
-                    <strong>
-                        Status:
-                    </strong>
-
-                    <span id="status-loja">
-                        Carregando...
-                    </span>
-
-                </p>
-
+            <div id="lista-produtos" aria-live="polite">
+                <div class="sem-produtos">
+                    <i class="fa-solid fa-box-open"></i>
+                    <h3>Nenhum produto cadastrado</h3>
+                    <p>Cadastre seu primeiro produto.</p>
+                </div>
             </div>
+        </section>
 
-        </div>
-
-    </section>
-
-
-    <!-- ==================================
-         PRODUTOS
-    =================================== -->
-
-    <section class="card">
-
-        <div class="topo-card">
-
-            <h2>
-
-                <i class="fa-solid fa-box"></i>
-
-                Últimos Produtos
-
-            </h2>
-
-
-            <div class="acoes-produtos">
-
-
-                <a
-                    href="novo-produto.html"
-                    class="btn"
-                >
-
-                    <i class="fa-solid fa-plus"></i>
-
-                    Novo Produto
-
+        <section class="card">
+            <div class="topo-card">
+                <h2><i class="fa-solid fa-cart-shopping"></i> Pedidos Recentes</h2>
+                <a href="pedidos-loja.html" class="btn btn-secundario">
+                    <i class="fa-solid fa-list"></i> Ver Todos
                 </a>
-
-
-                <a
-                    href="produtos.html"
-                    class="btn btn-secundario"
-                >
-
-                    <i class="fa-solid fa-list"></i>
-
-                    Ver Todos
-
-                </a>
-
             </div>
 
-        </div>
-
-
-        <div
-            id="lista-produtos"
-            aria-live="polite"
-        >
-
-            <div class="sem-produtos">
-
-                <i class="fa-solid fa-box-open"></i>
-
-                <h3>
-                    Nenhum produto cadastrado
-                </h3>
-
-                <p>
-                    Cadastre seu primeiro produto.
-                </p>
-
+            <div id="lista-pedidos" aria-live="polite">
+                <div class="sem-pedidos">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h3>Nenhum pedido recebido</h3>
+                    <p>Quando algum cliente fizer um pedido, ele aparecerá aqui.</p>
+                </div>
             </div>
+        </section>
 
-        </div>
-
-    </section>
-
-
-    <!-- ==================================
-         PEDIDOS
-    =================================== -->
-
-    <section class="card">
-
-
-        <!-- TOPO DOS PEDIDOS -->
-
-        <div class="topo-card">
-
-            <h2>
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                Pedidos Recentes
-
-            </h2>
-
-
-            <a
-                href="pedidos-loja.html"
-                class="btn btn-secundario"
-            >
-
-                <i class="fa-solid fa-list"></i>
-
-                Ver Todos
-
-            </a>
-
-        </div>
-
-
-        <!-- LISTA -->
-
-        <div
-            id="lista-pedidos"
-            aria-live="polite"
-        >
-
-            <div class="sem-pedidos">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                <h3>
-                    Nenhum pedido recebido
-                </h3>
-
-                <p>
-                    Quando algum cliente fizer um pedido,
-                    ele aparecerá aqui.
-                </p>
-
+        <section class="card">
+            <h2><i class="fa-solid fa-chart-column"></i> Estatísticas</h2>
+            <div class="estatisticas">
+                <div class="box">
+                    <i class="fa-solid fa-box"></i>
+                    <h3 id="total-produtos">0</h3>
+                    <p>Produtos</p>
+                </div>
+                <div class="box">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h3 id="total-pedidos">0</h3>
+                    <p>Pedidos</p>
+                </div>
+                <div class="box">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                    <h3 id="total-vendas">R$ 0,00</h3>
+                    <p>Vendas</p>
+                </div>
             </div>
+        </section>
+    </main>
 
-        </div>
+    <footer>
+        <p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
+    </footer>
 
-    </section>
-
-
-    <!-- ==================================
-         ESTATÍSTICAS
-    =================================== -->
-
-    <section class="card">
-
-        <h2>
-
-            <i class="fa-solid fa-chart-column"></i>
-
-            Estatísticas
-
-        </h2>
-
-
-        <div class="estatisticas">
-
-
-            <!-- PRODUTOS -->
-
-            <div class="box">
-
-                <i class="fa-solid fa-box"></i>
-
-                <h3 id="total-produtos">
-                    0
-                </h3>
-
-                <p>
-                    Produtos
-                </p>
-
-            </div>
-
-
-            <!-- PEDIDOS -->
-
-            <div class="box">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                <h3 id="total-pedidos">
-                    0
-                </h3>
-
-                <p>
-                    Pedidos
-                </p>
-
-            </div>
-
-
-            <!-- VENDAS -->
-
-            <div class="box">
-
-                <i class="fa-solid fa-sack-dollar"></i>
-
-                <h3 id="total-vendas">
-                    R$ 0,00
-                </h3>
-
-                <p>
-                    Vendas
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-</main>
-
-
-<!-- ======================================
-     FOOTER
-====================================== -->
-
-<footer>
-
-    <p>
-        © 2026 Comércio da Cidade -
-        Todos os direitos reservados.
-    </p>
-
-</footer>
-
-
-<!-- ======================================
-     SCRIPTS
-====================================== -->
-
-
-<!-- SUPABASE -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-<!-- CONFIGURAÇÃO SUPABASE -->
-
-<script src="js/supabase.js"></script>
-
-
-<!-- HEADER -->
-
-<script src="components/header.js"></script>
-
-
-<!-- FEEDBACK PERSONALIZADO -->
-
-<script src="components/feedback.js"></script>
-
-
-<!-- PAINEL -->
-
-<script src="js/painel-loja.js"></script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/header.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/painel-loja.js"></script>
+    <script src="js/painel-loja-aprovacao.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                if (typeof window.iniciarAprovacaoPainelLoja === "function") {
+                    window.iniciarAprovacaoPainelLoja();
+                }
+            }, 0);
+        });
+    </script>
 </body>
-
 </html>
