@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração | Comércio da Cidade</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="admin-header-conteudo">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
+                <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
+                <span>
+                    <strong>Comércio da Cidade</strong>
+                    <small>Administração</small>
+                </span>
+            </a>
+
+            <div class="admin-header-acoes">
+                <a href="index.html" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Ver site</span>
+                </a>
+                <button type="button" id="btnSairAdmin" class="btn-admin btn-sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <section class="admin-intro">
+            <div>
+                <span class="eyebrow">Painel administrativo</span>
+                <h1>Gestão de lojas</h1>
+                <p>Aprove, rejeite ou suspenda lojas e acompanhe a situação geral do marketplace.</p>
+            </div>
+            <button type="button" id="btnAtualizarAdmin" class="btn-admin btn-primario">
+                <i class="fa-solid fa-rotate"></i>
+                Atualizar
+            </button>
+        </section>
+
+        <section class="metricas-admin" aria-label="Resumo do marketplace">
+            <article class="metrica-card">
+                <span class="metrica-icone"><i class="fa-solid fa-users"></i></span>
+                <div>
+                    <small>Usuários ativos</small>
+                    <strong id="metricaUsuarios">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card">
+                <span class="metrica-icone"><i class="fa-solid fa-shop"></i></span>
+                <div>
+                    <small>Total de lojas</small>
+                    <strong id="metricaLojas">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card metrica-pendente">
+                <span class="metrica-icone"><i class="fa-solid fa-clock"></i></span>
+                <div>
+                    <small>Aguardando análise</small>
+                    <strong id="metricaPendentes">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card">
+                <span class="metrica-icone"><i class="fa-solid fa-bag-shopping"></i></span>
+                <div>
+                    <small>Pedidos</small>
+                    <strong id="metricaPedidos">—</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="admin-card filtros-card">
+            <div class="filtros-titulo">
+                <div>
+                    <h2><i class="fa-solid fa-filter"></i> Lojas</h2>
+                    <p id="textoResultadoAdmin">Carregando lojas...</p>
+                </div>
+            </div>
+
+            <div class="filtros-grid">
+                <label class="campo-admin campo-busca">
+                    <span>Pesquisar</span>
+                    <div class="campo-com-icone">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="buscaLojasAdmin" type="search" placeholder="Loja, proprietário, cidade ou categoria" autocomplete="off">
+                    </div>
+                </label>
+
+                <label class="campo-admin">
+                    <span>Status</span>
+                    <select id="filtroStatusAdmin">
+                        <option value="">Todos</option>
+                        <option value="pendente">Pendentes</option>
+                        <option value="aprovada">Aprovadas</option>
+                        <option value="rejeitada">Rejeitadas</option>
+                        <option value="suspensa">Suspensas</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <section id="listaLojasAdmin" class="lista-lojas-admin" aria-live="polite">
+            <div class="estado-admin">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <h3>Carregando lojas...</h3>
+            </div>
+        </section>
+    </main>
+
+    <div id="modalDetalhesLoja" class="modal-admin" hidden>
+        <div class="modal-admin-backdrop" data-fechar-modal="detalhes"></div>
+        <section class="modal-admin-caixa modal-detalhes" role="dialog" aria-modal="true" aria-labelledby="tituloDetalhesLoja">
+            <button type="button" class="modal-fechar" data-fechar-modal="detalhes" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="conteudoDetalhesLoja"></div>
+        </section>
+    </div>
+
+    <div id="modalMotivoLoja" class="modal-admin" hidden>
+        <div class="modal-admin-backdrop" data-fechar-modal="motivo"></div>
+        <section class="modal-admin-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloModalMotivo">
+            <button type="button" class="modal-fechar" data-fechar-modal="motivo" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="modal-icone-alerta"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <h2 id="tituloModalMotivo">Informar motivo</h2>
+            <p id="textoModalMotivo">Explique o motivo desta decisão para manter o histórico administrativo.</p>
+
+            <label class="campo-admin">
+                <span>Motivo</span>
+                <textarea id="motivoStatusLoja" maxlength="500" rows="5" placeholder="Digite o motivo..."></textarea>
+                <small><span id="contadorMotivo">0</span>/500</small>
+            </label>
+
+            <div class="modal-acoes">
+                <button type="button" class="btn-admin btn-claro" data-fechar-modal="motivo">Cancelar</button>
+                <button type="button" id="btnConfirmarMotivo" class="btn-admin btn-perigo">Confirmar</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

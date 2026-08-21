@@ -1,0 +1,115 @@
+.aviso-aprovacao-loja {
+    margin-bottom: 22px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 16px;
+    border: 1px solid transparent;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.aviso-aprovacao-icone {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    font-size: 19px;
+}
+
+.aviso-aprovacao-conteudo {
+    min-width: 0;
+    flex: 1;
+}
+
+.aviso-aprovacao-conteudo strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+.aviso-aprovacao-conteudo p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.aprovacao-pendente {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.aprovacao-pendente .aviso-aprovacao-icone {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.aprovacao-aprovada {
+    background: #ecfdf3;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.aprovacao-aprovada .aviso-aprovacao-icone {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.aprovacao-rejeitada {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #9f1239;
+}
+
+.aprovacao-rejeitada .aviso-aprovacao-icone {
+    background: #ffe4e6;
+    color: #be123c;
+}
+
+.aprovacao-suspensa {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #9a3412;
+}
+
+.aprovacao-suspensa .aviso-aprovacao-icone {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+.btn-aprovacao-loja {
+    min-height: 40px;
+    padding: 9px 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid currentColor;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 650px) {
+    .aviso-aprovacao-loja {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 16px;
+    }
+
+    .aviso-aprovacao-conteudo {
+        flex: 1 1 calc(100% - 65px);
+    }
+
+    .btn-aprovacao-loja {
+        width: 100%;
+        margin-top: 2px;
+    }
+}
