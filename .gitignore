@@ -1,0 +1,8 @@
+# Supabase CLI — estado local, não versionar
+supabase/.temp/
+supabase/.branches/
+
+# Variáveis de ambiente / segredos
+.env
+.env.*
+!.env.example

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Histórico de Compras | Comércio da Cidade</title>
+
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/historico-compras.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <main class="container historico-container">
+        <section class="historico-topo">
+            <div>
+                <span class="historico-etiqueta">Sua conta</span>
+
+                <h1>
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Histórico de Compras
+                </h1>
+
+                <p>
+                    Consulte pedidos anteriores, filtre por período ou loja
+                    e adicione novamente ao carrinho os produtos que ainda estão disponíveis.
+                </p>
+            </div>
+
+            <a href="meus-pedidos.html" class="btn-voltar">
+                <i class="fa-solid fa-arrow-left"></i>
+                Meus Pedidos
+            </a>
+        </section>
+
+        <section class="historico-filtros" aria-label="Filtros do histórico de compras">
+            <div class="campo-filtro">
+                <label for="filtro-periodo">
+                    <i class="fa-regular fa-calendar"></i>
+                    Período
+                </label>
+
+                <select id="filtro-periodo">
+                    <option value="30">Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                    <option value="365">Últimos 12 meses</option>
+                    <option value="todos" selected>Todo o histórico</option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="filtro-loja">
+                    <i class="fa-solid fa-store"></i>
+                    Loja
+                </label>
+
+                <select id="filtro-loja">
+                    <option value="todos">Todas as lojas</option>
+                </select>
+            </div>
+
+            <button type="button" id="btn-limpar-filtros" class="btn-limpar">
+                <i class="fa-solid fa-filter-circle-xmark"></i>
+                Limpar filtros
+            </button>
+        </section>
+
+        <section class="historico-resumo">
+            <div>
+                <strong id="quantidade-historico">0</strong>
+                <span>pedido(s) encontrado(s)</span>
+            </div>
+
+            <p>
+                A recompra sempre consulta o produto novamente para usar
+                <strong>preço atual, estoque atual e disponibilidade atual</strong>.
+            </p>
+        </section>
+
+        <section id="lista-historico" class="lista-historico" aria-live="polite">
+            <div class="estado-historico">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <h2>Carregando seu histórico...</h2>
+            </div>
+        </section>
+
+        <nav class="paginacao-historico" aria-label="Paginação do histórico">
+            <button type="button" id="btn-pagina-anterior" disabled>
+                <i class="fa-solid fa-chevron-left"></i>
+                Anterior
+            </button>
+
+            <span id="texto-paginacao">Página 1 de 1</span>
+
+            <button type="button" id="btn-proxima-pagina" disabled>
+                Próxima
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </nav>
+    </main>
+
+    <footer>
+        <p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/header.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/historico-compras.js"></script>
+</body>
+
+</html>

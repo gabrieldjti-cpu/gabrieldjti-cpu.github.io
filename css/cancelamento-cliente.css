@@ -1,0 +1,226 @@
+/* Fluxo de cancelamento do cliente / solicitações do lojista */
+
+.btn-cancelamento-cliente,
+.btn-solicitar-cancelamento,
+.btn-aprovar-cancelamento,
+.btn-recusar-cancelamento {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-cancelamento-cliente,
+.btn-recusar-cancelamento {
+    background: #dc2626;
+    color: #fff;
+}
+
+.btn-solicitar-cancelamento {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+}
+
+.btn-aprovar-cancelamento {
+    background: #198754;
+    color: #fff;
+}
+
+.btn-cancelamento-cliente:disabled,
+.btn-solicitar-cancelamento:disabled,
+.btn-aprovar-cancelamento:disabled,
+.btn-recusar-cancelamento:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+}
+
+.cancelamento-status-cliente,
+.solicitacao-cancelamento-loja {
+    margin-top: 14px;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.cancelamento-status-cliente {
+    border: 1px solid #fed7aa;
+    background: #fff7ed;
+    color: #9a3412;
+}
+
+.cancelamento-status-cliente.recusa {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.cancelamento-status-cliente strong,
+.solicitacao-cancelamento-loja strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.solicitacao-cancelamento-loja {
+    border: 1px solid #f59e0b;
+    background: #fffbeb;
+    color: #78350f;
+}
+
+.solicitacao-cancelamento-loja p {
+    margin: 6px 0 0;
+}
+
+.acoes-solicitacao-cancelamento {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.modal-cancelamento-cliente {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-cancelamento-cliente.aberto {
+    display: flex;
+}
+
+.modal-cancelamento-cliente-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, .62);
+}
+
+.modal-cancelamento-cliente-conteudo {
+    position: relative;
+    z-index: 1;
+    width: min(520px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+    border-radius: 18px;
+    background: #fff;
+    padding: 22px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+}
+
+.modal-cancelamento-cliente-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.modal-cancelamento-cliente-topo h2 {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+}
+
+.modal-cancelamento-cliente-topo p {
+    margin: 0;
+    color: #64748b;
+}
+
+.btn-fechar-cancelamento-cliente {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #334155;
+    cursor: pointer;
+}
+
+.campo-motivo-cancelamento-cliente {
+    margin-top: 20px;
+}
+
+.campo-motivo-cancelamento-cliente label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.campo-motivo-cancelamento-cliente textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font: inherit;
+    outline: none;
+}
+
+.campo-motivo-cancelamento-cliente textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+.rodape-motivo-cancelamento {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: .84rem;
+}
+
+.acoes-modal-cancelamento-cliente {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.btn-voltar-cancelamento-cliente,
+.btn-confirmar-cancelamento-cliente {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-voltar-cancelamento-cliente {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.btn-confirmar-cancelamento-cliente {
+    background: #dc2626;
+    color: #fff;
+}
+
+.btn-confirmar-cancelamento-cliente.solicitacao {
+    background: #c2410c;
+}
+
+.btn-confirmar-cancelamento-cliente:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+@media (max-width: 600px) {
+    .acoes-modal-cancelamento-cliente,
+    .acoes-solicitacao-cancelamento {
+        flex-direction: column;
+    }
+
+    .acoes-modal-cancelamento-cliente button,
+    .acoes-solicitacao-cancelamento button,
+    .btn-cancelamento-cliente,
+    .btn-solicitar-cancelamento {
+        width: 100%;
+    }
+}

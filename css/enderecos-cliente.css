@@ -1,0 +1,234 @@
+/* ==========================================
+   ENDEREÇOS DO CLIENTE — RF-04
+========================================== */
+
+.enderecos-rf04-card {
+    position: relative;
+}
+
+.enderecos-rf04-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.enderecos-rf04-topo h2,
+.enderecos-rf04-topo h3 {
+    margin: 0;
+}
+
+.enderecos-rf04-lista {
+    display: grid;
+    gap: 14px;
+}
+
+.endereco-rf04-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 16px;
+    background: #fff;
+}
+
+.endereco-rf04-item.selecionado {
+    border-width: 2px;
+}
+
+.endereco-rf04-item-topo {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.endereco-rf04-titulo {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.endereco-rf04-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 999px;
+    padding: 4px 9px;
+    font-size: .78rem;
+    font-weight: 600;
+    background: #eef2ff;
+}
+
+.endereco-rf04-badge.incompleto {
+    background: #fff7ed;
+}
+
+.endereco-rf04-texto {
+    margin: 0;
+    line-height: 1.6;
+    color: #4b5563;
+}
+
+.endereco-rf04-referencia {
+    display: block;
+    margin-top: 6px;
+    font-size: .88rem;
+    color: #6b7280;
+}
+
+.endereco-rf04-acoes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.endereco-rf04-btn {
+    border: 0;
+    border-radius: 10px;
+    padding: 9px 12px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+.endereco-rf04-btn.secundario {
+    background: #f3f4f6;
+}
+
+.endereco-rf04-btn.perigo {
+    background: #fef2f2;
+}
+
+.endereco-rf04-vazio,
+.endereco-rf04-carregando {
+    border: 1px dashed #d1d5db;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.endereco-rf04-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(15, 23, 42, .58);
+    z-index: 9999;
+}
+
+.endereco-rf04-modal.aberto {
+    display: flex;
+}
+
+.endereco-rf04-modal-box {
+    width: min(680px, 100%);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .22);
+}
+
+.endereco-rf04-modal-topo {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.endereco-rf04-fechar {
+    border: 0;
+    background: #f3f4f6;
+    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+}
+
+.endereco-rf04-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.endereco-rf04-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.endereco-rf04-campo.largo {
+    grid-column: 1 / -1;
+}
+
+.endereco-rf04-campo input,
+.endereco-rf04-campo textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 11px 12px;
+    font: inherit;
+}
+
+.endereco-rf04-check {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 14px;
+}
+
+.endereco-rf04-modal-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.checkout-enderecos-rf04 {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.checkout-enderecos-rf04-aviso {
+    margin: 8px 0 14px;
+    color: #6b7280;
+    font-size: .92rem;
+}
+
+.checkout-enderecos-rf04 .endereco-rf04-item {
+    cursor: pointer;
+}
+
+.endereco-rf04-legacy-note {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: .9rem;
+}
+
+@media (max-width: 700px) {
+    .endereco-rf04-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .endereco-rf04-campo.largo {
+        grid-column: auto;
+    }
+
+    .endereco-rf04-modal-box {
+        padding: 18px;
+    }
+}

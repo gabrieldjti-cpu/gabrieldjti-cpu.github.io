@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Avaliações da Loja | Comércio da Cidade</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/avaliacoes-loja.css">
+</head>
+
+<body>
+    <main class="pagina-avaliacoes-loja">
+        <header class="cabecalho-avaliacoes">
+            <div>
+                <a href="painel-loja.html" class="voltar-painel">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar ao painel
+                </a>
+
+                <h1>
+                    <i class="fa-solid fa-star"></i>
+                    Avaliações da Loja
+                </h1>
+
+                <p>
+                    Veja o que os clientes avaliaram e responda publicamente aos comentários.
+                </p>
+            </div>
+
+            <button type="button" id="btn-atualizar-avaliacoes" class="btn-atualizar">
+                <i class="fa-solid fa-rotate-right"></i>
+                Atualizar
+            </button>
+        </header>
+
+        <section class="resumo-avaliacoes" aria-label="Resumo das avaliações">
+            <article class="resumo-card">
+                <span>Total</span>
+                <strong id="total-avaliacoes">0</strong>
+            </article>
+
+            <article class="resumo-card">
+                <span>Média</span>
+                <strong id="media-avaliacoes">0,0</strong>
+            </article>
+
+            <article class="resumo-card">
+                <span>Sem resposta</span>
+                <strong id="avaliacoes-pendentes">0</strong>
+            </article>
+        </section>
+
+        <section class="filtros-avaliacoes" aria-label="Filtros das avaliações">
+            <div class="campo-pesquisa">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                    type="search"
+                    id="pesquisa-avaliacoes"
+                    placeholder="Pesquisar produto ou loja"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="botoes-filtro">
+                <button type="button" class="filtro-avaliacao ativo" data-filtro="todas">
+                    Todas
+                </button>
+
+                <button type="button" class="filtro-avaliacao" data-filtro="pendentes">
+                    Sem resposta
+                </button>
+
+                <button type="button" class="filtro-avaliacao" data-filtro="respondidas">
+                    Respondidas
+                </button>
+            </div>
+        </section>
+
+        <section id="lista-avaliacoes-loja" class="lista-avaliacoes" aria-live="polite">
+            <div class="estado-avaliacoes">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <h2>Carregando avaliações...</h2>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/avaliacoes-loja.js"></script>
+</body>
+
+</html>
