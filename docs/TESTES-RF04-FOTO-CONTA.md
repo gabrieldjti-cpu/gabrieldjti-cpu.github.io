@@ -33,14 +33,25 @@
 
 | Caso | Resultado |
 |---|---|
-| Abrir perfil e visualizar controles de foto | ⏳ Pendente |
-| Enviar JPG válido | ⏳ Pendente |
-| Foto aparecer no avatar | ⏳ Pendente |
-| Recarregar página e foto permanecer | ⏳ Pendente |
-| Trocar foto e manter somente a nova como referência | ⏳ Pendente |
-| Remover foto | ⏳ Pendente |
+| Abrir perfil e visualizar controles de foto | ✅ Aprovado |
+| Enviar imagem válida (WebP/PNG) | ✅ Aprovado |
+| Foto aparecer no avatar | ✅ Aprovado |
+| Recarregar página e foto permanecer | ✅ Aprovado |
+| Trocar foto e manter somente a nova como referência | ✅ Aprovado |
+| Remover foto | ✅ Aprovado |
+| Remover também o arquivo do Storage | ✅ Aprovado |
 | Rejeitar arquivo acima de 5 MB | ⏳ Pendente |
 | Rejeitar formato não permitido | ⏳ Pendente |
+
+### Evidências verificadas no banco
+
+- primeira foto persistiu após recarregar a página;
+- troca de avatar atualizou `profiles.foto_url`;
+- após a troca existia somente um arquivo na pasta do usuário no bucket `avatars`;
+- o arquivo anterior foi removido do Storage;
+- ao remover a foto, `profiles.foto_url` ficou `null`;
+- após a remoção, a pasta do usuário ficou sem arquivos de avatar;
+- a conta permaneceu ativa durante todos os testes de foto.
 
 ## Casos de teste — exclusão de conta
 
@@ -70,6 +81,12 @@
 - `authenticated` não pode atualizar diretamente `ativo`, `excluido_em` nem `foto_url`;
 - políticas de Storage restringem INSERT/UPDATE/DELETE à pasta do usuário autenticado.
 
+## Situação atual
+
+✅ O fluxo principal de **foto de perfil** foi validado no navegador e no banco: upload, persistência, troca, limpeza do arquivo anterior e remoção.
+
+⏳ A **exclusão de conta por soft delete** continua pendente de teste funcional com uma conta descartável.
+
 ## Critério para concluir o RF-04
 
-O RF-04 pode ser marcado como totalmente concluído quando os testes funcionais de foto e exclusão de conta acima forem aprovados. O subfluxo de múltiplos endereços já foi validado anteriormente.
+O RF-04 pode ser marcado como totalmente concluído quando o fluxo funcional de exclusão de conta for aprovado. O subfluxo de múltiplos endereços e o fluxo principal de foto de perfil já foram validados.
