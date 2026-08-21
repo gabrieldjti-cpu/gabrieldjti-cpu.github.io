@@ -48,9 +48,3 @@ function iniciarRedirecionamentoAdminLogin() {
 }
 
 window.iniciarRedirecionamentoAdminLogin = iniciarRedirecionamentoAdminLogin;
-
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", iniciarRedirecionamentoAdminLogin, { once: true });
-} else {
-    iniciarRedirecionamentoAdminLogin();
-}
