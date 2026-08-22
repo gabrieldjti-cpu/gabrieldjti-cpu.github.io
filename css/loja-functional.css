@@ -1,0 +1,171 @@
+/* ==========================================
+   LOJA-FUNCTIONAL.CSS
+   Detalhes funcionais do redesign da loja
+========================================== */
+
+/* BUSCA */
+.pesquisa {
+    display: flex;
+    align-items: center;
+}
+
+.pesquisa input[type="search"] {
+    padding-right: 48px;
+}
+
+.pesquisa input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+}
+
+.btn-limpar-pesquisa {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #98a2b3;
+    cursor: pointer;
+    transition: background .2s, color .2s, transform .2s;
+}
+
+.btn-limpar-pesquisa:hover {
+    background: var(--loja-primary-soft);
+    color: var(--loja-primary);
+}
+
+.btn-limpar-pesquisa:active {
+    transform: translateY(-50%) scale(.96);
+}
+
+.btn-limpar-pesquisa[hidden] {
+    display: none !important;
+}
+
+/* CONTADOR DO CATÁLOGO */
+#contadorProdutos {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 5px 10px;
+    border: 1px solid var(--loja-border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--loja-muted);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* BADGE DE PROMOÇÃO */
+.area-imagem-produto {
+    position: relative;
+}
+
+.produto-badge-oferta {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 9px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--loja-primary-dark);
+    box-shadow: 0 8px 20px rgba(31, 41, 55, .12);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .02em;
+}
+
+.produto-badge-oferta i {
+    font-size: 9px;
+}
+
+/* ESTOQUE */
+.estoque {
+    gap: 6px;
+}
+
+.estoque i {
+    font-size: 10px;
+}
+
+.estoque.estoque-disponivel {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.estoque.estoque-baixo {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.estoque.estoque-esgotado {
+    background: #fef2f2;
+    color: #b42318;
+}
+
+/* FEEDBACK DO CARRINHO */
+.btn-comprar.produto-adicionado {
+    background: #14804a;
+    box-shadow: 0 9px 20px rgba(20, 128, 74, .20);
+}
+
+/* BREADCRUMB COM NOME LONGO */
+#breadcrumbLoja {
+    max-width: min(55vw, 480px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ESTADOS VAZIOS */
+.sem-produtos .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--loja-primary);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.sem-produtos .btn:hover {
+    background: var(--loja-primary-dark);
+}
+
+@media (max-width: 600px) {
+    .produtos-cabecalho {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    #contadorProdutos {
+        white-space: normal;
+    }
+
+    #breadcrumbLoja {
+        max-width: 52vw;
+    }
+
+    .produto-badge-oferta {
+        top: 10px;
+        left: 10px;
+    }
+}
