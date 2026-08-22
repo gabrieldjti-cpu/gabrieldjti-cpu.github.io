@@ -1,0 +1,853 @@
+/* ==========================================
+   DESIGN-SYSTEM.CSS
+   Identidade visual global - Comércio da Cidade
+========================================== */
+
+:root {
+    --app-primary: #ff6b35;
+    --app-primary-dark: #e85b2b;
+    --app-primary-soft: #fff4ef;
+    --app-primary-soft-2: #ffe9df;
+    --app-bg: #f7f7f8;
+    --app-surface: #ffffff;
+    --app-surface-soft: #fbfbfc;
+    --app-text: #1f2937;
+    --app-text-strong: #18181b;
+    --app-muted: #667085;
+    --app-border: #e7e9ee;
+    --app-border-strong: #dfe2e8;
+    --app-success: #16a34a;
+    --app-success-soft: #ecfdf3;
+    --app-warning: #d97706;
+    --app-warning-soft: #fffbeb;
+    --app-danger: #dc3545;
+    --app-danger-dark: #b42318;
+    --app-danger-soft: #fff1f2;
+    --app-info: #2563eb;
+    --app-info-soft: #eff6ff;
+    --app-radius-sm: 10px;
+    --app-radius: 16px;
+    --app-radius-lg: 22px;
+    --app-radius-xl: 28px;
+    --app-shadow-xs: 0 2px 8px rgba(24, 24, 27, .04);
+    --app-shadow-sm: 0 8px 24px rgba(24, 24, 27, .06);
+    --app-shadow: 0 16px 42px rgba(24, 24, 27, .08);
+    --app-shadow-lg: 0 24px 60px rgba(24, 24, 27, .12);
+}
+
+html.theme-comercio {
+    color-scheme: light;
+    scroll-behavior: smooth;
+}
+
+body.app-theme {
+    font-family: 'Poppins', sans-serif;
+    color: var(--app-text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+body.app-theme :focus-visible {
+    outline: 3px solid rgba(255, 107, 53, .26);
+    outline-offset: 2px;
+}
+
+body.app-theme ::selection {
+    background: rgba(255, 107, 53, .20);
+    color: var(--app-text-strong);
+}
+
+body.app-theme input[type="checkbox"],
+body.app-theme input[type="radio"] {
+    accent-color: var(--app-primary);
+}
+
+body.app-theme:not(.page-index):not(.page-loja) {
+    background:
+        radial-gradient(circle at 8% 0%, rgba(255, 107, 53, .065), transparent 26%),
+        radial-gradient(circle at 96% 8%, rgba(255, 153, 102, .05), transparent 20%),
+        var(--app-bg);
+}
+
+/* ==========================================
+   CONTROLES GLOBAIS
+========================================== */
+
+body.app-theme:not(.page-index):not(.page-loja)
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body.app-theme:not(.page-index):not(.page-loja) select,
+body.app-theme:not(.page-index):not(.page-loja) textarea {
+    border-color: var(--app-border-strong);
+    border-radius: 13px;
+    background: var(--app-surface);
+    color: var(--app-text);
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+body.app-theme:not(.page-index):not(.page-loja)
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+body.app-theme:not(.page-index):not(.page-loja) select:focus,
+body.app-theme:not(.page-index):not(.page-loja) textarea:focus {
+    border-color: rgba(255, 107, 53, .72);
+    box-shadow: 0 0 0 4px rgba(255, 107, 53, .10);
+    outline: none;
+}
+
+body.app-theme:not(.page-index):not(.page-loja) label {
+    color: #414651;
+}
+
+body.app-theme .theme-control,
+body.app-theme .btn,
+body.app-theme [class*="btn-"] {
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background-color .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+}
+
+body.app-theme .theme-control:active,
+body.app-theme .btn:active,
+body.app-theme [class*="btn-"]:active {
+    transform: translateY(0);
+}
+
+/* ==========================================
+   AUTENTICAÇÃO
+========================================== */
+
+body.theme-auth {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 74px 20px 32px;
+    background:
+        radial-gradient(circle at 15% 15%, rgba(255, 255, 255, .20), transparent 18%),
+        radial-gradient(circle at 88% 86%, rgba(255, 255, 255, .13), transparent 22%),
+        linear-gradient(135deg, #ff7a45 0%, #ff6b35 45%, #e85b2b 100%);
+}
+
+body.theme-auth::before,
+body.theme-auth::after {
+    content: "";
+    position: fixed;
+    z-index: 0;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+body.theme-auth::before {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -100px;
+    background: rgba(255, 255, 255, .10);
+}
+
+body.theme-auth::after {
+    width: 220px;
+    height: 220px;
+    left: -120px;
+    bottom: -100px;
+    background: rgba(255, 255, 255, .08);
+}
+
+.theme-auth .theme-auth-brand {
+    position: fixed;
+    top: 18px;
+    left: 22px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.theme-auth-brand-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .30);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .16);
+    backdrop-filter: blur(8px);
+}
+
+.theme-auth .theme-auth-brand strong,
+.theme-auth .theme-auth-brand small {
+    display: block;
+}
+
+.theme-auth .theme-auth-brand strong {
+    font-size: 13px;
+    line-height: 1.25;
+}
+
+.theme-auth .theme-auth-brand small {
+    margin-top: 1px;
+    color: rgba(255, 255, 255, .75);
+    font-size: 10px;
+}
+
+.theme-auth .container {
+    position: relative;
+    z-index: 2;
+}
+
+.theme-auth .login-card,
+.theme-auth .cadastro-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .55);
+    border-radius: var(--app-radius-xl);
+    background: rgba(255, 255, 255, .985);
+    box-shadow: 0 28px 75px rgba(120, 42, 12, .22);
+}
+
+.theme-auth .login-card::before,
+.theme-auth .cadastro-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--app-primary), #ff9b73);
+}
+
+.theme-auth .logo {
+    margin-bottom: 30px;
+}
+
+.theme-auth .logo i {
+    color: var(--app-primary);
+    filter: drop-shadow(0 8px 14px rgba(255, 107, 53, .16));
+}
+
+.theme-auth .logo h1 {
+    color: var(--app-text-strong);
+    letter-spacing: -.025em;
+}
+
+.theme-auth .logo p {
+    color: var(--app-muted);
+    line-height: 1.65;
+}
+
+.theme-auth .input-group label {
+    color: #444954;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.theme-auth .input input {
+    border-color: var(--app-border);
+    background: #fcfcfd;
+}
+
+.theme-auth .input input:focus {
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 4px rgba(255, 107, 53, .10);
+    background: #fff;
+}
+
+.theme-auth .input > i:first-child {
+    color: #98a2b3;
+}
+
+.theme-auth .mostrar-senha {
+    color: #747b88;
+}
+
+.theme-auth .mostrar-senha:hover {
+    color: var(--app-primary);
+    background: var(--app-primary-soft);
+}
+
+.theme-auth .opcoes a,
+.theme-auth .cadastro a,
+.theme-auth a.voltar {
+    color: var(--app-primary);
+}
+
+.theme-auth .opcoes a:hover,
+.theme-auth .cadastro a:hover,
+.theme-auth a.voltar:hover {
+    color: var(--app-primary-dark);
+}
+
+.theme-auth .btn-login,
+.theme-auth button[type="submit"] {
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--app-primary), var(--app-primary-dark));
+    color: #fff;
+    box-shadow: 0 12px 26px rgba(255, 107, 53, .24);
+}
+
+.theme-auth .btn-login:hover:not(:disabled),
+.theme-auth button[type="submit"]:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ff7542, #dc4f22);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(255, 107, 53, .29);
+}
+
+.theme-auth .btn-login:disabled,
+.theme-auth button[type="submit"]:disabled {
+    box-shadow: none;
+    opacity: .62;
+}
+
+/* ==========================================
+   PÁGINAS INTERNAS: BASE
+========================================== */
+
+body.theme-cliente,
+body.theme-lojista,
+body.theme-admin {
+    min-height: 100vh;
+}
+
+.theme-cliente main.container,
+.theme-lojista main.container {
+    width: min(1180px, calc(100% - 32px));
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.theme-cliente .topo,
+.theme-lojista .topo {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    padding: 24px 26px;
+    border: 1px solid rgba(255, 107, 53, .12);
+    border-radius: var(--app-radius-lg);
+    background:
+        linear-gradient(135deg, #fff 0%, #fff9f6 100%);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.theme-cliente .topo::after,
+.theme-lojista .topo::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    right: -55px;
+    top: -55px;
+    border-radius: 50%;
+    background: rgba(255, 107, 53, .08);
+}
+
+.theme-cliente .topo h1,
+.theme-lojista .topo h1 {
+    color: var(--app-text-strong);
+    letter-spacing: -.025em;
+}
+
+.theme-cliente .topo h1 i,
+.theme-lojista .topo h1 i {
+    color: var(--app-primary);
+}
+
+.theme-cliente .topo p,
+.theme-lojista .topo p {
+    color: var(--app-muted);
+}
+
+.theme-cliente .card,
+.theme-lojista .card,
+.theme-cliente .perfil-card,
+.theme-cliente .conteudo > .card,
+.theme-lojista .form-card,
+.theme-lojista .form-container {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-surface);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.theme-cliente .card:hover,
+.theme-lojista .card:hover {
+    border-color: rgba(255, 107, 53, .15);
+}
+
+.theme-cliente .card h2,
+.theme-lojista .card h2,
+.theme-cliente .titulo h2,
+.theme-lojista .topo-card h2 {
+    color: var(--app-text-strong);
+}
+
+.theme-cliente .card h2 i,
+.theme-lojista .card h2 i,
+.theme-cliente .titulo h2 i,
+.theme-lojista .topo-card h2 i {
+    color: var(--app-primary);
+}
+
+/* ==========================================
+   BOTÕES PRIMÁRIOS / SECUNDÁRIOS
+========================================== */
+
+.theme-cliente .btn.verde,
+.theme-lojista .btn:not(.btn-secundario):not(.vermelho):not(.btn-danger):not(.btn-perigo),
+.theme-lojista .btn-primario,
+.theme-lojista .btn-salvar,
+.theme-lojista button[type="submit"]:not(.btn-danger):not(.btn-perigo),
+.theme-cliente .btn-finalizar,
+.theme-cliente .btn-confirmar,
+.theme-cliente button[type="submit"]:not(.vermelho):not(.btn-danger):not(.btn-perigo) {
+    border-color: var(--app-primary);
+    background: linear-gradient(135deg, var(--app-primary), var(--app-primary-dark));
+    color: #fff;
+    box-shadow: 0 9px 22px rgba(255, 107, 53, .18);
+}
+
+.theme-cliente .btn.verde:hover,
+.theme-lojista .btn:not(.btn-secundario):not(.vermelho):not(.btn-danger):not(.btn-perigo):hover,
+.theme-lojista .btn-primario:hover,
+.theme-lojista .btn-salvar:hover,
+.theme-lojista button[type="submit"]:not(.btn-danger):not(.btn-perigo):hover,
+.theme-cliente .btn-finalizar:hover,
+.theme-cliente .btn-confirmar:hover,
+.theme-cliente button[type="submit"]:not(.vermelho):not(.btn-danger):not(.btn-perigo):hover {
+    background: linear-gradient(135deg, #ff7542, #dc4f22);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(255, 107, 53, .23);
+}
+
+.theme-lojista .btn-secundario,
+.theme-cliente .btn-secundario {
+    border: 1px solid rgba(255, 107, 53, .24);
+    background: var(--app-primary-soft);
+    color: var(--app-primary-dark);
+}
+
+.theme-lojista .btn-secundario:hover,
+.theme-cliente .btn-secundario:hover {
+    border-color: rgba(255, 107, 53, .42);
+    background: var(--app-primary-soft-2);
+}
+
+.theme-cliente .btn.vermelho,
+.theme-lojista .vermelho,
+.theme-cliente .btn-danger,
+.theme-lojista .btn-danger,
+.theme-cliente .btn-perigo,
+.theme-lojista .btn-perigo {
+    background: var(--app-danger);
+    color: #fff;
+}
+
+/* ==========================================
+   PERFIL
+========================================== */
+
+.page-perfil .perfil {
+    padding-top: 28px;
+    padding-bottom: 60px;
+}
+
+.page-perfil .container-perfil {
+    width: min(1180px, calc(100% - 32px));
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-perfil .perfil-card {
+    overflow: hidden;
+    border-top: 4px solid var(--app-primary);
+}
+
+.page-perfil .avatar {
+    background: linear-gradient(145deg, var(--app-primary), var(--app-primary-dark));
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(255, 107, 53, .22);
+}
+
+.page-perfil .perfil-card h2 {
+    color: var(--app-text-strong);
+}
+
+.page-perfil .info i {
+    color: var(--app-primary);
+}
+
+.page-perfil .conteudo .card {
+    overflow: hidden;
+}
+
+.page-perfil .sem-loja > i {
+    color: var(--app-primary);
+}
+
+/* ==========================================
+   CARRINHO E CHECKOUT
+========================================== */
+
+.page-carrinho .carrinho-grid,
+.page-checkout .checkout-grid {
+    gap: 22px;
+}
+
+.page-carrinho .resumo,
+.page-checkout .resumo,
+.page-checkout aside.card {
+    border-top: 4px solid var(--app-primary);
+}
+
+.page-carrinho .linha.total strong,
+.page-checkout .linha.total strong,
+.page-checkout .total strong {
+    color: var(--app-primary-dark);
+}
+
+.page-carrinho .carrinho-vazio > i,
+.page-checkout .carrinho-vazio > i {
+    color: var(--app-primary);
+}
+
+.page-carrinho .item-carrinho,
+.page-carrinho .produto-carrinho,
+.page-checkout .item-resumo,
+.page-checkout .produto-resumo {
+    border-color: var(--app-border);
+    border-radius: var(--app-radius);
+    background: var(--app-surface-soft);
+}
+
+.page-carrinho .quantidade button {
+    border-color: var(--app-border);
+    background: var(--app-primary-soft);
+    color: var(--app-primary-dark);
+}
+
+.page-checkout .campo label,
+.page-carrinho .campo label {
+    color: #444954;
+    font-weight: 600;
+}
+
+.page-checkout .pagamento-opcao,
+.page-checkout .opcao-pagamento,
+.page-checkout label:has(input[type="radio"]) {
+    border-radius: 14px;
+}
+
+/* ==========================================
+   PEDIDOS / HISTÓRICO
+========================================== */
+
+.page-meus-pedidos .pedido,
+.page-meus-pedidos .pedido-card,
+.page-historico-compras .pedido,
+.page-historico-compras .pedido-card,
+.page-pedidos-loja .pedido,
+.page-pedidos-loja .pedido-card {
+    border-color: var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-xs);
+}
+
+.page-meus-pedidos .filtros,
+.page-historico-compras .filtros,
+.page-pedidos-loja .filtros,
+.page-avaliacoes-loja .filtros {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-surface);
+    box-shadow: var(--app-shadow-xs);
+}
+
+.page-meus-pedidos .status,
+.page-historico-compras .status,
+.page-pedidos-loja .status {
+    border-radius: 999px;
+}
+
+/* ==========================================
+   PAINEL DO LOJISTA
+========================================== */
+
+.page-painel-loja .container,
+.page-produtos .container,
+.page-pedidos-loja .container,
+.page-avaliacoes-loja .container,
+.page-cadastrar-loja .container,
+.page-editar-loja .container,
+.page-editar-produto .container,
+.page-novo-produto .container {
+    padding-top: 28px;
+    padding-bottom: 60px;
+}
+
+.page-painel-loja .topo-card,
+.page-produtos .topo-card,
+.page-pedidos-loja .topo-card,
+.page-avaliacoes-loja .topo-card {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--app-border);
+}
+
+.page-painel-loja .dados-loja-painel {
+    margin-top: 22px;
+    padding: 20px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fff9f6, #fff);
+}
+
+.page-painel-loja .logo-loja-painel,
+.page-painel-loja .logo-loja-placeholder {
+    border-color: rgba(255, 107, 53, .35);
+    background: var(--app-primary-soft);
+}
+
+.page-painel-loja .logo-loja-placeholder,
+.page-painel-loja .logo-loja-placeholder i {
+    color: var(--app-primary);
+}
+
+.theme-lojista table {
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius);
+    background: #fff;
+}
+
+.theme-lojista thead th {
+    background: #fafafa;
+    color: #475467;
+}
+
+.theme-lojista tbody tr:hover {
+    background: #fffaf7;
+}
+
+.theme-lojista form,
+.theme-lojista .formulario,
+.theme-lojista .form-card {
+    color: var(--app-text);
+}
+
+.theme-lojista .preview,
+.theme-lojista .preview-imagem,
+.theme-lojista .upload-area {
+    border-radius: var(--app-radius);
+    border-color: var(--app-border-strong);
+}
+
+/* ==========================================
+   ADMIN
+========================================== */
+
+body.theme-admin {
+    background:
+        radial-gradient(circle at 6% 0%, rgba(255, 107, 53, .06), transparent 24%),
+        #f5f6f8;
+}
+
+.theme-admin .admin-header {
+    border-bottom: 1px solid rgba(255, 107, 53, .10);
+    box-shadow: 0 8px 28px rgba(24, 24, 27, .07);
+}
+
+.theme-admin .admin-marca-icone,
+.theme-admin .eyebrow,
+.theme-admin .filtros-titulo h2 i {
+    color: var(--app-primary);
+}
+
+.theme-admin .admin-marca-icone {
+    background: var(--app-primary-soft);
+}
+
+.theme-admin .admin-intro {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 107, 53, .12);
+    border-radius: var(--app-radius-lg);
+    background: linear-gradient(135deg, #fff, #fff9f6);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.theme-admin .admin-intro::after {
+    content: "";
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    right: -70px;
+    top: -70px;
+    border-radius: 50%;
+    background: rgba(255, 107, 53, .08);
+}
+
+.theme-admin .btn-admin.btn-primario {
+    border-color: var(--app-primary);
+    background: linear-gradient(135deg, var(--app-primary), var(--app-primary-dark));
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(255, 107, 53, .20);
+}
+
+.theme-admin .btn-admin.btn-primario:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(255, 107, 53, .24);
+}
+
+.theme-admin .admin-card,
+.theme-admin .metrica-card,
+.theme-admin .modal-admin-caixa {
+    border-color: var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.theme-admin .metrica-card:not(.metrica-pendente) .metrica-icone {
+    background: var(--app-primary-soft);
+    color: var(--app-primary-dark);
+}
+
+.theme-admin .campo-admin input:focus,
+.theme-admin .campo-admin select:focus,
+.theme-admin .campo-admin textarea:focus {
+    border-color: rgba(255, 107, 53, .72);
+    box-shadow: 0 0 0 4px rgba(255, 107, 53, .10);
+}
+
+/* ==========================================
+   MODAIS GERAIS
+========================================== */
+
+body.theme-cliente [class*="modal"] [class*="conteudo"],
+body.theme-lojista [class*="modal"] [class*="conteudo"],
+body.theme-cliente [class*="modal"] [class*="caixa"],
+body.theme-lojista [class*="modal"] [class*="caixa"] {
+    border-radius: var(--app-radius-lg);
+}
+
+body.theme-cliente [class*="modal"] h2 i,
+body.theme-lojista [class*="modal"] h2 i {
+    color: var(--app-primary);
+}
+
+/* ==========================================
+   ESTADOS VAZIOS / CARREGANDO
+========================================== */
+
+body.theme-cliente .carregando i,
+body.theme-lojista .carregando i,
+body.theme-cliente .sem-produtos > i,
+body.theme-lojista .sem-produtos > i,
+body.theme-cliente .estado-vazio > i,
+body.theme-lojista .estado-vazio > i {
+    color: var(--app-primary);
+}
+
+body.theme-cliente .sem-produtos,
+body.theme-lojista .sem-produtos,
+body.theme-cliente .estado-vazio,
+body.theme-lojista .estado-vazio {
+    border-color: var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: #fff;
+    box-shadow: var(--app-shadow-xs);
+}
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (max-width: 900px) {
+    .theme-cliente main.container,
+    .theme-lojista main.container,
+    .page-perfil .container-perfil {
+        width: min(100% - 24px, 1180px);
+    }
+
+    .theme-cliente .topo,
+    .theme-lojista .topo {
+        padding: 20px;
+        border-radius: 18px;
+    }
+}
+
+@media (max-width: 640px) {
+    body.theme-auth {
+        padding: 72px 14px 22px;
+        align-items: flex-start;
+    }
+
+    .theme-auth .theme-auth-brand {
+        top: 15px;
+        left: 16px;
+    }
+
+    .theme-auth .theme-auth-brand small {
+        display: none;
+    }
+
+    .theme-auth .login-card,
+    .theme-auth .cadastro-card {
+        padding: 30px 22px;
+        border-radius: 22px;
+    }
+
+    .theme-auth .logo i {
+        font-size: 46px;
+    }
+
+    .theme-auth .logo h1 {
+        font-size: 24px;
+    }
+
+    .theme-auth .opcoes {
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .theme-cliente main.container,
+    .theme-lojista main.container,
+    .page-perfil .container-perfil {
+        width: calc(100% - 20px);
+    }
+
+    .theme-cliente .topo,
+    .theme-lojista .topo {
+        padding: 18px;
+    }
+
+    .theme-cliente .topo h1,
+    .theme-lojista .topo h1 {
+        font-size: 25px;
+    }
+
+    .theme-cliente .card,
+    .theme-lojista .card,
+    .theme-cliente .perfil-card,
+    .theme-cliente .conteudo > .card,
+    .theme-admin .admin-card,
+    .theme-admin .metrica-card {
+        border-radius: 18px;
+    }
+
+    .theme-admin .admin-intro {
+        border-radius: 18px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.app-theme *,
+    body.app-theme *::before,
+    body.app-theme *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
