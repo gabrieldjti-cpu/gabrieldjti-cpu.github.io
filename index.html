@@ -1,260 +1,255 @@
 <!doctype html>
 <html lang="pt-BR">
-
 <head>
-
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Encontre lojas e comerciantes da sua cidade em um só lugar." />
+  <title>Comércio da Cidade</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <link rel="stylesheet" href="components/header.css" />
+  <link rel="stylesheet" href="components/feedback.css" />
+  <link rel="stylesheet" href="css/style.css" />
 
-  <title>
-    Comércio da Cidade
-  </title>
-
-
-  <!-- ==================================
-       CSS
-  =================================== -->
-
-  <link
-    rel="stylesheet"
-    href="components/header.css"
-  />
-
-  <link
-    rel="stylesheet"
-    href="components/feedback.css"
-  />
-
-  <link
-    rel="stylesheet"
-    href="css/style.css"
-  />
-
-
-  <!-- ==================================
-       GOOGLE FONTS
-  =================================== -->
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  />
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-
-
-  <!-- ==================================
-       FONT AWESOME
-  =================================== -->
-
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-  />
-
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 </head>
 
-
 <body>
-
-
-  <!-- ==================================
-       HEADER
-  =================================== -->
-
   <div id="header"></div>
 
+  <main>
+    <!-- HERO -->
+    <section class="hero-home" aria-labelledby="titulo-hero">
+      <div class="hero-home-container">
+        <div class="hero-conteudo">
+          <span class="hero-selo">
+            <i class="fa-solid fa-location-dot"></i>
+            Compre de quem é da sua cidade
+          </span>
 
-  <!-- ==================================
-       BANNER
-  =================================== -->
+          <h1 id="titulo-hero">
+            O comércio local,<br />
+            <span>mais perto de você.</span>
+          </h1>
 
-  <section class="banner">
+          <p class="hero-descricao">
+            Descubra lojas, encontre o que precisa e valorize os comerciantes locais sem sair de casa.
+          </p>
 
-    <h1>
-      Encontre tudo o que precisa na sua cidade
-    </h1>
+          <div class="pesquisa-home" role="search">
+            <i class="fa-solid fa-magnifying-glass pesquisa-home-icone" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="pesquisa"
+              placeholder="Pesquise uma loja..."
+              autocomplete="off"
+              aria-label="Pesquisar lojas"
+            />
+            <button id="btnPesquisar" type="button" aria-label="Pesquisar lojas">
+              Pesquisar
+            </button>
+          </div>
 
-    <p>
-      Compre dos comerciantes locais sem sair de casa.
-    </p>
+          <div class="hero-acoes">
+            <a href="#lojas" class="btn-home btn-home-primary">
+              <i class="fa-solid fa-store"></i>
+              Explorar lojas
+            </a>
+            <a href="cadastrar-loja.html" class="btn-home btn-home-secondary">
+              <i class="fa-solid fa-shop"></i>
+              Cadastre sua loja
+            </a>
+          </div>
 
+          <div class="hero-beneficios" aria-label="Benefícios do marketplace">
+            <span><i class="fa-solid fa-circle-check"></i> Comércio local</span>
+            <span><i class="fa-solid fa-circle-check"></i> Compra simples</span>
+            <span><i class="fa-solid fa-circle-check"></i> Tudo em um só lugar</span>
+          </div>
+        </div>
 
-    <!-- PESQUISA -->
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-orbita hero-orbita-1"></div>
+          <div class="hero-orbita hero-orbita-2"></div>
 
-    <div class="pesquisa">
+          <div class="hero-card-principal">
+            <div class="hero-card-icone">
+              <i class="fa-solid fa-store"></i>
+            </div>
+            <div>
+              <small>Comércio da Cidade</small>
+              <strong>Encontre perto. Compre local.</strong>
+            </div>
+          </div>
 
-      <input
-        type="text"
-        id="pesquisa"
-        placeholder="Pesquisar lojas..."
-        autocomplete="off"
-        aria-label="Pesquisar lojas"
-      />
+          <div class="hero-mini-card hero-mini-card-mercado">
+            <span>🛒</span>
+            <div>
+              <small>Categoria</small>
+              <strong>Mercados</strong>
+            </div>
+          </div>
 
+          <div class="hero-mini-card hero-mini-card-comida">
+            <span>🍕</span>
+            <div>
+              <small>Categoria</small>
+              <strong>Alimentação</strong>
+            </div>
+          </div>
 
-      <button
-        id="btnPesquisar"
-        type="button"
-        aria-label="Pesquisar"
-      >
+          <div class="hero-pin">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <i class="fa-solid fa-magnifying-glass"></i>
+    <!-- CATEGORIAS -->
+    <section class="secao-home categorias" id="categorias" aria-labelledby="titulo-categorias">
+      <div class="secao-cabecalho">
+        <div>
+          <span class="secao-eyebrow">Explore</span>
+          <h2 id="titulo-categorias">Encontre por categoria</h2>
+          <p>Escolha uma categoria para descobrir os comércios disponíveis.</p>
+        </div>
+      </div>
 
-      </button>
+      <div class="lista-categorias" id="lista-categorias" aria-label="Filtrar lojas por categoria">
+        <button type="button" class="categoria ativo" data-categoria="" aria-pressed="true">
+          <span class="categoria-icone"><i class="fa-solid fa-border-all"></i></span>
+          <span>Todos</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Mercado" aria-pressed="false">
+          <span class="categoria-icone">🛒</span>
+          <span>Mercados</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Farmácia" aria-pressed="false">
+          <span class="categoria-icone">💊</span>
+          <span>Farmácias</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Restaurante" aria-pressed="false">
+          <span class="categoria-icone">🍽️</span>
+          <span>Restaurantes</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Pizzaria" aria-pressed="false">
+          <span class="categoria-icone">🍕</span>
+          <span>Pizzarias</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Padaria" aria-pressed="false">
+          <span class="categoria-icone">🍞</span>
+          <span>Padarias</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Loja de Roupas" aria-pressed="false">
+          <span class="categoria-icone">👕</span>
+          <span>Roupas</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Informática" aria-pressed="false">
+          <span class="categoria-icone">💻</span>
+          <span>Informática</span>
+        </button>
+        <button type="button" class="categoria" data-categoria="Pet Shop" aria-pressed="false">
+          <span class="categoria-icone">🐾</span>
+          <span>Pet Shop</span>
+        </button>
+      </div>
+    </section>
 
+    <!-- LOJAS -->
+    <section class="secao-home lojas" id="lojas" aria-labelledby="titulo-lojas">
+      <div class="secao-cabecalho titulo-lojas">
+        <div>
+          <span class="secao-eyebrow">Marketplace local</span>
+          <h2 id="titulo-lojas">Lojas da Cidade</h2>
+          <p>Conheça os estabelecimentos disponíveis para você.</p>
+        </div>
+        <span id="total-lojas" class="total-lojas-badge"></span>
+      </div>
+
+      <div class="cards" id="lista-lojas">
+        <div class="carregando">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <p>Carregando lojas...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VALOR LOCAL -->
+    <section class="secao-home valor-local" aria-labelledby="titulo-valor-local">
+      <div class="valor-local-cabecalho">
+        <span class="secao-eyebrow">Fortaleça sua cidade</span>
+        <h2 id="titulo-valor-local">Por que comprar no comércio local?</h2>
+        <p>Uma experiência mais próxima para quem compra e mais oportunidades para quem vende.</p>
+      </div>
+
+      <div class="beneficios-grid">
+        <article class="beneficio-card">
+          <span class="beneficio-icone"><i class="fa-solid fa-location-dot"></i></span>
+          <h3>Mais perto de você</h3>
+          <p>Descubra estabelecimentos da sua própria cidade em poucos cliques.</p>
+        </article>
+
+        <article class="beneficio-card">
+          <span class="beneficio-icone"><i class="fa-solid fa-handshake"></i></span>
+          <h3>Valorize quem empreende</h3>
+          <p>Comprar local ajuda pequenos e médios comerciantes a crescerem.</p>
+        </article>
+
+        <article class="beneficio-card">
+          <span class="beneficio-icone"><i class="fa-solid fa-bag-shopping"></i></span>
+          <h3>Mais simples para comprar</h3>
+          <p>Lojas diferentes reunidas em um único marketplace fácil de navegar.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA LOJISTA -->
+    <section class="cta-lojista">
+      <div class="cta-lojista-conteudo">
+        <span class="cta-icone"><i class="fa-solid fa-shop"></i></span>
+        <div>
+          <span class="secao-eyebrow">Para comerciantes</span>
+          <h2>Sua loja também pode fazer parte.</h2>
+          <p>Cadastre seu comércio e leve seus produtos para mais pessoas da sua cidade.</p>
+        </div>
+        <a href="cadastrar-loja.html" class="btn-home btn-home-claro">
+          Cadastrar minha loja
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-home">
+    <div class="footer-home-container">
+      <div class="footer-marca">
+        <div class="footer-logo">
+          <i class="fa-solid fa-store"></i>
+          <strong>Comércio da Cidade</strong>
+        </div>
+        <p>Conectando pessoas aos comércios da própria cidade.</p>
+      </div>
+
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
+        <a href="#categorias">Categorias</a>
+        <a href="#lojas">Lojas</a>
+        <a href="cadastrar-loja.html">Cadastrar loja</a>
+      </nav>
     </div>
 
-  </section>
-
-
-  <!-- ==================================
-       CATEGORIAS
-  =================================== -->
-
-  <section
-    class="categorias"
-    id="categorias"
-  >
-
-    <h2>
-      Categorias
-    </h2>
-
-
-    <div
-      class="lista-categorias"
-      id="lista-categorias"
-    >
-
-      <div class="categoria">
-        🛒 Mercados
-      </div>
-
-      <div class="categoria">
-        💊 Farmácias
-      </div>
-
-      <div class="categoria">
-        🍕 Restaurantes
-      </div>
-
-      <div class="categoria">
-        👕 Roupas
-      </div>
-
-      <div class="categoria">
-        🥩 Açougues
-      </div>
-
-      <div class="categoria">
-        🍞 Padarias
-      </div>
-
+    <div class="footer-copyright">
+      <p>© 2026 Comércio da Cidade. Todos os direitos reservados.</p>
     </div>
-
-  </section>
-
-
-  <!-- ==================================
-       LOJAS
-  =================================== -->
-
-  <section
-    class="lojas"
-    id="lojas"
-  >
-
-    <div class="titulo-lojas">
-
-      <h2>
-        Lojas da Cidade
-      </h2>
-
-      <span id="total-lojas"></span>
-
-    </div>
-
-
-    <!-- LISTA DE LOJAS -->
-
-    <div
-      class="cards"
-      id="lista-lojas"
-    >
-
-      <div class="carregando">
-
-        <i class="fa-solid fa-spinner fa-spin"></i>
-
-        <p>
-          Carregando lojas...
-        </p>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ==================================
-       FOOTER
-  =================================== -->
-
-  <footer>
-
-    <p>
-      © 2026 Comércio da Cidade -
-      Todos os direitos reservados a Gabriel.
-    </p>
-
   </footer>
 
-
-  <!-- ==================================
-       SCRIPTS
-  =================================== -->
-
-
-  <!-- SUPABASE -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-  <!-- CONFIGURAÇÃO SUPABASE -->
-
   <script src="js/supabase.js"></script>
-
-
-  <!-- HEADER -->
-
   <script src="components/header.js"></script>
-
-
-  <!-- FEEDBACK PERSONALIZADO -->
-
   <script src="components/feedback.js"></script>
-
-
-  <!-- PÁGINA INICIAL -->
-
   <script src="js/index.js"></script>
-
-
+  <script src="js/index-filtros.js"></script>
 </body>
-
 </html>
