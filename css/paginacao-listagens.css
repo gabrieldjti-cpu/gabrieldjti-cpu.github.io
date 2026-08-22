@@ -1,0 +1,193 @@
+/* ==========================================
+   PAGINAÇÃO DE LISTAGENS
+   Comércio da Cidade
+========================================== */
+
+.paginacao-listagem {
+    width: 100%;
+    margin: 26px 0 8px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 107, 53, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 12px 35px rgba(24, 32, 47, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.paginacao-listagem[hidden] {
+    display: none !important;
+}
+
+.paginacao-resumo {
+    min-width: 0;
+    color: #687284;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.paginacao-resumo strong {
+    color: #252c3a;
+    font-weight: 700;
+}
+
+.paginacao-pagina-atual {
+    color: #8992a1;
+    font-size: 0.8rem;
+}
+
+.paginacao-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.paginacao-btn,
+.paginacao-numero {
+    min-height: 42px;
+    border: 1px solid #e8e9ed;
+    border-radius: 12px;
+    background: #fff;
+    color: #3b4351;
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.paginacao-btn {
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.paginacao-numero {
+    min-width: 42px;
+    padding: 0 10px;
+}
+
+.paginacao-btn:hover:not(:disabled),
+.paginacao-numero:hover:not(.ativo) {
+    border-color: rgba(255, 107, 53, 0.45);
+    color: #ef5b28;
+    background: #fff8f4;
+    transform: translateY(-1px);
+}
+
+.paginacao-numero.ativo {
+    border-color: #ff6b35;
+    background: linear-gradient(135deg, #ff6b35, #f4511e);
+    color: #fff;
+    box-shadow: 0 7px 18px rgba(255, 107, 53, 0.22);
+    cursor: default;
+}
+
+.paginacao-btn:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+    background: #f5f6f8;
+}
+
+.paginacao-numeros {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.paginacao-reticencias {
+    min-width: 24px;
+    text-align: center;
+    color: #9aa1ad;
+    user-select: none;
+}
+
+.paginacao-btn:focus-visible,
+.paginacao-numero:focus-visible {
+    outline: 3px solid rgba(255, 107, 53, 0.22);
+    outline-offset: 2px;
+}
+
+/* O atributo hidden é usado pelo módulo para exibir só a página atual. */
+.produto-card[hidden],
+.produto[hidden],
+.pedido-card[hidden],
+.avaliacao-card[hidden],
+.loja-admin-card[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 720px) {
+    .paginacao-listagem {
+        margin-top: 20px;
+        padding: 16px;
+        border-radius: 18px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .paginacao-resumo {
+        text-align: center;
+        align-items: center;
+    }
+
+    .paginacao-acoes {
+        justify-content: center;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+
+    .paginacao-btn {
+        flex: 1;
+        padding: 0 10px;
+    }
+
+    .paginacao-numeros {
+        flex: 0 1 auto;
+    }
+
+    .paginacao-numero {
+        min-width: 40px;
+    }
+
+    .paginacao-reticencias,
+    .paginacao-numeros .paginacao-numero:not(.ativo) {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) {
+    .paginacao-btn span {
+        display: none;
+    }
+
+    .paginacao-btn {
+        max-width: 54px;
+    }
+
+    .paginacao-numero {
+        min-width: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .paginacao-btn,
+    .paginacao-numero {
+        transition: none;
+    }
+}
