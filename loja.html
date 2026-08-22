@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="components/feedback.css">
   <link rel="stylesheet" href="css/loja.css">
   <link rel="stylesheet" href="css/loja-modern.css">
+  <link rel="stylesheet" href="css/loja-functional.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +28,7 @@
         Início
       </a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Loja</span>
+      <span id="breadcrumbLoja">Loja</span>
     </nav>
 
     <section class="loja-hero" aria-label="Informações da loja">
@@ -102,13 +103,29 @@
           autocomplete="off"
           aria-label="Pesquisar produtos desta loja"
         >
+
+        <button
+          type="button"
+          id="btnLimparPesquisa"
+          class="btn-limpar-pesquisa"
+          aria-label="Limpar pesquisa"
+          aria-hidden="true"
+          hidden
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
     </section>
 
     <section aria-labelledby="tituloProdutos">
       <div class="produtos-cabecalho">
-        <h2 id="tituloProdutos">Produtos</h2>
-        <span>Escolha um item para adicionar ao carrinho.</span>
+        <div>
+          <h2 id="tituloProdutos">Produtos</h2>
+        </div>
+
+        <span id="contadorProdutos" aria-live="polite">
+          Carregando catálogo...
+        </span>
       </div>
 
       <div id="listaProdutos" class="produtos" aria-live="polite">
@@ -173,6 +190,7 @@
   <script src="components/header.js"></script>
   <script src="components/feedback.js"></script>
   <script src="js/loja.js"></script>
+  <script src="js/loja-modern.js"></script>
 
 </body>
 </html>
