@@ -51,6 +51,15 @@
         ])
     };
 
+    const paginasComPaginacao = new Set([
+        "produtos.html",
+        "loja.html",
+        "meus-pedidos.html",
+        "pedidos-loja.html",
+        "avaliacoes-loja.html",
+        "admin-dashboard.html"
+    ]);
+
     function obterGrupo() {
         for (const [grupo, paginas] of Object.entries(grupos)) {
             if (paginas.has(pagina)) {
@@ -81,6 +90,7 @@
         }
 
         melhorarAcessibilidadeVisual();
+        carregarPaginacaoListagens();
     }
 
     function adicionarMarcaAuth() {
@@ -119,6 +129,36 @@
                     botao.classList.add("theme-control");
                 }
             });
+    }
+
+    function carregarPaginacaoListagens() {
+        if (!paginasComPaginacao.has(pagina)) {
+            return;
+        }
+
+        const css = "css/paginacao-listagens.css";
+        const scriptSrc = "js/paginacao-listagens.js";
+
+        if (!document.querySelector(`link[href="${css}"]`)) {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = css;
+            link.dataset.paginacaoListagens = "true";
+            document.head.appendChild(link);
+        }
+
+        if (document.querySelector(`script[src="${scriptSrc}"]`)) {
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = scriptSrc;
+        script.dataset.paginacaoListagens = "true";
+        script.onerror = () => {
+            console.error("Não foi possível carregar a paginação das listagens.");
+        };
+
+        document.body.appendChild(script);
     }
 
     if (document.readyState === "loading") {
