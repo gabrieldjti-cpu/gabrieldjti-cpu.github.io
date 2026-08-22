@@ -11,6 +11,8 @@
     const mostrarProdutosOriginal = window.mostrarProdutos;
     const adicionarCarrinhoOriginal = window.adicionarCarrinho;
 
+    const lojaIdAtual = new URLSearchParams(window.location.search).get("id") || "";
+
     // ==========================================
     // LOJA CARREGADA
     // ==========================================
@@ -34,7 +36,6 @@
     if (typeof mostrarProdutosOriginal === "function") {
         window.mostrarProdutos = function (lista, pesquisando = false) {
             const retorno = mostrarProdutosOriginal.apply(this, arguments);
-
             const produtosVisiveis = Array.isArray(lista) ? lista : [];
 
             atualizarContadorProdutos(produtosVisiveis.length, pesquisando);
@@ -51,9 +52,7 @@
     if (typeof adicionarCarrinhoOriginal === "function") {
         window.adicionarCarrinho = function (id) {
             const quantidadeAntes = quantidadeNoCarrinho(id);
-
             const retorno = adicionarCarrinhoOriginal.apply(this, arguments);
-
             const quantidadeDepois = quantidadeNoCarrinho(id);
 
             if (quantidadeDepois > quantidadeAntes) {
@@ -78,7 +77,8 @@
     // ==========================================
 
     function atualizarIdentidadeDaPagina() {
-        const nome = String(window.lojaAtual?.nome || "Loja").trim() || "Loja";
+        const nomeRenderizado = document.getElementById("nomeLoja")?.textContent;
+        const nome = String(nomeRenderizado || "Loja").trim() || "Loja";
 
         document.title = `${nome} | Comércio da Cidade`;
 
@@ -130,13 +130,11 @@
 
     function limparPesquisa() {
         const pesquisa = document.getElementById("pesquisa");
-
         if (!pesquisa) return;
 
         pesquisa.value = "";
         pesquisa.dispatchEvent(new Event("input", { bubbles: true }));
         pesquisa.focus();
-
         atualizarEstadoBotaoLimpar();
     }
 
@@ -158,7 +156,6 @@
 
     function atualizarContadorProdutos(quantidade, pesquisando) {
         const contador = document.getElementById("contadorProdutos");
-
         if (!contador) return;
 
         if (pesquisando) {
@@ -195,7 +192,6 @@
 
     function adicionarBadgePromocao(card, produto) {
         const areaImagem = card.querySelector(".area-imagem-produto");
-
         if (!areaImagem) return;
 
         areaImagem.querySelector(".produto-badge-oferta")?.remove();
@@ -267,7 +263,7 @@
 
             const item = carrinho.find(itemCarrinho =>
                 String(itemCarrinho?.id) === String(produtoId) &&
-                String(itemCarrinho?.loja_id) === String(window.lojaId)
+                String(itemCarrinho?.loja_id) === String(lojaIdAtual)
             );
 
             return Math.max(0, Number(item?.quantidade || 0));
