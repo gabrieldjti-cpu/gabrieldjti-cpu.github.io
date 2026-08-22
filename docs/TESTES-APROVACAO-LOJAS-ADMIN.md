@@ -1,7 +1,7 @@
 # Testes — Aprovação de Lojas e Dashboard Administrativo
 
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
-**Branch:** `feat/aprovacao-lojas-admin`  
+**Origem:** `feat/aprovacao-lojas-admin` — integrada na `main`  
 **PRD:** RF-13 e RF-23  
 **Migration:** `20260821130500_aprovacao_lojas_admin.sql`
 
@@ -94,19 +94,23 @@ A conta **Administrador Comércio da Cidade** foi criada e promovida para `tipo_
 | Loja aprovada passa a aparecer na home | ✅ Aprovado — confirmado no navegador |
 | Admin rejeita loja informando motivo | ⏳ Pendente |
 | Lojista vê motivo da rejeição | ⏳ Pendente |
-| Admin suspende loja aprovada | ⏳ Pendente |
-| Loja suspensa desaparece do catálogo | ⏳ Pendente |
+| Admin suspende loja aprovada | ✅ Aprovado — confirmado no dashboard e no banco |
+| Loja suspensa desaparece do catálogo | ✅ Aprovado — confirmado no navegador |
 | Checkout bloqueia carrinho antigo de loja suspensa | ⏳ Pendente |
-| Histórico administrativo registra a aprovação | ✅ Aprovado — confirmado no banco |
+| Histórico administrativo registra as mudanças | ✅ Aprovado — aprovação e suspensão confirmadas no banco |
 
-## Fluxo principal validado nesta rodada
+## Fluxos validados nesta rodada
 
-O caminho abaixo foi validado de ponta a ponta quanto ao estado da loja e publicação pública:
+Fluxo de publicação:
 
 `cadastro da loja` → `pendente / inativa` → `aprovada / ativa` → `visível na home`
 
-A aprovação desta rodada foi executada diretamente no banco, com autorização explícita do responsável pelo projeto, registrando `aprovado_por` e o histórico administrativo. Portanto, o comportamento do **botão Aprovar do dashboard** ainda precisa de um teste funcional separado.
+Fluxo de suspensão:
+
+`aprovada / ativa` → `suspensa / inativa` → `removida do catálogo público`
+
+A aprovação inicial da loja de teste foi executada diretamente no banco, com autorização explícita do responsável pelo projeto, registrando `aprovado_por` e o histórico administrativo. Por isso, o comportamento do **botão Aprovar do dashboard** ainda precisa de um teste funcional separado. A suspensão, por outro lado, foi executada pelo dashboard e validada no banco e no catálogo público.
 
 ## Situação
 
-O fluxo principal de cadastro, estado pendente, aprovação e publicação está validado. Ainda faltam os testes funcionais específicos do dashboard para aprovação via botão, rejeição, suspensão, reabertura, bloqueio de usuário comum e efeitos no catálogo/checkout antes de integrar esta funcionalidade na `main`.
+A funcionalidade já foi integrada na `main`. Os fluxos principais de cadastro, aprovação/publicação e suspensão/remoção pública foram validados. Permanecem testes complementares de aprovação pelo botão do dashboard, rejeição, reabertura, bloqueio de usuário comum, visibilidade de produtos e bloqueio de checkout com carrinho antigo.
