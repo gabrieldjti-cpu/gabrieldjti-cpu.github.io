@@ -1,4 +1,45 @@
 // =======================================
+// DESIGN SYSTEM GLOBAL
+// =======================================
+// Carrega a identidade visual compartilhada antes das extensões específicas.
+
+function carregarDesignSystemGlobal() {
+    const css = "css/design-system.css";
+    const scriptSrc = "js/design-system.js";
+
+    if (!document.querySelector(`link[href="${css}"]`)) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = css;
+        link.dataset.designSystem = "comercio-da-cidade";
+        document.head.appendChild(link);
+    }
+
+    const carregarScript = () => {
+        if (document.querySelector(`script[src="${scriptSrc}"]`)) {
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = scriptSrc;
+        script.dataset.designSystem = "comercio-da-cidade";
+        script.onerror = () => {
+            console.error("Não foi possível carregar o design system global.");
+        };
+        document.body.appendChild(script);
+    };
+
+    if (document.body) {
+        carregarScript();
+    } else {
+        document.addEventListener("DOMContentLoaded", carregarScript, { once: true });
+    }
+}
+
+carregarDesignSystemGlobal();
+
+
+// =======================================
 // SUPABASE
 // =======================================
 
