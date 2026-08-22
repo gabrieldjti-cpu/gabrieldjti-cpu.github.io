@@ -1,6 +1,6 @@
 // ==========================================
 // LOGIN-ADMIN-REDIRECT.JS
-// Redirecionamento condicional do RF-02
+// Redireciona admin que já chegou autenticado ao login
 // ==========================================
 
 async function verificarRedirecionamentoAdmin() {
@@ -23,7 +23,10 @@ async function verificarRedirecionamentoAdmin() {
         const { data: admin, error } = await window.db.rpc("sou_admin");
 
         if (error) {
-            console.warn("Não foi possível verificar redirecionamento administrativo:", error);
+            console.warn(
+                "Não foi possível verificar redirecionamento administrativo:",
+                error
+            );
             return;
         }
 
@@ -38,13 +41,11 @@ async function verificarRedirecionamentoAdmin() {
 function iniciarRedirecionamentoAdminLogin() {
     if (!window.db) return;
 
+    // Este script cuida apenas do caso em que o usuário já chega à
+    // página de login com uma sessão admin existente.
+    // O redirecionamento após enviar o formulário é responsabilidade
+    // exclusiva de login.js, evitando dois scripts disputando o destino.
     verificarRedirecionamentoAdmin();
-
-    window.db.auth.onAuthStateChange((evento, sessao) => {
-        if (evento === "SIGNED_IN" && sessao) {
-            setTimeout(verificarRedirecionamentoAdmin, 0);
-        }
-    });
 }
 
 window.iniciarRedirecionamentoAdminLogin = iniciarRedirecionamentoAdminLogin;
