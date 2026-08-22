@@ -29,7 +29,7 @@ Nesta etapa:
 - RLS permite ao lojista ler apenas movimentações da própria loja;
 - o painel mostra as últimas 20 movimentações.
 
-## Validação estrutural já realizada
+## Validação estrutural realizada
 
 - [x] coluna `produtos.estoque_minimo` criada como `integer not null default 5`;
 - [x] constraint impede limite negativo;
@@ -43,88 +43,87 @@ Nesta etapa:
 
 ## Testes no navegador
 
-### 1. Carregamento do painel
+### 1. Carregamento do painel — ✅ APROVADO
 
-1. entrar com uma conta que possua loja;
-2. abrir `painel-loja.html`;
-3. confirmar que aparece a seção **Controle de Estoque** antes da lista de produtos;
-4. confirmar os cartões de resumo:
-   - Estoque baixo;
-   - Esgotados;
-   - Produtos ativos.
+Validado no celular com conta de lojista:
 
-**Esperado:** os números devem corresponder aos produtos da própria loja.
+- seção **Controle de Estoque** carregou normalmente;
+- cartões **Estoque baixo**, **Esgotados** e **Produtos ativos** apareceram;
+- contadores corresponderam aos produtos da loja;
+- layout mobile permaneceu utilizável.
 
-### 2. Alertas de estoque baixo
+### 2. Alertas de estoque baixo — ✅ APROVADO
 
-1. observar a lista **Produtos que precisam de atenção**;
-2. confirmar que produtos com `estoque <= estoque_minimo` aparecem;
-3. confirmar que produto com estoque `0` aparece como esgotado;
-4. confirmar que produto acima do limite não aparece nessa lista.
+Validado no navegador:
 
-### 3. Configuração do limite
+- produtos com `estoque <= estoque_minimo` apareceram em **Produtos que precisam de atenção**;
+- o estoque atual foi exibido corretamente;
+- o limite padrão `5` apareceu nos cards;
+- produtos acima do limite deixaram de aparecer quando aplicável.
 
-1. abrir **Configurar limites de alerta**;
-2. escolher um produto;
-3. alterar o limite para um número inteiro não negativo;
-4. clicar em **Salvar**;
-5. recarregar o painel.
+### 3. Configuração do limite — ✅ APROVADO
 
-**Esperado:** o novo valor deve permanecer salvo e a lista de alertas deve mudar quando aplicável.
+Validado no navegador:
 
-Exemplo:
+- **Configurar limites de alerta** abriu normalmente;
+- o lojista alterou o limite de alerta de produto;
+- o valor foi salvo;
+- a lista de estoque baixo reagiu ao novo limite;
+- ao restaurar o limite, o produto voltou a obedecer à regra `estoque <= estoque_minimo`.
 
-- estoque atual = `3`;
-- limite = `5` → produto aparece no alerta;
-- alterar limite para `2` → produto deixa de aparecer no alerta.
+### 4. Histórico por ajuste manual — ✅ APROVADO
 
-### 4. Histórico por ajuste manual
+Validado no navegador e confirmado no banco.
 
-1. abrir a edição de um produto;
-2. anotar o estoque atual;
-3. aumentar ou reduzir a quantidade;
-4. salvar;
-5. retornar ao painel;
-6. abrir **Histórico de movimentações**.
+Caso real utilizado:
 
-**Esperado:** deve aparecer uma nova movimentação com:
+- produto: **Tapete de Crochê Oval**;
+- estoque anterior: `1`;
+- estoque novo: `100`;
+- quantidade registrada: `+99`;
+- tipo: `entrada`;
+- origem: `alteracao_lojista`.
 
-- produto correto;
-- entrada ou saída;
-- quantidade alterada;
-- estoque anterior → estoque novo;
-- data/hora.
+O painel exibiu a movimentação com estoque anterior → novo, quantidade, origem e data/hora.
 
-### 5. Baixa automática por pedido
+### 5. Baixa automática por pedido — comportamento existente preservado
 
-1. realizar um checkout de produto com estoque disponível;
-2. confirmar o novo valor de estoque;
-3. abrir o histórico no painel do lojista.
+O checkout já reduz `produtos.estoque` automaticamente e a nova trigger do RF-16 registra qualquer alteração real na coluna `estoque`.
 
-**Esperado:** o estoque diminui e uma movimentação de saída é registrada automaticamente.
+**Situação desta validação:** não reexecutado ponta a ponta nesta rodada específica do RF-16.
 
-### 6. Devolução por cancelamento
+### 6. Devolução por cancelamento — comportamento existente preservado
 
-1. cancelar um pedido elegível que já tenha baixado estoque;
-2. conferir o estoque do produto;
-3. abrir o histórico.
+O fluxo de cancelamento já devolve as unidades ao estoque e a nova trigger do RF-16 registra qualquer alteração real na coluna `estoque`.
 
-**Esperado:** a quantidade retorna ao estoque e uma movimentação de entrada é registrada.
+**Situação desta validação:** não reexecutado ponta a ponta nesta rodada específica do RF-16.
 
-### 7. Isolamento entre lojas
+### 7. Isolamento entre lojas — validação estrutural aprovada
 
-1. entrar como lojista A;
-2. abrir o painel;
-3. confirmar que produtos e movimentações da loja B não aparecem.
+A tabela `movimentacoes_estoque` possui RLS e policy de SELECT baseada na loja pertencente ao `auth.uid()`.
 
-**Esperado:** cada lojista acessa somente o próprio histórico.
+**Situação desta validação:** proteção estrutural confirmada; teste cruzado entre dois lojistas fica recomendado para regressão.
+
+## Correção realizada durante os testes
+
+Durante o primeiro teste da branch, o frontend retornou `Invalid API key` porque `js/supabase.js` da branch estava com uma chave inválida.
+
+A branch foi corrigida para utilizar a publishable key ativa do projeto Supabase. A `main` não possuía esse erro.
+
+Após a correção, o carregamento das lojas e os testes do RF-16 seguiram normalmente.
 
 ## Situação
 
-**Implementação pronta para validação funcional no navegador.**
+✅ **RF-16 validado no escopo principal do MVP.**
 
-O RF-16 só deve ser marcado como concluído após validar, no mínimo:
+Critérios funcionais mínimos definidos para esta etapa foram aprovados:
 
-- alerta visual;
-- alteração do limite;
-- registro de movimentação após mudança real de estoque.
+- [x] alerta visual de estoque baixo;
+- [x] limite configurável por produto;
+- [x] persistência do limite;
+- [x] atualização dinâmica da lista de alertas;
+- [x] registro automático de movimentação após mudança real de estoque;
+- [x] histórico visível no painel do lojista;
+- [x] estrutura de auditoria protegida por RLS.
+
+Os testes ponta a ponta de baixa por checkout e devolução por cancelamento permanecem recomendados como regressão conjunta dos RF-10/RF-16/RF-20, mas não bloqueiam a integração desta implementação de alertas e histórico.
