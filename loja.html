@@ -1,281 +1,128 @@
 <!doctype html>
 <html lang="pt-BR">
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loja | Comércio da Cidade</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <link rel="stylesheet" href="components/header.css">
+  <link rel="stylesheet" href="components/feedback.css">
+  <link rel="stylesheet" href="css/loja.css">
+  <link rel="stylesheet" href="css/loja-modern.css">
 
-  <title>
-    Loja | Comércio da Cidade
-  </title>
-
-
-  <!-- ==================================
-       CSS
-  =================================== -->
-
-  <link
-    rel="stylesheet"
-    href="components/header.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="components/feedback.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/loja.css"
-  >
-
-
-  <!-- ==================================
-       GOOGLE FONTS
-  =================================== -->
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
-
-
-  <!-- ==================================
-       FONT AWESOME
-  =================================== -->
-
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-  >
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-
-
 <body>
-
-
-  <!-- ==================================
-       HEADER
-  =================================== -->
 
   <div id="header"></div>
 
-
-  <!-- ==================================
-       CONTEÚDO
-  =================================== -->
-
   <main class="container">
 
+    <nav class="loja-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html">
+        <i class="fa-solid fa-house"></i>
+        Início
+      </a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>Loja</span>
+    </nav>
 
-    <!-- ==================================
-         INFORMAÇÕES DA LOJA
-    =================================== -->
+    <section class="loja-hero" aria-label="Informações da loja">
+      <div class="loja-info">
 
-    <section class="loja-info">
-
-
-      <!-- ==================================
-           LOGO
-      =================================== -->
-
-      <img
-        id="logoLoja"
-        alt="Logo da loja"
-        style="display: none;"
-      >
-
-
-      <div>
-
-
-        <!-- ==================================
-             NOME
-        =================================== -->
-
-        <h1 id="nomeLoja">
-
-          Carregando...
-
-        </h1>
-
-
-        <!-- ==================================
-             CATEGORIA
-        =================================== -->
-
-        <p>
-
-          <i class="fa-solid fa-layer-group"></i>
-
-          <span id="categoriaLoja">
-            Carregando...
-          </span>
-
-        </p>
-
-
-        <!-- ==================================
-             CIDADE
-        =================================== -->
-
-        <p>
-
-          <i class="fa-solid fa-location-dot"></i>
-
-          <span id="cidadeLoja">
-            Carregando...
-          </span>
-
-        </p>
-
-
-        <!-- ==================================
-             TELEFONE
-        =================================== -->
-
-        <p>
-
-          <i class="fa-solid fa-phone"></i>
-
-          <span id="telefoneLoja">
-            Carregando...
-          </span>
-
-        </p>
-
-
-        <!-- ==================================
-             WHATSAPP
-        =================================== -->
-
-        <a
-          id="btnWhatsapp"
-          class="btn-whatsapp"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="display: none;"
-        >
-
-          <i class="fa-brands fa-whatsapp"></i>
-
-          Conversar
-
-        </a>
-
-
-      </div>
-
-
-    </section>
-
-
-    <!-- ==================================
-         PESQUISA
-    =================================== -->
-
-    <section
-      class="pesquisa"
-      aria-label="Pesquisar produtos"
-    >
-
-      <input
-        type="search"
-        id="pesquisa"
-        placeholder="Pesquisar produtos..."
-        autocomplete="off"
-        aria-label="Pesquisar produtos desta loja"
-      >
-
-    </section>
-
-
-    <!-- ==================================
-         PRODUTOS
-    =================================== -->
-
-    <section>
-
-
-      <h2>
-
-        Produtos
-
-      </h2>
-
-
-      <div
-        id="listaProdutos"
-        class="produtos"
-        aria-live="polite"
-      >
-
-
-        <div class="carregando">
-
-          <i
-            class="fa-solid fa-spinner fa-spin"
-          ></i>
-
-          <p>
-
-            Carregando produtos...
-
-          </p>
-
+        <div class="loja-identidade-visual">
+          <img
+            id="logoLoja"
+            alt="Logo da loja"
+            style="display: none;"
+          >
         </div>
 
+        <div class="loja-dados">
+          <span class="loja-selo">
+            <i class="fa-solid fa-location-dot"></i>
+            Comércio local
+          </span>
+
+          <h1 id="nomeLoja">Carregando...</h1>
+
+          <div class="loja-meta">
+            <p>
+              <i class="fa-solid fa-layer-group"></i>
+              <span id="categoriaLoja">Carregando...</span>
+            </p>
+
+            <p>
+              <i class="fa-solid fa-location-dot"></i>
+              <span id="cidadeLoja">Carregando...</span>
+            </p>
+
+            <p>
+              <i class="fa-solid fa-phone"></i>
+              <span id="telefoneLoja">Carregando...</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="loja-acoes">
+          <a
+            id="btnWhatsapp"
+            class="btn-whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="display: none;"
+          >
+            <i class="fa-brands fa-whatsapp"></i>
+            Conversar
+          </a>
+
+          <a href="index.html#lojas" class="btn-voltar-lojas">
+            <i class="fa-solid fa-arrow-left"></i>
+            Ver outras lojas
+          </a>
+        </div>
 
       </div>
-
-
     </section>
 
+    <section class="loja-ferramentas" aria-label="Ferramentas da loja">
+      <div class="loja-ferramentas-texto">
+        <small>Catálogo da loja</small>
+        <h2>Encontre o que você precisa</h2>
+      </div>
+
+      <div class="pesquisa" aria-label="Pesquisar produtos">
+        <input
+          type="search"
+          id="pesquisa"
+          placeholder="Pesquisar produtos..."
+          autocomplete="off"
+          aria-label="Pesquisar produtos desta loja"
+        >
+      </div>
+    </section>
+
+    <section aria-labelledby="tituloProdutos">
+      <div class="produtos-cabecalho">
+        <h2 id="tituloProdutos">Produtos</h2>
+        <span>Escolha um item para adicionar ao carrinho.</span>
+      </div>
+
+      <div id="listaProdutos" class="produtos" aria-live="polite">
+        <div class="carregando">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <p>Carregando produtos...</p>
+        </div>
+      </div>
+    </section>
 
   </main>
 
-
-  <!-- ======================================
-       MODAL DE AVALIAÇÕES
-  ======================================= -->
-
-  <div
-    id="modalAvaliacoes"
-    class="modal-avaliacoes"
-    aria-hidden="true"
-  >
-
-
-    <!-- ==================================
-         OVERLAY
-    =================================== -->
-
-    <div
-      class="modal-avaliacoes-overlay"
-      data-fechar-avaliacoes
-    ></div>
-
-
-    <!-- ==================================
-         CONTEÚDO DO MODAL
-    =================================== -->
+  <div id="modalAvaliacoes" class="modal-avaliacoes" aria-hidden="true">
+    <div class="modal-avaliacoes-overlay" data-fechar-avaliacoes></div>
 
     <div
       class="modal-avaliacoes-conteudo"
@@ -283,36 +130,14 @@
       aria-modal="true"
       aria-labelledby="tituloModalAvaliacoes"
     >
-
-
-      <!-- ==================================
-           TOPO
-      =================================== -->
-
       <div class="modal-avaliacoes-topo">
-
-
         <div>
-
-
           <h2 id="tituloModalAvaliacoes">
-
             <i class="fa-solid fa-star"></i>
-
             Avaliações do produto
-
           </h2>
-
-
-          <span id="nomeProdutoAvaliacoes">
-
-            Produto
-
-          </span>
-
-
+          <span id="nomeProdutoAvaliacoes">Produto</span>
         </div>
-
 
         <button
           type="button"
@@ -320,107 +145,34 @@
           class="btn-fechar-avaliacoes"
           aria-label="Fechar avaliações"
         >
-
           <i class="fa-solid fa-xmark"></i>
-
         </button>
-
-
       </div>
 
-
-      <!-- ==================================
-           CONTEÚDO DINÂMICO
-      =================================== -->
-
-      <div
-        id="conteudoAvaliacoes"
-        class="conteudo-avaliacoes"
-        aria-live="polite"
-      >
-
-
+      <div id="conteudoAvaliacoes" class="conteudo-avaliacoes" aria-live="polite">
         <div class="carregando-avaliacoes">
-
-          <i
-            class="fa-solid fa-spinner fa-spin"
-          ></i>
-
-          <span>
-
-            Carregando avaliações...
-
-          </span>
-
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <span>Carregando avaliações...</span>
         </div>
-
-
       </div>
-
-
     </div>
-
-
   </div>
 
-
-  <!-- ==================================
-       FOOTER
-  =================================== -->
-
-  <footer>
-
-    <p>
-
-      © 2026 Comércio da Cidade
-
-    </p>
-
+  <footer class="footer-loja">
+    <div class="footer-loja-conteudo">
+      <div class="footer-loja-marca">
+        <i class="fa-solid fa-store"></i>
+        <span>Comércio da Cidade</span>
+      </div>
+      <p>Compre local. Fortaleça quem movimenta a sua cidade.</p>
+    </div>
   </footer>
 
-
-  <!-- ==================================
-       SCRIPTS
-  =================================== -->
-
-
-  <!-- ==================================
-       SUPABASE
-  =================================== -->
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
-
-
-  <!-- ==================================
-       CONFIGURAÇÃO SUPABASE
-  =================================== -->
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
-
-
-  <!-- ==================================
-       HEADER
-  =================================== -->
-
   <script src="components/header.js"></script>
-
-
-  <!-- ==================================
-       FEEDBACK
-  =================================== -->
-
   <script src="components/feedback.js"></script>
-
-
-  <!-- ==================================
-       LOJA
-  =================================== -->
-
   <script src="js/loja.js"></script>
 
-
 </body>
-
 </html>
