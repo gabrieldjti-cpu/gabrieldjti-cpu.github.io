@@ -1,12 +1,20 @@
 /* ==========================================
-   STYLE.CSS
-   Página inicial - Comércio da Cidade
+   HOME — COMÉRCIO DA CIDADE
 ========================================== */
 
-
-/* ==========================================
-   RESET
-========================================== */
+:root {
+    --home-primary: #ff6b35;
+    --home-primary-dark: #e85b2b;
+    --home-primary-soft: #fff3ed;
+    --home-accent: #ffb547;
+    --home-text: #202124;
+    --home-text-light: #68707c;
+    --home-bg: #f7f8fb;
+    --home-card: #ffffff;
+    --home-border: #e9ebef;
+    --home-shadow: 0 14px 40px rgba(31, 37, 45, .08);
+    --home-shadow-hover: 0 20px 48px rgba(31, 37, 45, .13);
+}
 
 * {
     margin: 0;
@@ -14,767 +22,1063 @@
     box-sizing: border-box;
 }
 
-
 html {
     scroll-behavior: smooth;
 }
 
-
 body {
     font-family: 'Poppins', sans-serif;
-
-    background: #f5f7fb;
-
-    color: #333;
+    background: var(--home-bg);
+    color: var(--home-text);
 }
-
 
 a {
-    text-decoration: none;
     color: inherit;
+    text-decoration: none;
 }
 
+button,
+input {
+    font: inherit;
+}
 
 button {
-    font-family: inherit;
-
+    border: 0;
     cursor: pointer;
-
-    border: none;
-
-    transition: .3s;
 }
 
+main {
+    overflow: hidden;
+}
 
 /* ==========================================
-   IMPORTANTE
-   O HEADER É CONTROLADO POR:
-   components/header.css
+   HERO
 ========================================== */
 
-
-/* ==========================================
-   BANNER
-========================================== */
-
-.banner {
-    text-align: center;
-
-    padding: 70px 20px;
-
+.hero-home {
+    position: relative;
+    isolation: isolate;
     background:
-        linear-gradient(
-            135deg,
-            #2b7cff,
-            #5fa8ff
-        );
-
+        radial-gradient(circle at 85% 18%, rgba(255, 181, 71, .34), transparent 27%),
+        radial-gradient(circle at 8% 90%, rgba(255, 255, 255, .18), transparent 28%),
+        linear-gradient(135deg, #ff6b35 0%, #f47a3e 48%, #ff914d 100%);
     color: #fff;
 }
 
-
-.banner h1 {
-    max-width: 900px;
-
-    margin:
-        0 auto
-        15px;
-
-    font-size: 42px;
-
-    line-height: 1.25;
+.hero-home::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 72px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .035));
+    pointer-events: none;
+    z-index: -1;
 }
 
-
-.banner p {
-    margin-bottom: 35px;
-
-    font-size: 18px;
+.hero-home-container {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 540px;
+    margin: 0 auto;
+    padding: 76px 0 82px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+    gap: 70px;
+    align-items: center;
 }
 
-
-/* ==========================================
-   PESQUISA
-========================================== */
-
-.pesquisa {
-    width: 100%;
-
-    max-width: 700px;
-
-    margin: auto;
-
-    display: flex;
-
-    justify-content: center;
+.hero-conteudo {
+    position: relative;
+    z-index: 2;
 }
 
-
-.pesquisa input {
-    width: 100%;
-
-    min-width: 0;
-
-    padding: 16px;
-
-    border: none;
-
-    outline: none;
-
-    border-radius:
-        10px
-        0
-        0
-        10px;
-
-    font-family: inherit;
-
-    font-size: 16px;
-
-    color: #333;
-}
-
-
-.pesquisa input::placeholder {
-    color: #999;
-}
-
-
-.pesquisa button {
-    padding: 16px 30px;
-
-    flex-shrink: 0;
-
-    background: #ff9800;
-
-    color: #fff;
-
-    border-radius:
-        0
-        10px
-        10px
-        0;
-
-    font-size: 16px;
-
+.hero-selo {
+    width: fit-content;
+    margin-bottom: 22px;
+    padding: 9px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .14);
+    backdrop-filter: blur(10px);
+    font-size: 13px;
     font-weight: 600;
 }
 
-
-.pesquisa button:hover {
-    background: #f57c00;
+.hero-conteudo h1 {
+    max-width: 720px;
+    font-size: clamp(42px, 5vw, 66px);
+    line-height: 1.05;
+    letter-spacing: -2.6px;
+    font-weight: 800;
 }
 
+.hero-conteudo h1 span {
+    color: #fff6df;
+}
+
+.hero-descricao {
+    max-width: 650px;
+    margin-top: 22px;
+    color: rgba(255, 255, 255, .9);
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.pesquisa-home {
+    max-width: 680px;
+    min-height: 64px;
+    margin-top: 30px;
+    padding: 7px 7px 7px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 18px 38px rgba(120, 53, 20, .2);
+}
+
+.pesquisa-home-icone {
+    flex: 0 0 auto;
+    color: #a1a6ae;
+    font-size: 18px;
+}
+
+.pesquisa-home input {
+    min-width: 0;
+    flex: 1;
+    padding: 10px 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--home-text);
+    font-size: 15px;
+}
+
+.pesquisa-home input::placeholder {
+    color: #9ca1aa;
+}
+
+.pesquisa-home button {
+    min-height: 50px;
+    padding: 0 24px;
+    border-radius: 13px;
+    background: var(--home-text);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform .2s ease, background .2s ease;
+}
+
+.pesquisa-home button:hover {
+    transform: translateY(-1px);
+    background: #101114;
+}
+
+.hero-acoes {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-home {
+    min-height: 48px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.btn-home:hover {
+    transform: translateY(-2px);
+}
+
+.btn-home-primary {
+    background: #fff;
+    color: var(--home-primary-dark);
+    box-shadow: 0 10px 28px rgba(122, 48, 18, .18);
+}
+
+.btn-home-secondary {
+    border: 1px solid rgba(255, 255, 255, .34);
+    background: rgba(255, 255, 255, .11);
+    color: #fff;
+}
+
+.btn-home-secondary:hover {
+    background: rgba(255, 255, 255, .18);
+}
+
+.hero-beneficios {
+    margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    color: rgba(255, 255, 255, .88);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.hero-beneficios span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.hero-beneficios i {
+    color: #fff4cc;
+}
+
+/* ==========================================
+   HERO VISUAL
+========================================== */
+
+.hero-visual {
+    position: relative;
+    min-height: 390px;
+    display: grid;
+    place-items: center;
+}
+
+.hero-orbita {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 50%;
+}
+
+.hero-orbita-1 {
+    width: 360px;
+    height: 360px;
+}
+
+.hero-orbita-2 {
+    width: 270px;
+    height: 270px;
+}
+
+.hero-card-principal,
+.hero-mini-card {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, .75);
+    background: rgba(255, 255, 255, .94);
+    color: var(--home-text);
+    box-shadow: 0 24px 55px rgba(113, 47, 19, .22);
+    backdrop-filter: blur(12px);
+}
+
+.hero-card-principal {
+    width: min(340px, 90%);
+    min-height: 130px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    border-radius: 24px;
+    transform: rotate(-3deg);
+}
+
+.hero-card-icone {
+    width: 62px;
+    height: 62px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--home-primary-soft);
+    color: var(--home-primary);
+    font-size: 25px;
+}
+
+.hero-card-principal small,
+.hero-mini-card small {
+    display: block;
+    margin-bottom: 5px;
+    color: #8a9099;
+    font-size: 11px;
+}
+
+.hero-card-principal strong {
+    display: block;
+    line-height: 1.35;
+    font-size: 17px;
+}
+
+.hero-mini-card {
+    min-width: 180px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 17px;
+    font-size: 13px;
+}
+
+.hero-mini-card > span {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: #fff4e7;
+    font-size: 24px;
+}
+
+.hero-mini-card strong {
+    display: block;
+    font-size: 13px;
+}
+
+.hero-mini-card-mercado {
+    top: 36px;
+    right: -4px;
+    transform: rotate(4deg);
+}
+
+.hero-mini-card-comida {
+    bottom: 32px;
+    left: -10px;
+    transform: rotate(-4deg);
+}
+
+.hero-pin {
+    position: absolute;
+    right: 40px;
+    bottom: 56px;
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border: 6px solid rgba(255, 255, 255, .35);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--home-primary);
+    box-shadow: 0 15px 30px rgba(113, 47, 19, .18);
+    font-size: 24px;
+}
+
+/* ==========================================
+   SEÇÕES
+========================================== */
+
+.secao-home {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.categorias {
+    padding-top: 72px;
+}
+
+.lojas {
+    padding-top: 80px;
+}
+
+.secao-cabecalho {
+    margin-bottom: 28px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 28px;
+}
+
+.secao-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--home-primary);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.secao-cabecalho h2,
+.valor-local-cabecalho h2 {
+    color: var(--home-text);
+    font-size: clamp(27px, 3vw, 36px);
+    line-height: 1.2;
+    letter-spacing: -.8px;
+}
+
+.secao-cabecalho p,
+.valor-local-cabecalho p {
+    max-width: 650px;
+    margin-top: 8px;
+    color: var(--home-text-light);
+    font-size: 14px;
+    line-height: 1.7;
+}
 
 /* ==========================================
    CATEGORIAS
 ========================================== */
 
-.categorias {
-    width: 90%;
-
-    max-width: 1200px;
-
-    margin: 60px auto;
-}
-
-
-.categorias h2 {
-    margin-bottom: 25px;
-
-    font-size: 30px;
-
-    color: #292929;
-}
-
-
 .lista-categorias {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 18px;
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 12px;
 }
-
 
 .categoria {
-    background: #fff;
-
-    padding: 15px 28px;
-
-    border-radius: 12px;
-
-    box-shadow:
-        0 4px 12px
-        rgba(0, 0, 0, .08);
-
-    transition: .3s;
-
-    cursor: pointer;
-
-    font-weight: 500;
+    min-width: 0;
+    min-height: 112px;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid var(--home-border);
+    border-radius: 18px;
+    background: var(--home-card);
+    color: #41464e;
+    box-shadow: 0 7px 22px rgba(30, 35, 42, .045);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
-
 
 .categoria:hover {
-    background: #2b7cff;
-
-    color: #fff;
-
     transform: translateY(-4px);
+    border-color: #ffd4c4;
+    box-shadow: 0 12px 28px rgba(30, 35, 42, .08);
 }
 
+.categoria.ativo {
+    border-color: #ffc6b1;
+    background: var(--home-primary-soft);
+    color: var(--home-primary-dark);
+}
+
+.categoria-icone {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #f8f9fb;
+    font-size: 24px;
+}
+
+.categoria.ativo .categoria-icone {
+    background: #fff;
+    color: var(--home-primary);
+}
 
 /* ==========================================
    LOJAS
 ========================================== */
 
-.lojas {
-    width: 90%;
-
-    max-width: 1200px;
-
-    margin: 60px auto;
+.total-lojas-badge {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    border: 1px solid #ffd5c6;
+    border-radius: 999px;
+    background: var(--home-primary-soft);
+    color: var(--home-primary-dark);
+    font-size: 12px;
+    font-weight: 700;
 }
-
-
-.lojas h2 {
-    margin-bottom: 15px;
-
-    font-size: 30px;
-
-    color: #292929;
-}
-
-
-/* ==========================================
-   TOTAL DE LOJAS
-========================================== */
-
-#total-lojas {
-    display: block;
-
-    margin-bottom: 20px;
-
-    color: #666;
-
-    font-size: 14px;
-
-    font-weight: 500;
-}
-
-
-/* ==========================================
-   GRID DE LOJAS
-========================================== */
 
 .cards {
     display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(240px, 1fr)
-        );
-
-    gap: 25px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
 }
-
-
-/* ==========================================
-   CARD
-========================================== */
 
 .card {
-    background: #fff;
-
-    border-radius: 18px;
-
-    padding: 25px;
-
-    text-align: center;
-
-    box-shadow:
-        0 5px 20px
-        rgba(0, 0, 0, .08);
-
-    transition:
-        transform .3s,
-        box-shadow .3s;
-
+    position: relative;
+    min-width: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid var(--home-border);
+    border-radius: 22px;
+    background: var(--home-card);
+    box-shadow: var(--home-shadow);
+    text-align: left;
     overflow: hidden;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
 }
 
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, var(--home-primary), var(--home-accent));
+    opacity: 0;
+    transition: opacity .2s ease;
+}
 
 .card:hover {
-    transform: translateY(-7px);
-
-    box-shadow:
-        0 12px 28px
-        rgba(0, 0, 0, .12);
+    transform: translateY(-6px);
+    border-color: #f4d7cc;
+    box-shadow: var(--home-shadow-hover);
 }
 
-
-/* ==========================================
-   ÁREA DA LOGO
-========================================== */
+.card:hover::before {
+    opacity: 1;
+}
 
 .area-logo-card {
-    width: 110px;
-    height: 110px;
-
-    margin:
-        0 auto
-        18px;
-
+    width: 82px;
+    height: 82px;
+    margin-bottom: 18px;
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     overflow: hidden;
-
-    border-radius: 50%;
+    border: 1px solid #eceff3;
+    border-radius: 20px;
+    background: #fafbfc;
 }
 
-
-/* ==========================================
-   LOGO REAL
-========================================== */
-
-.logo-card-loja {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-
-    object-fit: cover;
-
-    border-radius: 50%;
-
-    border: 2px solid #edf0f5;
-
-    background: #f8f9fa;
-}
-
-
-/* ==========================================
-   PLACEHOLDER DA LOGO
-========================================== */
-
+.logo-card-loja,
 .logo-card-placeholder {
     width: 100%;
     height: 100%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: #fff4ef;
-
-    color: #ff6b35;
-
-    border:
-        2px dashed
-        #ffb99f;
+    border-radius: inherit;
 }
 
+.logo-card-loja {
+    display: block;
+    object-fit: cover;
+}
+
+.logo-card-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--home-primary-soft);
+    color: var(--home-primary);
+}
 
 .logo-card-placeholder i {
-    font-size: 40px;
+    font-size: 29px;
 }
-
-
-/* ==========================================
-   NOME DA LOJA
-========================================== */
 
 .card h3 {
-    margin-bottom: 12px;
-
-    font-size: 20px;
-
+    width: 100%;
+    margin-bottom: 13px;
+    color: var(--home-text);
+    font-size: 19px;
     line-height: 1.35;
-
-    color: #222;
+    font-weight: 700;
 }
-
-
-/* ==========================================
-   INFORMAÇÕES
-========================================== */
 
 .card p {
     margin-bottom: 9px;
-
-    color: #666;
-
-    font-size: 14px;
-
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--home-text-light);
+    font-size: 13px;
     line-height: 1.5;
 }
 
-
-.card p i {
-    width: 20px;
-
-    margin-right: 3px;
-
-    color: #ff9800;
+.card p:first-of-type {
+    width: fit-content;
+    margin-bottom: 12px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: #fff5f0;
+    color: var(--home-primary-dark);
+    font-size: 11px;
+    font-weight: 700;
 }
 
-
-/* ==========================================
-   BOTÃO VER LOJA
-========================================== */
+.card p i {
+    width: 16px;
+    color: var(--home-primary);
+    text-align: center;
+}
 
 .card button {
     width: 100%;
-
-    margin-top: 12px;
-
-    padding: 14px;
-
-    border-radius: 10px;
-
-    background: #2b7cff;
-
+    min-height: 46px;
+    margin-top: auto;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    background: var(--home-text);
     color: #fff;
-
-    font-size: 15px;
-
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform .2s ease, background .2s ease;
 }
-
-
-.card button i {
-    margin-right: 5px;
-}
-
 
 .card button:hover {
-    background: #1e63d6;
-
     transform: translateY(-1px);
+    background: var(--home-primary);
 }
-
 
 /* ==========================================
-   CARREGANDO
+   CARREGAMENTO / ESTADOS
 ========================================== */
 
-.carregando {
-    grid-column: 1 / -1;
-
-    min-height: 180px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    text-align: center;
-
-    color: #666;
-}
-
-
-.carregando i {
-    color: #2b7cff;
-
-    font-size: 32px;
-}
-
-
-/* ==========================================
-   SEM LOJAS / ERRO
-========================================== */
-
+.carregando,
 .sem-produtos {
     grid-column: 1 / -1;
-
     width: 100%;
-
-    padding: 45px 20px;
-
-    text-align: center;
-
+    min-height: 210px;
+    padding: 38px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid var(--home-border);
+    border-radius: 20px;
     background: #fff;
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 4px 18px
-        rgba(0, 0, 0, .06);
+    color: var(--home-text-light);
+    text-align: center;
 }
 
-
+.carregando i,
 .sem-produtos > i {
-    margin-bottom: 15px;
-
-    font-size: 45px;
-
-    color: #aaa;
+    margin-bottom: 4px;
+    color: var(--home-primary);
+    font-size: 31px;
 }
-
 
 .sem-produtos h3 {
-    margin-bottom: 8px;
-
-    color: #333;
-
-    font-size: 19px;
+    color: var(--home-text);
+    font-size: 18px;
 }
-
 
 .sem-produtos p {
-    color: #777;
-
-    font-size: 14px;
+    max-width: 520px;
+    color: var(--home-text-light);
+    font-size: 13px;
 }
 
+.sem-produtos .btn {
+    margin-top: 8px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    background: var(--home-primary);
+    color: #fff;
+    font-weight: 700;
+}
+
+/* ==========================================
+   VALOR LOCAL
+========================================== */
+
+.valor-local {
+    padding-top: 96px;
+    padding-bottom: 96px;
+}
+
+.valor-local-cabecalho {
+    max-width: 720px;
+    margin: 0 auto 34px;
+    text-align: center;
+}
+
+.beneficios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.beneficio-card {
+    padding: 28px;
+    border: 1px solid var(--home-border);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(30, 35, 42, .05);
+}
+
+.beneficio-icone {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 19px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: var(--home-primary-soft);
+    color: var(--home-primary);
+    font-size: 20px;
+}
+
+.beneficio-card h3 {
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+.beneficio-card p {
+    color: var(--home-text-light);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   CTA LOJISTA
+========================================== */
+
+.cta-lojista {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto 88px;
+}
+
+.cta-lojista-conteudo {
+    padding: 34px 38px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 24px;
+    align-items: center;
+    border-radius: 26px;
+    background: linear-gradient(135deg, #202124, #32353b);
+    color: #fff;
+    box-shadow: 0 20px 45px rgba(24, 27, 31, .16);
+}
+
+.cta-icone {
+    width: 66px;
+    height: 66px;
+    display: grid;
+    place-items: center;
+    border-radius: 19px;
+    background: rgba(255, 107, 53, .16);
+    color: #ff8b60;
+    font-size: 26px;
+}
+
+.cta-lojista .secao-eyebrow {
+    color: #ff9b77;
+}
+
+.cta-lojista h2 {
+    margin-bottom: 5px;
+    font-size: 25px;
+}
+
+.cta-lojista p {
+    color: #bfc3ca;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.btn-home-claro {
+    white-space: nowrap;
+    background: #fff;
+    color: var(--home-text);
+}
 
 /* ==========================================
    FOOTER
 ========================================== */
 
-footer {
-    margin-top: 70px;
-
-    padding: 30px 20px;
-
-    background: #222;
-
+.footer-home {
+    background: #17191d;
     color: #fff;
-
-    text-align: center;
 }
 
-
-footer p {
-    font-size: 14px;
-
-    line-height: 1.6;
+.footer-home-container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 48px 0 36px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 30px;
 }
 
+.footer-marca {
+    max-width: 420px;
+}
+
+.footer-logo {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+}
+
+.footer-logo i {
+    color: var(--home-primary);
+    font-size: 21px;
+}
+
+.footer-marca p {
+    color: #969ca6;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px 22px;
+}
+
+.footer-links a {
+    color: #c3c7ce;
+    font-size: 13px;
+    transition: color .2s ease;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.footer-copyright {
+    border-top: 1px solid #2b2f35;
+}
+
+.footer-copyright p {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 20px 0;
+    color: #777e88;
+    font-size: 12px;
+}
 
 /* ==========================================
    TABLET
 ========================================== */
 
-@media (max-width: 768px) {
-
-    .banner {
-        padding: 55px 18px;
+@media (max-width: 1024px) {
+    .hero-home-container {
+        grid-template-columns: 1fr .8fr;
+        gap: 38px;
     }
 
-
-    .banner h1 {
-        font-size: 30px;
+    .hero-visual {
+        min-height: 350px;
     }
 
-
-    .banner p {
-        font-size: 16px;
+    .hero-orbita-1 {
+        width: 310px;
+        height: 310px;
     }
 
-
-    .categorias,
-    .lojas {
-        width: calc(100% - 30px);
-
-        margin:
-            45px auto;
+    .hero-orbita-2 {
+        width: 230px;
+        height: 230px;
     }
 
-
-    .categorias h2,
-    .lojas h2 {
-        font-size: 26px;
-
-        text-align: center;
+    .hero-mini-card {
+        min-width: 155px;
     }
-
-
-    #total-lojas {
-        text-align: center;
-    }
-
 
     .lista-categorias {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 820px) {
+    .hero-home-container {
+        min-height: auto;
+        padding: 58px 0 62px;
+        grid-template-columns: 1fr;
+    }
+
+    .hero-conteudo {
+        text-align: center;
+    }
+
+    .hero-selo,
+    .pesquisa-home,
+    .hero-descricao {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-acoes,
+    .hero-beneficios {
         justify-content: center;
     }
 
-
-    .categoria {
-        padding:
-            13px
-            20px;
-
-        font-size: 14px;
+    .hero-visual {
+        display: none;
     }
 
-
-    .cards {
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(0, 1fr)
-            );
-
-        gap: 18px;
+    .cards,
+    .beneficios-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .cta-lojista-conteudo {
+        grid-template-columns: auto 1fr;
+    }
+
+    .cta-lojista-conteudo .btn-home {
+        grid-column: 1 / -1;
+    }
 }
-
 
 /* ==========================================
    CELULAR
 ========================================== */
 
-@media (max-width: 550px) {
-
-    .banner {
-        padding:
-            45px
-            15px;
+@media (max-width: 620px) {
+    .hero-home-container,
+    .secao-home,
+    .cta-lojista,
+    .footer-home-container,
+    .footer-copyright p {
+        width: min(100% - 28px, 1180px);
     }
 
+    .hero-home-container {
+        padding: 46px 0 50px;
+    }
 
-    .banner h1 {
+    .hero-conteudo h1 {
+        font-size: 38px;
+        letter-spacing: -1.6px;
+    }
+
+    .hero-descricao {
+        margin-top: 17px;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .pesquisa-home {
+        min-height: 58px;
+        margin-top: 24px;
+        padding: 6px 6px 6px 16px;
+        border-radius: 15px;
+    }
+
+    .pesquisa-home button {
+        width: 48px;
+        min-height: 46px;
+        padding: 0;
+        font-size: 0;
+    }
+
+    .pesquisa-home button::before {
+        content: "\f002";
+        font: var(--fa-font-solid);
+        font-size: 15px;
+    }
+
+    .hero-acoes {
+        flex-direction: column;
+    }
+
+    .btn-home {
+        width: 100%;
+    }
+
+    .hero-beneficios {
+        gap: 8px 14px;
+        font-size: 11px;
+    }
+
+    .categorias {
+        padding-top: 52px;
+    }
+
+    .lojas {
+        padding-top: 62px;
+    }
+
+    .secao-cabecalho {
+        margin-bottom: 22px;
+        align-items: flex-start;
+    }
+
+    .secao-cabecalho h2,
+    .valor-local-cabecalho h2 {
         font-size: 27px;
     }
 
-
-    .banner p {
-        margin-bottom: 25px;
-
-        font-size: 14px;
-    }
-
-
-    /* PESQUISA */
-
-    .pesquisa {
-        flex-direction: column;
-
-        gap: 10px;
-    }
-
-
-    .pesquisa input {
-        border-radius: 10px;
-    }
-
-
-    .pesquisa button {
-        width: 100%;
-
-        border-radius: 10px;
-    }
-
-
-    /* CATEGORIAS */
-
-    .categorias,
-    .lojas {
-        width: calc(100% - 24px);
-
-        margin:
-            35px auto;
-    }
-
-
-    .categorias h2,
-    .lojas h2 {
-        font-size: 24px;
-    }
-
-
     .lista-categorias {
-        display: grid;
-
-        grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
-
+        width: calc(100% + 14px);
+        margin-right: -14px;
+        padding-right: 14px;
+        display: flex;
         gap: 10px;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
     }
 
+    .lista-categorias::-webkit-scrollbar {
+        display: none;
+    }
 
     .categoria {
-        padding:
-            13px
-            10px;
-
-        text-align: center;
-
-        font-size: 13px;
+        min-width: 112px;
+        min-height: 105px;
+        flex: 0 0 112px;
+        scroll-snap-align: start;
     }
 
-
-    /* LOJAS */
-
-    .cards {
+    .cards,
+    .beneficios-grid {
         grid-template-columns: 1fr;
-
-        gap: 16px;
     }
 
+    .titulo-lojas {
+        flex-direction: column;
+        gap: 13px;
+    }
 
     .card {
-        padding: 22px;
+        padding: 21px;
     }
 
-
-    .area-logo-card {
-        width: 100px;
-        height: 100px;
+    .valor-local {
+        padding-top: 70px;
+        padding-bottom: 70px;
     }
 
-
-    .logo-card-placeholder i {
-        font-size: 36px;
+    .cta-lojista {
+        margin-bottom: 60px;
     }
 
-
-    .card h3 {
-        font-size: 19px;
+    .cta-lojista-conteudo {
+        padding: 28px 22px;
+        grid-template-columns: 1fr;
+        text-align: center;
     }
 
+    .cta-icone {
+        margin: 0 auto;
+    }
+
+    .footer-home-container {
+        padding: 38px 0 28px;
+        flex-direction: column;
+    }
+
+    .footer-links {
+        justify-content: flex-start;
+    }
 }
 
-
-/* ==========================================
-   CELULAR PEQUENO
-========================================== */
-
-@media (max-width: 360px) {
-
-    .banner h1 {
-        font-size: 24px;
+@media (max-width: 390px) {
+    .hero-conteudo h1 {
+        font-size: 34px;
     }
 
-
-    .lista-categorias {
-        grid-template-columns: 1fr;
+    .hero-selo {
+        font-size: 11px;
     }
 
-
-    .card {
-        padding: 18px;
+    .hero-beneficios {
+        flex-direction: column;
+        align-items: center;
     }
-
 }
