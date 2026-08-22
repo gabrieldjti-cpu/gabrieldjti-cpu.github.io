@@ -35,71 +35,29 @@ A implementação foi feita em uma camada reutilizável, preservando os scripts 
 - ações existentes dentro dos cards continuam funcionando;
 - layout permanece utilizável no celular.
 
-## Testes recomendados
+## Validação funcional realizada
 
-### 1. Produtos do lojista
+Em 22/08/2026, a paginação foi testada no navegador/celular na branch `feat/paginacao-listagens` e o fluxo principal foi aprovado.
 
-Usar uma loja com mais de 6 produtos.
+Testes confirmados no fluxo principal:
 
-- [ ] abrir `produtos.html`;
-- [ ] confirmar que aparecem no máximo 6 cards na primeira página;
-- [ ] clicar em **Próxima** e confirmar os produtos restantes;
-- [ ] voltar com **Anterior**;
-- [ ] pesquisar um produto e confirmar que a lista filtrada continua correta;
-- [ ] abrir **Editar** em um produto após trocar de página.
+- [x] `produtos.html` exibiu a segunda página quando a quantidade ultrapassou 6 produtos;
+- [x] navegação entre páginas funcionou;
+- [x] `loja.html` manteve o catálogo público funcional com paginação;
+- [x] `pedidos-loja.html` manteve a listagem e navegação funcionais;
+- [x] `admin-dashboard.html` exibiu a segunda página com a quantidade atual de lojas;
+- [x] pesquisa/filtros continuaram funcionando após a paginação;
+- [x] ações existentes nos cards continuaram funcionando após trocar de página;
+- [x] controles ficaram utilizáveis no celular sem quebrar o layout.
 
-### 2. Catálogo público da loja
+## Casos condicionais / regressão recomendada
 
-- [ ] abrir uma loja com mais de 6 produtos;
-- [ ] confirmar paginação abaixo do catálogo;
-- [ ] navegar para a segunda página;
-- [ ] adicionar um produto dessa página ao carrinho;
-- [ ] pesquisar um produto e confirmar que a paginação se adapta ao resultado.
+Estas telas já estão cobertas pelo mesmo módulo, mas continuam boas candidatas a regressão quando houver volume suficiente de dados reais:
 
-### 3. Pedidos do cliente
-
-Com uma conta que possua mais de 5 pedidos:
-
-- [ ] abrir `meus-pedidos.html`;
-- [ ] navegar entre as páginas;
-- [ ] usar um filtro de status;
-- [ ] abrir os detalhes de um pedido em uma página diferente da primeira.
-
-### 4. Pedidos do lojista
-
-Com uma loja que possua mais de 5 pedidos:
-
-- [ ] abrir `pedidos-loja.html`;
-- [ ] confirmar a segunda página;
-- [ ] trocar filtro de status e confirmar retorno para a página 1;
-- [ ] pesquisar e confirmar atualização da paginação;
-- [ ] abrir detalhes de um pedido após navegar.
-
-### 5. Avaliações
-
-Quando existirem mais de 5 avaliações:
-
-- [ ] navegar entre páginas;
-- [ ] filtrar **Sem resposta** / **Respondidas**;
-- [ ] responder uma avaliação e confirmar que a paginação continua funcional.
-
-### 6. Dashboard administrativo
-
-Com mais de 6 lojas:
-
-- [ ] abrir `admin-dashboard.html`;
-- [ ] confirmar segunda página;
-- [ ] navegar entre as lojas;
-- [ ] usar busca e filtro de status;
-- [ ] abrir detalhes de uma loja após trocar de página;
-- [ ] confirmar que Aprovar/Rejeitar/Suspender continuam funcionando.
-
-### 7. Celular
-
-- [ ] controles cabem na largura da tela;
-- [ ] botões não se sobrepõem;
-- [ ] troca de página posiciona a tela no início da lista;
-- [ ] não há rolagem horizontal causada pela paginação.
+- `meus-pedidos.html` com mais de 5 pedidos do mesmo cliente;
+- `avaliacoes-loja.html` com mais de 5 avaliações;
+- filtros que reduzam uma lista de várias páginas para apenas uma;
+- exclusão/alteração de um registro enquanto o usuário estiver na última página.
 
 ## Observação técnica
 
@@ -109,4 +67,6 @@ O histórico de compras já possui paginação no servidor com `.range(...)`. Se
 
 ## Situação
 
-**Implementação pronta para validação funcional no navegador antes do merge.**
+✅ **Validação funcional básica aprovada e implementação pronta para merge.**
+
+A integração ainda depende de autorização explícita para mesclar a PR #11 na `main`.
