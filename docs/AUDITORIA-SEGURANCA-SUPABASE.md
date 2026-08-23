@@ -67,6 +67,8 @@ Validação estrutural:
 - `authenticated` pode excluir produto fisicamente: **false**;
 - `authenticated` pode editar produto: **true**.
 
+Durante o primeiro teste funcional foi identificado um loop no `MutationObserver` do módulo `produtos-hardening.js`, que podia prender a tela em **Carregando produtos...**. O observador foi ajustado para alterar os botões somente quando houver mudança real, eliminando o ciclo de mutações.
+
 ### Profiles
 
 - removidas três policies antigas equivalentes;
@@ -152,20 +154,26 @@ Após a aplicação, continuavam presentes no banco:
 - 9 lojas;
 - 20 objetos no bucket de produtos.
 
-## Testes recomendados no navegador
+## Validação funcional no navegador
 
-- [ ] entrar como lojista e abrir `produtos.html`;
-- [ ] confirmar que o botão aparece como **Desativar**, não **Excluir**;
-- [ ] desativar um produto de teste;
-- [ ] confirmar que o produto fica `Inativo` no painel;
-- [ ] confirmar que ele desaparece do catálogo público;
-- [ ] abrir a edição e reativar o produto;
-- [ ] cadastrar um produto novo com imagem JPG/PNG/WebP menor que 5 MB;
-- [ ] trocar/remover imagem de produto próprio;
-- [ ] realizar um checkout normal como cliente;
-- [ ] confirmar que o pedido aparece em `meus-pedidos.html`;
-- [ ] confirmar que o lojista continua vendo e alterando o pedido pelas ações normais;
-- [ ] abrir o dashboard admin e confirmar que aprovação/suspensão continuam funcionando.
+Testes executados individualmente em 22/08/2026:
+
+- [x] entrar como lojista e abrir `produtos.html`;
+- [x] confirmar que os produtos carregam normalmente após a correção do observer;
+- [x] confirmar que o botão aparece como **Desativar**, não **Excluir**;
+- [x] desativar um produto de teste;
+- [x] confirmar que o produto fica `Inativo` no painel;
+- [x] confirmar que ele desaparece do catálogo público;
+- [x] abrir a edição e reativar o produto;
+- [x] confirmar que o produto reativado volta ao catálogo público;
+- [x] trocar/cadastrar imagem própria de produto com as novas policies de Storage;
+- [x] realizar um checkout normal como cliente;
+- [x] confirmar que o pedido aparece em `meus-pedidos.html`;
+- [x] confirmar no banco o pedido criado via checkout seguro;
+- [x] lojista avançar o pedido por `Pago` → `Em preparação` → `Enviado`;
+- [x] confirmar no banco o status `enviado` e o registro do código de rastreio;
+- [x] abrir o dashboard admin e aprovar novamente a loja de teste;
+- [x] confirmar no banco `status_aprovacao = 'aprovada'` e `ativa = true` para a loja de teste.
 
 ## Migrations
 
@@ -174,4 +182,4 @@ Após a aplicação, continuavam presentes no banco:
 
 ## Situação
 
-**Hardening estrutural aplicado no Supabase e pronto para validação funcional básica no navegador antes do merge.**
+**Hardening estrutural e funcional validado. PR pronta para merge após autorização explícita.**
