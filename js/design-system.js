@@ -91,6 +91,7 @@
 
         melhorarAcessibilidadeVisual();
         carregarPaginacaoListagens();
+        carregarHardeningProdutos();
     }
 
     function adicionarMarcaAuth() {
@@ -156,6 +157,27 @@
         script.dataset.paginacaoListagens = "true";
         script.onerror = () => {
             console.error("Não foi possível carregar a paginação das listagens.");
+        };
+
+        document.body.appendChild(script);
+    }
+
+    function carregarHardeningProdutos() {
+        if (pagina !== "produtos.html") {
+            return;
+        }
+
+        const scriptSrc = "js/produtos-hardening.js";
+
+        if (document.querySelector(`script[src="${scriptSrc}"]`)) {
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = scriptSrc;
+        script.dataset.produtosHardening = "true";
+        script.onerror = () => {
+            console.error("Não foi possível carregar a proteção de histórico dos produtos.");
         };
 
         document.body.appendChild(script);
