@@ -7,6 +7,7 @@
     "use strict";
 
     let observer = null;
+    let atualizacaoAgendada = false;
 
     function localizarBotao(id) {
         return Array.from(
@@ -69,6 +70,7 @@
 
         if (botao) {
             botao.disabled = true;
+            botao.dataset.hardeningEstado = "processando";
             botao.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Desativando...';
         }
 
@@ -109,32 +111,55 @@
 
             if (botao) {
                 botao.disabled = false;
+                delete botao.dataset.hardeningEstado;
                 botao.innerHTML = conteudoOriginal || '<i class="fa-solid fa-eye-slash"></i> Desativar';
             }
         }
     }
 
+    function aplicarEstadoBotao(botao) {
+        if (!(botao instanceof HTMLElement)) return;
+        if (botao.dataset.hardeningEstado === "processando") return;
+
+        const card = botao.closest(".produto-card");
+        const jaInativo = Boolean(card?.querySelector(".inativo"));
+        const estadoDesejado = jaInativo ? "inativo" : "ativo";
+
+        // Evita reescrever innerHTML em toda mutação. Isso é importante
+        // porque o próprio innerHTML dispara o MutationObserver.
+        if (botao.dataset.hardeningEstado === estadoDesejado) {
+            return;
+        }
+
+        botao.dataset.hardeningEstado = estadoDesejado;
+
+        if (jaInativo) {
+            botao.disabled = true;
+            botao.setAttribute("aria-label", "Produto já está inativo");
+            botao.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Inativo';
+            return;
+        }
+
+        botao.disabled = false;
+        botao.setAttribute("aria-label", "Desativar produto");
+        botao.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Desativar';
+    }
+
     function atualizarBotoes() {
         document
             .querySelectorAll(".btn-excluir[data-produto-id]")
-            .forEach((botao) => {
-                const card = botao.closest(".produto-card");
-                const jaInativo = Boolean(card?.querySelector(".inativo"));
+            .forEach(aplicarEstadoBotao);
+    }
 
-                botao.setAttribute(
-                    "aria-label",
-                    jaInativo ? "Produto já está inativo" : "Desativar produto"
-                );
+    function agendarAtualizacao() {
+        if (atualizacaoAgendada) return;
 
-                if (jaInativo) {
-                    botao.disabled = true;
-                    botao.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Inativo';
-                    return;
-                }
+        atualizacaoAgendada = true;
 
-                botao.disabled = false;
-                botao.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Desativar';
-            });
+        requestAnimationFrame(() => {
+            atualizacaoAgendada = false;
+            atualizarBotoes();
+        });
     }
 
     function instalar() {
@@ -146,7 +171,7 @@
         const lista = document.getElementById("lista-produtos");
         if (!lista || observer) return;
 
-        observer = new MutationObserver(() => atualizarBotoes());
+        observer = new MutationObserver(agendarAtualizacao);
         observer.observe(lista, { childList: true, subtree: true });
     }
 
