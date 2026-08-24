@@ -90,6 +90,7 @@
         }
 
         melhorarAcessibilidadeVisual();
+        configurarSenhaCadastroMvp();
         carregarPaginacaoListagens();
         carregarHardeningProdutos();
     }
@@ -130,6 +131,91 @@
                     botao.classList.add("theme-control");
                 }
             });
+    }
+
+    function configurarSenhaCadastroMvp() {
+        if (pagina !== "cadastro.html") {
+            return;
+        }
+
+        const form = document.getElementById("cadastroForm");
+        const senha = document.getElementById("senha");
+        const confirmarSenha = document.getElementById("confirmarSenha");
+
+        if (!form || !senha || !confirmarSenha || form.dataset.senhaMvp === "true") {
+            return;
+        }
+
+        form.dataset.senhaMvp = "true";
+
+        const mensagemRegra =
+            "Use no mínimo 8 caracteres, com pelo menos uma letra e um número.";
+
+        [senha, confirmarSenha].forEach(campo => {
+            campo.minLength = 8;
+            campo.setAttribute("minlength", "8");
+            campo.setAttribute("title", mensagemRegra);
+        });
+
+        senha.setAttribute(
+            "pattern",
+            "(?=.*[A-Za-z])(?=.*[0-9]).{8,}"
+        );
+
+        if (!document.getElementById("senha-regra-mvp")) {
+            const dica = document.createElement("small");
+            dica.id = "senha-regra-mvp";
+            dica.textContent = mensagemRegra;
+            dica.style.display = "block";
+            dica.style.marginTop = "6px";
+            dica.style.color = "#6b7280";
+            dica.style.fontSize = "0.8rem";
+
+            senha
+                .closest(".input-group")
+                ?.appendChild(dica);
+
+            senha.setAttribute("aria-describedby", dica.id);
+        }
+
+        const limparErro = () => {
+            senha.setCustomValidity("");
+        };
+
+        senha.addEventListener("input", limparErro);
+
+        form.addEventListener(
+            "submit",
+            event => {
+                const valor = String(senha.value || "");
+                const valida =
+                    valor.length >= 8 &&
+                    /[A-Za-z]/.test(valor) &&
+                    /\d/.test(valor);
+
+                if (valida) {
+                    senha.setCustomValidity("");
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                senha.setCustomValidity(mensagemRegra);
+                senha.reportValidity();
+                senha.focus();
+
+                if (typeof window.mostrarAlerta === "function") {
+                    window.mostrarAlerta(
+                        "A senha deve ter no mínimo 8 caracteres e conter pelo menos uma letra e um número.",
+                        "aviso",
+                        "Senha inválida",
+                        4500
+                    );
+                }
+            },
+            true
+        );
     }
 
     function carregarPaginacaoListagens() {

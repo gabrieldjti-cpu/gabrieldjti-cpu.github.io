@@ -1,40 +1,194 @@
 # Progresso do MVP
 
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
-**Branch:** `main`  
-**Base:** `main`  
+**Branch de validação atual:** `fix/autenticacao-mvp`  
 **Referência:** `PRD-Marketplace.md`
 
-Este documento registra o avanço posterior à auditoria inicial de `docs/STATUS-PRD.md`.
-Um requisito só deve ser tratado como totalmente concluído depois dos testes funcionais correspondentes.
+Este documento registra o estado atual do MVP após as evoluções integradas à `main` e as correções finais de autenticação em validação.
 
-## Implementado
+## Escopo do MVP — Fase 1
 
-### RF-03 — Recuperação de senha
+Conforme o roadmap do PRD, o MVP precisa validar:
 
-Implementação versionada:
-
-- `recuperar-senha.html`
-- `nova-senha.html`
-- `js/recuperar-senha.js`
-- `js/nova-senha.js`
-
-Fluxo preparado:
-
-1. usuário informa o e-mail;
-2. Supabase envia o link de recuperação;
-3. link direciona para `nova-senha.html`;
-4. nova senha exige pelo menos 8 caracteres, uma letra e um número;
-5. senha é atualizada com `auth.updateUser`;
-6. usuário retorna ao login.
-
-**Situação:** implementação pronta; falta confirmar Redirect URLs e executar teste real de e-mail/recuperação.
+- autenticação (cadastro, login e recuperação de senha);
+- cadastro e aprovação básica de lojas;
+- cadastro de produtos, categorias e estoque simples;
+- busca e navegação por categoria;
+- carrinho e checkout com pagamento manual/simulado;
+- gestão de pedidos para cliente e lojista;
+- avaliações básicas.
 
 ---
 
-### RF-10 / RF-20 — Ciclo seguro e cancelamento de pedidos
+## 1. Autenticação
 
-Fluxo versionado:
+### RF-01 — Cadastro
+
+Implementado:
+
+- cadastro por e-mail e senha com Supabase Auth;
+- nome, e-mail e telefone;
+- confirmação de senha;
+- confirmação de e-mail;
+- regra final do MVP: senha com no mínimo 8 caracteres, pelo menos uma letra e um número;
+- dica visual da regra no cadastro.
+
+**Situação:** implementação final pronta; falta validação funcional da nova regra antes do merge da PR atual.
+
+### RF-02 — Login
+
+Implementado:
+
+- `signInWithPassword`;
+- mensagens para credenciais inválidas, e-mail não confirmado, excesso de tentativas e falha de rede;
+- proteção de conta excluída;
+- redirecionamento por perfil:
+  - administrador → `admin-dashboard.html`;
+  - proprietário de loja → `painel-loja.html`;
+  - cliente → `perfil.html`;
+- ao identificar lojista, `loja_id` e `nome_loja` são sincronizados no `localStorage`.
+
+**Situação:** implementação final pronta; falta validação dos três destinos antes do merge da PR atual.
+
+### RF-03 — Recuperação de senha
+
+Implementado:
+
+- `recuperar-senha.html`;
+- `nova-senha.html`;
+- `js/recuperar-senha.js`;
+- `js/nova-senha.js`;
+- envio por `resetPasswordForEmail`;
+- callback para `nova-senha.html`;
+- suporte ao evento `PASSWORD_RECOVERY`;
+- suporte a retorno por `code`/PKCE quando aplicável;
+- nova senha com 8+ caracteres, letra e número;
+- tratamento de link expirado/inválido;
+- limpeza de tokens/parâmetros de autenticação da URL após reconhecimento;
+- página de nova senha só é habilitada quando existe contexto real de recuperação.
+
+**Configuração externa necessária:** a URL usada em `redirectTo` precisa estar autorizada em **Supabase Auth → URL Configuration**. A configuração será conferida durante o teste final com e-mail real.
+
+**Situação:** código reforçado e pronto para validação final.
+
+---
+
+## 2. Perfil — RF-04 ✅ CONCLUÍDO
+
+### Múltiplos endereços
+
+Implementado e validado ponta a ponta:
+
+- tabela `enderecos_cliente`;
+- adicionar, editar e excluir por soft delete;
+- endereço padrão;
+- no máximo um padrão ativo;
+- isolamento por usuário;
+- cadastro/edição no perfil e checkout;
+- checkout exige endereço completo;
+- `pedidos.endereco_id` referencia o endereço escolhido;
+- `pedidos.endereco_entrega` preserva snapshot histórico.
+
+### Foto de perfil
+
+Implementado e validado:
+
+- bucket `avatars`;
+- limite de 5 MB;
+- JPEG, PNG e WebP;
+- isolamento por usuário;
+- upload, troca e remoção;
+- persistência via `profiles.foto_url`.
+
+### Exclusão de conta
+
+Implementado e validado:
+
+- soft delete em `profiles`;
+- preservação de histórico;
+- endereços e lojas desativados;
+- sessão encerrada;
+- nova tentativa de login bloqueada pelo guard do RF-04.
+
+**Situação geral do RF-04:** ✅ concluído no MVP.
+
+---
+
+## 3. Lojas e administração ✅ MVP CONCLUÍDO
+
+Implementado:
+
+- cadastro de loja;
+- estado de aprovação;
+- fila administrativa;
+- aprovação;
+- rejeição com motivo;
+- suspensão;
+- histórico administrativo;
+- catálogo público limitado a lojas ativas e aprovadas;
+- dashboard administrativo básico;
+- login administrativo redirecionado ao dashboard.
+
+Validação funcional já realizada para aprovação, suspensão e retorno ao catálogo.
+
+---
+
+## 4. Produtos, categorias e estoque ✅ MVP CONCLUÍDO
+
+Implementado:
+
+- cadastro/edição de produtos;
+- upload/troca de imagem;
+- categorias de produto;
+- preço e preço promocional;
+- quantidade de estoque;
+- ativação/desativação sem exclusão física;
+- produto inativo sai do catálogo público e preserva histórico;
+- estoque mínimo configurável;
+- alertas de estoque baixo;
+- histórico de movimentações;
+- baixa automática no checkout;
+- restauração automática em cancelamento;
+- paginação nas principais listagens.
+
+Fluxos principais de ativação/desativação, imagem e estoque foram validados.
+
+---
+
+## 5. Busca e navegação ✅ ADEQUADO AO MVP
+
+Implementado:
+
+- busca de lojas na home;
+- filtro visual por categoria;
+- busca de produtos dentro da loja;
+- páginas públicas responsivas;
+- paginação de catálogo.
+
+Busca avançada full-text, autocomplete e filtros sofisticados continuam como evolução posterior e não bloqueiam o MVP da Fase 1.
+
+---
+
+## 6. Carrinho e checkout ✅ MVP CONCLUÍDO
+
+Implementado:
+
+- carrinho por loja;
+- quantidades e validação de estoque;
+- persistência local;
+- endereço de entrega;
+- forma de pagamento manual/simulada;
+- checkout seguro por RPC;
+- criação de pedidos e itens sem INSERT direto pelo navegador;
+- snapshot do endereço da compra.
+
+Validação funcional após hardening confirmou criação real de pedido e exibição em `meus-pedidos.html`.
+
+---
+
+## 7. Pedidos — RF-10 / RF-20
+
+Fluxo implementado:
 
 ```text
 aguardando_pagamento
@@ -44,229 +198,88 @@ aguardando_pagamento
 → entregue
 ```
 
-Regras:
+Também implementado:
 
 - lojista confirma pagamento;
 - lojista inicia preparação;
 - envio exige rastreio;
-- lojista não define `entregue`;
-- cliente confirma recebimento;
-- pedido cancelado não volta a status ativo;
+- somente cliente confirma entrega;
+- cancelamento direto pelo cliente antes da preparação;
+- solicitação de cancelamento durante preparação;
+- lojista aceita ou recusa solicitação;
+- envio bloqueado enquanto existe solicitação pendente;
 - cancelamento restaura estoque uma única vez;
-- envio fica bloqueado quando existe solicitação de cancelamento pendente;
-- cliente cancela diretamente antes da preparação;
-- em preparação, cliente cria solicitação para decisão do lojista.
+- pedido cancelado não volta a status ativo;
+- operações críticas usam RPCs protegidas.
 
-**Situação:** migrations aplicadas e registradas no Supabase; testes autenticados de cliente/lojista ainda pendentes.
+Já validado:
 
----
+- checkout → pedido criado;
+- `Pago` → `Em preparação` → `Enviado` pelo lojista;
+- status `enviado` e rastreio confirmados no banco.
 
-### RF-11 — Resposta do lojista às avaliações
-
-Implementação:
-
-- `avaliacoes-loja.html`;
-- resumo com total, média e avaliações sem resposta;
-- filtro e pesquisa;
-- resposta pública de até 1000 caracteres;
-- validação server-side de avaliação → produto → loja → proprietário.
-
-**Situação:** migration aplicada; falta validar o fluxo completo com lojista autenticado e resposta aparecendo na página pública.
+**Pendente apenas para a bateria final:** cancelamento direto, solicitação/aceite ou recusa e confirmação de entrega pelo cliente.
 
 ---
 
-### RF-12 — Histórico de compras e Comprar novamente
-
-Implementação:
-
-- `historico-compras.html`;
-- paginação de 20 pedidos;
-- filtros por período e loja;
-- preços históricos na visualização;
-- recompra consulta loja, produto, preço e estoque atuais;
-- produto inativo/removido/sem estoque é ignorado;
-- quantidade é limitada ao estoque atual;
-- itens existentes no carrinho não ultrapassam o estoque;
-- atalho adicionado a `meus-pedidos.html` por extensão modular.
-
-**Situação:** migration aplicada; testes funcionais de filtros, paginação e recompra ainda pendentes.
-
-### Casos de teste do RF-12
-
-1. cliente com mais de 20 pedidos navega entre páginas;
-2. filtros 30/90/365 dias;
-3. filtro por loja;
-4. recompra usa preço atual;
-5. preço histórico não volta para o carrinho;
-6. produto inativo/removido é ignorado;
-7. produto sem estoque é ignorado;
-8. quantidade é reduzida ao estoque disponível;
-9. item já no carrinho não ultrapassa estoque;
-10. loja inativa impede recompra.
-
----
-
-### RF-04 — Perfil ✅ CONCLUÍDO
-
-#### Múltiplos endereços
-
-Implementado e validado:
-
-- tabela `enderecos_cliente`;
-- adicionar, editar e excluir endereço por soft delete;
-- definir e trocar endereço padrão;
-- no máximo um endereço padrão ativo por cliente;
-- leitura somente dos próprios endereços;
-- importação do endereço legado de `profiles`;
-- endereço legado sem CEP/UF marcado como incompleto;
-- sincronização do endereço padrão com os campos legados do perfil;
-- gerenciamento em `perfil.html`;
-- cadastro/edição também dentro do checkout;
-- checkout exige endereço completo;
-- `pedidos.endereco_id` referencia o endereço selecionado;
-- `pedidos.endereco_entrega` guarda snapshot do endereço da compra;
-- edição posterior do endereço não altera pedidos antigos;
-- `finalizar_checkout_endereco` valida propriedade e completude do endereço;
-- RPC legado `finalizar_checkout` sem execução para `anon`/`authenticated`.
-
-**Situação:** ✅ subfluxo de múltiplos endereços validado ponta a ponta em ambiente autenticado.
-
-Testes aprovados:
-
-1. criação;
-2. edição mantendo o mesmo ID;
-3. definição/troca do padrão;
-4. único padrão ativo;
-5. sincronização com `profiles`;
-6. soft delete de endereço;
-7. seleção no checkout;
-8. pedido real com `endereco_id`;
-9. snapshot em `endereco_entrega`;
-10. snapshot preservado após editar endereço cadastrado.
-
-#### Foto de perfil
+## 8. Avaliações — RF-11
 
 Implementado:
 
-- usa `profiles.foto_url` para armazenar o caminho do avatar;
-- bucket `avatars` com limite de 5 MB;
-- formatos JPEG, PNG e WebP;
-- escrita restrita à pasta do usuário autenticado;
-- upload, troca e remoção da foto dentro do perfil;
-- avatar antigo é removido quando possível;
-- remoção volta ao ícone padrão;
-- atualização de `foto_url` ocorre pela RPC `atualizar_foto_perfil`.
+- nota de 1 a 5 estrelas;
+- comentário opcional de até 1000 caracteres;
+- somente produto pertencente a pedido do próprio cliente;
+- somente pedido `entregue` pode ser avaliado;
+- uma avaliação por produto/pedido/cliente;
+- média e distribuição pública;
+- listagem pública de avaliações;
+- marcação de compra verificada;
+- painel do lojista para avaliações;
+- resposta pública do lojista;
+- lojista não pode excluir avaliação;
+- autorização server-side confirma que a avaliação pertence a produto de sua loja.
 
-Arquivos:
-
-- `js/perfil-conta.js`;
-- `css/perfil-conta.css`;
-- `js/supabase.js`.
-
-**Situação:** ✅ fluxo principal de foto de perfil validado no navegador e confirmado no banco.
-
-Testes aprovados:
-
-1. controles de foto aparecem no perfil;
-2. upload de imagem válida;
-3. avatar aparece após upload;
-4. foto permanece após recarregar a página;
-5. troca atualiza `foto_url`;
-6. arquivo anterior é removido do Storage;
-7. remoção da foto zera `foto_url`;
-8. após remover, não sobra arquivo de avatar na pasta do usuário.
-
-Testes negativos de arquivo acima de 5 MB e formato não permitido continuam recomendados para regressão, mas não bloqueiam o requisito.
-
-#### Exclusão de conta por soft delete
-
-Implementado:
-
-- `profiles.ativo`;
-- `profiles.excluido_em`;
-- RPC autenticada `excluir_minha_conta`;
-- perfil e histórico são preservados;
-- endereços ativos são desativados;
-- lojas pertencentes à conta são desativadas;
-- foto deixa de ser referenciada pelo perfil;
-- sessão é encerrada no frontend;
-- carrinho e dados locais de loja são limpos;
-- conta excluída é detectada após autenticação e desconectada automaticamente;
-- confirmação destrutiva exige confirmação visual e digitação de `EXCLUIR`;
-- `authenticated` não pode alterar diretamente `ativo`, `excluido_em`, `tipo_usuario` ou `foto_url`.
-
-Migration:
-
-- `supabase/migrations/20260820130058_rf04_foto_soft_delete_conta.sql`.
-
-Validação funcional aprovada com conta descartável:
-
-1. conta estava ativa antes do teste;
-2. confirmação de exclusão executou o soft delete;
-3. `profiles.ativo` passou para `false`;
-4. `profiles.excluido_em` recebeu timestamp;
-5. `foto_url` ficou `null`;
-6. registro do usuário no Auth foi preservado;
-7. sessão foi encerrada pelo frontend;
-8. nova tentativa de login foi detectada como conta excluída, exibiu a mensagem correspondente e encerrou a sessão rapidamente.
-
-Validação estrutural aprovada:
-
-- colunas `ativo` e `excluido_em` existem;
-- bucket `avatars` existe e possui limite de 5 MB;
-- políticas de Storage restringem INSERT/UPDATE/DELETE à pasta do próprio usuário;
-- `anon` não executa as RPCs de conta;
-- `authenticated` executa `minha_conta_ativa`, `atualizar_foto_perfil` e `excluir_minha_conta`;
-- `authenticated` pode editar os campos básicos permitidos do perfil;
-- `authenticated` não possui `UPDATE` direto em `ativo`, `excluido_em` nem `foto_url`.
-
-**Situação geral do RF-04:** ✅ **CONCLUÍDO no MVP.** Múltiplos endereços, foto de perfil e exclusão lógica de conta foram implementados e tiveram seus fluxos principais validados.
-
-Checklist: `docs/TESTES-RF04-FOTO-CONTA.md`.
+**Pendente apenas para a bateria final:** confirmar no navegador o ciclo `entregue → avaliar → média pública → responder como lojista → resposta pública`.
 
 ---
 
-## Segurança e versionamento do Supabase
+## 9. Segurança do Supabase ✅ HARDENING CONCLUÍDO
 
-Hardening já aplicado:
+Já aplicado e validado:
 
-- RLS habilitado em `categorias_produtos`;
-- leitura pública limitada às categorias ativas;
-- `finalizar_checkout` legado não é executável diretamente por `anon` nem `authenticated`;
-- checkout autenticado passa pelo RPC `finalizar_checkout_endereco`;
-- funções internas `handle_new_user` e `vincular_lojista_automatico` usam `search_path = public` e não ficam expostas para execução direta pela API;
-- flags sensíveis do perfil não podem ser alteradas diretamente pelo navegador;
-- upload de avatar fica isolado pela pasta do `auth.uid()`;
-- nenhuma `service_role` foi adicionada ao frontend.
+- RLS nas tabelas auditadas;
+- escrita direta em `pedidos` e `itens_pedido` bloqueada;
+- UPDATE direto de status de pedido bloqueado;
+- exclusão física de lojas e produtos bloqueada no frontend autenticado;
+- Storage de produtos isolado por proprietário;
+- buckets de imagens limitados a 5 MB e JPEG/PNG/WebP;
+- policies duplicadas removidas;
+- grants excessivos removidos;
+- foreign keys auditadas com índice de apoio;
+- otimização de RLS com `(SELECT auth.uid())`;
+- checkout, produto, imagem, pedido do lojista e ação administrativa retestados após o hardening.
 
-## Migrations aplicadas e registradas
+Observações não bloqueantes:
 
-1. `20260819174044_fluxo_seguro_pedidos.sql`
-2. `20260819174110_avaliacoes_loja.sql`
-3. `20260819174137_cancelamento_cliente.sql`
-4. `20260819174150_evitar_trigger_cancelamento_duplicado.sql`
-5. `20260819174202_historico_compras.sql`
-6. `20260819174218_seguranca_supabase.sql`
-7. `20260819175053_rf04_enderecos_cliente.sql`
-8. `20260819180010_rf04_exigir_endereco_checkout.sql`
-9. `20260820130058_rf04_foto_soft_delete_conta.sql`
+- **Leaked Password Protection** ainda é uma configuração recomendada do Supabase Auth;
+- a tabela legada vazia `teste` permanece sem primary key;
+- índices recém-criados podem aparecer como não utilizados até acumularem tráfego.
 
-## Próximas prioridades do MVP
+---
 
-1. aprovação básica de lojas e dashboard administrativo;
-2. alertas de estoque baixo;
-3. paginação das demais listagens maiores que 20 registros;
-4. revisão geral de RLS/policies duplicadas e índices de foreign keys;
-5. concluir os testes pendentes dos demais requisitos já implementados.
+## Situação geral
 
-## Integração com `main`
+O código necessário para o **MVP Fase 1** está implementado.
 
-A evolução realizada na branch `feat/concluir-mvp-prd` já foi integrada à `main` pela PR #4.
+A branch `fix/autenticacao-mvp` contém os últimos ajustes de autenticação e recuperação de senha. Antes do merge, será executada uma bateria final concentrada cobrindo:
 
-Ainda permanecem pendentes no MVP:
+1. regra de senha no cadastro;
+2. login de cliente, lojista e administrador;
+3. recuperação de senha com e-mail real;
+4. cancelamento direto de pedido;
+5. solicitação de cancelamento durante preparação e resposta do lojista;
+6. confirmação de entrega pelo cliente;
+7. avaliação após entrega;
+8. resposta do lojista e exibição pública.
 
-- recuperação de senha com e-mail real;
-- testes autenticados completos de cliente/lojista;
-- validação pública da resposta de avaliação;
-- testes do RF-12;
-- revisão do diff grande herdado de `js/painel-loja.js`.
+Se essa bateria final passar, o **MVP Fase 1 poderá ser marcado como concluído**.

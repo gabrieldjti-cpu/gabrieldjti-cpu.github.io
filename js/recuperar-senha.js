@@ -13,6 +13,17 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", enviarRecuperacaoSenha);
 });
 
+function obterUrlRetornoRecuperacao() {
+    const url = new URL("nova-senha.html", window.location.href);
+
+    // Garante que parâmetros antigos da página atual não sejam enviados
+    // como parte do callback de recuperação.
+    url.search = "";
+    url.hash = "";
+
+    return url.href;
+}
+
 async function enviarRecuperacaoSenha(event) {
     event.preventDefault();
 
@@ -63,10 +74,9 @@ async function enviarRecuperacaoSenha(event) {
     }
 
     try {
-        const redirectTo = new URL(
-            "nova-senha.html",
-            window.location.href
-        ).href;
+        const redirectTo = obterUrlRetornoRecuperacao();
+
+        console.info("Retorno da recuperação de senha:", redirectTo);
 
         const { error } = await window.db.auth.resetPasswordForEmail(
             email,
@@ -118,6 +128,13 @@ function tratarErroRecuperacao(erro) {
         texto.includes("security purposes")
     ) {
         return "Muitas solicitações foram feitas em pouco tempo. Aguarde alguns minutos e tente novamente.";
+    }
+
+    if (
+        texto.includes("redirect") ||
+        texto.includes("not allowed")
+    ) {
+        return "A página de retorno da recuperação ainda não está autorizada no Supabase Auth. Tente novamente após a configuração do endereço do site.";
     }
 
     if (

@@ -62,21 +62,70 @@ async function obterDestinoAposLogin() {
         if (ativa === false) return null;
     }
 
+    const { data: sessaoData, error: sessaoError } =
+        await window.db.auth.getSession();
+
+    if (sessaoError || !sessaoData?.session?.user) {
+        console.warn(
+            "Não foi possível identificar a sessão para decidir o destino:",
+            sessaoError
+        );
+        return "perfil.html";
+    }
+
+    const usuario = sessaoData.session.user;
+
     // O destino é decidido aqui, antes de qualquer redirecionamento.
     // Uma segunda tentativa curta evita falha transitória logo após SIGNED_IN.
     for (let tentativa = 0; tentativa < 2; tentativa += 1) {
+        let erroAdmin = null;
+
         try {
             const { data: admin, error } = await window.db.rpc("sou_admin");
+            erroAdmin = error || null;
 
-            if (!error) {
-                return admin === true
-                    ? "admin-dashboard.html"
-                    : "perfil.html";
+            if (!error && admin === true) {
+                localStorage.removeItem("loja_id");
+                localStorage.removeItem("nome_loja");
+                return "admin-dashboard.html";
             }
 
-            console.warn("Não foi possível verificar perfil administrativo:", error);
+            if (error) {
+                console.warn("Não foi possível verificar perfil administrativo:", error);
+            }
         } catch (erro) {
-            console.warn("Falha ao verificar destino do login:", erro);
+            erroAdmin = erro;
+            console.warn("Falha ao verificar perfil administrativo:", erro);
+        }
+
+        try {
+            const { data: loja, error: lojaError } =
+                await window.db
+                    .from("lojas")
+                    .select("id,nome")
+                    .eq("proprietario_id", usuario.id)
+                    .limit(1)
+                    .maybeSingle();
+
+            if (lojaError) {
+                console.warn("Não foi possível verificar loja do usuário:", lojaError);
+            } else if (loja) {
+                localStorage.setItem("loja_id", loja.id);
+
+                if (loja.nome) {
+                    localStorage.setItem("nome_loja", loja.nome);
+                } else {
+                    localStorage.removeItem("nome_loja");
+                }
+
+                return "painel-loja.html";
+            } else if (!erroAdmin) {
+                localStorage.removeItem("loja_id");
+                localStorage.removeItem("nome_loja");
+                return "perfil.html";
+            }
+        } catch (erro) {
+            console.warn("Falha ao verificar perfil de lojista:", erro);
         }
 
         if (tentativa === 0) {
@@ -84,7 +133,8 @@ async function obterDestinoAposLogin() {
         }
     }
 
-    // Em caso de indisponibilidade temporária da RPC, mantém o fluxo comum.
+    // Em caso de indisponibilidade temporária das verificações,
+    // mantém o fluxo comum em uma área segura da própria conta.
     return "perfil.html";
 }
 
