@@ -2,6 +2,176 @@
    PESQUISA GLOBAL DE PRODUTOS — RF-05
 ========================================== */
 
+.texto-acessivel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.pesquisa-home {
+    position: relative;
+    z-index: 30;
+}
+
+.sugestoes-pesquisa {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    left: 0;
+    z-index: 60;
+    max-height: min(460px, 62vh);
+    padding: 10px;
+    overflow-y: auto;
+    border: 1px solid #e1e5ea;
+    border-radius: 18px;
+    background: #fff;
+    color: var(--home-text);
+    box-shadow: 0 24px 55px rgba(31, 37, 45, .22);
+}
+
+.sugestoes-pesquisa[hidden] {
+    display: none;
+}
+
+.sugestoes-cabecalho {
+    padding: 5px 8px 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #edf0f3;
+    color: #69717d;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.sugestoes-cabecalho small {
+    color: #949aa4;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.sugestao-produto {
+    padding: 9px 8px;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    gap: 11px;
+    align-items: center;
+    border-radius: 12px;
+    outline: 0;
+    transition: background .16s ease, box-shadow .16s ease;
+}
+
+.sugestao-produto:hover,
+.sugestao-produto.ativa,
+.sugestao-produto[aria-selected="true"] {
+    background: #fff3ee;
+    box-shadow: inset 3px 0 var(--home-primary);
+}
+
+.sugestao-produto-imagem {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid #edf0f3;
+    border-radius: 11px;
+    background: #f5f6f8;
+    color: #a1a7b0;
+}
+
+.sugestao-produto-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sugestao-produto-info {
+    min-width: 0;
+}
+
+.sugestao-produto-info strong,
+.sugestao-produto-info span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sugestao-produto-info strong {
+    color: var(--home-text);
+    font-size: 13px;
+}
+
+.sugestao-produto-info span {
+    margin-top: 3px;
+    color: #747b85;
+    font-size: 10px;
+}
+
+.sugestao-produto-preco {
+    color: var(--home-primary-dark);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.pesquisa-home .sugestao-ver-todos {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 5px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #edf0f3;
+    border-radius: 11px;
+    outline: 0;
+    background: #fff;
+    color: var(--home-primary-dark);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.pesquisa-home .sugestao-ver-todos::before {
+    content: none;
+}
+
+.pesquisa-home .sugestao-ver-todos:hover,
+.pesquisa-home .sugestao-ver-todos.ativa,
+.pesquisa-home .sugestao-ver-todos[aria-selected="true"],
+.pesquisa-home .sugestao-ver-todos:focus-visible {
+    transform: none;
+    background: var(--home-primary-soft);
+}
+
+.sugestoes-estado {
+    padding: 18px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    color: #6f7680;
+    font-size: 11px;
+    text-align: center;
+}
+
+.sugestoes-estado i {
+    color: var(--home-primary);
+}
+
 .produtos-globais {
     padding-top: 80px;
     scroll-margin-top: 84px;
@@ -445,6 +615,27 @@
 }
 
 @media (max-width: 620px) {
+    .sugestoes-pesquisa {
+        right: -6px;
+        left: -6px;
+        max-height: 58vh;
+        border-radius: 15px;
+    }
+
+    .sugestao-produto {
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+        gap: 9px;
+    }
+
+    .sugestao-produto-imagem {
+        width: 44px;
+        height: 44px;
+    }
+
+    .sugestoes-cabecalho small {
+        display: none;
+    }
+
     .produtos-globais {
         padding-top: 62px;
     }
@@ -493,6 +684,14 @@
 }
 
 @media (max-width: 390px) {
+    .sugestao-produto-preco {
+        display: none;
+    }
+
+    .sugestao-produto {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
     .produto-global-rodape {
         align-items: stretch;
         flex-direction: column;
