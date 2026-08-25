@@ -10,6 +10,29 @@ Um requisito só deve ser tratado como totalmente concluído depois dos testes f
 
 ## Implementado
 
+### RF-05 — Pesquisa global de produtos
+
+Implementação versionada:
+
+- catálogo de produtos de todas as lojas na página inicial;
+- busca por nome integrada ao campo principal da home;
+- filtros por categoria, loja e disponibilidade;
+- ordenação por destaque, nome, preço e data;
+- paginação server-side de 12 produtos;
+- acesso direto ao produto dentro da página pública da loja;
+- estados responsivos de carregamento, vazio e erro.
+
+Segurança e escopo público:
+
+- consulta somente produtos ativos;
+- consulta somente lojas ativas e aprovadas;
+- leitura pública continua limitada pelas policies RLS do Supabase;
+- nenhuma chave administrativa ou migration adicional foi necessária.
+
+**Situação:** implementação pronta; falta validação funcional no GitHub Pages.
+
+---
+
 ### RF-03 — Recuperação de senha
 
 Implementação versionada:
@@ -264,7 +287,7 @@ Prioridades atuais:
 1. concluir os testes autenticados de checkout, cancelamento e ciclo de pedidos;
 2. validar recuperação de senha com e-mail real e Redirect URLs de produção;
 3. finalizar os testes complementares do dashboard administrativo;
-4. implementar pesquisa global básica de produtos;
+4. implementar página global de categoria e autocomplete da pesquisa;
 5. gerar a baseline oficial do schema remoto com `supabase db pull`;
 6. iniciar testes automatizados dos fluxos críticos.
 
@@ -279,4 +302,4 @@ Ainda permanecem pendentes no MVP:
 - validação pública da resposta de avaliação;
 - testes do RF-12;
 - baseline inicial reproduzível do banco;
-- pesquisa global básica de produtos.
+- página global de categoria e autocomplete da pesquisa.

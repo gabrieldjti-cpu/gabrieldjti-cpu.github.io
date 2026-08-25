@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="components/header.css" />
   <link rel="stylesheet" href="components/feedback.css" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/pesquisa-global.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,11 +44,12 @@
             <input
               type="search"
               id="pesquisa"
-              placeholder="Pesquise uma loja..."
+              placeholder="Pesquise um produto ou uma loja..."
               autocomplete="off"
-              aria-label="Pesquisar lojas"
+              aria-label="Pesquisar produtos e lojas"
+              maxlength="80"
             />
-            <button id="btnPesquisar" type="button" aria-label="Pesquisar lojas">
+            <button id="btnPesquisar" type="button" aria-label="Pesquisar produtos e lojas">
               Pesquisar
             </button>
           </div>
@@ -157,6 +159,69 @@
       </div>
     </section>
 
+    <!-- PRODUTOS GLOBAIS -->
+    <section class="secao-home produtos-globais" id="produtos-globais" aria-labelledby="titulo-produtos-globais">
+      <div class="secao-cabecalho produtos-globais-cabecalho">
+        <div>
+          <span class="secao-eyebrow">Catálogo da cidade</span>
+          <h2 id="titulo-produtos-globais">Produtos de todas as lojas</h2>
+          <p id="descricao-produtos-globais">Pesquise e compare produtos disponíveis no comércio local.</p>
+        </div>
+        <span id="total-produtos-globais" class="total-produtos-badge" aria-live="polite"></span>
+      </div>
+
+      <form id="filtros-produtos-globais" class="filtros-produtos-globais" aria-label="Filtros de produtos">
+        <div class="filtro-produto-campo">
+          <label for="filtro-categoria-produto">Categoria</label>
+          <select id="filtro-categoria-produto" name="categoria">
+            <option value="">Todas as categorias</option>
+          </select>
+        </div>
+
+        <div class="filtro-produto-campo">
+          <label for="filtro-loja-produto">Loja</label>
+          <select id="filtro-loja-produto" name="loja">
+            <option value="">Todas as lojas</option>
+          </select>
+        </div>
+
+        <div class="filtro-produto-campo">
+          <label for="filtro-disponibilidade-produto">Disponibilidade</label>
+          <select id="filtro-disponibilidade-produto" name="disponibilidade">
+            <option value="">Todos</option>
+            <option value="estoque">Em estoque</option>
+            <option value="esgotado">Sem estoque</option>
+          </select>
+        </div>
+
+        <div class="filtro-produto-campo">
+          <label for="ordenacao-produtos-globais">Ordenar por</label>
+          <select id="ordenacao-produtos-globais" name="ordenacao">
+            <option value="destaques">Destaques</option>
+            <option value="nome">Nome</option>
+            <option value="menor-preco">Menor preço regular</option>
+            <option value="maior-preco">Maior preço regular</option>
+            <option value="recentes">Mais recentes</option>
+          </select>
+        </div>
+
+        <button type="button" id="limpar-filtros-produtos" class="btn-limpar-filtros">
+          <i class="fa-solid fa-eraser" aria-hidden="true"></i>
+          Limpar filtros
+        </button>
+      </form>
+
+      <div id="lista-produtos-globais" class="grade-produtos-globais" aria-live="polite" aria-busy="true">
+        <div class="estado-produtos-globais">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          <h3>Carregando produtos...</h3>
+          <p>Estamos consultando as lojas da cidade.</p>
+        </div>
+      </div>
+
+      <nav id="paginacao-produtos-globais" class="paginacao-produtos-globais" aria-label="Paginação dos produtos" hidden></nav>
+    </section>
+
     <!-- LOJAS -->
     <section class="secao-home lojas" id="lojas" aria-labelledby="titulo-lojas">
       <div class="secao-cabecalho titulo-lojas">
@@ -235,6 +300,7 @@
       <nav class="footer-links" aria-label="Links do rodapé">
         <a href="index.html">Início</a>
         <a href="#categorias">Categorias</a>
+        <a href="#produtos-globais">Produtos</a>
         <a href="#lojas">Lojas</a>
         <a href="cadastrar-loja.html">Cadastrar loja</a>
       </nav>
@@ -250,6 +316,7 @@
   <script src="components/header.js"></script>
   <script src="components/feedback.js"></script>
   <script src="js/index.js"></script>
+  <script src="js/pesquisa-global.js"></script>
   <script src="js/index-filtros.js"></script>
 </body>
 </html>

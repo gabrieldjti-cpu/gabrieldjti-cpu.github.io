@@ -130,6 +130,9 @@ document.addEventListener(
         await carregarProdutos();
 
 
+        destacarProdutoSolicitado();
+
+
         // ==================================
         // PESQUISA
         // ==================================
@@ -2219,6 +2222,12 @@ function criarCardProduto(
     produto
 ) {
 
+    const produtoId =
+        escaparHTML(
+            produto.id ||
+            ""
+        );
+
     const nome =
         escaparHTML(
             produto.nome ||
@@ -2434,6 +2443,8 @@ function criarCardProduto(
 
         <div
             class="produto"
+            id="produto-${produtoId}"
+            data-produto-id="${produtoId}"
             data-nome="${escaparHTML(
                 normalizarTexto(
                     produto.nome ||
@@ -2478,6 +2489,94 @@ function criarCardProduto(
         </div>
 
     `;
+}
+
+
+// ==========================================
+// DESTACAR PRODUTO VINDO DA PESQUISA GLOBAL
+// ==========================================
+
+function destacarProdutoSolicitado() {
+
+    const produtoId =
+        new URLSearchParams(
+            window.location.search
+        )
+            .get(
+                "produto"
+            );
+
+
+    if (!produtoId) {
+
+        return;
+
+    }
+
+
+    const card =
+        Array.from(
+            document.querySelectorAll(
+                "#listaProdutos .produto[data-produto-id]"
+            )
+        )
+            .find(
+                item =>
+                    String(
+                        item.dataset.produtoId
+                    ) ===
+                    String(
+                        produtoId
+                    )
+            );
+
+
+    if (!card) {
+
+        return;
+
+    }
+
+
+    card.classList.add(
+        "produto-destacado-busca"
+    );
+
+
+    card.setAttribute(
+        "tabindex",
+        "-1"
+    );
+
+
+    requestAnimationFrame(
+        () => {
+
+            card.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+
+            card.focus({
+                preventScroll: true
+            });
+
+        }
+    );
+
+
+    setTimeout(
+        () => {
+
+            card.classList.remove(
+                "produto-destacado-busca"
+            );
+
+        },
+        4000
+    );
+
 }
 
 
