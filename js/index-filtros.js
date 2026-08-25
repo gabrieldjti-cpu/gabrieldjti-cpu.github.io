@@ -112,7 +112,7 @@
             if (event.key === "Enter") {
                 event.preventDefault();
                 aplicarFiltrosHome();
-                document.getElementById("lojas")?.scrollIntoView({
+                document.getElementById("produtos-globais")?.scrollIntoView({
                     behavior: "smooth",
                     block: "start"
                 });
@@ -121,7 +121,7 @@
 
         botao?.addEventListener("click", () => {
             aplicarFiltrosHome();
-            document.getElementById("lojas")?.scrollIntoView({
+            document.getElementById("produtos-globais")?.scrollIntoView({
                 behavior: "smooth",
                 block: "start"
             });
