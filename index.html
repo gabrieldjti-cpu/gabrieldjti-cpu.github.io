@@ -39,7 +39,7 @@
             Descubra lojas, encontre o que precisa e valorize os comerciantes locais sem sair de casa.
           </p>
 
-          <div class="pesquisa-home" role="search">
+          <div class="pesquisa-home" id="pesquisa-home" role="search">
             <i class="fa-solid fa-magnifying-glass pesquisa-home-icone" aria-hidden="true"></i>
             <input
               type="search"
@@ -47,11 +47,26 @@
               placeholder="Pesquise um produto ou uma loja..."
               autocomplete="off"
               aria-label="Pesquisar produtos e lojas"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-controls="sugestoes-pesquisa"
+              aria-expanded="false"
+              aria-haspopup="listbox"
               maxlength="80"
             />
             <button id="btnPesquisar" type="button" aria-label="Pesquisar produtos e lojas">
               Pesquisar
             </button>
+
+            <div
+              id="sugestoes-pesquisa"
+              class="sugestoes-pesquisa"
+              role="listbox"
+              aria-label="Sugestões de produtos"
+              hidden
+            ></div>
+
+            <span id="status-sugestoes-pesquisa" class="texto-acessivel" aria-live="polite"></span>
           </div>
 
           <div class="hero-acoes">

@@ -16,6 +16,8 @@ Implementação versionada:
 
 - catálogo de produtos de todas as lojas na página inicial;
 - busca por nome integrada ao campo principal da home;
+- autocomplete com até seis sugestões de produtos, preço e loja;
+- navegação acessível no autocomplete por setas, Enter, Esc e toque;
 - filtros por categoria, loja e disponibilidade;
 - ordenação por destaque, nome, preço e data;
 - paginação server-side de 12 produtos;
@@ -29,7 +31,7 @@ Segurança e escopo público:
 - leitura pública continua limitada pelas policies RLS do Supabase;
 - nenhuma chave administrativa ou migration adicional foi necessária.
 
-**Situação:** implementação pronta; falta validação funcional no GitHub Pages.
+**Situação:** catálogo validado no GitHub Pages; autocomplete pronto para validação funcional.
 
 ---
 
@@ -287,7 +289,7 @@ Prioridades atuais:
 1. concluir os testes autenticados de checkout, cancelamento e ciclo de pedidos;
 2. validar recuperação de senha com e-mail real e Redirect URLs de produção;
 3. finalizar os testes complementares do dashboard administrativo;
-4. implementar página global de categoria e autocomplete da pesquisa;
+4. implementar página global de categoria e busca full-text com relevância;
 5. gerar a baseline oficial do schema remoto com `supabase db pull`;
 6. iniciar testes automatizados dos fluxos críticos.
 
@@ -302,4 +304,4 @@ Ainda permanecem pendentes no MVP:
 - validação pública da resposta de avaliação;
 - testes do RF-12;
 - baseline inicial reproduzível do banco;
-- página global de categoria e autocomplete da pesquisa.
+- página global de categoria e busca full-text com relevância.

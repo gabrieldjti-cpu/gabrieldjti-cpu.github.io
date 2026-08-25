@@ -8,6 +8,8 @@
 
     const TAMANHO_PAGINA = 12;
     const LIMITE_TERMO = 80;
+    const MINIMO_AUTOCOMPLETE = 2;
+    const LIMITE_AUTOCOMPLETE = 6;
 
     const estado = {
         pagina: 1,
@@ -21,8 +23,12 @@
 
     const elementos = {};
     let temporizadorPesquisa = null;
+    let temporizadorSugestoes = null;
     let numeroConsulta = 0;
+    let numeroConsultaSugestoes = 0;
     let ignorarEventoPesquisa = false;
+    let indiceSugestaoAtiva = -1;
+    let sugestoesAtuais = [];
 
     document.addEventListener("DOMContentLoaded", iniciarPesquisaGlobal);
 
@@ -53,7 +59,10 @@
 
     function mapearElementos() {
         elementos.pesquisa = document.getElementById("pesquisa");
+        elementos.caixaPesquisa = document.getElementById("pesquisa-home");
         elementos.botaoPesquisa = document.getElementById("btnPesquisar");
+        elementos.sugestoes = document.getElementById("sugestoes-pesquisa");
+        elementos.statusSugestoes = document.getElementById("status-sugestoes-pesquisa");
         elementos.formulario = document.getElementById("filtros-produtos-globais");
         elementos.categoria = document.getElementById("filtro-categoria-produto");
         elementos.loja = document.getElementById("filtro-loja-produto");
@@ -78,17 +87,61 @@
 
             estado.pagina = 1;
             numeroConsulta += 1;
+            numeroConsultaSugestoes += 1;
+            fecharSugestoes({ limpar: true });
+            anunciarSugestoes("");
             clearTimeout(temporizadorPesquisa);
+            clearTimeout(temporizadorSugestoes);
             temporizadorPesquisa = setTimeout(buscarProdutos, 350);
+            temporizadorSugestoes = setTimeout(buscarSugestoes, 180);
         });
 
         elementos.pesquisa?.addEventListener("keydown", event => {
+            if (tratarTeclaAutocomplete(event)) return;
             if (event.key !== "Enter") return;
             event.preventDefault();
             executarPesquisaImediata();
         });
 
-        elementos.botaoPesquisa?.addEventListener("click", executarPesquisaImediata);
+        elementos.pesquisa?.addEventListener("focus", () => {
+            if (sanitizarTermo(elementos.pesquisa?.value).length >= MINIMO_AUTOCOMPLETE) {
+                buscarSugestoes();
+            }
+        });
+
+        elementos.botaoPesquisa?.addEventListener("click", () => {
+            fecharSugestoes();
+            executarPesquisaImediata();
+        });
+
+        elementos.sugestoes?.addEventListener("mousedown", event => {
+            if (event.target.closest("[data-sugestao-opcao]")) {
+                event.preventDefault();
+            }
+        });
+
+        elementos.sugestoes?.addEventListener("mousemove", event => {
+            const opcao = event.target.closest("[data-sugestao-opcao]");
+            if (!opcao) return;
+
+            definirSugestaoAtiva(Number(opcao.dataset.sugestaoIndice));
+        });
+
+        elementos.sugestoes?.addEventListener("click", event => {
+            const opcao = event.target.closest("[data-sugestao-opcao]");
+            if (!opcao) return;
+
+            if (opcao.dataset.acao === "ver-todos") {
+                event.preventDefault();
+                pesquisarTodosResultados();
+            }
+        });
+
+        document.addEventListener("click", event => {
+            if (!elementos.caixaPesquisa?.contains(event.target)) {
+                fecharSugestoes();
+            }
+        });
 
         [
             elementos.categoria,
@@ -98,6 +151,7 @@
         ].forEach(campo => {
             campo?.addEventListener("change", () => {
                 estado.pagina = 1;
+                fecharSugestoes();
                 buscarProdutos();
             });
         });
@@ -131,8 +185,334 @@
 
     function executarPesquisaImediata() {
         clearTimeout(temporizadorPesquisa);
+        clearTimeout(temporizadorSugestoes);
+        numeroConsultaSugestoes += 1;
         estado.pagina = 1;
+        fecharSugestoes();
         buscarProdutos();
+    }
+
+    async function buscarSugestoes() {
+        const termo = sanitizarTermo(elementos.pesquisa?.value);
+
+        if (!window.db || !elementos.sugestoes || termo.length < MINIMO_AUTOCOMPLETE) {
+            fecharSugestoes({ limpar: true });
+            anunciarSugestoes("");
+            return;
+        }
+
+        const consultaAtual = ++numeroConsultaSugestoes;
+        mostrarCarregamentoSugestoes();
+
+        try {
+            let consulta = window.db
+                .from("produtos")
+                .select(`
+                    id,
+                    loja_id,
+                    nome,
+                    preco,
+                    preco_promocional,
+                    estoque,
+                    imagem_url,
+                    destaque,
+                    lojas!inner(
+                        id,
+                        nome,
+                        ativa,
+                        status_aprovacao
+                    )
+                `)
+                .eq("ativo", true)
+                .eq("lojas.ativa", true)
+                .eq("lojas.status_aprovacao", "aprovada")
+                .ilike("nome", `%${termo}%`);
+
+            const categoriaId = String(elementos.categoria?.value || "");
+            const lojaId = String(elementos.loja?.value || "");
+            const disponibilidade = String(elementos.disponibilidade?.value || "");
+
+            if (categoriaId) {
+                consulta = consulta.eq("categoria_id", Number(categoriaId));
+            }
+
+            if (lojaId) {
+                consulta = consulta.eq("loja_id", lojaId);
+            }
+
+            if (disponibilidade === "estoque") {
+                consulta = consulta.gt("estoque", 0);
+            } else if (disponibilidade === "esgotado") {
+                consulta = consulta.eq("estoque", 0);
+            }
+
+            const { data, error } = await consulta
+                .order("destaque", { ascending: false })
+                .order("nome", { ascending: true })
+                .limit(LIMITE_AUTOCOMPLETE);
+
+            if (consultaAtual !== numeroConsultaSugestoes) return;
+            if (error) throw error;
+
+            renderizarSugestoes(Array.isArray(data) ? data : [], termo);
+        } catch (erro) {
+            if (consultaAtual !== numeroConsultaSugestoes) return;
+
+            console.warn("Não foi possível carregar o autocomplete:", erro);
+            mostrarEstadoSugestoes(
+                "fa-circle-exclamation",
+                "Sugestões indisponíveis. Pressione Enter para pesquisar."
+            );
+            anunciarSugestoes("Sugestões indisponíveis. Pressione Enter para pesquisar.");
+        }
+    }
+
+    function mostrarCarregamentoSugestoes() {
+        sugestoesAtuais = [];
+        indiceSugestaoAtiva = -1;
+        mostrarEstadoSugestoes("fa-spinner fa-spin", "Buscando sugestões...");
+        anunciarSugestoes("Buscando sugestões.");
+    }
+
+    function mostrarEstadoSugestoes(icone, mensagem) {
+        if (!elementos.sugestoes) return;
+
+        elementos.sugestoes.innerHTML = `
+            <div class="sugestoes-estado" role="status">
+                <i class="fa-solid ${escaparAtributo(icone)}" aria-hidden="true"></i>
+                <span>${escaparHTML(mensagem)}</span>
+            </div>
+        `;
+
+        abrirSugestoes();
+    }
+
+    function renderizarSugestoes(produtos, termo) {
+        if (!elementos.sugestoes) return;
+
+        indiceSugestaoAtiva = -1;
+        sugestoesAtuais = produtos.map(produto => ({
+            tipo: "produto",
+            href: criarLinkProduto(produto)
+        }));
+
+        if (!produtos.length) {
+            mostrarEstadoSugestoes(
+                "fa-magnifying-glass",
+                `Nenhum produto sugerido para “${termo}”. Pressione Enter para pesquisar.`
+            );
+            anunciarSugestoes(`Nenhuma sugestão encontrada para ${termo}.`);
+            return;
+        }
+
+        sugestoesAtuais.push({ tipo: "todos" });
+
+        const itens = produtos.map((produto, indice) => criarSugestaoProduto(produto, indice));
+        const indiceTodos = produtos.length;
+
+        elementos.sugestoes.innerHTML = `
+            <div class="sugestoes-cabecalho" role="presentation" aria-hidden="true">
+                <span>Sugestões de produtos</span>
+                <small>Use ↑ ↓ e Enter</small>
+            </div>
+
+            ${itens.join("")}
+
+            <button
+                type="button"
+                id="sugestao-pesquisa-${indiceTodos}"
+                class="sugestao-ver-todos"
+                role="option"
+                aria-selected="false"
+                data-sugestao-opcao
+                data-sugestao-indice="${indiceTodos}"
+                data-acao="ver-todos"
+            >
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                Ver todos os resultados para “${escaparHTML(termo)}”
+            </button>
+        `;
+
+        configurarErrosDeImagemSugestoes();
+        abrirSugestoes();
+        anunciarSugestoes(
+            `${produtos.length} ${produtos.length === 1 ? "sugestão disponível" : "sugestões disponíveis"}. Use as setas para navegar.`
+        );
+    }
+
+    function criarSugestaoProduto(produto, indice) {
+        const loja = obterRelacao(produto.lojas) || {};
+        const nome = escaparHTML(produto.nome || "Produto");
+        const nomeLoja = escaparHTML(loja.nome || "Loja");
+        const preco = Math.max(0, Number(produto.preco || 0));
+        const promocional = Math.max(0, Number(produto.preco_promocional || 0));
+        const precoAtual = promocional > 0 && promocional < preco ? promocional : preco;
+        const link = criarLinkProduto(produto);
+
+        const imagem = produto.imagem_url
+            ? `<img src="${escaparAtributo(produto.imagem_url)}" alt="" loading="lazy">`
+            : '<i class="fa-solid fa-box" aria-hidden="true"></i>';
+
+        return `
+            <a
+                href="${escaparAtributo(link)}"
+                id="sugestao-pesquisa-${indice}"
+                class="sugestao-produto"
+                role="option"
+                aria-selected="false"
+                data-sugestao-opcao
+                data-sugestao-indice="${indice}"
+            >
+                <span class="sugestao-produto-imagem">${imagem}</span>
+                <span class="sugestao-produto-info">
+                    <strong>${nome}</strong>
+                    <span>Vendido por ${nomeLoja}</span>
+                </span>
+                <span class="sugestao-produto-preco">${formatarMoeda(precoAtual)}</span>
+            </a>
+        `;
+    }
+
+    function criarLinkProduto(produto) {
+        const loja = obterRelacao(produto.lojas) || {};
+        const lojaId = loja.id || produto.loja_id || "";
+        const produtoId = produto.id || "";
+
+        return `loja.html?id=${encodeURIComponent(lojaId)}&produto=${encodeURIComponent(produtoId)}`;
+    }
+
+    function configurarErrosDeImagemSugestoes() {
+        elementos.sugestoes?.querySelectorAll(".sugestao-produto-imagem img").forEach(imagem => {
+            imagem.addEventListener("error", () => {
+                const contenedor = imagem.parentElement;
+                if (!contenedor) return;
+
+                contenedor.innerHTML = '<i class="fa-solid fa-box" aria-hidden="true"></i>';
+            }, { once: true });
+        });
+    }
+
+    function tratarTeclaAutocomplete(event) {
+        const aberta = elementos.pesquisa?.getAttribute("aria-expanded") === "true";
+
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            const opcoes = obterOpcoesSugestoes();
+
+            if (!aberta && opcoes.length) {
+                abrirSugestoes();
+            } else if (!aberta) {
+                buscarSugestoes();
+            }
+
+            if (opcoes.length) {
+                moverSugestaoAtiva(event.key === "ArrowDown" ? 1 : -1);
+            }
+
+            return true;
+        }
+
+        if (event.key === "Escape" && aberta) {
+            event.preventDefault();
+            fecharSugestoes();
+            return true;
+        }
+
+        if (event.key === "Enter" && aberta && indiceSugestaoAtiva >= 0) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            ativarSugestaoSelecionada();
+            return true;
+        }
+
+        if (event.key === "Tab" && aberta) {
+            fecharSugestoes();
+        }
+
+        return false;
+    }
+
+    function obterOpcoesSugestoes() {
+        return Array.from(
+            elementos.sugestoes?.querySelectorAll("[data-sugestao-opcao]") || []
+        );
+    }
+
+    function moverSugestaoAtiva(direcao) {
+        const opcoes = obterOpcoesSugestoes();
+        if (!opcoes.length) return;
+
+        const proximoIndice = indiceSugestaoAtiva < 0
+            ? (direcao > 0 ? 0 : opcoes.length - 1)
+            : (indiceSugestaoAtiva + direcao + opcoes.length) % opcoes.length;
+
+        definirSugestaoAtiva(proximoIndice);
+    }
+
+    function definirSugestaoAtiva(indice) {
+        const opcoes = obterOpcoesSugestoes();
+        if (!opcoes.length || !Number.isInteger(indice) || indice < 0 || indice >= opcoes.length) {
+            return;
+        }
+
+        opcoes.forEach(opcao => {
+            opcao.classList.remove("ativa");
+            opcao.setAttribute("aria-selected", "false");
+        });
+
+        const ativa = opcoes[indice];
+        indiceSugestaoAtiva = indice;
+        ativa.classList.add("ativa");
+        ativa.setAttribute("aria-selected", "true");
+        elementos.pesquisa?.setAttribute("aria-activedescendant", ativa.id);
+        ativa.scrollIntoView({ block: "nearest" });
+    }
+
+    function ativarSugestaoSelecionada() {
+        const sugestao = sugestoesAtuais[indiceSugestaoAtiva];
+        if (!sugestao) return;
+
+        if (sugestao.tipo === "todos") {
+            pesquisarTodosResultados();
+            return;
+        }
+
+        if (sugestao.href) {
+            window.location.href = sugestao.href;
+        }
+    }
+
+    function pesquisarTodosResultados() {
+        fecharSugestoes();
+        executarPesquisaImediata();
+        elementos.secao?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function abrirSugestoes() {
+        if (!elementos.sugestoes || !elementos.pesquisa) return;
+
+        elementos.sugestoes.hidden = false;
+        elementos.pesquisa.setAttribute("aria-expanded", "true");
+    }
+
+    function fecharSugestoes(opcoes = {}) {
+        if (!elementos.sugestoes || !elementos.pesquisa) return;
+
+        elementos.sugestoes.hidden = true;
+        elementos.pesquisa.setAttribute("aria-expanded", "false");
+        elementos.pesquisa.removeAttribute("aria-activedescendant");
+        indiceSugestaoAtiva = -1;
+
+        if (opcoes.limpar) {
+            elementos.sugestoes.replaceChildren();
+            sugestoesAtuais = [];
+        }
+    }
+
+    function anunciarSugestoes(mensagem) {
+        if (elementos.statusSugestoes) {
+            elementos.statusSugestoes.textContent = mensagem;
+        }
     }
 
     async function carregarCategorias() {
@@ -558,6 +938,10 @@
 
     function limparFiltros() {
         clearTimeout(temporizadorPesquisa);
+        clearTimeout(temporizadorSugestoes);
+        numeroConsultaSugestoes += 1;
+        fecharSugestoes({ limpar: true });
+        anunciarSugestoes("");
 
         if (elementos.pesquisa) elementos.pesquisa.value = "";
         if (elementos.categoria) elementos.categoria.value = "";
