@@ -382,13 +382,15 @@ if (
 
 
             if (
-                senhaDigitada.length < 6
+                !senhaAtendeRequisitos(
+                    senhaDigitada
+                )
             ) {
 
                 notificar(
-                    "A senha deve possuir no mínimo 6 caracteres.",
+                    "A senha deve ter no mínimo 8 caracteres e conter pelo menos uma letra e um número.",
                     "aviso",
-                    "Senha muito curta"
+                    "Senha inválida"
                 );
 
 
@@ -770,7 +772,7 @@ function traduzirErroCadastro(
     ) {
 
         return (
-            "A senha deve possuir no mínimo 6 caracteres."
+            "A senha deve ter no mínimo 8 caracteres e conter pelo menos uma letra e um número."
         );
 
     }
@@ -859,6 +861,30 @@ function traduzirErroCadastro(
     return (
         erro?.message ||
         "Ocorreu um erro ao criar sua conta."
+    );
+
+}
+
+
+// ==================================
+// REQUISITOS DA SENHA — RF-01
+// ==================================
+
+function senhaAtendeRequisitos(
+    senhaInformada
+) {
+
+    const valor =
+        String(
+            senhaInformada ||
+            ""
+        );
+
+
+    return (
+        valor.length >= 8 &&
+        /[A-Za-z]/.test(valor) &&
+        /\d/.test(valor)
     );
 
 }

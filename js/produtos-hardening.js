@@ -163,8 +163,8 @@
     }
 
     function instalar() {
-        // A função original fazia DELETE físico. Sobrescrevemos o handler global
-        // para que o onclick já existente passe a fazer UPDATE ativo=false.
+        // Mantém uma camada adicional de proteção no handler global e garante
+        // que qualquer variante antiga do botão continue usando ativo=false.
         window.excluirProduto = desativarProduto;
         atualizarBotoes();
 

@@ -942,6 +942,42 @@ function validarFormulario() {
         );
 
 
+    const enderecoSelecionadoId =
+        String(
+            window.checkoutEnderecoSelecionadoId ||
+            ""
+        )
+            .trim();
+
+
+    // ==================================
+    // ENDEREÇO SALVO
+    // ==================================
+
+    if (!enderecoSelecionadoId) {
+
+        notificar(
+            "Cadastre ou selecione um endereço completo antes de finalizar o pedido.",
+            "aviso",
+            "Endereço obrigatório"
+        );
+
+
+        document
+            .getElementById(
+                "checkout-enderecos-rf04"
+            )
+            ?.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+
+        return false;
+
+    }
+
+
     // ==================================
     // NOME
     // ==================================
@@ -1272,6 +1308,23 @@ async function finalizarCompra() {
             ).value;
 
 
+        const enderecoSelecionadoId =
+            String(
+                window.checkoutEnderecoSelecionadoId ||
+                ""
+            )
+                .trim();
+
+
+        if (!enderecoSelecionadoId) {
+
+            throw new Error(
+                "Selecione um endereço de entrega antes de finalizar."
+            );
+
+        }
+
+
         // ==================================
         // ITENS PARA O BANCO
         // ==================================
@@ -1431,7 +1484,7 @@ async function finalizarCompra() {
         } =
             await window.db
                 .rpc(
-                    "finalizar_checkout",
+                    "finalizar_checkout_endereco",
                     {
 
                         p_forma_pagamento:
@@ -1441,7 +1494,10 @@ async function finalizarCompra() {
                             observacoesBanco,
 
                         p_itens:
-                            itens
+                            itens,
+
+                        p_endereco_id:
+                            enderecoSelecionadoId
 
                     }
                 );

@@ -8,7 +8,6 @@
 
     let enderecos = [];
     let usuarioAtual = null;
-    let rpcOriginal = null;
 
     window.checkoutEnderecoSelecionadoId = null;
 
@@ -19,7 +18,6 @@
         usuarioAtual = data?.session?.user || null;
         if (!usuarioAtual) return;
 
-        instalarInterceptadorCheckout();
         inserirSeletor();
         inserirModal();
         configurarEventos();
@@ -27,29 +25,6 @@
         await preencherContatoDoPerfil();
         await carregarEnderecos();
     };
-
-    function instalarInterceptadorCheckout() {
-        if (window.__checkoutEnderecoRpcInstalado) return;
-
-        rpcOriginal = window.db.rpc.bind(window.db);
-
-        window.db.rpc = function (nomeFuncao, parametros = {}, opcoes) {
-            if (nomeFuncao === "finalizar_checkout") {
-                return rpcOriginal(
-                    "finalizar_checkout_endereco",
-                    {
-                        ...parametros,
-                        p_endereco_id: window.checkoutEnderecoSelecionadoId || null
-                    },
-                    opcoes
-                );
-            }
-
-            return rpcOriginal(nomeFuncao, parametros, opcoes);
-        };
-
-        window.__checkoutEnderecoRpcInstalado = true;
-    }
 
     function inserirSeletor() {
         if (document.getElementById("checkout-enderecos-rf04")) return;

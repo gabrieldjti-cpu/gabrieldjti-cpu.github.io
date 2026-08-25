@@ -140,6 +140,20 @@ body{
 
 }
 
+.senha-requisitos{
+
+    display:block;
+
+    margin-top:7px;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    line-height:1.4;
+
+}
+
 .input i{
 
     padding:15px;

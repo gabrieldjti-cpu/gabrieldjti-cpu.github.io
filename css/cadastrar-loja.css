@@ -203,6 +203,26 @@ body {
     display: block;
 }
 
+.logo-preview-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.logo-preview-placeholder i {
+    color: #2563eb;
+    font-size: 42px;
+}
+
 
 /* ==========================
    INPUT DA LOGO
