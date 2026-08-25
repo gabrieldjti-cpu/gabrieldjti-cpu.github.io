@@ -23,6 +23,10 @@ Implementação versionada:
 - paginação server-side de 12 produtos;
 - acesso direto ao produto dentro da página pública da loja;
 - estados responsivos de carregamento, vazio e erro.
+- página global por categoria de loja;
+- listagem de lojas aprovadas e produtos ativos relacionados à categoria;
+- busca, disponibilidade, ordenação e paginação dentro da categoria;
+- navegação entre categorias e integração com os cards da página inicial.
 
 Segurança e escopo público:
 
@@ -31,7 +35,7 @@ Segurança e escopo público:
 - leitura pública continua limitada pelas policies RLS do Supabase;
 - nenhuma chave administrativa ou migration adicional foi necessária.
 
-**Situação:** catálogo validado no GitHub Pages; autocomplete pronto para validação funcional.
+**Situação:** catálogo e autocomplete validados no GitHub Pages; página global de categoria pronta para validação funcional.
 
 ---
 
@@ -289,7 +293,7 @@ Prioridades atuais:
 1. concluir os testes autenticados de checkout, cancelamento e ciclo de pedidos;
 2. validar recuperação de senha com e-mail real e Redirect URLs de produção;
 3. finalizar os testes complementares do dashboard administrativo;
-4. implementar página global de categoria e busca full-text com relevância;
+4. implementar busca full-text com relevância e subcategorias;
 5. gerar a baseline oficial do schema remoto com `supabase db pull`;
 6. iniciar testes automatizados dos fluxos críticos.
 
@@ -304,4 +308,4 @@ Ainda permanecem pendentes no MVP:
 - validação pública da resposta de avaliação;
 - testes do RF-12;
 - baseline inicial reproduzível do banco;
-- página global de categoria e busca full-text com relevância.
+- busca full-text com relevância e subcategorias.
