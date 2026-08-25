@@ -62,16 +62,18 @@ async function obterDestinoAposLogin() {
         if (ativa === false) return null;
     }
 
-    // O destino é decidido aqui, antes de qualquer redirecionamento.
+    // Administradores são verificados por uma RPC protegida no banco.
     // Uma segunda tentativa curta evita falha transitória logo após SIGNED_IN.
     for (let tentativa = 0; tentativa < 2; tentativa += 1) {
         try {
             const { data: admin, error } = await window.db.rpc("sou_admin");
 
             if (!error) {
-                return admin === true
-                    ? "admin-dashboard.html"
-                    : "perfil.html";
+                if (admin === true) {
+                    return "admin-dashboard.html";
+                }
+
+                break;
             }
 
             console.warn("Não foi possível verificar perfil administrativo:", error);
@@ -84,9 +86,61 @@ async function obterDestinoAposLogin() {
         }
     }
 
-    // Em caso de indisponibilidade temporária da RPC, mantém o fluxo comum.
+    try {
+        const { data: usuarioData, error: usuarioError } =
+            await window.db.auth.getUser();
+
+        if (usuarioError) throw usuarioError;
+
+        const usuario = usuarioData?.user;
+
+        if (!usuario) {
+            return "perfil.html";
+        }
+
+        const { data: perfil, error: perfilError } = await window.db
+            .from("profiles")
+            .select("tipo_usuario")
+            .eq("id", usuario.id)
+            .maybeSingle();
+
+        if (perfilError) {
+            console.warn("Não foi possível consultar o tipo de perfil:", perfilError);
+        }
+
+        if (perfil?.tipo_usuario === "admin") {
+            return "admin-dashboard.html";
+        }
+
+        if (perfil?.tipo_usuario === "lojista") {
+            return "painel-loja.html";
+        }
+
+        // Compatibilidade com contas antigas que possuem loja, mas ainda
+        // não tiveram tipo_usuario atualizado para lojista.
+        const { data: loja, error: lojaError } = await window.db
+            .from("lojas")
+            .select("id")
+            .eq("proprietario_id", usuario.id)
+            .limit(1)
+            .maybeSingle();
+
+        if (lojaError) {
+            console.warn("Não foi possível verificar a loja do usuário:", lojaError);
+        }
+
+        if (loja?.id) {
+            return "painel-loja.html";
+        }
+    } catch (erro) {
+        console.warn("Falha ao determinar o destino pelo perfil:", erro);
+    }
+
+    // Cliente ou falha temporária de consulta segue para o perfil comum.
     return "perfil.html";
 }
+
+window.obterDestinoAposLogin = obterDestinoAposLogin;
 
 // ==========================================
 // LOGIN

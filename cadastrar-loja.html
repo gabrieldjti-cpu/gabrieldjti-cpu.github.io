@@ -101,9 +101,18 @@
 
                         <img
                             id="preview-logo"
-                            src="img/loja.png"
                             alt="Prévia da logo da loja"
+                            hidden
                         >
+
+                        <div
+                            id="preview-logo-placeholder"
+                            class="logo-preview-placeholder"
+                            aria-hidden="true"
+                        >
+                            <i class="fa-solid fa-store"></i>
+                            <span>Prévia da logo</span>
+                        </div>
 
                     </div>
 
@@ -383,7 +392,7 @@
 
     <!-- SUPABASE -->
     <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4">
     </script>
 
 

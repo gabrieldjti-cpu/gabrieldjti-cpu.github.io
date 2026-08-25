@@ -250,18 +250,27 @@ Hardening já aplicado:
 7. `20260819175053_rf04_enderecos_cliente.sql`
 8. `20260819180010_rf04_exigir_endereco_checkout.sql`
 9. `20260820130058_rf04_foto_soft_delete_conta.sql`
+10. `20260821130500_aprovacao_lojas_admin.sql`
+11. `20260822120000_rf16_alertas_estoque.sql`
+12. `20260822153500_hardening_rls_indices.sql`
+13. `20260822155000_otimiza_policies_rls.sql`
 
 ## Próximas prioridades do MVP
 
-1. aprovação básica de lojas e dashboard administrativo;
-2. alertas de estoque baixo;
-3. paginação das demais listagens maiores que 20 registros;
-4. revisão geral de RLS/policies duplicadas e índices de foreign keys;
-5. concluir os testes pendentes dos demais requisitos já implementados.
+As prioridades antigas de aprovação de lojas, estoque baixo, paginação e hardening já foram integradas à `main`.
+
+Prioridades atuais:
+
+1. concluir os testes autenticados de checkout, cancelamento e ciclo de pedidos;
+2. validar recuperação de senha com e-mail real e Redirect URLs de produção;
+3. finalizar os testes complementares do dashboard administrativo;
+4. implementar pesquisa global básica de produtos;
+5. gerar a baseline oficial do schema remoto com `supabase db pull`;
+6. iniciar testes automatizados dos fluxos críticos.
 
 ## Integração com `main`
 
-A evolução realizada na branch `feat/concluir-mvp-prd` já foi integrada à `main` pela PR #4.
+A evolução realizada na branch `feat/concluir-mvp-prd` e as etapas posteriores de aprovação, estoque, paginação e hardening já foram integradas à `main`.
 
 Ainda permanecem pendentes no MVP:
 
@@ -269,4 +278,5 @@ Ainda permanecem pendentes no MVP:
 - testes autenticados completos de cliente/lojista;
 - validação pública da resposta de avaliação;
 - testes do RF-12;
-- revisão do diff grande herdado de `js/painel-loja.js`.
+- baseline inicial reproduzível do banco;
+- pesquisa global básica de produtos.

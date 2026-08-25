@@ -938,11 +938,12 @@ function criarCardProduto(
                     class="btn-excluir"
                     data-produto-id="${id}"
                     onclick="excluirProduto('${id}')"
+                    ${produto.ativo ? "" : "disabled"}
                 >
 
-                    <i class="fa-solid fa-trash"></i>
+                    <i class="fa-solid fa-eye-slash"></i>
 
-                    Excluir
+                    ${produto.ativo ? "Desativar" : "Inativo"}
 
                 </button>
 
@@ -1209,7 +1210,7 @@ async function excluirProduto(
 
 
         notificar(
-            "Não foi possível abrir a confirmação de exclusão.",
+            "Não foi possível abrir a confirmação de desativação.",
             "erro",
             "Erro na confirmação"
         );
@@ -1224,19 +1225,19 @@ async function excluirProduto(
         await window.confirmarAcao({
 
             titulo:
-                "Excluir produto?",
+                "Desativar produto?",
 
             mensagem:
-                `Deseja realmente excluir "${nomeProduto}"? Essa ação não poderá ser desfeita.`,
+                `Deseja desativar "${nomeProduto}"? Ele sairá do catálogo público, mas continuará salvo para preservar pedidos e históricos.`,
 
             textoConfirmar:
-                "Sim, excluir",
+                "Sim, desativar",
 
             textoCancelar:
                 "Cancelar",
 
             perigo:
-                true
+                false
 
         });
 
@@ -1272,7 +1273,7 @@ async function excluirProduto(
 
             <i class="fa-solid fa-spinner fa-spin"></i>
 
-            Excluindo...
+            Desativando...
 
         `;
 
@@ -1282,6 +1283,7 @@ async function excluirProduto(
     try {
 
         const {
+            data,
             error
         } =
             await window.db
@@ -1290,7 +1292,9 @@ async function excluirProduto(
                     "produtos"
                 )
 
-                .delete()
+                .update({
+                    ativo: false
+                })
 
                 .eq(
                     "id",
@@ -1300,7 +1304,13 @@ async function excluirProduto(
                 .eq(
                     "loja_id",
                     loja.id
-                );
+                )
+
+                .select(
+                    "id,ativo"
+                )
+
+                .maybeSingle();
 
 
         if (error) {
@@ -1310,14 +1320,23 @@ async function excluirProduto(
         }
 
 
+        if (!data) {
+
+            throw new Error(
+                "Produto não encontrado ou sem permissão para alteração."
+            );
+
+        }
+
+
         // ==================================
         // SUCESSO
         // ==================================
 
         notificar(
-            `"${nomeProduto}" foi excluído com sucesso.`,
+            `"${nomeProduto}" foi desativado e removido do catálogo público.`,
             "sucesso",
-            "Produto excluído!",
+            "Produto desativado",
             3000
         );
 
@@ -1332,7 +1351,7 @@ async function excluirProduto(
     } catch (erro) {
 
         console.error(
-            "Erro ao excluir produto:",
+            "Erro ao desativar produto:",
             erro
         );
 
@@ -1342,7 +1361,7 @@ async function excluirProduto(
                 erro
             ),
             "erro",
-            "Não foi possível excluir",
+            "Não foi possível desativar",
             5000
         );
 
@@ -1357,9 +1376,9 @@ async function excluirProduto(
                 conteudoOriginal ||
                 `
 
-                    <i class="fa-solid fa-trash"></i>
+                    <i class="fa-solid fa-eye-slash"></i>
 
-                    Excluir
+                    Desativar
 
                 `;
 

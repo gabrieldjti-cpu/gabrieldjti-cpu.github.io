@@ -429,9 +429,10 @@ function criarCardProduto(produto) {
                     type="button"
                     class="btn-excluir"
                     onclick="excluirProduto('${id}', '${escaparJS(produto.nome || "Produto")}')"
+                    ${produto.ativo ? "" : "disabled"}
                 >
-                    <i class="fa-solid fa-trash"></i>
-                    Excluir
+                    <i class="fa-solid fa-eye-slash"></i>
+                    ${produto.ativo ? "Desativar" : "Inativo"}
                 </button>
             </div>
         </div>
@@ -484,7 +485,7 @@ function editarProduto(id) {
 }
 
 // ==========================================
-// EXCLUIR PRODUTO
+// DESATIVAR PRODUTO
 // ==========================================
 
 async function excluirProduto(id, nomeProduto = "Produto") {
@@ -517,28 +518,36 @@ async function excluirProduto(id, nomeProduto = "Produto") {
     }
 
     const confirmou = await window.confirmarAcao({
-        titulo: "Excluir produto?",
-        mensagem: `Deseja realmente excluir "${nomeProduto}"? Essa ação não poderá ser desfeita.`,
-        textoConfirmar: "Sim, excluir",
+        titulo: "Desativar produto?",
+        mensagem: `Deseja desativar "${nomeProduto}"? Ele sairá do catálogo público, mas continuará salvo para preservar pedidos e históricos.`,
+        textoConfirmar: "Sim, desativar",
         textoCancelar: "Cancelar",
-        perigo: true
+        perigo: false
     });
 
     if (!confirmou) return;
 
     try {
-        const { error } = await window.db
+        const { data, error } = await window.db
             .from("produtos")
-            .delete()
+            .update({ ativo: false })
             .eq("id", id)
-            .eq("loja_id", loja.id);
+            .eq("loja_id", loja.id)
+            .select("id,ativo")
+            .maybeSingle();
 
         if (error) throw error;
 
+        if (!data) {
+            throw new Error(
+                "Produto não encontrado ou sem permissão para alteração."
+            );
+        }
+
         notificar(
-            `"${nomeProduto}" foi excluído com sucesso.`,
+            `"${nomeProduto}" foi desativado e removido do catálogo público.`,
             "sucesso",
-            "Produto excluído!",
+            "Produto desativado",
             3000
         );
 
@@ -546,11 +555,11 @@ async function excluirProduto(id, nomeProduto = "Produto") {
         await carregarEstatisticas();
 
     } catch (erro) {
-        console.error("Erro ao excluir produto:", erro);
+        console.error("Erro ao desativar produto:", erro);
         notificar(
             tratarErroPainel(erro),
             "erro",
-            "Não foi possível excluir",
+            "Não foi possível desativar",
             5000
         );
     }

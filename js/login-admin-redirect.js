@@ -1,9 +1,9 @@
 // ==========================================
 // LOGIN-ADMIN-REDIRECT.JS
-// Redireciona admin que já chegou autenticado ao login
+// Redireciona uma sessão já autenticada conforme o perfil
 // ==========================================
 
-async function verificarRedirecionamentoAdmin() {
+async function verificarRedirecionamentoPorPerfil() {
     if (!window.db) return;
 
     try {
@@ -20,32 +20,28 @@ async function verificarRedirecionamentoAdmin() {
             if (ativa === false) return;
         }
 
-        const { data: admin, error } = await window.db.rpc("sou_admin");
-
-        if (error) {
-            console.warn(
-                "Não foi possível verificar redirecionamento administrativo:",
-                error
-            );
+        if (typeof window.obterDestinoAposLogin !== "function") {
             return;
         }
 
-        if (admin === true) {
-            window.location.replace("admin-dashboard.html");
+        const destino = await window.obterDestinoAposLogin();
+
+        if (destino) {
+            window.location.replace(destino);
         }
     } catch (erro) {
-        console.warn("Falha ao verificar destino administrativo:", erro);
+        console.warn("Falha ao verificar destino da sessão:", erro);
     }
 }
 
 function iniciarRedirecionamentoAdminLogin() {
     if (!window.db) return;
 
-    // Este script cuida apenas do caso em que o usuário já chega à
-    // página de login com uma sessão admin existente.
+    // Este script cuida do caso em que o usuário já chega à página de
+    // login com uma sessão existente.
     // O redirecionamento após enviar o formulário é responsabilidade
     // exclusiva de login.js, evitando dois scripts disputando o destino.
-    verificarRedirecionamentoAdmin();
+    verificarRedirecionamentoPorPerfil();
 }
 
 window.iniciarRedirecionamentoAdminLogin = iniciarRedirecionamentoAdminLogin;
