@@ -18,7 +18,7 @@
         categoriaId: "",
         lojaId: "",
         disponibilidade: "",
-        ordenacao: "destaques"
+        ordenacao: "relevancia"
     };
 
     const elementos = {};
@@ -205,56 +205,25 @@
         mostrarCarregamentoSugestoes();
 
         try {
-            let consulta = window.db
-                .from("produtos")
-                .select(`
-                    id,
-                    loja_id,
-                    nome,
-                    preco,
-                    preco_promocional,
-                    estoque,
-                    imagem_url,
-                    destaque,
-                    lojas!inner(
-                        id,
-                        nome,
-                        ativa,
-                        status_aprovacao
-                    )
-                `)
-                .eq("ativo", true)
-                .eq("lojas.ativa", true)
-                .eq("lojas.status_aprovacao", "aprovada")
-                .ilike("nome", `%${termo}%`);
-
             const categoriaId = String(elementos.categoria?.value || "");
             const lojaId = String(elementos.loja?.value || "");
             const disponibilidade = String(elementos.disponibilidade?.value || "");
 
-            if (categoriaId) {
-                consulta = consulta.eq("categoria_id", Number(categoriaId));
-            }
-
-            if (lojaId) {
-                consulta = consulta.eq("loja_id", lojaId);
-            }
-
-            if (disponibilidade === "estoque") {
-                consulta = consulta.gt("estoque", 0);
-            } else if (disponibilidade === "esgotado") {
-                consulta = consulta.eq("estoque", 0);
-            }
-
-            const { data, error } = await consulta
-                .order("destaque", { ascending: false })
-                .order("nome", { ascending: true })
-                .limit(LIMITE_AUTOCOMPLETE);
+            const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
+                p_termo: termo,
+                p_categoria_id: categoriaId ? Number(categoriaId) : null,
+                p_loja_id: lojaId || null,
+                p_categoria_loja_id: null,
+                p_disponibilidade: disponibilidade || null,
+                p_ordenacao: "relevancia",
+                p_limite: LIMITE_AUTOCOMPLETE,
+                p_offset: 0
+            });
 
             if (consultaAtual !== numeroConsultaSugestoes) return;
             if (error) throw error;
 
-            renderizarSugestoes(Array.isArray(data) ? data : [], termo);
+            renderizarSugestoes(adaptarProdutosDaBusca(data), termo);
         } catch (erro) {
             if (consultaAtual !== numeroConsultaSugestoes) return;
 
@@ -379,6 +348,32 @@
         const produtoId = produto.id || "";
 
         return `loja.html?id=${encodeURIComponent(lojaId)}&produto=${encodeURIComponent(produtoId)}`;
+    }
+
+    function adaptarProdutosDaBusca(dados) {
+        if (!Array.isArray(dados)) return [];
+
+        return dados.map(produto => ({
+            ...produto,
+            categorias_produtos: produto.categoria_produto_id
+                ? {
+                    id: produto.categoria_produto_id,
+                    nome: produto.categoria_produto_nome
+                }
+                : null,
+            lojas: {
+                id: produto.loja_id,
+                nome: produto.loja_nome,
+                cidade: produto.loja_cidade,
+                logo_url: produto.loja_logo_url,
+                categoria_id: produto.loja_categoria_id
+            }
+        }));
+    }
+
+    function obterTotalDaBusca(produtos) {
+        const total = Number(produtos[0]?.total_count);
+        return Number.isFinite(total) ? total : 0;
     }
 
     function configurarErrosDeImagemSugestoes() {
@@ -595,67 +590,23 @@
         mostrarCarregamento();
 
         const inicio = (estado.pagina - 1) * TAMANHO_PAGINA;
-        const fim = inicio + TAMANHO_PAGINA - 1;
-
         try {
-            let consulta = window.db
-                .from("produtos")
-                .select(`
-                    id,
-                    loja_id,
-                    categoria_id,
-                    nome,
-                    descricao,
-                    preco,
-                    preco_promocional,
-                    estoque,
-                    imagem_url,
-                    destaque,
-                    created_at,
-                    categorias_produtos!categoria_id(
-                        id,
-                        nome
-                    ),
-                    lojas!inner(
-                        id,
-                        nome,
-                        cidade,
-                        logo_url,
-                        ativa,
-                        status_aprovacao
-                    )
-                `, { count: "exact" })
-                .eq("ativo", true)
-                .eq("lojas.ativa", true)
-                .eq("lojas.status_aprovacao", "aprovada");
-
-            if (estado.termo) {
-                consulta = consulta.ilike("nome", `%${estado.termo}%`);
-            }
-
-            if (estado.categoriaId) {
-                consulta = consulta.eq("categoria_id", Number(estado.categoriaId));
-            }
-
-            if (estado.lojaId) {
-                consulta = consulta.eq("loja_id", estado.lojaId);
-            }
-
-            if (estado.disponibilidade === "estoque") {
-                consulta = consulta.gt("estoque", 0);
-            } else if (estado.disponibilidade === "esgotado") {
-                consulta = consulta.eq("estoque", 0);
-            }
-
-            consulta = aplicarOrdenacao(consulta).range(inicio, fim);
-
-            const { data, error, count } = await consulta;
+            const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
+                p_termo: estado.termo,
+                p_categoria_id: estado.categoriaId ? Number(estado.categoriaId) : null,
+                p_loja_id: estado.lojaId || null,
+                p_categoria_loja_id: null,
+                p_disponibilidade: estado.disponibilidade || null,
+                p_ordenacao: estado.ordenacao,
+                p_limite: TAMANHO_PAGINA,
+                p_offset: inicio
+            });
 
             if (consultaAtual !== numeroConsulta) return;
             if (error) throw error;
 
-            const produtos = Array.isArray(data) ? data : [];
-            estado.total = Number.isFinite(Number(count)) ? Number(count) : produtos.length;
+            const produtos = adaptarProdutosDaBusca(data);
+            estado.total = obterTotalDaBusca(produtos);
 
             const totalPaginas = Math.max(1, Math.ceil(estado.total / TAMANHO_PAGINA));
             if (estado.pagina > totalPaginas) {
@@ -680,33 +631,18 @@
         }
     }
 
-    function aplicarOrdenacao(consulta) {
-        switch (estado.ordenacao) {
-            case "nome":
-                return consulta.order("nome", { ascending: true });
-            case "menor-preco":
-                return consulta.order("preco", { ascending: true }).order("nome", { ascending: true });
-            case "maior-preco":
-                return consulta.order("preco", { ascending: false }).order("nome", { ascending: true });
-            case "recentes":
-                return consulta.order("created_at", { ascending: false }).order("nome", { ascending: true });
-            default:
-                return consulta.order("destaque", { ascending: false }).order("nome", { ascending: true });
-        }
-    }
-
     function sincronizarEstadoComCampos() {
         estado.termo = sanitizarTermo(elementos.pesquisa?.value);
         estado.categoriaId = String(elementos.categoria?.value || "");
         estado.lojaId = String(elementos.loja?.value || "");
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
-        estado.ordenacao = String(elementos.ordenacao?.value || "destaques");
+        estado.ordenacao = String(elementos.ordenacao?.value || "relevancia");
     }
 
     function sanitizarTermo(valor) {
         return String(valor || "")
             .slice(0, LIMITE_TERMO)
-            .replace(/[%_]/g, " ")
+            .replace(/[%_\\]/g, " ")
             .replace(/\s+/g, " ")
             .trim();
     }
@@ -947,7 +883,7 @@
         if (elementos.categoria) elementos.categoria.value = "";
         if (elementos.loja) elementos.loja.value = "";
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
-        if (elementos.ordenacao) elementos.ordenacao.value = "destaques";
+        if (elementos.ordenacao) elementos.ordenacao.value = "relevancia";
 
         estado.pagina = 1;
         ignorarEventoPesquisa = true;
@@ -963,7 +899,7 @@
         const categoria = String(params.get("categoria_produto") || "");
         const loja = String(params.get("loja_produto") || "");
         const disponibilidade = String(params.get("disponibilidade") || "");
-        const ordenacao = String(params.get("ordenacao") || "destaques");
+        const ordenacao = String(params.get("ordenacao") || "relevancia");
 
         if (elementos.pesquisa && termo) elementos.pesquisa.value = termo;
         estado.categoriaId = /^\d+$/.test(categoria) ? categoria : "";
@@ -971,9 +907,9 @@
         estado.disponibilidade = ["estoque", "esgotado"].includes(disponibilidade)
             ? disponibilidade
             : "";
-        estado.ordenacao = ["destaques", "nome", "menor-preco", "maior-preco", "recentes"].includes(ordenacao)
+        estado.ordenacao = ["relevancia", "destaques", "nome", "menor-preco", "maior-preco", "recentes"].includes(ordenacao)
             ? ordenacao
-            : "destaques";
+            : "relevancia";
 
         if (elementos.disponibilidade) elementos.disponibilidade.value = estado.disponibilidade;
         if (elementos.ordenacao) elementos.ordenacao.value = estado.ordenacao;
@@ -986,7 +922,7 @@
         atualizarParametro(url, "categoria_produto", estado.categoriaId);
         atualizarParametro(url, "loja_produto", estado.lojaId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
-        atualizarParametro(url, "ordenacao", estado.ordenacao === "destaques" ? "" : estado.ordenacao);
+        atualizarParametro(url, "ordenacao", estado.ordenacao === "relevancia" ? "" : estado.ordenacao);
 
         window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
     }
