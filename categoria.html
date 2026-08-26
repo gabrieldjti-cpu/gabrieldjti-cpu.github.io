@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore lojas e produtos de uma categoria no Comércio da Cidade." />
+  <title>Categoria | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css" />
+  <link rel="stylesheet" href="components/feedback.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/pesquisa-global.css" />
+  <link rel="stylesheet" href="css/categoria.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+</head>
+
+<body class="pagina-categoria">
+  <div id="header"></div>
+
+  <main class="categoria-main">
+    <nav class="categoria-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html">
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        Início
+      </a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <a href="index.html#categorias">Categorias</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span id="breadcrumb-categoria">Carregando...</span>
+    </nav>
+
+    <section class="categoria-hero" aria-labelledby="titulo-categoria">
+      <div class="categoria-hero-conteudo">
+        <span id="icone-categoria" class="categoria-hero-icone" aria-hidden="true">
+          <i class="fa-solid fa-layer-group"></i>
+        </span>
+
+        <div class="categoria-hero-texto">
+          <span class="categoria-hero-selo">Explore o comércio local</span>
+          <h1 id="titulo-categoria">Carregando categoria...</h1>
+          <p id="descricao-categoria">
+            Encontre lojas e produtos desta categoria em um só lugar.
+          </p>
+        </div>
+      </div>
+
+      <div class="categoria-resumo" aria-label="Resumo da categoria">
+        <div>
+          <strong id="resumo-lojas">—</strong>
+          <span>Lojas</span>
+        </div>
+        <div>
+          <strong id="resumo-produtos">—</strong>
+          <span>Produtos</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="categoria-navegacao" aria-labelledby="titulo-outras-categorias">
+      <div>
+        <span class="secao-eyebrow">Continue explorando</span>
+        <h2 id="titulo-outras-categorias">Outras categorias</h2>
+      </div>
+
+      <div id="atalhos-categorias" class="atalhos-categorias" aria-label="Escolher outra categoria">
+        <span class="atalhos-carregando">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          Carregando categorias...
+        </span>
+      </div>
+    </section>
+
+    <section class="categoria-secao" id="lojas-categoria" aria-labelledby="titulo-lojas-categoria">
+      <div class="categoria-secao-cabecalho">
+        <div>
+          <span class="secao-eyebrow">Comerciantes</span>
+          <h2 id="titulo-lojas-categoria">Lojas da categoria</h2>
+          <p>Conheça os estabelecimentos disponíveis e acesse seus catálogos.</p>
+        </div>
+        <span id="total-lojas-categoria" class="total-produtos-badge" aria-live="polite"></span>
+      </div>
+
+      <div id="lista-lojas-categoria" class="categoria-grade-lojas" aria-live="polite" aria-busy="true">
+        <div class="categoria-estado">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          <h3>Carregando lojas...</h3>
+          <p>Estamos buscando os estabelecimentos desta categoria.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="categoria-secao" id="produtos-categoria" aria-labelledby="titulo-produtos-categoria">
+      <div class="categoria-secao-cabecalho">
+        <div>
+          <span class="secao-eyebrow">Catálogo</span>
+          <h2 id="titulo-produtos-categoria">Produtos da categoria</h2>
+          <p>Pesquise e compare os produtos das lojas desta categoria.</p>
+        </div>
+        <span id="total-produtos-categoria" class="total-produtos-badge" aria-live="polite"></span>
+      </div>
+
+      <form id="filtros-categoria" class="categoria-filtros" role="search">
+        <div class="categoria-campo categoria-campo-pesquisa">
+          <label for="pesquisa-produtos-categoria">Pesquisar produtos</label>
+          <div class="categoria-pesquisa">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="pesquisa-produtos-categoria"
+              placeholder="Digite o nome do produto..."
+              autocomplete="off"
+              maxlength="80"
+            />
+          </div>
+        </div>
+
+        <div class="categoria-campo">
+          <label for="disponibilidade-categoria">Disponibilidade</label>
+          <select id="disponibilidade-categoria">
+            <option value="">Todos</option>
+            <option value="estoque">Em estoque</option>
+            <option value="esgotado">Sem estoque</option>
+          </select>
+        </div>
+
+        <div class="categoria-campo">
+          <label for="ordenacao-categoria">Ordenar por</label>
+          <select id="ordenacao-categoria">
+            <option value="destaques">Destaques</option>
+            <option value="nome">Nome</option>
+            <option value="menor-preco">Menor preço regular</option>
+            <option value="maior-preco">Maior preço regular</option>
+            <option value="recentes">Mais recentes</option>
+          </select>
+        </div>
+
+        <button type="button" id="limpar-filtros-categoria" class="categoria-limpar">
+          <i class="fa-solid fa-eraser" aria-hidden="true"></i>
+          Limpar
+        </button>
+      </form>
+
+      <div id="lista-produtos-categoria" class="grade-produtos-globais" aria-live="polite" aria-busy="true">
+        <div class="estado-produtos-globais">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          <h3>Carregando produtos...</h3>
+          <p>Estamos preparando o catálogo desta categoria.</p>
+        </div>
+      </div>
+
+      <nav
+        id="paginacao-categoria"
+        class="paginacao-produtos-globais"
+        aria-label="Paginação dos produtos da categoria"
+        hidden
+      ></nav>
+    </section>
+
+    <section id="categoria-invalida" class="categoria-invalida" hidden>
+      <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+      <h1>Categoria não encontrada</h1>
+      <p>Escolha uma categoria válida para continuar explorando o comércio local.</p>
+      <a href="index.html#categorias">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Voltar às categorias
+      </a>
+    </section>
+  </main>
+
+  <footer class="footer-home">
+    <div class="footer-home-container">
+      <div class="footer-marca">
+        <div class="footer-logo">
+          <i class="fa-solid fa-store" aria-hidden="true"></i>
+          <strong>Comércio da Cidade</strong>
+        </div>
+        <p>Conectando pessoas aos comércios da própria cidade.</p>
+      </div>
+
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
+        <a href="index.html#categorias">Categorias</a>
+        <a href="index.html#produtos-globais">Produtos</a>
+        <a href="index.html#lojas">Lojas</a>
+        <a href="cadastrar-loja.html">Cadastrar loja</a>
+      </nav>
+    </div>
+
+    <div class="footer-copyright">
+      <p>© 2026 Comércio da Cidade. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="js/categoria.js"></script>
+</body>
+</html>

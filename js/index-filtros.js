@@ -80,12 +80,16 @@
 
         botoes.forEach(botao => {
             botao.addEventListener("click", () => {
+                if (botao.matches("a[href]")) return;
+
                 categoriaAtiva = botao.dataset.categoria || "";
 
                 botoes.forEach(item => {
                     const ativo = item === botao;
                     item.classList.toggle("ativo", ativo);
-                    item.setAttribute("aria-pressed", ativo ? "true" : "false");
+                    if (item.matches("button")) {
+                        item.setAttribute("aria-pressed", ativo ? "true" : "false");
+                    }
                 });
 
                 aplicarFiltrosHome();
