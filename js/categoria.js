@@ -13,6 +13,8 @@
         categoriaId: null,
         categoria: null,
         termo: "",
+        categoriaProdutoId: "",
+        subcategoriaProdutoId: "",
         disponibilidade: "",
         ordenacao: "relevancia",
         pagina: 1,
@@ -22,6 +24,7 @@
     const elementos = {};
     let temporizadorPesquisa = null;
     let numeroConsultaProdutos = 0;
+    let categoriasProdutos = [];
 
     document.addEventListener("DOMContentLoaded", iniciarPaginaCategoria);
 
@@ -52,6 +55,8 @@
         const categoriaCarregada = await carregarCategoria();
         if (!categoriaCarregada) return;
 
+        await carregarCategoriasProdutos();
+
         await Promise.allSettled([
             carregarAtalhosCategorias(),
             carregarLojasCategoria(),
@@ -72,6 +77,8 @@
         elementos.totalLojas = document.getElementById("total-lojas-categoria");
         elementos.formulario = document.getElementById("filtros-categoria");
         elementos.pesquisa = document.getElementById("pesquisa-produtos-categoria");
+        elementos.categoriaProduto = document.getElementById("categoria-produto-categoria");
+        elementos.subcategoriaProduto = document.getElementById("subcategoria-produto-categoria");
         elementos.disponibilidade = document.getElementById("disponibilidade-categoria");
         elementos.ordenacao = document.getElementById("ordenacao-categoria");
         elementos.limpar = document.getElementById("limpar-filtros-categoria");
@@ -102,7 +109,18 @@
             executarPesquisaImediata();
         });
 
-        [elementos.disponibilidade, elementos.ordenacao].forEach(campo => {
+        elementos.categoriaProduto?.addEventListener("change", () => {
+            estado.pagina = 1;
+            estado.subcategoriaProdutoId = "";
+            preencherSubcategoriasProdutos(elementos.categoriaProduto.value);
+            buscarProdutosCategoria();
+        });
+
+        [
+            elementos.subcategoriaProduto,
+            elementos.disponibilidade,
+            elementos.ordenacao
+        ].forEach(campo => {
             campo?.addEventListener("change", () => {
                 estado.pagina = 1;
                 buscarProdutosCategoria();
@@ -178,6 +196,85 @@
             );
             return false;
         }
+    }
+
+    async function carregarCategoriasProdutos() {
+        if (!elementos.categoriaProduto) return;
+
+        elementos.categoriaProduto.disabled = true;
+
+        try {
+            const { data, error } = await window.db
+                .from("categorias_produtos")
+                .select("id,nome,categoria_pai_id")
+                .eq("ativa", true)
+                .order("nome", { ascending: true });
+
+            if (error) throw error;
+
+            categoriasProdutos = Array.isArray(data) ? data : [];
+            const categoriasRaiz = categoriasProdutos.filter(
+                categoria => categoria.categoria_pai_id === null
+            );
+
+            preencherSelect(
+                elementos.categoriaProduto,
+                categoriasRaiz,
+                "Todas as categorias"
+            );
+
+            elementos.categoriaProduto.value = estado.categoriaProdutoId;
+            if (!elementos.categoriaProduto.value) estado.categoriaProdutoId = "";
+            elementos.categoriaProduto.disabled = false;
+
+            preencherSubcategoriasProdutos(
+                estado.categoriaProdutoId,
+                estado.subcategoriaProdutoId
+            );
+        } catch (erro) {
+            console.warn("Não foi possível carregar as categorias dos produtos:", erro);
+            elementos.categoriaProduto.disabled = false;
+        }
+    }
+
+    function preencherSubcategoriasProdutos(categoriaId, selecionada = "") {
+        if (!elementos.subcategoriaProduto) return;
+
+        const paiId = Number(categoriaId);
+        const subcategorias = Number.isSafeInteger(paiId) && paiId > 0
+            ? categoriasProdutos.filter(
+                categoria => Number(categoria.categoria_pai_id) === paiId
+            )
+            : [];
+
+        preencherSelect(
+            elementos.subcategoriaProduto,
+            subcategorias,
+            "Todas as subcategorias"
+        );
+
+        elementos.subcategoriaProduto.disabled = subcategorias.length === 0;
+        elementos.subcategoriaProduto.value = String(selecionada || "");
+
+        if (!elementos.subcategoriaProduto.value) {
+            estado.subcategoriaProdutoId = "";
+        }
+    }
+
+    function preencherSelect(select, itens, textoInicial) {
+        select.replaceChildren();
+
+        const inicial = document.createElement("option");
+        inicial.value = "";
+        inicial.textContent = textoInicial;
+        select.appendChild(inicial);
+
+        itens.forEach(item => {
+            const option = document.createElement("option");
+            option.value = String(item.id ?? "");
+            option.textContent = String(item.nome || "Sem nome");
+            select.appendChild(option);
+        });
     }
 
     function atualizarCabecalhoCategoria() {
@@ -388,7 +485,11 @@
         try {
             const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
                 p_termo: estado.termo,
-                p_categoria_id: null,
+                p_categoria_id: estado.subcategoriaProdutoId
+                    ? Number(estado.subcategoriaProdutoId)
+                    : (estado.categoriaProdutoId
+                        ? Number(estado.categoriaProdutoId)
+                        : null),
                 p_loja_id: null,
                 p_categoria_loja_id: estado.categoriaId,
                 p_disponibilidade: estado.disponibilidade || null,
@@ -438,6 +539,10 @@
 
     function sincronizarFiltros() {
         estado.termo = sanitizarTermo(elementos.pesquisa?.value);
+        estado.categoriaProdutoId = String(elementos.categoriaProduto?.value || "");
+        estado.subcategoriaProdutoId = String(
+            elementos.subcategoriaProduto?.value || ""
+        );
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
         estado.ordenacao = String(elementos.ordenacao?.value || "relevancia");
     }
@@ -483,7 +588,12 @@
         elementos.listaProdutos.setAttribute("aria-busy", "false");
 
         if (!produtos.length) {
-            const temFiltro = Boolean(estado.termo || estado.disponibilidade);
+            const temFiltro = Boolean(
+                estado.termo
+                || estado.categoriaProdutoId
+                || estado.subcategoriaProdutoId
+                || estado.disponibilidade
+            );
 
             elementos.listaProdutos.innerHTML = `
                 <div class="estado-produtos-globais">
@@ -707,6 +817,10 @@
         numeroConsultaProdutos += 1;
 
         if (elementos.pesquisa) elementos.pesquisa.value = "";
+        if (elementos.categoriaProduto) elementos.categoriaProduto.value = "";
+        estado.categoriaProdutoId = "";
+        estado.subcategoriaProdutoId = "";
+        preencherSubcategoriasProdutos("");
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
         if (elementos.ordenacao) elementos.ordenacao.value = "relevancia";
 
@@ -717,10 +831,18 @@
     function restaurarFiltrosDaURL() {
         const params = new URLSearchParams(window.location.search);
         const termo = sanitizarTermo(params.get("q"));
+        const categoriaProduto = String(params.get("categoria_produto") || "");
+        const subcategoriaProduto = String(params.get("subcategoria_produto") || "");
         const disponibilidade = String(params.get("disponibilidade") || "");
         const ordenacao = String(params.get("ordenacao") || "relevancia");
         const pagina = Number(params.get("pagina") || 1);
 
+        estado.categoriaProdutoId = /^\d+$/.test(categoriaProduto)
+            ? categoriaProduto
+            : "";
+        estado.subcategoriaProdutoId = /^\d+$/.test(subcategoriaProduto)
+            ? subcategoriaProduto
+            : "";
         estado.disponibilidade = ["estoque", "esgotado"].includes(disponibilidade)
             ? disponibilidade
             : "";
@@ -740,6 +862,8 @@
         const url = new URL(window.location.href);
 
         atualizarParametro(url, "q", estado.termo);
+        atualizarParametro(url, "categoria_produto", estado.categoriaProdutoId);
+        atualizarParametro(url, "subcategoria_produto", estado.subcategoriaProdutoId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
         atualizarParametro(
             url,

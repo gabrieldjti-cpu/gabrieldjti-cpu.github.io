@@ -389,6 +389,17 @@ section h2 {
     padding: 18px;
 }
 
+.produto-categoria {
+    width: fit-content;
+    margin-bottom: 9px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--loja-primary-soft);
+    color: var(--loja-primary-dark);
+    font-size: 10px;
+    font-weight: 800;
+}
+
 .produto h3 {
     color: var(--loja-text);
     font-size: 18px;

@@ -7,6 +7,8 @@ let lojaId = null;
 
 let novaImagem = null;
 
+let categoriasProdutos = [];
+
 
 // ==========================================
 // INICIAR PÁGINA
@@ -357,7 +359,12 @@ async function carregarCategorias() {
                 )
 
                 .select(
-                    "id,nome"
+                    "id,nome,categoria_pai_id"
+                )
+
+                .eq(
+                    "ativa",
+                    true
                 )
 
                 .order(
@@ -376,10 +383,17 @@ async function carregarCategorias() {
         }
 
 
-        const categorias =
+        categoriasProdutos =
             Array.isArray(data)
                 ? data
                 : [];
+
+
+        const categorias =
+            categoriasProdutos.filter(
+                categoria =>
+                    categoria.categoria_pai_id === null
+            );
 
 
         if (
@@ -449,6 +463,19 @@ async function carregarCategorias() {
             false;
 
 
+        select.addEventListener(
+            "change",
+            () => carregarSubcategorias(
+                select.value
+            )
+        );
+
+
+        carregarSubcategorias(
+            ""
+        );
+
+
     } catch (erro) {
 
         console.error(
@@ -479,6 +506,98 @@ async function carregarCategorias() {
         );
 
     }
+
+}
+
+
+// ==========================================
+// CARREGAR SUBCATEGORIAS
+// ==========================================
+
+function carregarSubcategorias(
+    categoriaId,
+    subcategoriaSelecionada = ""
+) {
+
+    const select =
+        document.getElementById(
+            "subcategoria"
+        );
+
+
+    if (!select) {
+
+        return;
+
+    }
+
+
+    const paiId =
+        Number(
+            categoriaId
+        );
+
+
+    const subcategorias =
+        Number.isSafeInteger(
+            paiId
+        )
+        && paiId > 0
+            ? categoriasProdutos.filter(
+                categoria =>
+                    Number(
+                        categoria.categoria_pai_id
+                    ) === paiId
+            )
+            : [];
+
+
+    select.innerHTML = `
+
+        <option value="">
+
+            ${subcategorias.length > 0
+                ? "Sem subcategoria"
+                : "Nenhuma subcategoria disponível"}
+
+        </option>
+
+    `;
+
+
+    subcategorias.forEach(
+        subcategoria => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                subcategoria.id;
+
+
+            option.textContent =
+                subcategoria.nome;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    select.disabled =
+        subcategorias.length === 0;
+
+
+    select.value =
+        String(
+            subcategoriaSelecionada || ""
+        );
 
 }
 
@@ -750,6 +869,12 @@ async function salvarProduto(
         );
 
 
+    const subcategoria =
+        valorCampo(
+            "subcategoria"
+        );
+
+
     const precoTexto =
         valorCampo(
             "preco"
@@ -869,6 +994,37 @@ async function salvarProduto(
 
         focarCampo(
             "categoria"
+        );
+
+
+        return;
+
+    }
+
+
+    const categoriaProdutoId =
+        subcategoria ||
+        categoria;
+
+
+    if (
+        subcategoria
+        && !categoriasProdutos.some(
+            item =>
+                String(item.id) === String(subcategoria)
+                && String(item.categoria_pai_id) === String(categoria)
+        )
+    ) {
+
+        notificar(
+            "Selecione uma subcategoria válida para a categoria escolhida.",
+            "aviso",
+            "Subcategoria inválida"
+        );
+
+
+        focarCampo(
+            "subcategoria"
         );
 
 
@@ -1088,7 +1244,7 @@ async function salvarProduto(
 
             categoria_id:
                 Number(
-                    categoria
+                    categoriaProdutoId
                 ),
 
             nome,

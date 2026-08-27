@@ -265,7 +265,10 @@ async function carregarProdutos() {
             .select(`
                 *,
                 categorias_produtos!categoria_id(
-                    nome
+                    nome,
+                    categoria_pai:categorias_produtos!categoria_pai_id(
+                        nome
+                    )
                 )
             `)
             .eq("loja_id", loja.id)
@@ -338,9 +341,11 @@ function criarCardProduto(produto) {
     const descricao = escaparHTML(
         produto.descricao || "Sem descrição."
     );
-    const categoria = escaparHTML(
-        produto.categorias_produtos?.nome || "Sem categoria"
-    );
+    const categoriaProduto = produto.categorias_produtos || {};
+    const nomeCategoria = categoriaProduto.categoria_pai?.nome
+        ? `${categoriaProduto.categoria_pai.nome} › ${categoriaProduto.nome || ""}`
+        : categoriaProduto.nome;
+    const categoria = escaparHTML(nomeCategoria || "Sem categoria");
 
     const preco = Number(produto.preco || 0);
     const promocional = Number(produto.preco_promocional || 0);

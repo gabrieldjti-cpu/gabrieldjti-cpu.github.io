@@ -466,7 +466,10 @@ async function carregarProdutos() {
                 .select(`
                     *,
                     categorias_produtos!categoria_id(
-                        nome
+                        nome,
+                        categoria_pai:categorias_produtos!categoria_pai_id(
+                            nome
+                        )
                     )
                 `)
 
@@ -663,6 +666,29 @@ function renderizarProdutos(
 // CRIAR CARD DO PRODUTO
 // ==========================================
 
+function obterNomeCategoriaProduto(
+    produto
+) {
+
+    const categoria =
+        produto?.categorias_produtos ||
+        {};
+
+
+    if (
+        categoria.categoria_pai?.nome
+    ) {
+
+        return `${categoria.categoria_pai.nome} › ${categoria.nome || ""}`;
+
+    }
+
+
+    return categoria.nome || "";
+
+}
+
+
 function criarCardProduto(
     produto
 ) {
@@ -690,9 +716,9 @@ function criarCardProduto(
 
     const categoria =
         escaparHTML(
-            produto
-                .categorias_produtos
-                ?.nome ||
+            obterNomeCategoriaProduto(
+                produto
+            ) ||
             "Sem categoria"
         );
 
@@ -1076,9 +1102,9 @@ function pesquisarProdutos() {
 
                 const categoria =
                     normalizarTexto(
-                        produto
-                            .categorias_produtos
-                            ?.nome
+                        obterNomeCategoriaProduto(
+                            produto
+                        )
                     );
 
 

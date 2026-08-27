@@ -18,8 +18,8 @@ Este documento compara o PRD com o código, as migrations e os testes atualmente
 
 | Classificação | Quantidade |
 |---|---:|
-| ✅ Concluído e validado | 2 |
-| 🟡 Parcial | 17 |
+| ✅ Concluído e validado | 3 |
+| 🟡 Parcial | 16 |
 | ❌ Pendente | 4 |
 | 🔵 Fora do MVP atual | 4 |
 | **Total** | **27** |
@@ -32,10 +32,10 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 |---|---|---|
 | **RF-01 — Cadastro de Usuário** | 🟡 | Cadastro com Supabase Auth, confirmação de e-mail e perfil Cliente padrão. A senha agora exige 8 caracteres, uma letra e um número. Falta validar novamente o e-mail real de confirmação. |
 | **RF-02 — Login** | 🟡 | Login persistente e redirecionamento por perfil: cliente → perfil, lojista → painel e admin → dashboard. Conta excluída é bloqueada. Falta um fluxo administrativo genérico de bloqueio/desbloqueio. |
-| **RF-03 — Recuperação de Senha** | 🟡 | Solicitação, callback e nova senha implementados com os mesmos requisitos do cadastro. Falta teste final com e-mail real e Redirect URLs de produção. |
+| **RF-03 — Recuperação de Senha** | ✅ | Solicitação, recebimento do e-mail, callback, definição de nova senha, login e recusa de link reutilizado validados em produção. |
 | **RF-04 — Perfil** | ✅ | Nome, telefone, foto, múltiplos endereços, endereço padrão e exclusão lógica da conta implementados e validados. |
 | **RF-05 — Pesquisa** | 🟡 | Busca full-text por nome e descrição com relevância, normalização de acentos, tolerância a erros, autocomplete acessível, filtros e paginação server-side implementados. Faltam ordenações por vendas/avaliação e filtros de preço/nota. |
-| **RF-06 — Categorias** | 🟡 | Categorias de lojas e produtos existem, com página pública que reúne lojas e produtos relacionados. Faltam subcategorias e gestão de destaques pelo admin. |
+| **RF-06 — Categorias** | 🟡 | Hierarquia de categoria e subcategoria implementada no banco, cadastro/edição de produtos e filtros públicos. Falta gestão de destaques e CRUD administrativo. |
 | **RF-07 — Favoritos** | ❌ | Ainda não há tabela, página ou fluxo de favoritos. |
 | **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência local. Faltam persistência por usuário autenticado e frete estimado por loja. |
 | **RF-09 — Checkout** | 🟡 | Checkout autenticado, pagamento manual, endereço salvo e RPC segura que gera pedidos por loja. Faltam cupons e cálculo real de frete. |
@@ -44,7 +44,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-12 — Histórico** | 🟡 | Filtros por período/loja, paginação e Comprar novamente implementados. Falta executar todo o checklist de regressão. |
 | **RF-13 — Cadastro da Loja** | 🟡 | Cadastro com categoria, contato, endereço, horários e logo; loja nasce pendente e inativa. Faltam CPF/CNPJ, banner e documentos. |
 | **RF-14 — Dashboard do Lojista** | 🟡 | Métricas simples, produtos, pedidos, aprovação e alertas de estoque. Faltam gráficos, avaliação média e relatórios avançados. |
-| **RF-15 — Cadastro de Produtos** | 🟡 | Cadastro/edição, categoria, preço promocional, estoque, imagem e ativação/desativação. Faltam SKU, peso, dimensões, múltiplas imagens e duplicação. |
+| **RF-15 — Cadastro de Produtos** | 🟡 | Cadastro/edição, categoria, subcategoria, preço promocional, estoque, imagem e ativação/desativação. Faltam SKU, peso, dimensões, múltiplas imagens e duplicação. |
 | **RF-16 — Estoque** | ✅ | Quantidade, limite configurável, alertas, baixa/devolução automática e histórico de movimentações protegidos por RLS. |
 | **RF-17 — Promoções** | 🔵 | Existe preço promocional simples. Sistema de campanhas e vigência pertence à v1.1. |
 | **RF-18 — Cupons** | 🔵 | Previsto para v1.1. |
@@ -71,7 +71,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **Disponibilidade** | ❌ | Não há monitoramento de erros ou medição de SLA. |
 | **Manutenibilidade** | 🟡 | Componentes e extensões reutilizáveis existem, mas os scripts principais ainda são globais e muito grandes. |
 
-## Correções e evoluções realizadas em 24–26/08/2026
+## Correções e evoluções realizadas em 24–27/08/2026
 
 - exclusão física de produtos removida dos fluxos do painel e da listagem;
 - desativação agora usa `UPDATE ativo=false` e preserva o histórico;
@@ -86,19 +86,19 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - autocomplete da busca global com sugestões de produtos, preço, loja e navegação por teclado.
 - página global de categoria com lojas aprovadas, produtos ativos, filtros e navegação entre categorias.
 - pesquisa migrada para `tsvector` em português com índices GIN, relevância e tolerância a erros via `pg_trgm`.
+- categorias de produtos receberam auto-relacionamento, 39 subcategorias iniciais, filtros dependentes e seleção hierárquica no cadastro/edição.
 
 ## Pendências prioritárias do MVP
 
-1. Testar recuperação de senha com e-mail real e URLs de produção.
-2. Executar regressão completa de checkout, estoque, cancelamento e pedidos.
-3. Finalizar testes de aprovação/rejeição/reabertura pelo dashboard.
-4. Implementar subcategorias e os filtros/ordenações restantes do RF-05.
-5. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
-6. Adicionar testes automatizados para os fluxos críticos.
+1. Implementar filtros de preço/nota e ordenações por vendas/avaliação do RF-05.
+2. Criar gestão administrativa de categorias, subcategorias e destaques.
+3. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
+4. Adicionar testes automatizados para os fluxos críticos.
+5. Implementar favoritos conforme o RF-07.
 
 ## Versionamento do banco
 
-As 14 migrations incrementais registradas no Supabase estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 15 migrations incrementais registradas no Supabase estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 

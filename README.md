@@ -14,8 +14,8 @@ Marketplace web multi-lojas para conectar clientes e comerciantes locais em um �
 - perfil, foto e múltiplos endereços;
 - cadastro e aprovação administrativa de lojas;
 - pesquisa full-text de produtos por nome e descrição, com relevância, autocomplete, filtros e paginação;
-- páginas de categoria com lojas e produtos relacionados;
-- produtos, preço promocional e controle de estoque;
+- páginas de categoria com lojas, produtos e filtros hierárquicos;
+- produtos organizados por categoria e subcategoria, preço promocional e controle de estoque;
 - carrinho com produtos de múltiplas lojas;
 - checkout manual com endereço salvo;
 - gestão de pedidos, rastreio e cancelamento;

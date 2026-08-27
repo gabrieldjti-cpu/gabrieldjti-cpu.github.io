@@ -16,6 +16,7 @@
         total: 0,
         termo: "",
         categoriaId: "",
+        subcategoriaId: "",
         lojaId: "",
         disponibilidade: "",
         ordenacao: "relevancia"
@@ -29,6 +30,7 @@
     let ignorarEventoPesquisa = false;
     let indiceSugestaoAtiva = -1;
     let sugestoesAtuais = [];
+    let categoriasProdutos = [];
 
     document.addEventListener("DOMContentLoaded", iniciarPesquisaGlobal);
 
@@ -65,6 +67,7 @@
         elementos.statusSugestoes = document.getElementById("status-sugestoes-pesquisa");
         elementos.formulario = document.getElementById("filtros-produtos-globais");
         elementos.categoria = document.getElementById("filtro-categoria-produto");
+        elementos.subcategoria = document.getElementById("filtro-subcategoria-produto");
         elementos.loja = document.getElementById("filtro-loja-produto");
         elementos.disponibilidade = document.getElementById("filtro-disponibilidade-produto");
         elementos.ordenacao = document.getElementById("ordenacao-produtos-globais");
@@ -143,8 +146,16 @@
             }
         });
 
+        elementos.categoria?.addEventListener("change", () => {
+            estado.pagina = 1;
+            estado.subcategoriaId = "";
+            preencherSubcategorias(elementos.categoria.value);
+            fecharSugestoes();
+            buscarProdutos();
+        });
+
         [
-            elementos.categoria,
+            elementos.subcategoria,
             elementos.loja,
             elementos.disponibilidade,
             elementos.ordenacao
@@ -206,12 +217,15 @@
 
         try {
             const categoriaId = String(elementos.categoria?.value || "");
+            const subcategoriaId = String(elementos.subcategoria?.value || "");
             const lojaId = String(elementos.loja?.value || "");
             const disponibilidade = String(elementos.disponibilidade?.value || "");
 
             const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
                 p_termo: termo,
-                p_categoria_id: categoriaId ? Number(categoriaId) : null,
+                p_categoria_id: subcategoriaId
+                    ? Number(subcategoriaId)
+                    : (categoriaId ? Number(categoriaId) : null),
                 p_loja_id: lojaId || null,
                 p_categoria_loja_id: null,
                 p_disponibilidade: disponibilidade || null,
@@ -517,7 +531,7 @@
 
         const { data, error } = await window.db
             .from("categorias_produtos")
-            .select("id,nome")
+            .select("id,nome,categoria_pai_id")
             .eq("ativa", true)
             .order("nome", { ascending: true });
 
@@ -527,14 +541,45 @@
             return;
         }
 
+        categoriasProdutos = Array.isArray(data) ? data : [];
+        const categoriasRaiz = categoriasProdutos.filter(
+            categoria => categoria.categoria_pai_id === null
+        );
+
         adicionarOpcoes(
             elementos.categoria,
-            Array.isArray(data) ? data : [],
+            categoriasRaiz,
             "Todas as categorias"
         );
 
         elementos.categoria.value = estado.categoriaId;
+        if (!elementos.categoria.value) estado.categoriaId = "";
         elementos.categoria.disabled = false;
+        preencherSubcategorias(estado.categoriaId, estado.subcategoriaId);
+    }
+
+    function preencherSubcategorias(categoriaId, selecionada = "") {
+        if (!elementos.subcategoria) return;
+
+        const paiId = Number(categoriaId);
+        const subcategorias = Number.isSafeInteger(paiId) && paiId > 0
+            ? categoriasProdutos.filter(
+                categoria => Number(categoria.categoria_pai_id) === paiId
+            )
+            : [];
+
+        adicionarOpcoes(
+            elementos.subcategoria,
+            subcategorias,
+            "Todas as subcategorias"
+        );
+
+        elementos.subcategoria.disabled = subcategorias.length === 0;
+        elementos.subcategoria.value = String(selecionada || "");
+
+        if (!elementos.subcategoria.value) {
+            estado.subcategoriaId = "";
+        }
     }
 
     async function carregarLojas() {
@@ -593,7 +638,9 @@
         try {
             const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
                 p_termo: estado.termo,
-                p_categoria_id: estado.categoriaId ? Number(estado.categoriaId) : null,
+                p_categoria_id: estado.subcategoriaId
+                    ? Number(estado.subcategoriaId)
+                    : (estado.categoriaId ? Number(estado.categoriaId) : null),
                 p_loja_id: estado.lojaId || null,
                 p_categoria_loja_id: null,
                 p_disponibilidade: estado.disponibilidade || null,
@@ -634,6 +681,7 @@
     function sincronizarEstadoComCampos() {
         estado.termo = sanitizarTermo(elementos.pesquisa?.value);
         estado.categoriaId = String(elementos.categoria?.value || "");
+        estado.subcategoriaId = String(elementos.subcategoria?.value || "");
         estado.lojaId = String(elementos.loja?.value || "");
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
         estado.ordenacao = String(elementos.ordenacao?.value || "relevancia");
@@ -881,6 +929,8 @@
 
         if (elementos.pesquisa) elementos.pesquisa.value = "";
         if (elementos.categoria) elementos.categoria.value = "";
+        estado.subcategoriaId = "";
+        preencherSubcategorias("");
         if (elementos.loja) elementos.loja.value = "";
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
         if (elementos.ordenacao) elementos.ordenacao.value = "relevancia";
@@ -897,12 +947,14 @@
 
         const termo = String(params.get("q") || "").slice(0, LIMITE_TERMO);
         const categoria = String(params.get("categoria_produto") || "");
+        const subcategoria = String(params.get("subcategoria_produto") || "");
         const loja = String(params.get("loja_produto") || "");
         const disponibilidade = String(params.get("disponibilidade") || "");
         const ordenacao = String(params.get("ordenacao") || "relevancia");
 
         if (elementos.pesquisa && termo) elementos.pesquisa.value = termo;
         estado.categoriaId = /^\d+$/.test(categoria) ? categoria : "";
+        estado.subcategoriaId = /^\d+$/.test(subcategoria) ? subcategoria : "";
         estado.lojaId = /^[0-9a-f-]{36}$/i.test(loja) ? loja : "";
         estado.disponibilidade = ["estoque", "esgotado"].includes(disponibilidade)
             ? disponibilidade
@@ -920,6 +972,7 @@
 
         atualizarParametro(url, "q", estado.termo);
         atualizarParametro(url, "categoria_produto", estado.categoriaId);
+        atualizarParametro(url, "subcategoria_produto", estado.subcategoriaId);
         atualizarParametro(url, "loja_produto", estado.lojaId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
         atualizarParametro(url, "ordenacao", estado.ordenacao === "relevancia" ? "" : estado.ordenacao);
