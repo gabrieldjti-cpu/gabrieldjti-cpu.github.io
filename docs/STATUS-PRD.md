@@ -3,7 +3,7 @@
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
 **PRD:** `PRD-Marketplace.md` — versão 1.0
 **Branch de referência:** `main`
-**Atualizado em:** 25/08/2026
+**Atualizado em:** 26/08/2026
 
 Este documento compara o PRD com o código, as migrations e os testes atualmente versionados. Ele substitui a auditoria inicial, que não representava mais o estado da `main` após as PRs de conclusão do MVP, aprovação de lojas, estoque, paginação e hardening.
 
@@ -34,7 +34,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-02 — Login** | 🟡 | Login persistente e redirecionamento por perfil: cliente → perfil, lojista → painel e admin → dashboard. Conta excluída é bloqueada. Falta um fluxo administrativo genérico de bloqueio/desbloqueio. |
 | **RF-03 — Recuperação de Senha** | 🟡 | Solicitação, callback e nova senha implementados com os mesmos requisitos do cadastro. Falta teste final com e-mail real e Redirect URLs de produção. |
 | **RF-04 — Perfil** | ✅ | Nome, telefone, foto, múltiplos endereços, endereço padrão e exclusão lógica da conta implementados e validados. |
-| **RF-05 — Pesquisa** | 🟡 | Busca de lojas, catálogo global de produtos, autocomplete acessível, página global de categoria, filtros, ordenação e paginação server-side implementados. Falta full-text com relevância. |
+| **RF-05 — Pesquisa** | 🟡 | Busca full-text por nome e descrição com relevância, normalização de acentos, tolerância a erros, autocomplete acessível, filtros e paginação server-side implementados. Faltam ordenações por vendas/avaliação e filtros de preço/nota. |
 | **RF-06 — Categorias** | 🟡 | Categorias de lojas e produtos existem, com página pública que reúne lojas e produtos relacionados. Faltam subcategorias e gestão de destaques pelo admin. |
 | **RF-07 — Favoritos** | ❌ | Ainda não há tabela, página ou fluxo de favoritos. |
 | **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência local. Faltam persistência por usuário autenticado e frete estimado por loja. |
@@ -71,7 +71,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **Disponibilidade** | ❌ | Não há monitoramento de erros ou medição de SLA. |
 | **Manutenibilidade** | 🟡 | Componentes e extensões reutilizáveis existem, mas os scripts principais ainda são globais e muito grandes. |
 
-## Correções e evoluções realizadas em 24–25/08/2026
+## Correções e evoluções realizadas em 24–26/08/2026
 
 - exclusão física de produtos removida dos fluxos do painel e da listagem;
 - desativação agora usa `UPDATE ativo=false` e preserva o histórico;
@@ -85,19 +85,20 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - busca global recebeu filtros, ordenação, paginação e acesso direto ao produto dentro da loja.
 - autocomplete da busca global com sugestões de produtos, preço, loja e navegação por teclado.
 - página global de categoria com lojas aprovadas, produtos ativos, filtros e navegação entre categorias.
+- pesquisa migrada para `tsvector` em português com índices GIN, relevância e tolerância a erros via `pg_trgm`.
 
 ## Pendências prioritárias do MVP
 
 1. Testar recuperação de senha com e-mail real e URLs de produção.
 2. Executar regressão completa de checkout, estoque, cancelamento e pedidos.
 3. Finalizar testes de aprovação/rejeição/reabertura pelo dashboard.
-4. Implementar busca full-text com relevância e subcategorias.
+4. Implementar subcategorias e os filtros/ordenações restantes do RF-05.
 5. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
 6. Adicionar testes automatizados para os fluxos críticos.
 
 ## Versionamento do banco
 
-As 13 migrations incrementais registradas no Supabase estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 14 migrations incrementais registradas no Supabase estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 
