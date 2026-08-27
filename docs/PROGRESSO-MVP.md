@@ -37,7 +37,35 @@ Segurança e escopo público:
 - RPC pública usa `SECURITY INVOKER`, filtros explícitos e permissões mínimas;
 - índices GIN limitados aos produtos ativos aceleram full-text e `pg_trgm`.
 
-**Situação:** backend da busca full-text validado no Supabase; integração da interface pronta para teste no GitHub Pages.
+**Situação:** busca full-text e integração da interface validadas no site publicado.
+
+---
+
+### RF-06 — Categorias e subcategorias
+
+Implementação versionada:
+
+- auto-relacionamento `categoria_pai_id` em `categorias_produtos`;
+- categorias existentes preservadas como primeiro nível;
+- 39 subcategorias iniciais distribuídas entre as 12 categorias de produtos;
+- limite de dois níveis protegido por trigger e foreign key;
+- nomes únicos por categoria-pai e índice para a foreign key;
+- categoria e subcategoria dependentes no cadastro e na edição de produtos;
+- filtros hierárquicos na busca global e na página pública de categoria;
+- caminho completo exibido nos cards, como `Mercado › Bebidas`;
+- RPC pública atualizada sem alterar sua assinatura existente;
+- produtos antigos preservados na categoria principal.
+
+Segurança e validação:
+
+- leitura pública continua limitada às categorias ativas por RLS;
+- `anon` e `authenticated` não receberam permissão de escrita na taxonomia;
+- busca por categoria-pai inclui seus descendentes;
+- busca por subcategoria limita os resultados à filha escolhida;
+- migration testada em transação com rollback antes da aplicação;
+- Advisors não registraram novo alerta de segurança causado pela alteração.
+
+**Situação:** backend aplicado e validado no Supabase; interface pronta para teste no GitHub Pages.
 
 ---
 
@@ -286,6 +314,7 @@ Hardening já aplicado:
 12. `20260822153500_hardening_rls_indices.sql`
 13. `20260822155000_otimiza_policies_rls.sql`
 14. `20260826141254_busca_full_text_relevancia.sql`
+15. `20260827164519_subcategorias_produtos.sql`
 
 ## Próximas prioridades do MVP
 
@@ -293,12 +322,11 @@ As prioridades antigas de aprovação de lojas, estoque baixo, paginação e har
 
 Prioridades atuais:
 
-1. concluir os testes autenticados de checkout, cancelamento e ciclo de pedidos;
-2. validar recuperação de senha com e-mail real e Redirect URLs de produção;
-3. finalizar os testes complementares do dashboard administrativo;
-4. implementar subcategorias e os filtros/ordenações restantes do RF-05;
-5. gerar a baseline oficial do schema remoto com `supabase db pull`;
-6. iniciar testes automatizados dos fluxos críticos.
+1. implementar filtros de preço/nota e ordenações por vendas/avaliação do RF-05;
+2. criar a gestão administrativa de categorias, subcategorias e destaques;
+3. gerar a baseline oficial do schema remoto com `supabase db pull`;
+4. iniciar testes automatizados dos fluxos críticos;
+5. implementar favoritos conforme o RF-07.
 
 ## Integração com `main`
 
@@ -306,9 +334,7 @@ A evolução realizada na branch `feat/concluir-mvp-prd` e as etapas posteriores
 
 Ainda permanecem pendentes no MVP:
 
-- recuperação de senha com e-mail real;
-- testes autenticados completos de cliente/lojista;
 - validação pública da resposta de avaliação;
-- testes do RF-12;
 - baseline inicial reproduzível do banco;
-- subcategorias e filtros/ordenações restantes do RF-05.
+- filtros de preço/nota e ordenações restantes do RF-05;
+- gestão administrativa da taxonomia e dos destaques.

@@ -200,7 +200,7 @@
     margin-bottom: 28px;
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
     gap: 14px;
     align-items: end;
     border: 1px solid var(--home-border);

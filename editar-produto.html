@@ -180,7 +180,7 @@
             </div>
 
 
-            <!-- CATEGORIA / PREÇO -->
+            <!-- CATEGORIA / SUBCATEGORIA -->
 
             <div class="linha">
 
@@ -207,6 +207,33 @@
 
               <div class="campo">
 
+                <label for="subcategoria">
+                  Subcategoria
+                </label>
+
+                <select
+                  id="subcategoria"
+                  disabled
+                >
+
+                  <option value="">
+                    Selecione primeiro uma categoria
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <!-- PREÇO / PROMOÇÃO -->
+
+            <div class="linha">
+
+
+              <div class="campo">
+
                 <label for="preco">
                   Preço
                 </label>
@@ -222,14 +249,6 @@
                 />
 
               </div>
-
-            </div>
-
-
-            <!-- PROMOÇÃO / ESTOQUE -->
-
-            <div class="linha">
-
 
               <div class="campo">
 
@@ -248,8 +267,13 @@
 
               </div>
 
+            </div>
 
-              <div class="campo">
+
+            <!-- ESTOQUE -->
+
+
+            <div class="campo">
 
                 <label for="estoque">
                   Estoque
@@ -264,8 +288,6 @@
                   placeholder="0"
                   required
                 />
-
-              </div>
 
             </div>
 

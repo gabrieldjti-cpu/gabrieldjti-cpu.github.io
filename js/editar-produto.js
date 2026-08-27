@@ -11,6 +11,8 @@ let imagemAtual = "";
 
 let novaImagem = null;
 
+let categoriasProdutos = [];
+
 
 // ==========================================
 // INICIAR PÁGINA
@@ -457,7 +459,12 @@ async function carregarCategorias() {
                 )
 
                 .select(
-                    "id,nome"
+                    "id,nome,categoria_pai_id"
+                )
+
+                .eq(
+                    "ativa",
+                    true
                 )
 
                 .order(
@@ -476,10 +483,17 @@ async function carregarCategorias() {
         }
 
 
-        const categorias =
+        categoriasProdutos =
             Array.isArray(data)
                 ? data
                 : [];
+
+
+        const categorias =
+            categoriasProdutos.filter(
+                categoria =>
+                    categoria.categoria_pai_id === null
+            );
 
 
         if (
@@ -549,6 +563,19 @@ async function carregarCategorias() {
             false;
 
 
+        select.addEventListener(
+            "change",
+            () => carregarSubcategorias(
+                select.value
+            )
+        );
+
+
+        carregarSubcategorias(
+            ""
+        );
+
+
         return true;
 
 
@@ -585,6 +612,149 @@ async function carregarCategorias() {
         return false;
 
     }
+
+}
+
+
+// ==========================================
+// CARREGAR SUBCATEGORIAS
+// ==========================================
+
+function carregarSubcategorias(
+    categoriaId,
+    subcategoriaSelecionada = ""
+) {
+
+    const select =
+        document.getElementById(
+            "subcategoria"
+        );
+
+
+    if (!select) {
+
+        return;
+
+    }
+
+
+    const paiId =
+        Number(
+            categoriaId
+        );
+
+
+    const subcategorias =
+        Number.isSafeInteger(
+            paiId
+        )
+        && paiId > 0
+            ? categoriasProdutos.filter(
+                categoria =>
+                    Number(
+                        categoria.categoria_pai_id
+                    ) === paiId
+            )
+            : [];
+
+
+    select.innerHTML = `
+
+        <option value="">
+
+            ${subcategorias.length > 0
+                ? "Sem subcategoria"
+                : "Nenhuma subcategoria disponível"}
+
+        </option>
+
+    `;
+
+
+    subcategorias.forEach(
+        subcategoria => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                subcategoria.id;
+
+
+            option.textContent =
+                subcategoria.nome;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    select.disabled =
+        subcategorias.length === 0;
+
+
+    select.value =
+        String(
+            subcategoriaSelecionada || ""
+        );
+
+}
+
+
+function selecionarCategoriaProduto(
+    categoriaProdutoId
+) {
+
+    const categoriaSelecionada =
+        categoriasProdutos.find(
+            categoria =>
+                String(categoria.id) ===
+                String(categoriaProdutoId)
+        );
+
+
+    if (!categoriaSelecionada) {
+
+        definirValor(
+            "categoria",
+            categoriaProdutoId
+        );
+
+
+        carregarSubcategorias(
+            categoriaProdutoId
+        );
+
+
+        return;
+
+    }
+
+
+    const categoriaPaiId =
+        categoriaSelecionada.categoria_pai_id ||
+        categoriaSelecionada.id;
+
+
+    definirValor(
+        "categoria",
+        categoriaPaiId
+    );
+
+
+    carregarSubcategorias(
+        categoriaPaiId,
+        categoriaSelecionada.categoria_pai_id
+            ? categoriaSelecionada.id
+            : ""
+    );
 
 }
 
@@ -708,8 +878,7 @@ async function carregarProduto() {
         );
 
 
-        definirValor(
-            "categoria",
+        selecionarCategoriaProduto(
             produto.categoria_id
         );
 
@@ -1088,6 +1257,12 @@ async function atualizarProduto(
         );
 
 
+    const subcategoria =
+        valorCampo(
+            "subcategoria"
+        );
+
+
     const precoTexto =
         valorCampo(
             "preco"
@@ -1205,6 +1380,37 @@ async function atualizarProduto(
 
         focarCampo(
             "categoria"
+        );
+
+
+        return;
+
+    }
+
+
+    const categoriaProdutoId =
+        subcategoria ||
+        categoria;
+
+
+    if (
+        subcategoria
+        && !categoriasProdutos.some(
+            item =>
+                String(item.id) === String(subcategoria)
+                && String(item.categoria_pai_id) === String(categoria)
+        )
+    ) {
+
+        notificar(
+            "Selecione uma subcategoria válida para a categoria escolhida.",
+            "aviso",
+            "Subcategoria inválida"
+        );
+
+
+        focarCampo(
+            "subcategoria"
         );
 
 
@@ -1422,7 +1628,7 @@ async function atualizarProduto(
 
                     categoria_id:
                         Number(
-                            categoria
+                            categoriaProdutoId
                         ),
 
                     nome,

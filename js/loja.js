@@ -637,9 +637,15 @@ async function carregarProdutos() {
                     "produtos"
                 )
 
-                .select(
-                    "*"
-                )
+                .select(`
+                    *,
+                    categorias_produtos!categoria_id(
+                        nome,
+                        categoria_pai:categorias_produtos!categoria_pai_id(
+                            nome
+                        )
+                    )
+                `)
 
                 .eq(
                     "loja_id",
@@ -2218,6 +2224,29 @@ function mostrarProdutos(
 // CRIAR CARD DO PRODUTO
 // ==========================================
 
+function obterNomeCategoriaProduto(
+    produto
+) {
+
+    const categoria =
+        produto?.categorias_produtos ||
+        {};
+
+
+    if (
+        categoria.categoria_pai?.nome
+    ) {
+
+        return `${categoria.categoria_pai.nome} › ${categoria.nome || ""}`;
+
+    }
+
+
+    return categoria.nome || "";
+
+}
+
+
 function criarCardProduto(
     produto
 ) {
@@ -2239,6 +2268,15 @@ function criarCardProduto(
         escaparHTML(
             produto.descricao ||
             ""
+        );
+
+
+    const categoria =
+        escaparHTML(
+            obterNomeCategoriaProduto(
+                produto
+            ) ||
+            "Sem categoria"
         );
 
 
@@ -2457,6 +2495,10 @@ function criarCardProduto(
 
 
             <div class="conteudo">
+
+                <span class="produto-categoria">
+                    ${categoria}
+                </span>
 
                 <h3>
                     ${nome}
@@ -2680,12 +2722,24 @@ function pesquisarProdutos() {
                     );
 
 
+                const categoria =
+                    normalizarTexto(
+                        obterNomeCategoriaProduto(
+                            produto
+                        )
+                    );
+
+
                 return (
                     nome.includes(
                         texto
                     )
                     ||
                     descricao.includes(
+                        texto
+                    )
+                    ||
+                    categoria.includes(
                         texto
                     )
                 );

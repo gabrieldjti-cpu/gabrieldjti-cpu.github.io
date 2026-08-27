@@ -445,7 +445,7 @@
     margin-bottom: 26px;
     padding: 18px;
     display: grid;
-    grid-template-columns: minmax(260px, 1.7fr) minmax(150px, .7fr) minmax(170px, .8fr) auto;
+    grid-template-columns: minmax(230px, 1.5fr) repeat(4, minmax(135px, .75fr)) auto;
     gap: 13px;
     align-items: end;
     border: 1px solid var(--home-border);
@@ -481,6 +481,11 @@
     color: var(--home-text);
     font-size: 11px;
     cursor: pointer;
+}
+
+.categoria-campo select:disabled {
+    cursor: not-allowed;
+    opacity: .62;
 }
 
 .categoria-pesquisa {
