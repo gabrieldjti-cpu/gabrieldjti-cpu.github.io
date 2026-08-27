@@ -445,7 +445,7 @@
     margin-bottom: 26px;
     padding: 18px;
     display: grid;
-    grid-template-columns: minmax(230px, 1.5fr) repeat(4, minmax(135px, .75fr)) auto;
+    grid-template-columns: repeat(4, minmax(135px, 1fr));
     gap: 13px;
     align-items: end;
     border: 1px solid var(--home-border);
@@ -467,6 +467,7 @@
 }
 
 .categoria-campo select,
+.categoria-campo > input,
 .categoria-pesquisa {
     width: 100%;
     min-height: 46px;
@@ -481,6 +482,13 @@
     color: var(--home-text);
     font-size: 11px;
     cursor: pointer;
+}
+
+.categoria-campo > input {
+    padding: 0 13px;
+    outline: 0;
+    color: var(--home-text);
+    font-size: 11px;
 }
 
 .categoria-campo select:disabled {
@@ -511,10 +519,15 @@
 }
 
 .categoria-campo select:focus,
+.categoria-campo > input:focus,
 .categoria-pesquisa:focus-within {
     border-color: var(--home-primary);
     background: #fff;
     box-shadow: 0 0 0 4px rgba(255, 107, 53, .11);
+}
+
+.categoria-campo-pesquisa {
+    grid-column: span 2;
 }
 
 .categoria-limpar {
@@ -625,6 +638,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .categoria-campo-pesquisa {
+        grid-column: span 2;
+    }
+
     .categoria-limpar {
         width: fit-content;
     }
@@ -690,6 +707,10 @@
     .categoria-grade-lojas,
     .categoria-filtros {
         grid-template-columns: 1fr;
+    }
+
+    .categoria-campo-pesquisa {
+        grid-column: auto;
     }
 
     .categoria-loja-card {

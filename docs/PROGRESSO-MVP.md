@@ -19,8 +19,10 @@ Implementação versionada:
 - relevância com peso maior para o nome, normalização de acentos e tolerância a erros;
 - autocomplete com até seis sugestões de produtos, preço e loja;
 - navegação acessível no autocomplete por setas, Enter, Esc e toque;
-- filtros por categoria, loja e disponibilidade;
-- ordenação por relevância, destaque, nome, preço e data;
+- filtros por categoria, loja, disponibilidade, faixa de preço efetivo e nota mínima;
+- ordenação por relevância, destaque, nome, preço efetivo, vendas, avaliação e data;
+- média, quantidade de avaliações e unidades vendidas exibidas nos cards;
+- métricas públicas agregadas atualizadas automaticamente sem expor clientes ou pedidos;
 - paginação server-side de 12 produtos;
 - acesso direto ao produto dentro da página pública da loja;
 - estados responsivos de carregamento, vazio e erro.
@@ -37,7 +39,7 @@ Segurança e escopo público:
 - RPC pública usa `SECURITY INVOKER`, filtros explícitos e permissões mínimas;
 - índices GIN limitados aos produtos ativos aceleram full-text e `pg_trgm`.
 
-**Situação:** busca full-text e integração da interface validadas no site publicado.
+**Situação:** busca full-text já validada; os novos filtros e ordenações aguardam validação no site publicado.
 
 ---
 
@@ -65,7 +67,7 @@ Segurança e validação:
 - migration testada em transação com rollback antes da aplicação;
 - Advisors não registraram novo alerta de segurança causado pela alteração.
 
-**Situação:** backend aplicado e validado no Supabase; interface pronta para teste no GitHub Pages.
+**Situação:** backend e interface validados no site publicado.
 
 ---
 
@@ -315,6 +317,7 @@ Hardening já aplicado:
 13. `20260822155000_otimiza_policies_rls.sql`
 14. `20260826141254_busca_full_text_relevancia.sql`
 15. `20260827164519_subcategorias_produtos.sql`
+16. `20260827220506_filtros_avaliacao_vendas.sql`
 
 ## Próximas prioridades do MVP
 
@@ -322,7 +325,7 @@ As prioridades antigas de aprovação de lojas, estoque baixo, paginação e har
 
 Prioridades atuais:
 
-1. implementar filtros de preço/nota e ordenações por vendas/avaliação do RF-05;
+1. validar no site publicado os filtros de preço/nota e ordenações finais do RF-05;
 2. criar a gestão administrativa de categorias, subcategorias e destaques;
 3. gerar a baseline oficial do schema remoto com `supabase db pull`;
 4. iniciar testes automatizados dos fluxos críticos;
@@ -336,5 +339,5 @@ Ainda permanecem pendentes no MVP:
 
 - validação pública da resposta de avaliação;
 - baseline inicial reproduzível do banco;
-- filtros de preço/nota e ordenações restantes do RF-05;
+- validação publicada dos filtros e ordenações finais do RF-05;
 - gestão administrativa da taxonomia e dos destaques.
