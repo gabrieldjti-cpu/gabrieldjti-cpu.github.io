@@ -34,8 +34,8 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-02 — Login** | 🟡 | Login persistente e redirecionamento por perfil: cliente → perfil, lojista → painel e admin → dashboard. Conta excluída é bloqueada. Falta um fluxo administrativo genérico de bloqueio/desbloqueio. |
 | **RF-03 — Recuperação de Senha** | ✅ | Solicitação, recebimento do e-mail, callback, definição de nova senha, login e recusa de link reutilizado validados em produção. |
 | **RF-04 — Perfil** | ✅ | Nome, telefone, foto, múltiplos endereços, endereço padrão e exclusão lógica da conta implementados e validados. |
-| **RF-05 — Pesquisa** | 🟡 | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados. Falta apenas validar os novos filtros no site publicado para concluir formalmente o requisito. |
-| **RF-06 — Categorias** | 🟡 | Hierarquia, cadastro/edição e filtros públicos de categoria/subcategoria implementados e validados no site. Falta gestão de destaques e CRUD administrativo. |
+| **RF-05 — Pesquisa** | ✅ | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados e validados no site. |
+| **RF-06 — Categorias** | 🟡 | Hierarquia, filtros públicos, página de categoria e destaques configuráveis na home implementados. Falta validar em produção a nova gestão administrativa. |
 | **RF-07 — Favoritos** | ❌ | Ainda não há tabela, página ou fluxo de favoritos. |
 | **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência local. Faltam persistência por usuário autenticado e frete estimado por loja. |
 | **RF-09 — Checkout** | 🟡 | Checkout autenticado, pagamento manual, endereço salvo e RPC segura que gera pedidos por loja. Faltam cupons e cálculo real de frete. |
@@ -53,7 +53,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-21 — Clientes do Lojista** | ❌ | Ainda não existe tela consolidada de clientes da loja. |
 | **RF-22 — Gestão de Usuários Admin** | ❌ | O dashboard contabiliza usuários, mas não oferece listagem, bloqueio e gestão de papéis. |
 | **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão e histórico. Falta edição administrativa completa dos dados da loja. |
-| **RF-24 — Gestão de Categorias Admin** | ❌ | Ainda não existe CRUD administrativo de categorias e subcategorias. |
+| **RF-24 — Gestão de Categorias Admin** | 🟡 | Painel com CRUD, busca, filtros, paginação, ativação, hierarquia e reordenação de destaques implementado com RLS. Falta validação no site publicado. |
 | **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado. Faltam documentos e notificação automática. |
 | **RF-26 — Moderação** | 🔵 | Previsto para v1.1. |
 | **RF-27 — Dashboard Administrativo** | 🟡 | Métricas globais básicas e gestão de lojas implementadas. Faltam GMV completo, ranking, disputas e módulos administrativos restantes. |
@@ -89,14 +89,14 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - categorias de produtos receberam auto-relacionamento, 39 subcategorias iniciais, filtros dependentes e seleção hierárquica no cadastro/edição.
 - pesquisa recebeu faixa de preço efetivo, nota mínima e ordenações por vendas e avaliação.
 - métricas públicas agregadas preservam a privacidade das avaliações, clientes e pedidos.
+- painel administrativo de categorias e subcategorias com destaques dinâmicos na home, validação de hierarquia e permissões RLS exclusivas de admin.
 
 ## Pendências prioritárias do MVP
 
-1. Validar no site publicado os novos filtros e ordenações do RF-05.
-2. Criar gestão administrativa de categorias, subcategorias e destaques.
-3. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
-4. Adicionar testes automatizados para os fluxos críticos.
-5. Implementar favoritos conforme o RF-07.
+1. Validar no site publicado o painel administrativo de categorias e os destaques da home.
+2. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
+3. Adicionar testes automatizados para os fluxos críticos.
+4. Implementar favoritos conforme o RF-07.
 
 ## Versionamento do banco
 

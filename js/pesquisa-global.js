@@ -83,6 +83,8 @@
         elementos.descricao = document.getElementById("descricao-produtos-globais");
         elementos.paginacao = document.getElementById("paginacao-produtos-globais");
         elementos.secao = document.getElementById("produtos-globais");
+        elementos.secaoCategoriasDestaque = document.getElementById("categorias-produtos-destaque");
+        elementos.listaCategoriasDestaque = document.getElementById("lista-categorias-produtos-destaque");
     }
 
     function configurarEventos() {
@@ -550,7 +552,7 @@
 
         const { data, error } = await window.db
             .from("categorias_produtos")
-            .select("id,nome,categoria_pai_id")
+            .select("id,nome,categoria_pai_id,icone,destaque,ordem_destaque")
             .eq("ativa", true)
             .order("nome", { ascending: true });
 
@@ -575,6 +577,52 @@
         if (!elementos.categoria.value) estado.categoriaId = "";
         elementos.categoria.disabled = false;
         preencherSubcategorias(estado.categoriaId, estado.subcategoriaId);
+        renderizarCategoriasProdutosDestaque();
+    }
+
+    function renderizarCategoriasProdutosDestaque() {
+        if (!elementos.secaoCategoriasDestaque || !elementos.listaCategoriasDestaque) return;
+
+        const destaques = categoriasProdutos
+            .filter(categoria => (
+                categoria.categoria_pai_id === null
+                && categoria.destaque === true
+            ))
+            .sort((a, b) => {
+                const ordemA = Number(a.ordem_destaque) || 99;
+                const ordemB = Number(b.ordem_destaque) || 99;
+                return ordemA - ordemB
+                    || String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR");
+            });
+
+        if (destaques.length === 0) {
+            elementos.listaCategoriasDestaque.replaceChildren();
+            elementos.secaoCategoriasDestaque.hidden = true;
+            return;
+        }
+
+        elementos.listaCategoriasDestaque.innerHTML = destaques.map(categoria => {
+            const id = Number(categoria.id);
+            const nome = escaparHTML(categoria.nome || "Categoria");
+            const icone = escaparHTML(categoria.icone || "📦");
+
+            return `
+                <a
+                    class="categoria-produto-destaque"
+                    href="index.html?categoria_produto=${id}#produtos-globais"
+                    aria-label="Ver produtos de ${nome}"
+                >
+                    <span class="categoria-produto-destaque-icone" aria-hidden="true">${icone}</span>
+                    <span>
+                        <strong>${nome}</strong>
+                        <small>Explorar produtos</small>
+                    </span>
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            `;
+        }).join("");
+
+        elementos.secaoCategoriasDestaque.hidden = false;
     }
 
     function preencherSubcategorias(categoriaId, selecionada = "") {

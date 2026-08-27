@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Administração das categorias de produtos do Comércio da Cidade.">
+    <title>Categorias | Administração | Comércio da Cidade</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/admin-categorias.css">
+    <link rel="stylesheet" href="css/paginacao-listagens.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="admin-header-conteudo">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
+                <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
+                <span>
+                    <strong>Comércio da Cidade</strong>
+                    <small>Administração</small>
+                </span>
+            </a>
+
+            <nav class="admin-nav" aria-label="Áreas administrativas">
+                <a href="admin-dashboard.html">
+                    <i class="fa-solid fa-shop"></i>
+                    <span>Lojas</span>
+                </a>
+                <a href="admin-categorias.html" class="ativo" aria-current="page">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Categorias</span>
+                </a>
+            </nav>
+
+            <div class="admin-header-acoes">
+                <a href="index.html" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Ver site</span>
+                </a>
+                <button type="button" id="btnSairAdmin" class="btn-admin btn-sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <section class="admin-intro">
+            <div>
+                <span class="eyebrow">RF-24 · Taxonomia do catálogo</span>
+                <h1>Categorias de produtos</h1>
+                <p>Crie categorias e subcategorias, controle a visibilidade e escolha os destaques exibidos na página inicial.</p>
+            </div>
+            <div class="intro-acoes-categorias">
+                <button type="button" id="btnAtualizarCategorias" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizar
+                </button>
+                <button type="button" id="btnNovaCategoria" class="btn-admin btn-primario">
+                    <i class="fa-solid fa-plus"></i>
+                    Nova categoria
+                </button>
+            </div>
+        </section>
+
+        <section class="metricas-admin" aria-label="Resumo das categorias">
+            <article class="metrica-card">
+                <span class="metrica-icone"><i class="fa-solid fa-folder-tree"></i></span>
+                <div>
+                    <small>Categorias</small>
+                    <strong id="metricaCategoriasRaiz">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card">
+                <span class="metrica-icone"><i class="fa-solid fa-code-branch"></i></span>
+                <div>
+                    <small>Subcategorias</small>
+                    <strong id="metricaSubcategorias">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card metrica-ativa">
+                <span class="metrica-icone"><i class="fa-solid fa-circle-check"></i></span>
+                <div>
+                    <small>Ativas</small>
+                    <strong id="metricaCategoriasAtivas">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card metrica-destaque">
+                <span class="metrica-icone"><i class="fa-solid fa-star"></i></span>
+                <div>
+                    <small>Na página inicial</small>
+                    <strong id="metricaDestaques">—</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="admin-card filtros-card">
+            <div class="filtros-titulo">
+                <div>
+                    <h2><i class="fa-solid fa-filter"></i> Organização do catálogo</h2>
+                    <p id="textoResultadoCategorias" aria-live="polite">Carregando categorias...</p>
+                </div>
+            </div>
+
+            <div class="filtros-grid filtros-categorias-grid">
+                <label class="campo-admin campo-busca">
+                    <span>Pesquisar</span>
+                    <div class="campo-com-icone">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="buscaCategoriasAdmin" type="search" placeholder="Nome da categoria ou subcategoria" autocomplete="off">
+                    </div>
+                </label>
+
+                <label class="campo-admin">
+                    <span>Tipo</span>
+                    <select id="filtroTipoCategoria">
+                        <option value="">Todos</option>
+                        <option value="raiz">Categorias</option>
+                        <option value="subcategoria">Subcategorias</option>
+                    </select>
+                </label>
+
+                <label class="campo-admin">
+                    <span>Status</span>
+                    <select id="filtroStatusCategoria">
+                        <option value="">Todos</option>
+                        <option value="ativa">Ativas</option>
+                        <option value="inativa">Inativas</option>
+                        <option value="destaque">Destaques da home</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <section id="listaCategoriasAdmin" class="lista-categorias-admin" aria-live="polite" aria-busy="true">
+            <div class="estado-admin">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <h3>Carregando categorias...</h3>
+            </div>
+        </section>
+    </main>
+
+    <div id="modalCategoriaAdmin" class="modal-admin" hidden>
+        <div class="modal-admin-backdrop" data-fechar-modal-categoria></div>
+        <section class="modal-admin-caixa modal-categoria" role="dialog" aria-modal="true" aria-labelledby="tituloModalCategoria">
+            <button type="button" class="modal-fechar" data-fechar-modal-categoria aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="modal-icone-categoria"><i class="fa-solid fa-layer-group"></i></span>
+            <h2 id="tituloModalCategoria">Nova categoria</h2>
+            <p id="descricaoModalCategoria">Organize os produtos do marketplace.</p>
+
+            <form id="formCategoriaAdmin" novalidate>
+                <input type="hidden" id="categoriaAdminId">
+
+                <div class="form-categoria-grid">
+                    <label class="campo-admin">
+                        <span>Tipo</span>
+                        <select id="tipoCategoriaAdmin" required>
+                            <option value="raiz">Categoria</option>
+                            <option value="subcategoria">Subcategoria</option>
+                        </select>
+                    </label>
+
+                    <label class="campo-admin campo-pai-categoria" id="campoPaiCategoria" hidden>
+                        <span>Categoria principal</span>
+                        <select id="paiCategoriaAdmin">
+                            <option value="">Selecione</option>
+                        </select>
+                    </label>
+
+                    <label class="campo-admin campo-nome-categoria">
+                        <span>Nome</span>
+                        <input id="nomeCategoriaAdmin" type="text" minlength="2" maxlength="80" placeholder="Ex.: Eletrônicos" autocomplete="off" required>
+                    </label>
+
+                    <label class="campo-admin" id="campoIconeCategoria">
+                        <span>Ícone (emoji)</span>
+                        <input id="iconeCategoriaAdmin" type="text" maxlength="16" placeholder="Ex.: 💻" autocomplete="off">
+                    </label>
+                </div>
+
+                <div class="opcoes-categoria">
+                    <label class="opcao-categoria">
+                        <input id="categoriaAdminAtiva" type="checkbox" checked>
+                        <span>
+                            <strong>Categoria ativa</strong>
+                            <small>Disponível nos filtros e cadastros de produtos.</small>
+                        </span>
+                    </label>
+
+                    <label class="opcao-categoria" id="opcaoDestaqueCategoria">
+                        <input id="categoriaAdminDestaque" type="checkbox">
+                        <span>
+                            <strong>Destacar na página inicial</strong>
+                            <small>Disponível somente para categorias principais ativas.</small>
+                        </span>
+                    </label>
+                </div>
+
+                <label class="campo-admin" id="campoOrdemDestaque" hidden>
+                    <span>Ordem do destaque</span>
+                    <input id="ordemDestaqueCategoria" type="number" min="1" max="99" step="1" value="99">
+                    <small>Os menores números aparecem primeiro.</small>
+                </label>
+
+                <div class="modal-acoes">
+                    <button type="button" class="btn-admin btn-claro" data-fechar-modal-categoria>Cancelar</button>
+                    <button type="submit" id="btnSalvarCategoria" class="btn-admin btn-primario">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Salvar categoria
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/admin-categorias.js"></script>
+    <script src="js/paginacao-listagens.js"></script>
+</body>
+</html>
