@@ -142,13 +142,53 @@
         </div>
 
         <div class="categoria-campo">
+          <label for="preco-minimo-categoria">Preço mínimo</label>
+          <input
+            id="preco-minimo-categoria"
+            type="number"
+            min="0"
+            max="1000000"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="R$ 0,00"
+          >
+        </div>
+
+        <div class="categoria-campo">
+          <label for="preco-maximo-categoria">Preço máximo</label>
+          <input
+            id="preco-maximo-categoria"
+            type="number"
+            min="0"
+            max="1000000"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="Sem limite"
+          >
+        </div>
+
+        <div class="categoria-campo">
+          <label for="avaliacao-minima-categoria">Avaliação mínima</label>
+          <select id="avaliacao-minima-categoria">
+            <option value="">Todas as notas</option>
+            <option value="5">5 estrelas</option>
+            <option value="4">4 estrelas ou mais</option>
+            <option value="3">3 estrelas ou mais</option>
+            <option value="2">2 estrelas ou mais</option>
+            <option value="1">1 estrela ou mais</option>
+          </select>
+        </div>
+
+        <div class="categoria-campo">
           <label for="ordenacao-categoria">Ordenar por</label>
           <select id="ordenacao-categoria">
             <option value="relevancia">Relevância</option>
             <option value="destaques">Destaques</option>
             <option value="nome">Nome</option>
-            <option value="menor-preco">Menor preço regular</option>
-            <option value="maior-preco">Maior preço regular</option>
+            <option value="menor-preco">Menor preço</option>
+            <option value="maior-preco">Maior preço</option>
+            <option value="mais-vendidos">Mais vendidos</option>
+            <option value="melhor-avaliados">Melhor avaliados</option>
             <option value="recentes">Mais recentes</option>
           </select>
         </div>

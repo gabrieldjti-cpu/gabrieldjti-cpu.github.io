@@ -19,6 +19,9 @@
         subcategoriaId: "",
         lojaId: "",
         disponibilidade: "",
+        precoMinimo: "",
+        precoMaximo: "",
+        avaliacaoMinima: "",
         ordenacao: "relevancia"
     };
 
@@ -70,6 +73,9 @@
         elementos.subcategoria = document.getElementById("filtro-subcategoria-produto");
         elementos.loja = document.getElementById("filtro-loja-produto");
         elementos.disponibilidade = document.getElementById("filtro-disponibilidade-produto");
+        elementos.precoMinimo = document.getElementById("filtro-preco-minimo-produto");
+        elementos.precoMaximo = document.getElementById("filtro-preco-maximo-produto");
+        elementos.avaliacaoMinima = document.getElementById("filtro-avaliacao-produto");
         elementos.ordenacao = document.getElementById("ordenacao-produtos-globais");
         elementos.limpar = document.getElementById("limpar-filtros-produtos");
         elementos.lista = document.getElementById("lista-produtos-globais");
@@ -158,6 +164,9 @@
             elementos.subcategoria,
             elementos.loja,
             elementos.disponibilidade,
+            elementos.precoMinimo,
+            elementos.precoMaximo,
+            elementos.avaliacaoMinima,
             elementos.ordenacao
         ].forEach(campo => {
             campo?.addEventListener("change", () => {
@@ -220,6 +229,11 @@
             const subcategoriaId = String(elementos.subcategoria?.value || "");
             const lojaId = String(elementos.loja?.value || "");
             const disponibilidade = String(elementos.disponibilidade?.value || "");
+            const precoMinimo = sanitizarPrecoFiltro(elementos.precoMinimo?.value);
+            const precoMaximo = sanitizarPrecoFiltro(elementos.precoMaximo?.value);
+            const avaliacaoMinima = sanitizarAvaliacaoFiltro(
+                elementos.avaliacaoMinima?.value
+            );
 
             const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
                 p_termo: termo,
@@ -229,6 +243,11 @@
                 p_loja_id: lojaId || null,
                 p_categoria_loja_id: null,
                 p_disponibilidade: disponibilidade || null,
+                p_preco_min: precoMinimo === "" ? null : Number(precoMinimo),
+                p_preco_max: precoMaximo === "" ? null : Number(precoMaximo),
+                p_avaliacao_min: avaliacaoMinima === ""
+                    ? null
+                    : Number(avaliacaoMinima),
                 p_ordenacao: "relevancia",
                 p_limite: LIMITE_AUTOCOMPLETE,
                 p_offset: 0
@@ -644,6 +663,15 @@
                 p_loja_id: estado.lojaId || null,
                 p_categoria_loja_id: null,
                 p_disponibilidade: estado.disponibilidade || null,
+                p_preco_min: estado.precoMinimo === ""
+                    ? null
+                    : Number(estado.precoMinimo),
+                p_preco_max: estado.precoMaximo === ""
+                    ? null
+                    : Number(estado.precoMaximo),
+                p_avaliacao_min: estado.avaliacaoMinima === ""
+                    ? null
+                    : Number(estado.avaliacaoMinima),
                 p_ordenacao: estado.ordenacao,
                 p_limite: TAMANHO_PAGINA,
                 p_offset: inicio
@@ -684,7 +712,46 @@
         estado.subcategoriaId = String(elementos.subcategoria?.value || "");
         estado.lojaId = String(elementos.loja?.value || "");
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
+        estado.precoMinimo = sanitizarPrecoFiltro(elementos.precoMinimo?.value);
+        estado.precoMaximo = sanitizarPrecoFiltro(elementos.precoMaximo?.value);
+        estado.avaliacaoMinima = sanitizarAvaliacaoFiltro(
+            elementos.avaliacaoMinima?.value
+        );
+        normalizarFaixaPreco();
         estado.ordenacao = String(elementos.ordenacao?.value || "relevancia");
+    }
+
+    function sanitizarPrecoFiltro(valor) {
+        const texto = String(valor ?? "").trim();
+        if (!texto) return "";
+
+        const numero = Number(texto.replace(",", "."));
+        if (!Number.isFinite(numero) || numero < 0) return "";
+
+        return String(Math.min(numero, 1000000));
+    }
+
+    function sanitizarAvaliacaoFiltro(valor) {
+        const avaliacao = String(valor || "");
+        return ["1", "2", "3", "4", "5"].includes(avaliacao) ? avaliacao : "";
+    }
+
+    function normalizarFaixaPreco() {
+        if (
+            estado.precoMinimo === ""
+            || estado.precoMaximo === ""
+            || Number(estado.precoMinimo) <= Number(estado.precoMaximo)
+        ) {
+            return;
+        }
+
+        [estado.precoMinimo, estado.precoMaximo] = [
+            estado.precoMaximo,
+            estado.precoMinimo
+        ];
+
+        if (elementos.precoMinimo) elementos.precoMinimo.value = estado.precoMinimo;
+        if (elementos.precoMaximo) elementos.precoMaximo.value = estado.precoMaximo;
     }
 
     function sanitizarTermo(valor) {
@@ -742,6 +809,14 @@
         const promocional = Math.max(0, Number(produto.preco_promocional || 0));
         const temPromocao = promocional > 0 && promocional < preco;
         const precoAtual = temPromocao ? promocional : preco;
+        const totalAvaliacoes = Math.max(0, Number(produto.total_avaliacoes || 0));
+        const avaliacaoMedia = totalAvaliacoes > 0
+            ? Math.min(5, Math.max(0, Number(produto.avaliacao_media || 0)))
+            : 0;
+        const totalVendido = Math.max(0, Number(produto.total_vendido || 0));
+        const textoAvaliacoes = totalAvaliacoes > 0
+            ? `${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5, ${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
+            : "Produto ainda sem avaliações";
         const link = `loja.html?id=${encodeURIComponent(loja.id || produto.loja_id || "")}&produto=${encodeURIComponent(produto.id || "")}`;
 
         const imagem = produto.imagem_url
@@ -785,6 +860,19 @@
 
                     <h3>${nome}</h3>
                     <p class="produto-global-descricao">${descricao}</p>
+
+                    <div class="produto-global-indicadores">
+                        <span class="produto-global-avaliacao" aria-label="${escaparAtributo(textoAvaliacoes)}">
+                            <i class="fa-solid fa-star" aria-hidden="true"></i>
+                            ${totalAvaliacoes > 0
+                                ? `<strong>${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong><small>(${totalAvaliacoes})</small>`
+                                : "Sem avaliações"}
+                        </span>
+                        <span aria-label="${totalVendido} ${totalVendido === 1 ? "unidade vendida" : "unidades vendidas"}">
+                            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                            ${totalVendido} ${totalVendido === 1 ? "vendido" : "vendidos"}
+                        </span>
+                    </div>
 
                     <p class="produto-global-loja">
                         <i class="fa-solid fa-store" aria-hidden="true"></i>
@@ -933,6 +1021,9 @@
         preencherSubcategorias("");
         if (elementos.loja) elementos.loja.value = "";
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
+        if (elementos.precoMinimo) elementos.precoMinimo.value = "";
+        if (elementos.precoMaximo) elementos.precoMaximo.value = "";
+        if (elementos.avaliacaoMinima) elementos.avaliacaoMinima.value = "";
         if (elementos.ordenacao) elementos.ordenacao.value = "relevancia";
 
         estado.pagina = 1;
@@ -950,6 +1041,9 @@
         const subcategoria = String(params.get("subcategoria_produto") || "");
         const loja = String(params.get("loja_produto") || "");
         const disponibilidade = String(params.get("disponibilidade") || "");
+        const precoMinimo = sanitizarPrecoFiltro(params.get("preco_minimo"));
+        const precoMaximo = sanitizarPrecoFiltro(params.get("preco_maximo"));
+        const avaliacaoMinima = sanitizarAvaliacaoFiltro(params.get("avaliacao_minima"));
         const ordenacao = String(params.get("ordenacao") || "relevancia");
 
         if (elementos.pesquisa && termo) elementos.pesquisa.value = termo;
@@ -959,11 +1053,29 @@
         estado.disponibilidade = ["estoque", "esgotado"].includes(disponibilidade)
             ? disponibilidade
             : "";
-        estado.ordenacao = ["relevancia", "destaques", "nome", "menor-preco", "maior-preco", "recentes"].includes(ordenacao)
+        estado.precoMinimo = precoMinimo;
+        estado.precoMaximo = precoMaximo;
+        estado.avaliacaoMinima = avaliacaoMinima;
+        normalizarFaixaPreco();
+        estado.ordenacao = [
+            "relevancia",
+            "destaques",
+            "nome",
+            "menor-preco",
+            "maior-preco",
+            "mais-vendidos",
+            "melhor-avaliados",
+            "recentes"
+        ].includes(ordenacao)
             ? ordenacao
             : "relevancia";
 
         if (elementos.disponibilidade) elementos.disponibilidade.value = estado.disponibilidade;
+        if (elementos.precoMinimo) elementos.precoMinimo.value = estado.precoMinimo;
+        if (elementos.precoMaximo) elementos.precoMaximo.value = estado.precoMaximo;
+        if (elementos.avaliacaoMinima) {
+            elementos.avaliacaoMinima.value = estado.avaliacaoMinima;
+        }
         if (elementos.ordenacao) elementos.ordenacao.value = estado.ordenacao;
     }
 
@@ -975,6 +1087,9 @@
         atualizarParametro(url, "subcategoria_produto", estado.subcategoriaId);
         atualizarParametro(url, "loja_produto", estado.lojaId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
+        atualizarParametro(url, "preco_minimo", estado.precoMinimo);
+        atualizarParametro(url, "preco_maximo", estado.precoMaximo);
+        atualizarParametro(url, "avaliacao_minima", estado.avaliacaoMinima);
         atualizarParametro(url, "ordenacao", estado.ordenacao === "relevancia" ? "" : estado.ordenacao);
 
         window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
