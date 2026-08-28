@@ -82,6 +82,8 @@ document.addEventListener(
         // CARRINHO
         // ==================================
 
+        await window.CarrinhoSync?.iniciar();
+
         carregarCarrinho();
 
 
@@ -1528,6 +1530,10 @@ async function finalizarCompra() {
         localStorage.removeItem(
             "checkout"
         );
+
+
+        await window.CarrinhoSync
+            ?.sincronizarAgora();
 
 
         if (

@@ -986,6 +986,12 @@ async function verificarUsuarioHeader() {
             }
         );
 
+
+        document.addEventListener(
+            "carrinho:sincronizado",
+            atualizarContadorCarrinho
+        );
+
     }
 
 
@@ -1020,6 +1026,12 @@ async function verificarUsuarioHeader() {
 
 
         try {
+
+            if (window.CarrinhoSync) {
+
+                await window.CarrinhoSync.prepararLogout();
+
+            }
 
             const {
                 error

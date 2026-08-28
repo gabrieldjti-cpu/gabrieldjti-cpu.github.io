@@ -417,6 +417,7 @@
 
         try {
             localStorage.setItem("carrinho", JSON.stringify(carrinho));
+            window.CarrinhoSync?.notificarAlteracao();
             window.atualizarContadorCarrinho?.();
             notificar(
                 `${produto.nome || "Produto"} foi adicionado ao carrinho.`,

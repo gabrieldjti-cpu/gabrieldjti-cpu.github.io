@@ -1179,6 +1179,10 @@ async function comprarNovamente(
         );
 
 
+        window.CarrinhoSync
+            ?.notificarAlteracao();
+
+
         if (
             typeof window
                 .atualizarContadorCarrinho ===

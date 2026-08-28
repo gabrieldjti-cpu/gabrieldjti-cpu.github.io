@@ -3039,6 +3039,10 @@ function adicionarCarrinho(
         );
 
 
+        window.CarrinhoSync
+            ?.notificarAlteracao();
+
+
     } catch (erro) {
 
         console.error(
