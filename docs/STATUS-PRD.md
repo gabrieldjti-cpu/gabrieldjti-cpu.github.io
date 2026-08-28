@@ -37,7 +37,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-05 — Pesquisa** | ✅ | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados e validados no site. |
 | **RF-06 — Categorias** | 🟡 | Hierarquia, filtros públicos, página de categoria e destaques configuráveis na home implementados. Falta validar em produção a nova gestão administrativa. |
 | **RF-07 — Favoritos** | 🟡 | Tabela privada com RLS, coração nos catálogos, página Meus Favoritos, remoção e adição ao carrinho implementados. Falta validação no site publicado. |
-| **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência local. Faltam persistência por usuário autenticado e frete estimado por loja. |
+| **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência por usuário autenticado implementados; visitantes continuam com armazenamento local e o carrinho é mesclado no login. Falta o frete estimado por loja. |
 | **RF-09 — Checkout** | 🟡 | Checkout autenticado, pagamento manual, endereço salvo e RPC segura que gera pedidos por loja. Faltam cupons e cálculo real de frete. |
 | **RF-10 — Pedidos do Cliente** | 🟡 | Lista, detalhes, rastreio, cancelamento direto/solicitado e confirmação de recebimento implementados. Falta concluir regressão autenticada completa. |
 | **RF-11 — Avaliações** | 🟡 | Cliente avalia compra entregue e lojista responde publicamente por RPC protegida. Falta concluir a validação pública ponta a ponta. |
@@ -91,6 +91,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - métricas públicas agregadas preservam a privacidade das avaliações, clientes e pedidos.
 - painel administrativo de categorias e subcategorias com destaques dinâmicos na home, validação de hierarquia e permissões RLS exclusivas de admin.
 - favoritos privados por usuário com coração nos catálogos, página própria, paginação e envio ao carrinho.
+- carrinho persistido por conta autenticada, com mesclagem do carrinho visitante, isolamento entre usuários, sincronização pendente e RLS.
 
 ## Pendências prioritárias do MVP
 
@@ -101,7 +102,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 
 ## Versionamento do banco
 
-As 19 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 20 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 

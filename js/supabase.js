@@ -82,6 +82,8 @@ function limparDadosLocaisDaContaRF04() {
     localStorage.removeItem("loja_id");
     localStorage.removeItem("nome_loja");
     localStorage.removeItem("carrinho");
+    localStorage.removeItem("carrinho_usuario_id");
+    localStorage.removeItem("carrinho_sincronizacao_pendente");
 }
 
 async function verificarContaAtivaRF04(opcoes = {}) {

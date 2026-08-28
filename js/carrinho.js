@@ -12,11 +12,13 @@ let carrinho = [];
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
+    async () => {
 
         console.log(
             "Carrinho iniciado."
         );
+
+        await window.CarrinhoSync?.iniciar();
 
         carregarCarrinho();
 
@@ -120,6 +122,10 @@ function salvarCarrinho() {
         }
 
 
+        window.CarrinhoSync
+            ?.notificarAlteracao();
+
+
     } catch (erro) {
 
         console.error(
@@ -137,6 +143,23 @@ function salvarCarrinho() {
     }
 
 }
+
+
+document.addEventListener(
+    "carrinho:sincronizado",
+    () => {
+
+        if (!document.getElementById("lista-carrinho")) {
+
+            return;
+
+        }
+
+        carregarCarrinho();
+        atualizarCarrinho();
+
+    }
+);
 
 
 // ==========================================

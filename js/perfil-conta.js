@@ -367,6 +367,8 @@
             localStorage.removeItem("loja_id");
             localStorage.removeItem("nome_loja");
             localStorage.removeItem("carrinho");
+            localStorage.removeItem("carrinho_usuario_id");
+            localStorage.removeItem("carrinho_sincronizacao_pendente");
 
             await window.db.auth.signOut();
 
