@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Consulte os produtos salvos nos seus favoritos do Comércio da Cidade." />
+  <title>Meus Favoritos | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css" />
+  <link rel="stylesheet" href="components/feedback.css" />
+  <link rel="stylesheet" href="components/favoritos.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/favoritos.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+</head>
+
+<body class="pagina-favoritos">
+  <div id="header"></div>
+
+  <main class="favoritos-main">
+    <nav class="favoritos-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html">
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        Início
+      </a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span>Meus Favoritos</span>
+    </nav>
+
+    <section class="favoritos-hero" aria-labelledby="titulo-favoritos">
+      <div class="favoritos-hero-icone" aria-hidden="true">
+        <i class="fa-solid fa-heart"></i>
+      </div>
+
+      <div class="favoritos-hero-texto">
+        <span class="favoritos-eyebrow">Sua seleção</span>
+        <h1 id="titulo-favoritos">Meus Favoritos</h1>
+        <p>Guarde produtos interessantes e adicione ao carrinho quando quiser.</p>
+      </div>
+
+      <div class="favoritos-resumo" aria-live="polite">
+        <strong id="total-favoritos">—</strong>
+        <span id="rotulo-total-favoritos">produtos salvos</span>
+      </div>
+    </section>
+
+    <section class="favoritos-secao" aria-labelledby="titulo-lista-favoritos">
+      <div class="favoritos-secao-cabecalho">
+        <div>
+          <span class="favoritos-eyebrow">Produtos salvos</span>
+          <h2 id="titulo-lista-favoritos">Escolha o próximo item</h2>
+        </div>
+
+        <a href="index.html#produtos-globais" class="favoritos-explorar">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          Explorar produtos
+        </a>
+      </div>
+
+      <div
+        id="lista-favoritos"
+        class="favoritos-grade"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <div class="favoritos-estado">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          <h3>Carregando seus favoritos...</h3>
+          <p>Estamos buscando os produtos que você salvou.</p>
+        </div>
+      </div>
+
+      <nav
+        id="paginacao-favoritos"
+        class="favoritos-paginacao"
+        aria-label="Paginação dos favoritos"
+        hidden
+      ></nav>
+    </section>
+  </main>
+
+  <footer class="footer-home">
+    <div class="footer-home-container">
+      <div class="footer-marca">
+        <div class="footer-logo">
+          <i class="fa-solid fa-store" aria-hidden="true"></i>
+          <strong>Comércio da Cidade</strong>
+        </div>
+        <p>Conectando pessoas aos comércios da própria cidade.</p>
+      </div>
+
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
+        <a href="index.html#categorias">Categorias</a>
+        <a href="index.html#produtos-globais">Produtos</a>
+        <a href="carrinho.html">Carrinho</a>
+      </nav>
+    </div>
+
+    <div class="footer-copyright">
+      <p>© 2026 Comércio da Cidade. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="components/favoritos.js"></script>
+  <script src="js/favoritos.js"></script>
+</body>
+</html>

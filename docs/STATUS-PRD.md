@@ -3,7 +3,7 @@
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
 **PRD:** `PRD-Marketplace.md` — versão 1.0
 **Branch de referência:** `main`
-**Atualizado em:** 27/08/2026
+**Atualizado em:** 28/08/2026
 
 Este documento compara o PRD com o código, as migrations e os testes atualmente versionados. Ele substitui a auditoria inicial, que não representava mais o estado da `main` após as PRs de conclusão do MVP, aprovação de lojas, estoque, paginação e hardening.
 
@@ -19,8 +19,8 @@ Este documento compara o PRD com o código, as migrations e os testes atualmente
 | Classificação | Quantidade |
 |---|---:|
 | ✅ Concluído e validado | 3 |
-| 🟡 Parcial | 16 |
-| ❌ Pendente | 4 |
+| 🟡 Parcial | 17 |
+| ❌ Pendente | 3 |
 | 🔵 Fora do MVP atual | 4 |
 | **Total** | **27** |
 
@@ -36,7 +36,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-04 — Perfil** | ✅ | Nome, telefone, foto, múltiplos endereços, endereço padrão e exclusão lógica da conta implementados e validados. |
 | **RF-05 — Pesquisa** | ✅ | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados e validados no site. |
 | **RF-06 — Categorias** | 🟡 | Hierarquia, filtros públicos, página de categoria e destaques configuráveis na home implementados. Falta validar em produção a nova gestão administrativa. |
-| **RF-07 — Favoritos** | ❌ | Ainda não há tabela, página ou fluxo de favoritos. |
+| **RF-07 — Favoritos** | 🟡 | Tabela privada com RLS, coração nos catálogos, página Meus Favoritos, remoção e adição ao carrinho implementados. Falta validação no site publicado. |
 | **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência local. Faltam persistência por usuário autenticado e frete estimado por loja. |
 | **RF-09 — Checkout** | 🟡 | Checkout autenticado, pagamento manual, endereço salvo e RPC segura que gera pedidos por loja. Faltam cupons e cálculo real de frete. |
 | **RF-10 — Pedidos do Cliente** | 🟡 | Lista, detalhes, rastreio, cancelamento direto/solicitado e confirmação de recebimento implementados. Falta concluir regressão autenticada completa. |
@@ -90,17 +90,18 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - pesquisa recebeu faixa de preço efetivo, nota mínima e ordenações por vendas e avaliação.
 - métricas públicas agregadas preservam a privacidade das avaliações, clientes e pedidos.
 - painel administrativo de categorias e subcategorias com destaques dinâmicos na home, validação de hierarquia e permissões RLS exclusivas de admin.
+- favoritos privados por usuário com coração nos catálogos, página própria, paginação e envio ao carrinho.
 
 ## Pendências prioritárias do MVP
 
 1. Validar no site publicado o painel administrativo de categorias e os destaques da home.
 2. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
 3. Adicionar testes automatizados para os fluxos críticos.
-4. Implementar favoritos conforme o RF-07.
+4. Validar no site publicado o fluxo completo de favoritos do RF-07.
 
 ## Versionamento do banco
 
-As 16 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 19 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 

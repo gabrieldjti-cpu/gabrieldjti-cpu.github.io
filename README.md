@@ -53,7 +53,7 @@ As migrations incrementais estão em `supabase/migrations/`. Como as tabelas pri
 
 ## Estado do PRD
 
-O acompanhamento atualizado está em `docs/STATUS-PRD.md`. Recursos como favoritos, cupons, relatórios avançados e pagamento real permanecem no roadmap.
+O acompanhamento atualizado está em `docs/STATUS-PRD.md`. Favoritos já possuem implementação completa aguardando validação no site; cupons, relatórios avançados e pagamento real permanecem no roadmap.
 
 ## Segurança
 

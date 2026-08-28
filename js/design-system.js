@@ -28,6 +28,7 @@
         cliente: new Set([
             "perfil.html",
             "carrinho.html",
+            "favoritos.html",
             "checkout.html",
             "meus-pedidos.html",
             "historico-compras.html"
