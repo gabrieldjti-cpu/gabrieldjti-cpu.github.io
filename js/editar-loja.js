@@ -621,6 +621,15 @@ function preencherFormulario(
     );
 
 
+    definirValor(
+        "taxa-entrega",
+        Number(
+            dados.taxa_entrega ||
+            0
+        ).toFixed(2)
+    );
+
+
     // ==================================
     // STATUS
     // ==================================
@@ -670,7 +679,7 @@ function definirValor(
     if (elemento) {
 
         elemento.value =
-            valor || "";
+            valor ?? "";
 
     }
 
@@ -1366,6 +1375,14 @@ async function salvarAlteracoes(
         );
 
 
+    const taxaEntrega =
+        Number(
+            valorCampo(
+                "taxa-entrega"
+            )
+        );
+
+
     const ativaElemento =
         document.getElementById(
             "ativa"
@@ -1437,6 +1454,33 @@ async function salvarAlteracoes(
 
 
         categoria?.focus();
+
+
+        return;
+
+    }
+
+
+    // ==================================
+    // TAXA DE ENTREGA
+    // ==================================
+
+    if (
+        !Number.isFinite(taxaEntrega) ||
+        taxaEntrega < 0 ||
+        taxaEntrega > 9999.99
+    ) {
+
+        notificar(
+            "Informe uma taxa de entrega entre R$ 0,00 e R$ 9.999,99.",
+            "aviso",
+            "Taxa de entrega inválida"
+        );
+
+
+        focarCampo(
+            "taxa-entrega"
+        );
 
 
         return;
@@ -1604,6 +1648,11 @@ async function salvarAlteracoes(
             horario_fechamento:
                 fechamento ||
                 null,
+
+            taxa_entrega:
+                Math.round(
+                    taxaEntrega * 100
+                ) / 100,
 
             ativa,
 

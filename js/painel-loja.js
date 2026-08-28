@@ -666,6 +666,8 @@ async function carregarPedidos() {
                 cliente_id,
                 loja_id,
                 status,
+                subtotal_produtos,
+                frete,
                 valor_total,
                 forma_pagamento,
                 observacoes,

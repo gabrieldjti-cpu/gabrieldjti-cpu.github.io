@@ -5,6 +5,12 @@
 
 let carrinho = [];
 
+let fretesPorLoja = new Map();
+
+let fretesCarregados = false;
+
+let erroFreteNotificado = false;
+
 
 // ==========================================
 // INICIAR
@@ -21,6 +27,8 @@ document.addEventListener(
         await window.CarrinhoSync?.iniciar();
 
         carregarCarrinho();
+
+        await carregarFretesCarrinho();
 
         atualizarCarrinho();
 
@@ -147,7 +155,7 @@ function salvarCarrinho() {
 
 document.addEventListener(
     "carrinho:sincronizado",
-    () => {
+    async () => {
 
         if (!document.getElementById("lista-carrinho")) {
 
@@ -156,10 +164,86 @@ document.addEventListener(
         }
 
         carregarCarrinho();
+        await carregarFretesCarrinho();
         atualizarCarrinho();
 
     }
 );
+
+
+// ==========================================
+// CARREGAR FRETES DAS LOJAS
+// ==========================================
+
+async function carregarFretesCarrinho(
+    opcoes = {}
+) {
+
+    const lojaIds = [
+        ...new Set(
+            carrinho
+                .map(produto => String(produto.loja_id || ""))
+                .filter(Boolean)
+        )
+    ];
+
+
+    if (!window.FreteLoja) {
+
+        fretesCarregados = false;
+        return false;
+
+    }
+
+
+    try {
+
+        fretesPorLoja =
+            await window.FreteLoja.carregar(
+                lojaIds,
+                opcoes
+            );
+
+
+        fretesCarregados =
+            fretesPorLoja.size === lojaIds.length;
+
+
+        erroFreteNotificado = false;
+        return fretesCarregados;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar frete das lojas:",
+            erro
+        );
+
+
+        fretesCarregados = false;
+
+
+        if (!erroFreteNotificado) {
+
+            erroFreteNotificado = true;
+
+
+            notificar(
+                "Não foi possível calcular a entrega. Atualize a página e tente novamente.",
+                "erro",
+                "Frete indisponível",
+                5500
+            );
+
+        }
+
+
+        return false;
+
+    }
+
+}
 
 
 // ==========================================
@@ -192,6 +276,12 @@ function atualizarCarrinho() {
         );
 
 
+    const freteTotal =
+        document.getElementById(
+            "frete-total"
+        );
+
+
     const btnFinalizar =
         document.getElementById(
             "btn-finalizar"
@@ -202,7 +292,8 @@ function atualizarCarrinho() {
         !lista ||
         !quantidade ||
         !subtotal ||
-        !total
+        !total ||
+        !freteTotal
     ) {
 
         console.error(
@@ -264,6 +355,10 @@ function atualizarCarrinho() {
             "R$ 0,00";
 
 
+        freteTotal.textContent =
+            "R$ 0,00";
+
+
         if (btnFinalizar) {
 
             btnFinalizar.disabled =
@@ -301,7 +396,7 @@ function atualizarCarrinho() {
     if (btnFinalizar) {
 
         btnFinalizar.disabled =
-            false;
+            !fretesCarregados;
 
     }
 
@@ -318,7 +413,11 @@ function atualizarCarrinho() {
         0;
 
 
-    let valorTotal =
+    let valorSubtotal =
+        0;
+
+
+    let valorFrete =
         0;
 
 
@@ -335,6 +434,10 @@ function atualizarCarrinho() {
 
             let itensLoja =
                 "";
+
+
+            let subtotalLoja =
+                0;
 
 
             grupo.itens.forEach(
@@ -361,7 +464,11 @@ function atualizarCarrinho() {
                         quantidadeProduto;
 
 
-                    valorTotal +=
+                    subtotalLoja +=
+                        subtotalProduto;
+
+
+                    valorSubtotal +=
                         subtotalProduto;
 
 
@@ -373,6 +480,27 @@ function atualizarCarrinho() {
 
                 }
             );
+
+
+            const freteLoja =
+                fretesCarregados
+                    ? window.FreteLoja.obterTaxa(
+                        fretesPorLoja,
+                        grupo.id
+                    )
+                    : 0;
+
+
+            valorFrete +=
+                freteLoja;
+
+
+            const textoFrete =
+                fretesCarregados
+                    ? freteLoja > 0
+                        ? formatarMoeda(freteLoja)
+                        : "Grátis"
+                    : "Indisponível";
 
 
             html += `
@@ -392,6 +520,20 @@ function atualizarCarrinho() {
                     </div>
 
                     ${itensLoja}
+
+                    <div class="resumo-grupo-loja">
+
+                        <div>
+                            <span>Produtos</span>
+                            <strong>${formatarMoeda(subtotalLoja)}</strong>
+                        </div>
+
+                        <div>
+                            <span>Entrega</span>
+                            <strong>${textoFrete}</strong>
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -415,14 +557,24 @@ function atualizarCarrinho() {
 
     subtotal.textContent =
         formatarMoeda(
-            valorTotal
+            valorSubtotal
         );
+
+
+    freteTotal.textContent =
+        fretesCarregados
+            ? valorFrete > 0
+                ? formatarMoeda(valorFrete)
+                : "Grátis"
+            : "Indisponível";
 
 
     total.textContent =
-        formatarMoeda(
-            valorTotal
-        );
+        fretesCarregados
+            ? formatarMoeda(
+                valorSubtotal + valorFrete
+            )
+            : "—";
 
 
     atualizarAvisoMultiloja(
@@ -1480,6 +1632,20 @@ function finalizarCompra() {
             "Adicione pelo menos um produto antes de continuar.",
             "aviso",
             "Carrinho vazio"
+        );
+
+
+        return;
+
+    }
+
+
+    if (!fretesCarregados) {
+
+        notificar(
+            "Aguarde o cálculo da entrega antes de continuar.",
+            "aviso",
+            "Frete não calculado"
         );
 
 

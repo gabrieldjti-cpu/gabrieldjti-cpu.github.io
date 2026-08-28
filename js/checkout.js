@@ -11,6 +11,12 @@ let pedidosPorLoja = {};
 
 let totalPedido = 0;
 
+let subtotalPedido = 0;
+
+let fretePedido = 0;
+
+let fretesPorLoja = new Map();
+
 
 // ==========================================
 // INICIAR
@@ -120,6 +126,31 @@ document.addEventListener(
         // ==================================
 
         agruparProdutosPorLoja();
+
+
+        const freteCarregado =
+            await carregarFretesCheckout();
+
+
+        if (!freteCarregado) {
+
+            const btnFinalizar =
+                document.getElementById(
+                    "btn-finalizar"
+                );
+
+
+            if (btnFinalizar) {
+
+                btnFinalizar.disabled =
+                    true;
+
+            }
+
+
+            return;
+
+        }
 
         mostrarResumo();
 
@@ -297,6 +328,82 @@ async function verificarUsuario() {
 
 
 // ==========================================
+// CARREGAR FRETES DAS LOJAS
+// ==========================================
+
+async function carregarFretesCheckout() {
+
+    const lojaIds =
+        Object.keys(
+            pedidosPorLoja
+        );
+
+
+    if (!window.FreteLoja) {
+
+        notificar(
+            "Não foi possível iniciar o cálculo da entrega.",
+            "erro",
+            "Frete indisponível"
+        );
+
+
+        return false;
+
+    }
+
+
+    try {
+
+        fretesPorLoja =
+            await window.FreteLoja.carregar(
+                lojaIds,
+                {
+                    forcar: true
+                }
+            );
+
+
+        Object.values(
+            pedidosPorLoja
+        ).forEach(loja => {
+
+            loja.taxa_entrega =
+                window.FreteLoja.obterTaxa(
+                    fretesPorLoja,
+                    loja.loja_id
+                );
+
+        });
+
+
+        return fretesPorLoja.size === lojaIds.length;
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar fretes no checkout:",
+            erro
+        );
+
+
+        notificar(
+            "Não foi possível calcular a entrega. Volte ao carrinho e tente novamente.",
+            "erro",
+            "Frete indisponível",
+            6000
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+// ==========================================
 // CARREGAR CARRINHO
 // ==========================================
 
@@ -443,10 +550,17 @@ function mostrarResumo() {
         );
 
 
+    const freteElemento =
+        document.getElementById(
+            "frete"
+        );
+
+
     if (
         !lista ||
         !subtotalElemento ||
-        !totalElemento
+        !totalElemento ||
+        !freteElemento
     ) {
 
         console.error(
@@ -464,6 +578,14 @@ function mostrarResumo() {
 
 
     totalPedido =
+        0;
+
+
+    subtotalPedido =
+        0;
+
+
+    fretePedido =
         0;
 
 
@@ -505,7 +627,7 @@ function mostrarResumo() {
                             subtotal;
 
 
-                        totalPedido +=
+                        subtotalPedido +=
                             subtotal;
 
 
@@ -519,6 +641,26 @@ function mostrarResumo() {
 
                     }
                 );
+
+
+                const freteLoja =
+                    Number(
+                        loja.taxa_entrega ||
+                        0
+                    );
+
+
+                const totalLoja =
+                    subtotalLoja +
+                    freteLoja;
+
+
+                fretePedido +=
+                    freteLoja;
+
+
+                totalPedido +=
+                    totalLoja;
 
 
                 lista.insertAdjacentHTML(
@@ -541,19 +683,26 @@ function mostrarResumo() {
                             ${htmlProdutos}
 
 
-                            <div class="checkout-subtotal-loja">
+                            <div class="checkout-valores-loja">
 
-                                <span>
-                                    Subtotal da loja
-                                </span>
+                                <div>
+                                    <span>Produtos</span>
+                                    <strong>${formatarMoeda(subtotalLoja)}</strong>
+                                </div>
 
-                                <strong>
+                                <div>
+                                    <span>Entrega</span>
+                                    <strong>${
+                                        freteLoja > 0
+                                            ? formatarMoeda(freteLoja)
+                                            : "Grátis"
+                                    }</strong>
+                                </div>
 
-                                    ${formatarMoeda(
-                                        subtotalLoja
-                                    )}
-
-                                </strong>
+                                <div class="checkout-total-loja">
+                                    <span>Total da loja</span>
+                                    <strong>${formatarMoeda(totalLoja)}</strong>
+                                </div>
 
                             </div>
 
@@ -568,8 +717,16 @@ function mostrarResumo() {
 
     subtotalElemento.textContent =
         formatarMoeda(
-            totalPedido
+            subtotalPedido
         );
+
+
+    freteElemento.textContent =
+        fretePedido > 0
+            ? formatarMoeda(
+                fretePedido
+            )
+            : "Grátis";
 
 
     totalElemento.textContent =
@@ -1268,6 +1425,43 @@ async function finalizarCompra() {
 
 
     try {
+
+        // Confirma a taxa mais recente antes de criar o pedido.
+        // Se ela mudou, o cliente precisa revisar o novo total.
+
+        const freteExibido =
+            fretePedido;
+
+
+        const freteAtualizado =
+            await carregarFretesCheckout();
+
+
+        if (!freteAtualizado) {
+
+            throw new Error(
+                "Não foi possível confirmar a taxa de entrega. Tente novamente."
+            );
+
+        }
+
+
+        mostrarResumo();
+
+
+        if (
+            Math.abs(
+                fretePedido -
+                freteExibido
+            ) > 0.009
+        ) {
+
+            throw new Error(
+                "A taxa de entrega foi atualizada. Confira o novo total e finalize novamente."
+            );
+
+        }
+
 
         // ==================================
         // GARANTIR SESSÃO

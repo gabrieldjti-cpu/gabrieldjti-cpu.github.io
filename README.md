@@ -17,8 +17,8 @@ Marketplace web multi-lojas para conectar clientes e comerciantes locais em um �
 - páginas de categoria com lojas, produtos e filtros hierárquicos;
 - painel administrativo de categorias, subcategorias e destaques da página inicial;
 - produtos organizados por categoria e subcategoria, preço promocional e controle de estoque;
-- carrinho com produtos de múltiplas lojas, persistido por conta autenticada e mesclado após o login;
-- checkout manual com endereço salvo;
+- carrinho com produtos de múltiplas lojas, persistido por conta autenticada, mesclado após o login e com frete estimado por loja;
+- checkout manual com endereço salvo e resumo separado de produtos, entrega e total;
 - gestão de pedidos, rastreio e cancelamento;
 - avaliações e resposta do lojista;
 - histórico de compras e recompra;
