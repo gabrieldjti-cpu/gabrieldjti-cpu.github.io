@@ -730,6 +730,16 @@
                 <div class="produto-global-imagem">
                     ${imagem}
                     ${temPromocao ? '<span class="produto-global-oferta"><i class="fa-solid fa-tag" aria-hidden="true"></i> Oferta</span>' : ""}
+                    <button
+                        type="button"
+                        class="btn-favorito-produto"
+                        data-favorito-produto="${produtoId}"
+                        data-favorito-nome="${escaparAtributo(produto.nome || "Produto")}"
+                        aria-label="Adicionar ${nome} aos favoritos"
+                        aria-pressed="false"
+                    >
+                        <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    </button>
                 </div>
 
                 <div class="produto-global-conteudo">

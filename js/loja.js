@@ -2381,6 +2381,17 @@ function criarCardProduto(
 
             <div class="area-imagem-produto">
 
+                <button
+                    type="button"
+                    class="btn-favorito-produto"
+                    data-favorito-produto="${produtoId}"
+                    data-favorito-nome="${nome}"
+                    aria-label="Adicionar ${nome} aos favoritos"
+                    aria-pressed="false"
+                >
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+
                 <img
                     src="${escaparHTML(
                         produto.imagem_url
@@ -2410,6 +2421,17 @@ function criarCardProduto(
         imagemHTML = `
 
             <div class="area-imagem-produto">
+
+                <button
+                    type="button"
+                    class="btn-favorito-produto"
+                    data-favorito-produto="${produtoId}"
+                    data-favorito-nome="${nome}"
+                    aria-label="Adicionar ${nome} aos favoritos"
+                    aria-pressed="false"
+                >
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
 
                 <div
                     class="imagem-produto-placeholder"

@@ -104,6 +104,20 @@
 
 
                         <a
+                            href="favoritos.html"
+                            id="btnFavoritos"
+                        >
+
+                            <i class="fa-solid fa-heart"></i>
+
+                            <span>
+                                Favoritos
+                            </span>
+
+                        </a>
+
+
+                        <a
                             href="carrinho.html"
                             class="btn-carrinho"
                         >

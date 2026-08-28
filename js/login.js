@@ -8,6 +8,7 @@ const email = document.getElementById("email");
 const senha = document.getElementById("senha");
 const btnMostrarSenha = document.getElementById("toggleSenha");
 const btnLogin = document.querySelector(".btn-login");
+const CHAVE_RETORNO_FAVORITOS = "destino_apos_login_favoritos";
 
 if (!window.db) {
     console.error("Erro: Supabase não foi inicializado.");
@@ -53,6 +54,38 @@ if (btnMostrarSenha && senha) {
 
 function aguardarLogin(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function obterRetornoFavoritosSeguro() {
+    let destino = "";
+
+    try {
+        destino = sessionStorage.getItem(CHAVE_RETORNO_FAVORITOS) || "";
+        sessionStorage.removeItem(CHAVE_RETORNO_FAVORITOS);
+    } catch (erro) {
+        console.warn("Não foi possível recuperar o destino após o login:", erro);
+        return null;
+    }
+
+    const paginasPermitidas = new Set([
+        "index.html",
+        "categoria.html",
+        "loja.html",
+        "favoritos.html"
+    ]);
+
+    try {
+        const url = new URL(destino, window.location.origin);
+        const arquivo = url.pathname.split("/").pop() || "index.html";
+
+        if (url.origin !== window.location.origin || !paginasPermitidas.has(arquivo)) {
+            return null;
+        }
+
+        return `${arquivo}${url.search}${url.hash}`;
+    } catch (erro) {
+        return null;
+    }
 }
 
 async function obterDestinoAposLogin() {
@@ -194,10 +227,13 @@ if (form && email && senha && btnLogin && window.db) {
 
             console.log("Login realizado:", data.user.id);
 
-            const destino = await obterDestinoAposLogin();
+            const destinoPerfil = await obterDestinoAposLogin();
 
             // Se o guard do RF04 bloqueou a conta, ele cuida do logout/redirecionamento.
-            if (!destino) return;
+            if (!destinoPerfil) return;
+
+            const destinoSolicitado = obterRetornoFavoritosSeguro();
+            const destino = destinoSolicitado || destinoPerfil;
 
             mostrarAlerta(
                 "Login realizado com sucesso.",
