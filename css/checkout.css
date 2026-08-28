@@ -816,19 +816,16 @@ input[type="radio"] {
 
 
 /* ==========================================
-   SUBTOTAL POR LOJA
+   VALORES POR LOJA
 ========================================== */
 
-.checkout-subtotal-loja {
+.checkout-valores-loja {
 
     display:
-        flex;
-
-    justify-content:
-        space-between;
+        grid;
 
     gap:
-        15px;
+        7px;
 
     padding:
         11px
@@ -846,10 +843,45 @@ input[type="radio"] {
 }
 
 
-.checkout-subtotal-loja strong {
+.checkout-valores-loja > div {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+}
+
+
+.checkout-valores-loja strong {
 
     color:
         var(--text);
+
+}
+
+
+.checkout-valores-loja .checkout-total-loja {
+
+    margin-top:
+        2px;
+
+    padding-top:
+        7px;
+
+    border-top:
+        1px solid
+        var(--border);
+
+    color:
+        var(--text);
+
+    font-weight:
+        700;
 
 }
 

@@ -425,6 +425,8 @@ async function carregarHistoricoCompras() {
                     cliente_id,
                     loja_id,
                     status,
+                    subtotal_produtos,
+                    frete,
                     valor_total,
                     created_at,
                     lojas (
@@ -757,8 +759,25 @@ function criarCardHistorico(pedido) {
 
             <footer class="historico-card-rodape">
                 <div class="historico-total">
-                    <span>Total do pedido</span>
-                    <strong>${formatarMoedaHistorico(pedido.valor_total)}</strong>
+                    <div>
+                        <span>Produtos</span>
+                        <strong>${formatarMoedaHistorico(
+                            pedido.subtotal_produtos ??
+                            pedido.valor_total
+                        )}</strong>
+                    </div>
+
+                    <div>
+                        <span>Entrega</span>
+                        <strong>${Number(pedido.frete || 0) > 0
+                            ? formatarMoedaHistorico(pedido.frete)
+                            : "Grátis"}</strong>
+                    </div>
+
+                    <div class="historico-total-geral">
+                        <span>Total do pedido</span>
+                        <strong>${formatarMoedaHistorico(pedido.valor_total)}</strong>
+                    </div>
                 </div>
 
                 <button

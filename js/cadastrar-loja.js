@@ -867,6 +867,37 @@ if (form) {
                 );
 
 
+            const taxaEntrega =
+                Number(
+                    obterValor(
+                        "taxa-entrega"
+                    )
+                );
+
+
+            if (
+                !Number.isFinite(taxaEntrega) ||
+                taxaEntrega < 0 ||
+                taxaEntrega > 9999.99
+            ) {
+
+                notificar(
+                    "Informe uma taxa de entrega entre R$ 0,00 e R$ 9.999,99.",
+                    "aviso",
+                    "Taxa de entrega inválida"
+                );
+
+
+                focarCampo(
+                    "taxa-entrega"
+                );
+
+
+                return;
+
+            }
+
+
             // ==================================
             // VALIDAÇÃO DO NOME
             // ==================================
@@ -1085,6 +1116,11 @@ if (form) {
                     horario_fechamento:
                         fechamento ||
                         null,
+
+                    taxa_entrega:
+                        Math.round(
+                            taxaEntrega * 100
+                        ) / 100,
 
                     logo_url:
                         logoUrl,

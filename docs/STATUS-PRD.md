@@ -37,8 +37,8 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-05 — Pesquisa** | ✅ | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados e validados no site. |
 | **RF-06 — Categorias** | 🟡 | Hierarquia, filtros públicos, página de categoria e destaques configuráveis na home implementados. Falta validar em produção a nova gestão administrativa. |
 | **RF-07 — Favoritos** | 🟡 | Tabela privada com RLS, coração nos catálogos, página Meus Favoritos, remoção e adição ao carrinho implementados. Falta validação no site publicado. |
-| **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque e persistência por usuário autenticado implementados; visitantes continuam com armazenamento local e o carrinho é mesclado no login. Falta o frete estimado por loja. |
-| **RF-09 — Checkout** | 🟡 | Checkout autenticado, pagamento manual, endereço salvo e RPC segura que gera pedidos por loja. Faltam cupons e cálculo real de frete. |
+| **RF-08 — Carrinho** | 🟡 | Agrupamento por loja, quantidades, estoque, persistência por usuário e frete fixo estimado por loja implementados. Visitantes continuam com armazenamento local e o carrinho é mesclado no login. Falta validar o frete no site publicado. |
+| **RF-09 — Checkout** | 🟡 | Checkout autenticado, pagamento manual, endereço salvo, resumo de produtos/frete/total e RPC segura que gera pedidos por loja com snapshot dos valores. Faltam cupons e frete calculado por distância ou transportadora. |
 | **RF-10 — Pedidos do Cliente** | 🟡 | Lista, detalhes, rastreio, cancelamento direto/solicitado e confirmação de recebimento implementados. Falta concluir regressão autenticada completa. |
 | **RF-11 — Avaliações** | 🟡 | Cliente avalia compra entregue e lojista responde publicamente por RPC protegida. Falta concluir a validação pública ponta a ponta. |
 | **RF-12 — Histórico** | 🟡 | Filtros por período/loja, paginação e Comprar novamente implementados. Falta executar todo o checklist de regressão. |
@@ -92,17 +92,19 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - painel administrativo de categorias e subcategorias com destaques dinâmicos na home, validação de hierarquia e permissões RLS exclusivas de admin.
 - favoritos privados por usuário com coração nos catálogos, página própria, paginação e envio ao carrinho.
 - carrinho persistido por conta autenticada, com mesclagem do carrinho visitante, isolamento entre usuários, sincronização pendente e RLS.
+- taxa fixa de entrega configurável por loja, exibida no carrinho e checkout e gravada separadamente no pedido com recálculo seguro no servidor.
 
 ## Pendências prioritárias do MVP
 
-1. Validar no site publicado o painel administrativo de categorias e os destaques da home.
-2. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
-3. Adicionar testes automatizados para os fluxos críticos.
-4. Validar no site publicado o fluxo completo de favoritos do RF-07.
+1. Validar no site publicado o frete por loja no carrinho, checkout e detalhes do pedido.
+2. Validar no site publicado o painel administrativo de categorias e os destaques da home.
+3. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
+4. Adicionar testes automatizados para os fluxos críticos.
+5. Validar no site publicado o fluxo completo de favoritos do RF-07.
 
 ## Versionamento do banco
 
-As 20 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 21 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 

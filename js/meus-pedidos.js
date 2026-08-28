@@ -247,6 +247,8 @@ async function carregarPedidos() {
                     cliente_id,
                     loja_id,
                     status,
+                    subtotal_produtos,
+                    frete,
                     valor_total,
                     forma_pagamento,
                     observacoes,
@@ -2175,19 +2177,46 @@ function abrirDetalhesPedido(
         ${cancelamentoHTML}
 
 
-        <div class="total-detalhes">
+        <div class="valores-detalhes">
 
-            <span>
-                Total
-            </span>
+            <div class="linha-valor-detalhes">
 
-            <strong>
+                <span>Produtos</span>
 
-                ${formatarMoeda(
-                    pedido.valor_total
-                )}
+                <strong>
+                    ${formatarMoeda(
+                        pedido.subtotal_produtos ??
+                        pedido.valor_total
+                    )}
+                </strong>
 
-            </strong>
+            </div>
+
+
+            <div class="linha-valor-detalhes">
+
+                <span>Entrega</span>
+
+                <strong>
+                    ${Number(pedido.frete || 0) > 0
+                        ? formatarMoeda(pedido.frete)
+                        : "Grátis"}
+                </strong>
+
+            </div>
+
+
+            <div class="total-detalhes">
+
+                <span>Total</span>
+
+                <strong>
+                    ${formatarMoeda(
+                        pedido.valor_total
+                    )}
+                </strong>
+
+            </div>
 
         </div>
 

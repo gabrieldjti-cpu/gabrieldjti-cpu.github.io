@@ -300,6 +300,37 @@ a {
 
 
 /* ==========================================
+   RESUMO POR LOJA
+========================================== */
+
+.resumo-grupo-loja {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px 18px;
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+}
+
+.resumo-grupo-loja > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.resumo-grupo-loja span {
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.resumo-grupo-loja strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+
+/* ==========================================
    ITEM DO CARRINHO
 ========================================== */
 

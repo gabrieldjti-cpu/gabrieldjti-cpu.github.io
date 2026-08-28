@@ -386,14 +386,37 @@ body {
     color: inherit;
 }
 
+.historico-total {
+    display: grid;
+    gap: 6px;
+    min-width: 190px;
+}
+
+.historico-total > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
 .historico-total span {
     display: block;
-    margin-bottom: 2px;
     font-size: 0.8rem;
     color: #7b8794;
 }
 
 .historico-total strong {
+    font-size: 0.92rem;
+    color: #273142;
+}
+
+.historico-total .historico-total-geral {
+    margin-top: 2px;
+    padding-top: 7px;
+    border-top: 1px solid #edf0f3;
+}
+
+.historico-total-geral strong {
     font-size: 1.15rem;
     color: #172033;
 }

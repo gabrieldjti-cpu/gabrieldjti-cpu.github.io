@@ -328,6 +328,8 @@ async function carregarPedidos() {
                     cliente_id,
                     loja_id,
                     status,
+                    subtotal_produtos,
+                    frete,
                     valor_total,
                     forma_pagamento,
                     observacoes,
@@ -1359,6 +1361,41 @@ function criarDetalhesPedido(
                     ${formatarStatus(
                         status
                     )}
+
+                </strong>
+
+            </div>
+
+
+            <div class="detalhe-box">
+
+                <span>
+                    Produtos
+                </span>
+
+                <strong>
+
+                    ${formatarMoeda(
+                        pedido.subtotal_produtos ??
+                        pedido.valor_total
+                    )}
+
+                </strong>
+
+            </div>
+
+
+            <div class="detalhe-box">
+
+                <span>
+                    Entrega
+                </span>
+
+                <strong>
+
+                    ${Number(pedido.frete || 0) > 0
+                        ? formatarMoeda(pedido.frete)
+                        : "Grátis"}
 
                 </strong>
 
