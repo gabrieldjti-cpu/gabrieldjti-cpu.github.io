@@ -128,7 +128,8 @@
 .produto[hidden],
 .pedido-card[hidden],
 .avaliacao-card[hidden],
-.loja-admin-card[hidden] {
+.loja-admin-card[hidden],
+.categoria-admin-card[hidden] {
     display: none !important;
 }
 

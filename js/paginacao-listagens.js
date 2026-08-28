@@ -56,6 +56,13 @@
             porPagina: 6,
             rotuloSingular: "loja",
             rotuloPlural: "lojas"
+        },
+        "admin-categorias.html": {
+            container: "#listaCategoriasAdmin",
+            item: ".categoria-admin-card",
+            porPagina: 12,
+            rotuloSingular: "categoria",
+            rotuloPlural: "categorias"
         }
     };
 

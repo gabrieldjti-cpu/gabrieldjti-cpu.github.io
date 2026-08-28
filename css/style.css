@@ -473,6 +473,107 @@ main {
     color: var(--home-primary);
 }
 
+.categorias-produtos-destaque[hidden] {
+    display: none;
+}
+
+.categorias-produtos-destaque {
+    margin-top: 28px;
+    padding: 24px;
+    background: linear-gradient(135deg, #fff8f4 0%, #fff 72%);
+    border: 1px solid #ffe0d3;
+    border-radius: 22px;
+    box-shadow: 0 12px 30px rgba(30, 35, 42, 0.055);
+}
+
+.categorias-destaque-cabecalho {
+    margin-bottom: 17px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.categorias-destaque-cabecalho h3 {
+    margin: 2px 0 0;
+    color: var(--home-text);
+    font-size: 21px;
+}
+
+.categorias-destaque-cabecalho a {
+    color: var(--home-primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.categorias-destaque-cabecalho a i {
+    margin-left: 5px;
+}
+
+.lista-categorias-produtos-destaque {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 11px;
+}
+
+.categoria-produto-destaque {
+    min-width: 0;
+    padding: 13px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    background: #fff;
+    border: 1px solid #f1dfd8;
+    border-radius: 15px;
+    color: var(--home-text);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.categoria-produto-destaque:hover {
+    transform: translateY(-2px);
+    border-color: #ffc9b5;
+    box-shadow: 0 8px 20px rgba(30, 35, 42, .07);
+}
+
+.categoria-produto-destaque-icone {
+    width: 43px;
+    height: 43px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    background: var(--home-primary-soft);
+    border-radius: 12px;
+    font-size: 21px;
+}
+
+.categoria-produto-destaque > span:nth-child(2) {
+    min-width: 0;
+    flex: 1;
+}
+
+.categoria-produto-destaque strong,
+.categoria-produto-destaque small {
+    display: block;
+}
+
+.categoria-produto-destaque strong {
+    overflow: hidden;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.categoria-produto-destaque small {
+    margin-top: 2px;
+    color: var(--home-muted);
+    font-size: 10px;
+}
+
+.categoria-produto-destaque > i {
+    color: var(--home-primary);
+    font-size: 11px;
+}
+
 /* ==========================================
    LOJAS
 ========================================== */
@@ -915,6 +1016,10 @@ main {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .lista-categorias-produtos-destaque {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .cta-lojista-conteudo {
         grid-template-columns: auto 1fr;
     }
@@ -1023,6 +1128,20 @@ main {
         min-height: 105px;
         flex: 0 0 112px;
         scroll-snap-align: start;
+    }
+
+    .categorias-produtos-destaque {
+        padding: 18px;
+    }
+
+    .categorias-destaque-cabecalho {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .lista-categorias-produtos-destaque {
+        grid-template-columns: 1fr;
     }
 
     .cards,

@@ -97,6 +97,40 @@ a {
     gap: 10px;
 }
 
+.admin-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px;
+    background: #f3f6f5;
+    border: 1px solid var(--admin-border);
+    border-radius: 14px;
+}
+
+.admin-nav a {
+    min-height: 38px;
+    padding: 0 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 10px;
+    color: var(--admin-muted);
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.admin-nav a:hover {
+    color: var(--admin-primary-dark);
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.admin-nav a.ativo {
+    color: var(--admin-primary-dark);
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+}
+
 .admin-container {
     width: min(1180px, calc(100% - 32px));
     margin: 32px auto 56px;
@@ -679,6 +713,20 @@ a {
         font-size: 13px;
     }
 
+    .admin-marca small {
+        display: none;
+    }
+
+    .admin-nav a {
+        width: 40px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .admin-nav a span {
+        display: none;
+    }
+
     .admin-header-acoes .btn-admin span {
         display: none;
     }
@@ -752,6 +800,16 @@ a {
 
     .modal-acoes .btn-admin {
         width: 100%;
+    }
+}
+
+@media (max-width: 470px) {
+    .admin-marca > span:last-child {
+        display: none;
+    }
+
+    .admin-header-conteudo {
+        gap: 8px;
     }
 }
 

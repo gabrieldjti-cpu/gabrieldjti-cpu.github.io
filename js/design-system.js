@@ -43,7 +43,8 @@
             "avaliacoes-loja.html"
         ]),
         admin: new Set([
-            "admin-dashboard.html"
+            "admin-dashboard.html",
+            "admin-categorias.html"
         ]),
         publico: new Set([
             "index.html",
@@ -57,7 +58,8 @@
         "meus-pedidos.html",
         "pedidos-loja.html",
         "avaliacoes-loja.html",
-        "admin-dashboard.html"
+        "admin-dashboard.html",
+        "admin-categorias.html"
     ]);
 
     function obterGrupo() {
