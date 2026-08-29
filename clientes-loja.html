@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Área privada para o lojista acompanhar clientes e histórico de compras da sua loja."
+  />
+
+  <title>Clientes da Loja | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css" />
+  <link rel="stylesheet" href="components/feedback.css" />
+  <link rel="stylesheet" href="css/clientes-loja.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <main class="container">
+    <header class="topo-pagina">
+      <div>
+        <p class="topo-etiqueta">
+          <i class="fa-solid fa-store"></i>
+          Área do lojista
+        </p>
+
+        <h1>
+          <i class="fa-solid fa-users"></i>
+          Clientes da Loja
+        </h1>
+
+        <p id="nome-loja-clientes">
+          Acompanhe quem já comprou na sua loja.
+        </p>
+      </div>
+
+      <a href="painel-loja.html" class="btn-voltar">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar ao Painel
+      </a>
+    </header>
+
+    <aside class="aviso-privacidade" aria-label="Proteção de dados dos clientes">
+      <i class="fa-solid fa-shield-halved"></i>
+      <div>
+        <strong>Privacidade protegida</strong>
+        <p>
+          Esta área mostra somente nome e informações de compras realizadas na sua loja.
+          Dados de contato, endereço e e-mail não são compartilhados.
+        </p>
+      </div>
+    </aside>
+
+    <section class="estatisticas-clientes" aria-label="Resumo de clientes">
+      <article class="estatistica-card">
+        <span class="estatistica-icone icone-clientes">
+          <i class="fa-solid fa-user-group"></i>
+        </span>
+        <div>
+          <span>Clientes</span>
+          <strong id="estat-total-clientes">—</strong>
+        </div>
+      </article>
+
+      <article class="estatistica-card">
+        <span class="estatistica-icone icone-recorrentes">
+          <i class="fa-solid fa-rotate"></i>
+        </span>
+        <div>
+          <span>Recorrentes</span>
+          <strong id="estat-clientes-recorrentes">—</strong>
+        </div>
+      </article>
+
+      <article class="estatistica-card">
+        <span class="estatistica-icone icone-pedidos">
+          <i class="fa-solid fa-receipt"></i>
+        </span>
+        <div>
+          <span>Pedidos</span>
+          <strong id="estat-total-pedidos">—</strong>
+        </div>
+      </article>
+
+      <article class="estatistica-card">
+        <span class="estatistica-icone icone-receita">
+          <i class="fa-solid fa-sack-dollar"></i>
+        </span>
+        <div>
+          <span>Receita confirmada</span>
+          <strong id="estat-receita-total">—</strong>
+          <small id="estat-ticket-medio">Ticket médio: —</small>
+        </div>
+      </article>
+    </section>
+
+    <section class="painel-filtros" aria-labelledby="titulo-filtros-clientes">
+      <div class="filtros-topo">
+        <div>
+          <h2 id="titulo-filtros-clientes">
+            <i class="fa-solid fa-filter"></i>
+            Localizar clientes
+          </h2>
+          <p>Use os filtros para analisar o relacionamento com a loja.</p>
+        </div>
+
+        <button type="button" id="btn-atualizar-clientes" class="btn-atualizar">
+          <i class="fa-solid fa-rotate"></i>
+          Atualizar
+        </button>
+      </div>
+
+      <form id="form-filtros-clientes" class="filtros-grid" role="search">
+        <div class="campo campo-busca">
+          <label for="busca-clientes">Buscar por nome</label>
+          <div class="input-com-icone">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="search"
+              id="busca-clientes"
+              maxlength="80"
+              autocomplete="off"
+              placeholder="Digite o nome do cliente"
+            />
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="periodo-clientes">Período das compras</label>
+          <select id="periodo-clientes">
+            <option value="0">Todo o histórico</option>
+            <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="365">Últimos 12 meses</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="ordenacao-clientes">Ordenar por</label>
+          <select id="ordenacao-clientes">
+            <option value="recentes">Compra mais recente</option>
+            <option value="antigos">Primeira compra</option>
+            <option value="nome">Nome</option>
+            <option value="mais_pedidos">Mais pedidos</option>
+            <option value="maior_valor">Maior valor comprado</option>
+          </select>
+        </div>
+
+        <button type="button" id="btn-limpar-filtros" class="btn-limpar">
+          <i class="fa-solid fa-eraser"></i>
+          Limpar filtros
+        </button>
+      </form>
+    </section>
+
+    <section class="resultado-clientes" aria-labelledby="titulo-lista-clientes">
+      <div class="resultado-topo">
+        <div>
+          <h2 id="titulo-lista-clientes">Relacionamento com clientes</h2>
+          <p id="resumo-resultados-clientes" aria-live="polite">
+            Carregando clientes...
+          </p>
+        </div>
+      </div>
+
+      <div id="lista-clientes-loja" class="lista-clientes" aria-live="polite">
+        <div class="estado-clientes">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <h3>Carregando clientes...</h3>
+          <p>Aguarde enquanto organizamos o histórico da loja.</p>
+        </div>
+      </div>
+
+      <nav id="paginacao-clientes" class="paginacao" aria-label="Paginação de clientes" hidden>
+        <button type="button" id="pagina-anterior-clientes">
+          <i class="fa-solid fa-chevron-left"></i>
+          Anterior
+        </button>
+
+        <span id="info-pagina-clientes">Página 1 de 1</span>
+
+        <button type="button" id="proxima-pagina-clientes">
+          Próxima
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <div id="modal-historico-cliente" class="modal" hidden>
+    <div class="modal-fundo" data-fechar-modal-cliente></div>
+
+    <section
+      class="modal-caixa"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal-cliente"
+    >
+      <header class="modal-topo">
+        <div>
+          <span>Histórico na sua loja</span>
+          <h2 id="titulo-modal-cliente">Cliente</h2>
+        </div>
+
+        <button
+          type="button"
+          id="btn-fechar-modal-cliente"
+          class="btn-fechar-modal"
+          aria-label="Fechar histórico do cliente"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </header>
+
+      <div class="modal-resumo" id="resumo-modal-cliente"></div>
+
+      <div id="lista-historico-cliente" class="lista-historico" aria-live="polite"></div>
+
+      <nav
+        id="paginacao-historico-cliente"
+        class="paginacao paginacao-modal"
+        aria-label="Paginação do histórico do cliente"
+        hidden
+      >
+        <button type="button" id="historico-anterior">
+          <i class="fa-solid fa-chevron-left"></i>
+          Anterior
+        </button>
+
+        <span id="info-pagina-historico">Página 1 de 1</span>
+
+        <button type="button" id="historico-proximo">
+          Próxima
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </nav>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/carrinho-sync.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="js/clientes-loja.js"></script>
+</body>
+
+</html>
