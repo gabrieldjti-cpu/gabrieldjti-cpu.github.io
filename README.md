@@ -20,6 +20,7 @@ Marketplace web multi-lojas para conectar clientes e comerciantes locais em um �
 - carrinho com produtos de múltiplas lojas, persistido por conta autenticada, mesclado após o login e com frete estimado por loja;
 - checkout manual com endereço salvo e resumo separado de produtos, entrega e total;
 - gestão de pedidos, rastreio e cancelamento;
+- painel privado de clientes do lojista, com métricas e histórico de pedidos;
 - avaliações e resposta do lojista;
 - histórico de compras e recompra;
 - dashboards de lojista e administrador.
@@ -53,7 +54,7 @@ As migrations incrementais estão em `supabase/migrations/`. Como as tabelas pri
 
 ## Estado do PRD
 
-O acompanhamento atualizado está em `docs/STATUS-PRD.md`. Favoritos já possuem implementação completa aguardando validação no site; cupons, relatórios avançados e pagamento real permanecem no roadmap.
+O acompanhamento atualizado está em `docs/STATUS-PRD.md`. O painel de clientes do lojista está implementado e aguarda validação no site; cupons, relatórios avançados e pagamento real permanecem no roadmap.
 
 ## Segurança
 
