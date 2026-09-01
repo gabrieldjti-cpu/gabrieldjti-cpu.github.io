@@ -272,6 +272,14 @@ if (form && email && senha && btnLogin && window.db) {
 function obterMensagemErroLogin(erro) {
     const mensagem = String(erro?.message || "").toLowerCase();
 
+    if (
+        mensagem.includes("user is banned") ||
+        mensagem.includes("user_banned") ||
+        mensagem.includes("banned")
+    ) {
+        return "Esta conta foi bloqueada pela administração. Entre em contato com o suporte para solicitar uma revisão.";
+    }
+
     if (mensagem.includes("invalid login credentials")) {
         return "E-mail ou senha incorretos. Confira seus dados e tente novamente.";
     }

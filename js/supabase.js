@@ -69,7 +69,7 @@ if (!window.supabase) {
 
 
 // =======================================
-// GUARDA DE CONTA EXCLUÍDA — RF-04
+// GUARDA DE CONTA INATIVA — RF-04 / RF-22
 // =======================================
 
 let verificandoContaRF04 = false;
@@ -99,25 +99,45 @@ async function verificarContaAtivaRF04(opcoes = {}) {
             return true;
         }
 
-        const { data: ativa, error } =
-            await window.db.rpc("minha_conta_ativa");
+        let statusConta = "ativa";
+        let { data: status, error } =
+            await window.db.rpc("meu_status_conta");
 
+        // Compatibilidade durante a publicação: a guarda antiga continua
+        // funcionando caso o frontend chegue antes da migration RF-22.
         if (error) {
-            console.warn("Não foi possível verificar o estado da conta:", error);
-            return true;
+            const resultadoLegado = await window.db.rpc("minha_conta_ativa");
+
+            if (resultadoLegado.error) {
+                console.warn(
+                    "Não foi possível verificar o estado da conta:",
+                    resultadoLegado.error
+                );
+                return true;
+            }
+
+            statusConta = resultadoLegado.data === false ? "excluida" : "ativa";
+        } else {
+            statusConta = status || "sem_perfil";
         }
 
-        if (ativa === false) {
+        if (statusConta === "excluida" || statusConta === "bloqueada") {
             limparDadosLocaisDaContaRF04();
-            sessionStorage.setItem("conta_excluida_rf04", "1");
+            const bloqueada = statusConta === "bloqueada";
+            const chaveAviso = bloqueada
+                ? "conta_bloqueada_rf22"
+                : "conta_excluida_rf04";
+            const parametro = bloqueada ? "bloqueada" : "excluida";
+
+            sessionStorage.setItem(chaveAviso, "1");
 
             await window.db.auth.signOut();
 
             if (opcoes.redirecionar !== false) {
-                const destino = "login.html?conta=excluida";
+                const destino = `login.html?conta=${parametro}`;
                 const pagina = paginaAtualRF04();
 
-                if (pagina !== "login.html" || !window.location.search.includes("conta=excluida")) {
+                if (pagina !== "login.html" || !window.location.search.includes(`conta=${parametro}`)) {
                     window.location.href = destino;
                 }
             }
@@ -136,28 +156,37 @@ async function verificarContaAtivaRF04(opcoes = {}) {
 
 window.verificarContaAtivaRF04 = verificarContaAtivaRF04;
 
-function notificarContaExcluidaRF04() {
+function notificarContaInativaRF04() {
     if (paginaAtualRF04() !== "login.html") return;
 
     const parametros = new URLSearchParams(window.location.search);
     const excluida =
         parametros.get("conta") === "excluida" ||
         sessionStorage.getItem("conta_excluida_rf04") === "1";
+    const bloqueada =
+        parametros.get("conta") === "bloqueada" ||
+        sessionStorage.getItem("conta_bloqueada_rf22") === "1";
 
-    if (!excluida) return;
+    if (!excluida && !bloqueada) return;
 
     sessionStorage.removeItem("conta_excluida_rf04");
+    sessionStorage.removeItem("conta_bloqueada_rf22");
 
     const mostrar = () => {
         if (typeof window.mostrarAlerta === "function") {
+            const mensagem = bloqueada
+                ? "Esta conta foi bloqueada pela administração. Entre em contato com o suporte para solicitar uma revisão."
+                : "Esta conta foi excluída e não pode mais ser utilizada.";
+            const titulo = bloqueada ? "Conta bloqueada" : "Conta excluída";
+
             window.mostrarAlerta(
-                "Esta conta foi excluída e não pode mais ser utilizada.",
+                mensagem,
                 "info",
-                "Conta excluída",
+                titulo,
                 6000
             );
 
-            if (window.location.search.includes("conta=excluida")) {
+            if (parametros.has("conta")) {
                 window.history.replaceState({}, "", "login.html");
             }
 
@@ -172,7 +201,7 @@ function notificarContaExcluidaRF04() {
 
 function iniciarGuardaContaRF04() {
     verificarContaAtivaRF04({ redirecionar: true });
-    notificarContaExcluidaRF04();
+    notificarContaInativaRF04();
 }
 
 if (window.db) {
