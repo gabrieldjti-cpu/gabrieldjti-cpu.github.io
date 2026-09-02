@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gestão administrativa de usuários do Comércio da Cidade.">
+    <title>Usuários | Administração | Comércio da Cidade</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/admin-usuarios.css">
+    <link rel="stylesheet" href="css/paginacao-listagens.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="admin-header-conteudo">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
+                <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
+                <span>
+                    <strong>Comércio da Cidade</strong>
+                    <small>Administração</small>
+                </span>
+            </a>
+
+            <nav class="admin-nav" aria-label="Áreas administrativas">
+                <a href="admin-dashboard.html">
+                    <i class="fa-solid fa-shop"></i>
+                    <span>Lojas</span>
+                </a>
+                <a href="admin-usuarios.html" class="ativo" aria-current="page">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="admin-categorias.html">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Categorias</span>
+                </a>
+            </nav>
+
+            <div class="admin-header-acoes">
+                <a href="index.html" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Ver site</span>
+                </a>
+                <button type="button" id="btnSairAdmin" class="btn-admin btn-sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <section class="admin-intro">
+            <div>
+                <span class="eyebrow">RF-22 · Controle de acesso</span>
+                <h1>Gestão de usuários</h1>
+                <p>Localize contas, acompanhe sua utilização e administre bloqueios e papéis com registro de auditoria.</p>
+            </div>
+            <button type="button" id="btnAtualizarUsuarios" class="btn-admin btn-primario">
+                <i class="fa-solid fa-rotate"></i>
+                Atualizar
+            </button>
+        </section>
+
+        <aside class="aviso-privacidade-admin" aria-label="Proteção dos dados dos usuários">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <strong>Dados administrativos protegidos</strong>
+                <p>Esta área apresenta somente identificação, acesso e informações consolidadas de uso. Endereços, telefones e senhas nunca são exibidos.</p>
+            </div>
+        </aside>
+
+        <section class="metricas-admin" aria-label="Resumo dos usuários">
+            <article class="metrica-card">
+                <span class="metrica-icone"><i class="fa-solid fa-users"></i></span>
+                <div>
+                    <small>Total de usuários</small>
+                    <strong id="metricaTotalUsuarios">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card metrica-ativa">
+                <span class="metrica-icone"><i class="fa-solid fa-user-check"></i></span>
+                <div>
+                    <small>Contas ativas</small>
+                    <strong id="metricaUsuariosAtivos">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card metrica-bloqueada">
+                <span class="metrica-icone"><i class="fa-solid fa-user-lock"></i></span>
+                <div>
+                    <small>Contas bloqueadas</small>
+                    <strong id="metricaUsuariosBloqueados">—</strong>
+                </div>
+            </article>
+
+            <article class="metrica-card metrica-excluida">
+                <span class="metrica-icone"><i class="fa-solid fa-user-slash"></i></span>
+                <div>
+                    <small>Contas excluídas</small>
+                    <strong id="metricaUsuariosExcluidos">—</strong>
+                </div>
+            </article>
+        </section>
+
+        <p id="resumoPapeisUsuarios" class="resumo-papeis" aria-live="polite">Carregando distribuição de papéis...</p>
+
+        <section class="admin-card filtros-card">
+            <div class="filtros-titulo">
+                <div>
+                    <h2><i class="fa-solid fa-filter"></i> Usuários</h2>
+                    <p id="textoResultadoUsuarios" aria-live="polite">Carregando usuários...</p>
+                </div>
+                <button type="button" id="btnLimparFiltrosUsuarios" class="btn-admin btn-claro btn-limpar-filtros">
+                    <i class="fa-solid fa-eraser"></i>
+                    Limpar
+                </button>
+            </div>
+
+            <form id="formFiltrosUsuarios" class="filtros-grid filtros-usuarios-grid" role="search">
+                <label class="campo-admin campo-busca">
+                    <span>Pesquisar</span>
+                    <div class="campo-com-icone">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="buscaUsuariosAdmin" type="search" maxlength="100" placeholder="Nome ou e-mail" autocomplete="off">
+                    </div>
+                </label>
+
+                <label class="campo-admin">
+                    <span>Papel</span>
+                    <select id="filtroPapelUsuario">
+                        <option value="">Todos</option>
+                        <option value="cliente">Clientes</option>
+                        <option value="lojista">Lojistas</option>
+                        <option value="admin">Administradores</option>
+                    </select>
+                </label>
+
+                <label class="campo-admin">
+                    <span>Situação</span>
+                    <select id="filtroStatusUsuario">
+                        <option value="">Todas</option>
+                        <option value="ativo">Ativas</option>
+                        <option value="bloqueado">Bloqueadas</option>
+                        <option value="excluido">Excluídas</option>
+                    </select>
+                </label>
+
+                <label class="campo-admin">
+                    <span>Ordenar</span>
+                    <select id="ordenacaoUsuariosAdmin">
+                        <option value="recentes">Cadastro mais recente</option>
+                        <option value="antigos">Cadastro mais antigo</option>
+                        <option value="nome">Nome</option>
+                        <option value="ultimo_acesso">Último acesso</option>
+                    </select>
+                </label>
+            </form>
+        </section>
+
+        <section id="listaUsuariosAdmin" class="lista-usuarios-admin" aria-live="polite" aria-busy="true">
+            <div class="estado-admin">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <h3>Carregando usuários...</h3>
+            </div>
+        </section>
+
+        <nav id="paginacaoUsuariosAdmin" class="paginacao-listagem paginacao-servidor" aria-label="Paginação dos usuários" hidden>
+            <div class="paginacao-resumo" id="resumoPaginacaoUsuarios"></div>
+            <div class="paginacao-acoes">
+                <button type="button" id="paginaAnteriorUsuarios" class="paginacao-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Anterior</span>
+                </button>
+                <span id="paginaAtualUsuarios" class="pagina-atual-usuarios">Página 1 de 1</span>
+                <button type="button" id="proximaPaginaUsuarios" class="paginacao-btn">
+                    <span>Próxima</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </nav>
+    </main>
+
+    <div id="modalAcaoUsuario" class="modal-admin" hidden>
+        <div class="modal-admin-backdrop" data-fechar-modal-usuario="acao"></div>
+        <section class="modal-admin-caixa modal-usuario-acao" role="dialog" aria-modal="true" aria-labelledby="tituloModalAcaoUsuario">
+            <button type="button" class="modal-fechar" data-fechar-modal-usuario="acao" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span id="iconeModalAcaoUsuario" class="modal-icone-usuario"><i class="fa-solid fa-user-gear"></i></span>
+            <h2 id="tituloModalAcaoUsuario">Administrar usuário</h2>
+            <p id="descricaoModalAcaoUsuario"></p>
+
+            <div id="alertaModalAcaoUsuario" class="alerta-acao-usuario" hidden></div>
+
+            <form id="formAcaoUsuario" novalidate>
+                <label id="campoNovoPapelUsuario" class="campo-admin" hidden>
+                    <span>Novo papel</span>
+                    <select id="novoPapelUsuario">
+                        <option value="cliente">Cliente</option>
+                        <option value="lojista">Lojista</option>
+                    </select>
+                    <small>A conta administrativa principal é única e não pode ser atribuída a outro usuário.</small>
+                </label>
+
+                <label class="campo-admin campo-motivo-usuario">
+                    <span>Motivo da alteração</span>
+                    <textarea id="motivoAcaoUsuario" minlength="5" maxlength="500" rows="5" placeholder="Explique por que esta alteração é necessária..." required></textarea>
+                    <small><span id="contadorMotivoUsuario">0</span>/500</small>
+                </label>
+
+                <div class="modal-acoes">
+                    <button type="button" class="btn-admin btn-claro" data-fechar-modal-usuario="acao">Cancelar</button>
+                    <button type="submit" id="btnConfirmarAcaoUsuario" class="btn-admin btn-primario">
+                        <i class="fa-solid fa-check"></i>
+                        Confirmar
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div id="modalHistoricoUsuario" class="modal-admin" hidden>
+        <div class="modal-admin-backdrop" data-fechar-modal-usuario="historico"></div>
+        <section class="modal-admin-caixa modal-historico-usuario" role="dialog" aria-modal="true" aria-labelledby="tituloHistoricoUsuario">
+            <button type="button" class="modal-fechar" data-fechar-modal-usuario="historico" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="modal-icone-usuario icone-historico"><i class="fa-solid fa-clock-rotate-left"></i></span>
+            <h2 id="tituloHistoricoUsuario">Histórico administrativo</h2>
+            <p id="descricaoHistoricoUsuario"></p>
+
+            <div id="listaHistoricoUsuario" class="lista-historico-usuario" aria-live="polite"></div>
+
+            <nav id="paginacaoHistoricoUsuario" class="paginacao-historico-usuario" aria-label="Paginação do histórico" hidden>
+                <button type="button" id="historicoUsuarioAnterior" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Anterior
+                </button>
+                <span id="paginaHistoricoUsuario">Página 1 de 1</span>
+                <button type="button" id="historicoUsuarioProximo" class="btn-admin btn-claro">
+                    Próxima
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </nav>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/admin-usuarios.js"></script>
+</body>
+</html>

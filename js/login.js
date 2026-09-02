@@ -88,6 +88,21 @@ function obterRetornoFavoritosSeguro() {
     }
 }
 
+function resolverDestinoAposLogin(destinoPerfil, destinoSolicitado) {
+    const destinosPrioritarios = new Set([
+        "admin-dashboard.html",
+        "painel-loja.html"
+    ]);
+
+    // Um retorno salvo pelos Favoritos pertence ao fluxo de cliente e nunca
+    // pode substituir o painel obrigatório de um administrador ou lojista.
+    if (destinosPrioritarios.has(destinoPerfil)) {
+        return destinoPerfil;
+    }
+
+    return destinoSolicitado || destinoPerfil || "perfil.html";
+}
+
 async function obterDestinoAposLogin() {
     // Mantém a proteção do RF04 para conta desativada/excluída.
     if (typeof window.verificarContaAtivaRF04 === "function") {
@@ -233,7 +248,10 @@ if (form && email && senha && btnLogin && window.db) {
             if (!destinoPerfil) return;
 
             const destinoSolicitado = obterRetornoFavoritosSeguro();
-            const destino = destinoSolicitado || destinoPerfil;
+            const destino = resolverDestinoAposLogin(
+                destinoPerfil,
+                destinoSolicitado
+            );
 
             mostrarAlerta(
                 "Login realizado com sucesso.",
@@ -272,6 +290,14 @@ if (form && email && senha && btnLogin && window.db) {
 function obterMensagemErroLogin(erro) {
     const mensagem = String(erro?.message || "").toLowerCase();
 
+    if (
+        mensagem.includes("user is banned") ||
+        mensagem.includes("user_banned") ||
+        mensagem.includes("banned")
+    ) {
+        return "Esta conta foi bloqueada pela administração. Entre em contato com o suporte para solicitar uma revisão.";
+    }
+
     if (mensagem.includes("invalid login credentials")) {
         return "E-mail ou senha incorretos. Confira seus dados e tente novamente.";
     }
@@ -296,3 +322,7 @@ function obterMensagemErroLogin(erro) {
 
     return "Ocorreu um erro ao fazer login. Tente novamente.";
 }
+
+window.LoginTestes = Object.freeze({
+    resolverDestinoAposLogin
+});

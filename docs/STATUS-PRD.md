@@ -3,7 +3,7 @@
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
 **PRD:** `PRD-Marketplace.md` — versão 1.0
 **Branch de referência:** `main`
-**Atualizado em:** 29/08/2026
+**Atualizado em:** 01/09/2026
 
 Este documento compara o PRD com o código, as migrations e os testes atualmente versionados. Ele substitui a auditoria inicial, que não representava mais o estado da `main` após as PRs de conclusão do MVP, aprovação de lojas, estoque, paginação e hardening.
 
@@ -18,9 +18,9 @@ Este documento compara o PRD com o código, as migrations e os testes atualmente
 
 | Classificação | Quantidade |
 |---|---:|
-| ✅ Concluído e validado | 3 |
+| ✅ Concluído e validado | 4 |
 | 🟡 Parcial | 18 |
-| ❌ Pendente | 2 |
+| ❌ Pendente | 1 |
 | 🔵 Fora do MVP atual | 4 |
 | **Total** | **27** |
 
@@ -31,7 +31,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | Requisito | Status | Estado atual e pendências |
 |---|---|---|
 | **RF-01 — Cadastro de Usuário** | 🟡 | Cadastro com Supabase Auth, confirmação de e-mail e perfil Cliente padrão. A senha agora exige 8 caracteres, uma letra e um número. Falta validar novamente o e-mail real de confirmação. |
-| **RF-02 — Login** | 🟡 | Login persistente e redirecionamento por perfil: cliente → perfil, lojista → painel e admin → dashboard. Conta excluída é bloqueada. Falta um fluxo administrativo genérico de bloqueio/desbloqueio. |
+| **RF-02 — Login** | 🟡 | Login persistente com destino obrigatório por perfil: cliente → perfil/retorno solicitado, lojista → painel e admin → dashboard. Contas excluídas ou bloqueadas são encerradas com aviso específico. Falta validar o bloqueio administrativo no site publicado. |
 | **RF-03 — Recuperação de Senha** | ✅ | Solicitação, recebimento do e-mail, callback, definição de nova senha, login e recusa de link reutilizado validados em produção. |
 | **RF-04 — Perfil** | ✅ | Nome, telefone, foto, múltiplos endereços, endereço padrão e exclusão lógica da conta implementados e validados. |
 | **RF-05 — Pesquisa** | ✅ | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados e validados no site. |
@@ -50,8 +50,8 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-18 — Cupons** | 🔵 | Previsto para v1.1. |
 | **RF-19 — Relatórios** | 🔵 | Estatísticas simples existem; relatórios avançados e CSV pertencem à v1.1. |
 | **RF-20 — Pedidos do Lojista** | 🟡 | Filtros, transições seguras, rastreio e resposta às solicitações de cancelamento. Falta regressão autenticada completa. |
-| **RF-21 — Clientes do Lojista** | 🟡 | Painel privado com busca, período, ordenação, paginação server-side, métricas consolidadas e histórico de pedidos. A consulta limita o acesso ao proprietário da loja e não expõe contato nem endereço. Falta validar no site publicado. |
-| **RF-22 — Gestão de Usuários Admin** | ❌ | O dashboard contabiliza usuários, mas não oferece listagem, bloqueio e gestão de papéis. |
+| **RF-21 — Clientes do Lojista** | ✅ | Painel privado com busca, período, ordenação, paginação server-side, métricas consolidadas e histórico de pedidos. A consulta limita o acesso ao proprietário da loja, não expõe contato nem endereço e o fluxo foi validado no site publicado. |
+| **RF-22 — Gestão de Usuários Admin** | 🟡 | Painel paginado com busca, filtros, indicadores, bloqueio/desbloqueio no Auth, alteração entre cliente/lojista, suspensão preventiva das lojas e auditoria. A conta administrativa principal é única e protegida no banco. Ações críticas passam por Edge Function e validação no banco. Falta validar o fluxo no site publicado. |
 | **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão e histórico. Falta edição administrativa completa dos dados da loja. |
 | **RF-24 — Gestão de Categorias Admin** | 🟡 | Painel com CRUD, busca, filtros, paginação, ativação, hierarquia e reordenação de destaques implementado com RLS. Falta validação no site publicado. |
 | **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado. Faltam documentos e notificação automática. |
@@ -94,18 +94,19 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - carrinho persistido por conta autenticada, com mesclagem do carrinho visitante, isolamento entre usuários, sincronização pendente e RLS.
 - taxa fixa de entrega configurável por loja, exibida no carrinho e checkout e gravada separadamente no pedido com recálculo seguro no servidor.
 - painel privado de clientes do lojista com indicadores de recorrência, filtros, paginação e histórico consolidado, sem exposição de dados de contato ou endereço.
+- painel administrativo de usuários com paginação server-side, filtros, bloqueio real no Supabase Auth, gestão de papéis, proteção da própria conta e do último administrador e histórico de auditoria.
 
 ## Pendências prioritárias do MVP
 
-1. Validar no site publicado o painel de clientes do lojista e seu histórico de pedidos.
+1. Validar no site publicado o painel de usuários: filtros, bloqueio, desbloqueio, papéis e auditoria.
 2. Validar no site publicado o frete por loja no carrinho, checkout e detalhes do pedido.
 3. Validar no site publicado o painel administrativo de categorias e os destaques da home.
 4. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
-5. Adicionar testes automatizados para os fluxos críticos.
+5. Ampliar os testes automatizados para os demais fluxos críticos.
 
 ## Versionamento do banco
 
-As 22 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 26 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 

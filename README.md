@@ -13,6 +13,7 @@ Marketplace web multi-lojas para conectar clientes e comerciantes locais em um �
 - cadastro, login e recuperação de senha;
 - perfil, foto e múltiplos endereços;
 - cadastro e aprovação administrativa de lojas;
+- painel administrativo de usuários com filtros, bloqueio, papéis e auditoria;
 - pesquisa full-text de produtos por nome e descrição, com relevância, autocomplete, filtros de preço/nota, métricas de vendas e paginação;
 - páginas de categoria com lojas, produtos e filtros hierárquicos;
 - painel administrativo de categorias, subcategorias e destaques da página inicial;
@@ -54,7 +55,7 @@ As migrations incrementais estão em `supabase/migrations/`. Como as tabelas pri
 
 ## Estado do PRD
 
-O acompanhamento atualizado está em `docs/STATUS-PRD.md`. O painel de clientes do lojista está implementado e aguarda validação no site; cupons, relatórios avançados e pagamento real permanecem no roadmap.
+O acompanhamento atualizado está em `docs/STATUS-PRD.md`. A gestão de usuários está implementada e aguarda validação no site; cupons, relatórios avançados e pagamento real permanecem no roadmap.
 
 ## Segurança
 
