@@ -52,7 +52,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-20 — Pedidos do Lojista** | 🟡 | Filtros, transições seguras, rastreio e resposta às solicitações de cancelamento. Falta regressão autenticada completa. |
 | **RF-21 — Clientes do Lojista** | ✅ | Painel privado com busca, período, ordenação, paginação server-side, métricas consolidadas e histórico de pedidos. A consulta limita o acesso ao proprietário da loja, não expõe contato nem endereço e o fluxo foi validado no site publicado. |
 | **RF-22 — Gestão de Usuários Admin** | 🟡 | Painel paginado com busca, filtros, indicadores, bloqueio/desbloqueio no Auth, alteração entre cliente/lojista, suspensão preventiva das lojas e auditoria. A conta administrativa principal é única e protegida no banco. Ações críticas passam por Edge Function e validação no banco. Falta validar o fluxo no site publicado. |
-| **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão e histórico. Falta edição administrativa completa dos dados da loja. |
+| **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão, edição segura dos dados comerciais e histórico administrativo implementados. A edição preserva proprietário/status, passa por Edge Function com JWT e é exclusiva do administrador principal. Falta validar o novo formulário no site publicado. |
 | **RF-24 — Gestão de Categorias Admin** | 🟡 | Painel com CRUD, busca, filtros, paginação, ativação, hierarquia e reordenação de destaques implementado com RLS. Falta validação no site publicado. |
 | **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado. Faltam documentos e notificação automática. |
 | **RF-26 — Moderação** | 🔵 | Previsto para v1.1. |
@@ -106,7 +106,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 
 ## Versionamento do banco
 
-As 26 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 28 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 
