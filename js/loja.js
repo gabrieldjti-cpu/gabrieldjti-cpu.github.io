@@ -2303,6 +2303,11 @@ function criarCardProduto(
             )
         );
 
+    const linkProduto =
+        `produto.html?id=${encodeURIComponent(
+            produto.id || ""
+        )}`;
+
 
     // ==================================
     // AVALIAÇÃO
@@ -2523,7 +2528,13 @@ function criarCardProduto(
                 </span>
 
                 <h3>
-                    ${nome}
+                    <a
+                        class="produto-link-detalhes"
+                        href="${escaparHTML(linkProduto)}"
+                        aria-label="Ver detalhes de ${nome}"
+                    >
+                        ${nome}
+                    </a>
                 </h3>
 
 
