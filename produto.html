@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    id="metaDescricaoProduto"
+    name="description"
+    content="Veja detalhes, avaliações, disponibilidade e entrega deste produto no Comércio da Cidade."
+  >
+  <meta id="metaOgTituloProduto" property="og:title" content="Produto | Comércio da Cidade">
+  <meta
+    id="metaOgDescricaoProduto"
+    property="og:description"
+    content="Compre de uma loja local pelo Comércio da Cidade."
+  >
+  <meta id="metaOgImagemProduto" property="og:image" content="">
+  <meta property="og:type" content="product">
+  <meta id="metaOgUrlProduto" property="og:url" content="">
+  <title>Produto | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css">
+  <link rel="stylesheet" href="components/feedback.css">
+  <link rel="stylesheet" href="components/favoritos.css">
+  <link rel="stylesheet" href="css/produto.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  >
+</head>
+
+<body class="pagina-produto">
+  <div id="header"></div>
+
+  <main class="produto-main">
+    <nav class="produto-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html">
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        Início
+      </a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <a id="breadcrumbLojaLink" href="index.html#lojas">Loja</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span id="breadcrumbProduto" aria-current="page">Produto</span>
+    </nav>
+
+    <section id="estadoProduto" class="produto-estado" aria-live="polite">
+      <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+      <h1>Carregando produto...</h1>
+      <p>Estamos consultando os dados mais recentes da loja.</p>
+    </section>
+
+    <div id="conteudoProduto" hidden>
+      <section class="produto-detalhe" aria-labelledby="nomeProduto">
+        <div class="produto-galeria" aria-label="Imagens do produto">
+          <div class="produto-imagem-principal">
+            <img id="imagemProdutoPrincipal" alt="" hidden>
+            <div id="imagemProdutoPlaceholder" class="produto-imagem-placeholder">
+              <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+              <span>Imagem indisponível</span>
+            </div>
+
+            <span id="seloOfertaProduto" class="produto-selo-oferta" hidden>
+              <i class="fa-solid fa-tag" aria-hidden="true"></i>
+              Oferta
+            </span>
+
+            <button
+              id="favoritarProduto"
+              type="button"
+              class="btn-favorito-produto produto-favorito-principal"
+              data-favorito-produto=""
+              data-favorito-nome="Produto"
+              aria-label="Adicionar produto aos favoritos"
+              aria-pressed="false"
+            >
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div id="miniaturasProduto" class="produto-miniaturas" hidden></div>
+        </div>
+
+        <div class="produto-informacoes">
+          <div class="produto-topo-meta">
+            <span id="categoriaProduto" class="produto-categoria">Produto local</span>
+            <span id="situacaoEstoque" class="produto-estoque em-estoque">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              Em estoque
+            </span>
+          </div>
+
+          <h1 id="nomeProduto">Produto</h1>
+
+          <button id="atalhoAvaliacoes" class="produto-avaliacao-atalho" type="button">
+            <span id="estrelasProduto" class="produto-estrelas" aria-hidden="true"></span>
+            <strong id="mediaProduto">0,0</strong>
+            <span id="totalAvaliacoesProduto">Sem avaliações</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+
+          <p id="descricaoCurtaProduto" class="produto-resumo">
+            Produto disponível no comércio local.
+          </p>
+
+          <div class="produto-precos" aria-label="Preço do produto">
+            <span id="precoAntigoProduto" class="produto-preco-antigo" hidden></span>
+            <strong id="precoAtualProduto">R$ 0,00</strong>
+            <span id="descontoProduto" class="produto-desconto" hidden></span>
+          </div>
+
+          <div class="produto-beneficios" aria-label="Informações da compra">
+            <article>
+              <span class="produto-beneficio-icone entrega">
+                <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+              </span>
+              <div>
+                <small>Entrega desta loja</small>
+                <strong id="taxaEntregaProduto">Consultando...</strong>
+              </div>
+            </article>
+
+            <article>
+              <span class="produto-beneficio-icone seguro">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              </span>
+              <div>
+                <small>Compra protegida</small>
+                <strong>Estoque conferido no pedido</strong>
+              </div>
+            </article>
+          </div>
+
+          <div class="produto-compra">
+            <div class="produto-quantidade-area">
+              <label for="quantidadeProduto">Quantidade</label>
+              <div class="produto-quantidade-controle">
+                <button
+                  id="diminuirQuantidadeProduto"
+                  type="button"
+                  aria-label="Diminuir quantidade"
+                >
+                  <i class="fa-solid fa-minus" aria-hidden="true"></i>
+                </button>
+                <input
+                  id="quantidadeProduto"
+                  type="number"
+                  value="1"
+                  min="1"
+                  max="1"
+                  inputmode="numeric"
+                  aria-describedby="limiteQuantidadeProduto"
+                >
+                <button
+                  id="aumentarQuantidadeProduto"
+                  type="button"
+                  aria-label="Aumentar quantidade"
+                >
+                  <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                </button>
+              </div>
+              <small id="limiteQuantidadeProduto">1 unidade disponível</small>
+            </div>
+
+            <div class="produto-acoes-compra">
+              <button id="adicionarCarrinhoProduto" class="produto-btn-carrinho" type="button">
+                <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+                Adicionar ao carrinho
+              </button>
+              <button id="comprarAgoraProduto" class="produto-btn-comprar" type="button">
+                Comprar agora
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="produto-acoes-secundarias">
+            <button id="compartilharProduto" type="button">
+              <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+              Compartilhar produto
+            </button>
+            <span>
+              <i class="fa-solid fa-store" aria-hidden="true"></i>
+              Produto vendido por uma loja aprovada
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="produto-loja-card" aria-labelledby="nomeLojaProduto">
+        <div class="produto-loja-identidade">
+          <div class="produto-loja-logo">
+            <img id="logoLojaProduto" alt="" hidden>
+            <i id="logoLojaProdutoPlaceholder" class="fa-solid fa-store" aria-hidden="true"></i>
+          </div>
+          <div>
+            <span class="produto-loja-selo">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              Loja aprovada
+            </span>
+            <h2 id="nomeLojaProduto">Loja</h2>
+            <p id="localLojaProduto">Comércio local</p>
+          </div>
+        </div>
+
+        <div class="produto-loja-dados">
+          <p>
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            <span id="horarioLojaProduto">Horário não informado</span>
+          </p>
+          <p>
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span id="enderecoLojaProduto">Endereço não informado</span>
+          </p>
+        </div>
+
+        <div class="produto-loja-acoes">
+          <a id="verLojaProduto" href="index.html#lojas">
+            Ver todos os produtos da loja
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a
+            id="whatsappLojaProduto"
+            class="produto-loja-whatsapp"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+          >
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            Falar com a loja
+          </a>
+        </div>
+      </section>
+
+      <div class="produto-conteudo-grid">
+        <section class="produto-secao produto-descricao-completa" aria-labelledby="tituloDescricaoProduto">
+          <span class="produto-secao-eyebrow">Sobre o item</span>
+          <h2 id="tituloDescricaoProduto">Descrição do produto</h2>
+          <p id="descricaoCompletaProduto"></p>
+        </section>
+
+        <aside class="produto-secao produto-informacoes-extras" aria-labelledby="tituloInformacoesProduto">
+          <span class="produto-secao-eyebrow">Informações</span>
+          <h2 id="tituloInformacoesProduto">Detalhes da compra</h2>
+          <dl>
+            <div>
+              <dt>Disponibilidade</dt>
+              <dd id="detalheEstoqueProduto">—</dd>
+            </div>
+            <div>
+              <dt>Categoria</dt>
+              <dd id="detalheCategoriaProduto">—</dd>
+            </div>
+            <div>
+              <dt>Loja</dt>
+              <dd id="detalheLojaProduto">—</dd>
+            </div>
+            <div>
+              <dt>Unidades vendidas</dt>
+              <dd id="detalheVendasProduto">0</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+
+      <section id="avaliacoesProduto" class="produto-secao produto-avaliacoes" aria-labelledby="tituloAvaliacoesProduto">
+        <div class="produto-secao-cabecalho">
+          <div>
+            <span class="produto-secao-eyebrow">Opiniões reais</span>
+            <h2 id="tituloAvaliacoesProduto">Avaliações dos clientes</h2>
+          </div>
+          <span class="produto-compra-verificada-legenda">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+            Apenas compras verificadas
+          </span>
+        </div>
+
+        <div id="resumoAvaliacoesProduto" class="produto-resumo-avaliacoes"></div>
+        <div id="listaAvaliacoesProduto" class="produto-lista-avaliacoes" aria-live="polite"></div>
+      </section>
+
+      <section class="produto-relacionados" aria-labelledby="tituloProdutosRelacionados">
+        <div class="produto-secao-cabecalho">
+          <div>
+            <span class="produto-secao-eyebrow">Continue explorando</span>
+            <h2 id="tituloProdutosRelacionados">Produtos semelhantes</h2>
+          </div>
+          <a id="verMaisRelacionados" href="index.html#produtos-globais">
+            Ver mais produtos
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div id="listaProdutosRelacionados" class="produto-relacionados-grade" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="produtoBarraMobile" class="produto-barra-mobile" hidden>
+    <div>
+      <small id="nomeProdutoMobile">Produto</small>
+      <strong id="precoProdutoMobile">R$ 0,00</strong>
+    </div>
+    <button id="adicionarCarrinhoProdutoMobile" type="button">
+      <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+      Adicionar
+    </button>
+  </div>
+
+  <footer class="produto-footer">
+    <div>
+      <a href="index.html" class="produto-footer-marca">
+        <i class="fa-solid fa-store" aria-hidden="true"></i>
+        <strong>Comércio da Cidade</strong>
+      </a>
+      <p>Compre local. Fortaleça quem movimenta a sua cidade.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/carrinho-sync.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="components/favoritos.js"></script>
+  <script src="js/produto.js"></script>
+</body>
+</html>

@@ -49,7 +49,8 @@
         ]),
         publico: new Set([
             "index.html",
-            "loja.html"
+            "loja.html",
+            "produto.html"
         ])
     };
 

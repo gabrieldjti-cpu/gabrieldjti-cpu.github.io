@@ -378,11 +378,9 @@
     }
 
     function criarLinkProduto(produto) {
-        const loja = obterRelacao(produto.lojas) || {};
-        const lojaId = loja.id || produto.loja_id || "";
         const produtoId = produto.id || "";
 
-        return `loja.html?id=${encodeURIComponent(lojaId)}&produto=${encodeURIComponent(produtoId)}`;
+        return `produto.html?id=${encodeURIComponent(produtoId)}`;
     }
 
     function adaptarProdutosDaBusca(dados) {
@@ -865,7 +863,7 @@
         const textoAvaliacoes = totalAvaliacoes > 0
             ? `${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5, ${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
             : "Produto ainda sem avaliações";
-        const link = `loja.html?id=${encodeURIComponent(loja.id || produto.loja_id || "")}&produto=${encodeURIComponent(produto.id || "")}`;
+        const link = `produto.html?id=${encodeURIComponent(produto.id || "")}`;
 
         const imagem = produto.imagem_url
             ? `
@@ -939,8 +937,8 @@
 
                     <div class="produto-global-rodape">
                         <div class="produto-global-preco">${precoHTML}</div>
-                        <a href="${escaparAtributo(link)}" aria-label="Ver ${nome} na loja ${nomeLoja}">
-                            Ver na loja
+                        <a href="${escaparAtributo(link)}" aria-label="Ver detalhes de ${nome}">
+                            Ver produto
                             <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                         </a>
                     </div>

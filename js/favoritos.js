@@ -145,7 +145,7 @@
         const promocional = Math.max(0, Number(produto.preco_promocional || 0));
         const temPromocao = promocional > 0 && promocional < preco;
         const lojaId = loja.id || produto.loja_id || "";
-        const link = `loja.html?id=${encodeURIComponent(lojaId)}&produto=${encodeURIComponent(produto.id || "")}`;
+        const link = `produto.html?id=${encodeURIComponent(produto.id || "")}`;
 
         const imagem = produto.imagem_url
             ? `
@@ -211,7 +211,7 @@
                             <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
                             ${estoque > 0 ? "Adicionar ao carrinho" : "Sem estoque"}
                         </button>
-                        <a class="favorito-ver" href="${escaparAtributo(link)}" aria-label="Ver ${nome} na loja">
+                        <a class="favorito-ver" href="${escaparAtributo(link)}" aria-label="Ver detalhes de ${nome}">
                             <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                             <span class="texto-acessivel">Ver produto</span>
                         </a>
