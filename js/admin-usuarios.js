@@ -510,7 +510,7 @@
             icone.innerHTML = '<i class="fa-solid fa-user-tag"></i>';
 
             if (selectPapel) {
-                const proximo = ["cliente", "lojista", "admin"]
+                const proximo = ["cliente", "lojista"]
                     .find(papel => papel !== usuario.tipo_usuario) || "cliente";
                 selectPapel.value = proximo;
             }

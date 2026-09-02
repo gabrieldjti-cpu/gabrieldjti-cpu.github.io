@@ -31,7 +31,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | Requisito | Status | Estado atual e pendências |
 |---|---|---|
 | **RF-01 — Cadastro de Usuário** | 🟡 | Cadastro com Supabase Auth, confirmação de e-mail e perfil Cliente padrão. A senha agora exige 8 caracteres, uma letra e um número. Falta validar novamente o e-mail real de confirmação. |
-| **RF-02 — Login** | 🟡 | Login persistente e redirecionamento por perfil: cliente → perfil, lojista → painel e admin → dashboard. Contas excluídas ou bloqueadas são encerradas com aviso específico. Falta validar o bloqueio administrativo no site publicado. |
+| **RF-02 — Login** | 🟡 | Login persistente com destino obrigatório por perfil: cliente → perfil/retorno solicitado, lojista → painel e admin → dashboard. Contas excluídas ou bloqueadas são encerradas com aviso específico. Falta validar o bloqueio administrativo no site publicado. |
 | **RF-03 — Recuperação de Senha** | ✅ | Solicitação, recebimento do e-mail, callback, definição de nova senha, login e recusa de link reutilizado validados em produção. |
 | **RF-04 — Perfil** | ✅ | Nome, telefone, foto, múltiplos endereços, endereço padrão e exclusão lógica da conta implementados e validados. |
 | **RF-05 — Pesquisa** | ✅ | Busca full-text, autocomplete, paginação server-side, filtros combináveis de categoria/loja/estoque/preço/nota e todas as ordenações do PRD implementados e validados no site. |
@@ -51,7 +51,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-19 — Relatórios** | 🔵 | Estatísticas simples existem; relatórios avançados e CSV pertencem à v1.1. |
 | **RF-20 — Pedidos do Lojista** | 🟡 | Filtros, transições seguras, rastreio e resposta às solicitações de cancelamento. Falta regressão autenticada completa. |
 | **RF-21 — Clientes do Lojista** | ✅ | Painel privado com busca, período, ordenação, paginação server-side, métricas consolidadas e histórico de pedidos. A consulta limita o acesso ao proprietário da loja, não expõe contato nem endereço e o fluxo foi validado no site publicado. |
-| **RF-22 — Gestão de Usuários Admin** | 🟡 | Painel paginado com busca, filtros, indicadores, bloqueio/desbloqueio no Auth, alteração de papel, suspensão preventiva das lojas e auditoria. Ações críticas passam por Edge Function e validação no banco. Falta validar o fluxo no site publicado. |
+| **RF-22 — Gestão de Usuários Admin** | 🟡 | Painel paginado com busca, filtros, indicadores, bloqueio/desbloqueio no Auth, alteração entre cliente/lojista, suspensão preventiva das lojas e auditoria. A conta administrativa principal é única e protegida no banco. Ações críticas passam por Edge Function e validação no banco. Falta validar o fluxo no site publicado. |
 | **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão e histórico. Falta edição administrativa completa dos dados da loja. |
 | **RF-24 — Gestão de Categorias Admin** | 🟡 | Painel com CRUD, busca, filtros, paginação, ativação, hierarquia e reordenação de destaques implementado com RLS. Falta validação no site publicado. |
 | **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado. Faltam documentos e notificação automática. |
@@ -106,7 +106,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 
 ## Versionamento do banco
 
-As 24 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 26 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 

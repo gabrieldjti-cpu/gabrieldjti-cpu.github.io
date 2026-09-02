@@ -13,7 +13,7 @@ const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 type AcaoAdmin = "bloquear" | "desbloquear" | "alterar_papel";
-type PapelUsuario = "cliente" | "lojista" | "admin";
+type PapelUsuario = "cliente" | "lojista";
 
 interface RequisicaoAdmin {
   acao?: unknown;
@@ -68,9 +68,11 @@ function normalizarEntrada(body: RequisicaoAdmin) {
 
   if (
     acao === "alterar_papel" &&
-    !["cliente", "lojista", "admin"].includes(novoPapel)
+    !["cliente", "lojista"].includes(novoPapel)
   ) {
-    throw new Error("Papel de usuário inválido.");
+    throw new Error(
+      "A conta administrativa principal é única e não pode ser atribuída a outro usuário.",
+    );
   }
 
   return {
