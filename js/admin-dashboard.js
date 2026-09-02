@@ -5,7 +5,9 @@
 // ==========================================
 
 let lojasAdmin = [];
+let categoriasLojasAdmin = [];
 let acaoMotivoAdmin = null;
+let lojaEmEdicaoAdmin = null;
 let timerBuscaAdmin = null;
 
 const STATUS_ADMIN = {
@@ -99,6 +101,9 @@ function configurarEventosAdmin() {
     const sair = document.getElementById("btnSairAdmin");
     const motivo = document.getElementById("motivoStatusLoja");
     const confirmarMotivo = document.getElementById("btnConfirmarMotivo");
+    const formEdicao = document.getElementById("formEditarLojaAdmin");
+    const motivoEdicao = document.getElementById("motivoEdicaoLojaAdmin");
+    const estadoEdicao = document.getElementById("estadoLojaEdicaoAdmin");
 
     busca?.addEventListener("input", () => {
         clearTimeout(timerBuscaAdmin);
@@ -126,6 +131,16 @@ function configurarEventosAdmin() {
     });
 
     confirmarMotivo?.addEventListener("click", confirmarMotivoStatusAdmin);
+    formEdicao?.addEventListener("submit", salvarEdicaoLojaAdmin);
+
+    motivoEdicao?.addEventListener("input", () => {
+        const contador = document.getElementById("contadorMotivoEdicao");
+        if (contador) contador.textContent = String(motivoEdicao.value.length);
+    });
+
+    estadoEdicao?.addEventListener("input", () => {
+        estadoEdicao.value = estadoEdicao.value.toUpperCase();
+    });
 
     document.querySelectorAll("[data-fechar-modal]").forEach(elemento => {
         elemento.addEventListener("click", () => {
@@ -137,6 +152,7 @@ function configurarEventosAdmin() {
         if (event.key === "Escape") {
             fecharModalAdmin("detalhes");
             fecharModalAdmin("motivo");
+            fecharModalAdmin("edicao");
         }
     });
 }
@@ -145,8 +161,44 @@ function configurarEventosAdmin() {
 async function atualizarDashboardAdmin() {
     await Promise.all([
         carregarResumoAdmin(),
-        carregarLojasAdmin()
+        carregarLojasAdmin(),
+        carregarCategoriasLojasAdmin()
     ]);
+}
+
+
+async function carregarCategoriasLojasAdmin() {
+    const select = document.getElementById("categoriaLojaEdicaoAdmin");
+
+    try {
+        const { data, error } = await window.db
+            .from("categorias")
+            .select("id,nome")
+            .eq("ativa", true)
+            .order("nome", { ascending: true });
+
+        if (error) throw error;
+
+        categoriasLojasAdmin = Array.isArray(data) ? data : [];
+
+        if (select) {
+            select.innerHTML = `
+                <option value="">Selecione uma categoria</option>
+                ${categoriasLojasAdmin.map(categoria => `
+                    <option value="${escaparAtributoAdmin(categoria.id)}">
+                        ${escaparHTMLAdmin(categoria.nome)}
+                    </option>
+                `).join("")}
+            `;
+        }
+    } catch (erro) {
+        console.error("Erro ao carregar categorias das lojas:", erro);
+        categoriasLojasAdmin = [];
+
+        if (select) {
+            select.innerHTML = '<option value="">Categorias indisponíveis</option>';
+        }
+    }
 }
 
 
@@ -312,6 +364,10 @@ function criarCardLojaAdmin(loja) {
                     <i class="fa-solid fa-eye"></i>
                     Detalhes
                 </button>
+                <button type="button" class="btn-admin btn-claro" onclick="abrirModalEdicaoLojaAdmin('${id}')">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Editar
+                </button>
                 ${acoesStatusLojaAdmin(loja)}
             </div>
         </article>
@@ -349,6 +405,310 @@ function acoesStatusLojaAdmin(loja) {
             <i class="fa-solid fa-clock-rotate-left"></i> Reabrir análise
         </button>
     `;
+}
+
+
+function abrirModalEdicaoLojaAdmin(lojaId) {
+    const loja = lojasAdmin.find(item => item.id === lojaId);
+    const modal = document.getElementById("modalEditarLoja");
+    const form = document.getElementById("formEditarLojaAdmin");
+
+    if (!loja || !modal || !form) return;
+
+    if (categoriasLojasAdmin.length === 0) {
+        avisarAdmin(
+            "Não foi possível carregar as categorias disponíveis.",
+            "erro",
+            "Edição indisponível"
+        );
+        return;
+    }
+
+    lojaEmEdicaoAdmin = loja;
+    form.reset();
+
+    definirValorCampoAdmin("lojaIdEdicaoAdmin", loja.id);
+    definirValorCampoAdmin("nomeLojaEdicaoAdmin", loja.nome);
+    definirValorCampoAdmin("categoriaLojaEdicaoAdmin", loja.categoria_id);
+    definirValorCampoAdmin("descricaoLojaEdicaoAdmin", loja.descricao);
+    definirValorCampoAdmin("telefoneLojaEdicaoAdmin", loja.telefone);
+    definirValorCampoAdmin("whatsappLojaEdicaoAdmin", loja.whatsapp);
+    definirValorCampoAdmin("enderecoLojaEdicaoAdmin", loja.endereco);
+    definirValorCampoAdmin("cidadeLojaEdicaoAdmin", loja.cidade);
+    definirValorCampoAdmin("estadoLojaEdicaoAdmin", loja.estado);
+    definirValorCampoAdmin(
+        "aberturaLojaEdicaoAdmin",
+        formatarHorarioCampoAdmin(loja.horario_abertura)
+    );
+    definirValorCampoAdmin(
+        "fechamentoLojaEdicaoAdmin",
+        formatarHorarioCampoAdmin(loja.horario_fechamento)
+    );
+    definirValorCampoAdmin(
+        "taxaEntregaLojaEdicaoAdmin",
+        Number(loja.taxa_entrega || 0).toFixed(2)
+    );
+
+    const contador = document.getElementById("contadorMotivoEdicao");
+    if (contador) contador.textContent = "0";
+
+    const titulo = document.getElementById("tituloEditarLoja");
+    if (titulo) titulo.textContent = `Editar ${loja.nome || "loja"}`;
+
+    modal.hidden = false;
+    setTimeout(() => document.getElementById("nomeLojaEdicaoAdmin")?.focus(), 60);
+}
+
+
+function validarDadosEdicaoLojaAdmin(entrada) {
+    const taxaTexto = String(entrada?.taxaEntrega ?? "").trim();
+    const dados = {
+        lojaId: String(entrada?.lojaId || "").trim(),
+        nome: String(entrada?.nome || "").trim(),
+        categoriaId: Number(entrada?.categoriaId),
+        descricao: normalizarOpcionalAdmin(entrada?.descricao),
+        telefone: normalizarOpcionalAdmin(entrada?.telefone),
+        whatsapp: normalizarOpcionalAdmin(entrada?.whatsapp),
+        endereco: normalizarOpcionalAdmin(entrada?.endereco),
+        cidade: normalizarOpcionalAdmin(entrada?.cidade),
+        estado: normalizarOpcionalAdmin(entrada?.estado)?.toUpperCase() || null,
+        abertura: normalizarOpcionalAdmin(entrada?.abertura),
+        fechamento: normalizarOpcionalAdmin(entrada?.fechamento),
+        taxaEntrega: taxaTexto === "" ? Number.NaN : Number(taxaTexto),
+        motivo: String(entrada?.motivo || "").trim()
+    };
+
+    if (!dados.lojaId) {
+        return erroValidacaoEdicaoAdmin("Loja inválida.", "lojaIdEdicaoAdmin");
+    }
+
+    if (dados.nome.length < 3 || dados.nome.length > 100) {
+        return erroValidacaoEdicaoAdmin(
+            "O nome da loja deve possuir entre 3 e 100 caracteres.",
+            "nomeLojaEdicaoAdmin"
+        );
+    }
+
+    if (!Number.isInteger(dados.categoriaId) || dados.categoriaId <= 0) {
+        return erroValidacaoEdicaoAdmin(
+            "Selecione uma categoria para a loja.",
+            "categoriaLojaEdicaoAdmin"
+        );
+    }
+
+    if (dados.descricao && dados.descricao.length > 1000) {
+        return erroValidacaoEdicaoAdmin(
+            "A descrição deve ter no máximo 1.000 caracteres.",
+            "descricaoLojaEdicaoAdmin"
+        );
+    }
+
+    for (const [valor, campo, rotulo] of [
+        [dados.telefone, "telefoneLojaEdicaoAdmin", "telefone"],
+        [dados.whatsapp, "whatsappLojaEdicaoAdmin", "WhatsApp"]
+    ]) {
+        if (valor) {
+            const totalDigitos = valor.replace(/[^0-9]/g, "").length;
+            if (valor.length > 20 || totalDigitos < 10 || totalDigitos > 13) {
+                return erroValidacaoEdicaoAdmin(
+                    `Informe um ${rotulo} válido com DDD.`,
+                    campo
+                );
+            }
+        }
+    }
+
+    if (dados.endereco && dados.endereco.length > 240) {
+        return erroValidacaoEdicaoAdmin(
+            "O endereço deve ter no máximo 240 caracteres.",
+            "enderecoLojaEdicaoAdmin"
+        );
+    }
+
+    if (dados.cidade && (dados.cidade.length < 2 || dados.cidade.length > 100)) {
+        return erroValidacaoEdicaoAdmin(
+            "A cidade deve possuir entre 2 e 100 caracteres.",
+            "cidadeLojaEdicaoAdmin"
+        );
+    }
+
+    if (dados.estado && !/^[A-Z]{2}$/.test(dados.estado)) {
+        return erroValidacaoEdicaoAdmin(
+            "Informe o estado usando duas letras, como SP.",
+            "estadoLojaEdicaoAdmin"
+        );
+    }
+
+    if (Boolean(dados.abertura) !== Boolean(dados.fechamento)) {
+        return erroValidacaoEdicaoAdmin(
+            "Informe os horários de abertura e fechamento juntos.",
+            dados.abertura ? "fechamentoLojaEdicaoAdmin" : "aberturaLojaEdicaoAdmin"
+        );
+    }
+
+    for (const [valor, campo] of [
+        [dados.abertura, "aberturaLojaEdicaoAdmin"],
+        [dados.fechamento, "fechamentoLojaEdicaoAdmin"]
+    ]) {
+        if (valor && !/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(valor)) {
+            return erroValidacaoEdicaoAdmin(
+                "Informe um horário válido.",
+                campo
+            );
+        }
+    }
+
+    if (!Number.isFinite(dados.taxaEntrega)
+        || dados.taxaEntrega < 0
+        || dados.taxaEntrega > 9999.99) {
+        return erroValidacaoEdicaoAdmin(
+            "Informe uma taxa de entrega entre R$ 0,00 e R$ 9.999,99.",
+            "taxaEntregaLojaEdicaoAdmin"
+        );
+    }
+
+    if (dados.motivo.length < 5 || dados.motivo.length > 500) {
+        return erroValidacaoEdicaoAdmin(
+            "Explique o motivo da alteração usando entre 5 e 500 caracteres.",
+            "motivoEdicaoLojaAdmin"
+        );
+    }
+
+    dados.taxaEntrega = Math.round(dados.taxaEntrega * 100) / 100;
+
+    return { valido: true, dados };
+}
+
+
+async function salvarEdicaoLojaAdmin(event) {
+    event.preventDefault();
+
+    if (!lojaEmEdicaoAdmin) return;
+
+    const validacao = validarDadosEdicaoLojaAdmin({
+        lojaId: valorCampoAdmin("lojaIdEdicaoAdmin"),
+        nome: valorCampoAdmin("nomeLojaEdicaoAdmin"),
+        categoriaId: valorCampoAdmin("categoriaLojaEdicaoAdmin"),
+        descricao: valorCampoAdmin("descricaoLojaEdicaoAdmin"),
+        telefone: valorCampoAdmin("telefoneLojaEdicaoAdmin"),
+        whatsapp: valorCampoAdmin("whatsappLojaEdicaoAdmin"),
+        endereco: valorCampoAdmin("enderecoLojaEdicaoAdmin"),
+        cidade: valorCampoAdmin("cidadeLojaEdicaoAdmin"),
+        estado: valorCampoAdmin("estadoLojaEdicaoAdmin"),
+        abertura: valorCampoAdmin("aberturaLojaEdicaoAdmin"),
+        fechamento: valorCampoAdmin("fechamentoLojaEdicaoAdmin"),
+        taxaEntrega: valorCampoAdmin("taxaEntregaLojaEdicaoAdmin"),
+        motivo: valorCampoAdmin("motivoEdicaoLojaAdmin")
+    });
+
+    if (!validacao.valido) {
+        avisarAdmin(validacao.erro, "aviso", "Revise os dados");
+        document.getElementById(validacao.campo)?.focus();
+        return;
+    }
+
+    const botao = document.getElementById("btnSalvarEdicaoLojaAdmin");
+    const conteudoOriginal = botao?.innerHTML;
+
+    if (botao) {
+        botao.disabled = true;
+        botao.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando';
+    }
+
+    const dados = validacao.dados;
+
+    try {
+        const { data, error } = await window.db.functions.invoke("admin-lojas", {
+            body: {
+                acao: "editar",
+                loja_id: dados.lojaId,
+                nome: dados.nome,
+                categoria_id: dados.categoriaId,
+                descricao: dados.descricao,
+                telefone: dados.telefone,
+                whatsapp: dados.whatsapp,
+                endereco: dados.endereco,
+                cidade: dados.cidade,
+                estado: dados.estado,
+                horario_abertura: dados.abertura,
+                horario_fechamento: dados.fechamento,
+                taxa_entrega: dados.taxaEntrega,
+                motivo: dados.motivo
+            }
+        });
+
+        if (error) {
+            throw new Error(await extrairMensagemErroFuncaoAdmin(error));
+        }
+
+        const campos = Array.isArray(data?.resultado?.campos_alterados)
+            ? data.resultado.campos_alterados.join(", ")
+            : "dados comerciais";
+
+        fecharModalAdmin("edicao");
+
+        avisarAdmin(
+            `Alterações salvas: ${campos}.`,
+            "sucesso",
+            "Loja atualizada"
+        );
+
+        await atualizarDashboardAdmin();
+    } catch (erro) {
+        console.error("Erro ao editar loja como administrador:", erro);
+        avisarAdmin(
+            erro?.message || "Não foi possível salvar as alterações da loja.",
+            "erro",
+            "Erro ao salvar"
+        );
+    } finally {
+        if (botao) {
+            botao.disabled = false;
+            botao.innerHTML = conteudoOriginal;
+        }
+    }
+}
+
+
+async function extrairMensagemErroFuncaoAdmin(erro) {
+    try {
+        if (erro?.context && typeof erro.context.json === "function") {
+            const corpo = await erro.context.json();
+            if (corpo?.erro) return corpo.erro;
+        }
+    } catch (falha) {
+        console.warn("Não foi possível interpretar o erro da função:", falha);
+    }
+
+    return erro?.message || "Não foi possível concluir a alteração.";
+}
+
+
+function erroValidacaoEdicaoAdmin(erro, campo) {
+    return { valido: false, erro, campo };
+}
+
+
+function normalizarOpcionalAdmin(valor) {
+    const texto = String(valor ?? "").trim();
+    return texto || null;
+}
+
+
+function valorCampoAdmin(id) {
+    return document.getElementById(id)?.value ?? "";
+}
+
+
+function definirValorCampoAdmin(id, valor) {
+    const campo = document.getElementById(id);
+    if (campo) campo.value = valor ?? "";
+}
+
+
+function formatarHorarioCampoAdmin(valor) {
+    if (!valor) return "";
+    return String(valor).slice(0, 5);
 }
 
 
@@ -508,16 +868,40 @@ async function verDetalhesLojaAdmin(lojaId) {
         ${loja.motivo_rejeicao ? `<p class="loja-motivo-atual"><strong>Motivo atual:</strong> ${escaparHTMLAdmin(loja.motivo_rejeicao)}</p>` : ""}
 
         <div class="historico-admin">
-            <h3><i class="fa-solid fa-clock-rotate-left"></i> Histórico de análise</h3>
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Histórico administrativo</h3>
             ${historico.length
-                ? historico.map(item => `
-                    <div class="historico-item">
-                        <strong>${escaparHTMLAdmin(rotuloStatusAdmin(item.status_anterior))} → ${escaparHTMLAdmin(rotuloStatusAdmin(item.status_novo))}</strong>
-                        <span>${formatarDataHoraAdmin(item.criado_em)}${item.administrador_nome ? ` • ${escaparHTMLAdmin(item.administrador_nome)}` : ""}</span>
-                        ${item.motivo ? `<span>Motivo: ${escaparHTMLAdmin(item.motivo)}</span>` : ""}
-                    </div>
-                `).join("")
+                ? historico.map(renderizarItemHistoricoAdmin).join("")
                 : '<p>Nenhuma alteração administrativa registrada ainda.</p>'}
+        </div>
+    `;
+}
+
+
+function renderizarItemHistoricoAdmin(item) {
+    const administrador = item.administrador_nome
+        ? ` • ${escaparHTMLAdmin(item.administrador_nome)}`
+        : "";
+
+    if (item.tipo_evento === "edicao") {
+        const campos = Array.isArray(item.campos_alterados)
+            ? item.campos_alterados.join(", ")
+            : "Dados comerciais";
+
+        return `
+            <div class="historico-item historico-edicao">
+                <strong><i class="fa-solid fa-pen-to-square"></i> Dados editados</strong>
+                <span>${formatarDataHoraAdmin(item.criado_em)}${administrador}</span>
+                <span>Campos: ${escaparHTMLAdmin(campos)}</span>
+                ${item.motivo ? `<span>Justificativa: ${escaparHTMLAdmin(item.motivo)}</span>` : ""}
+            </div>
+        `;
+    }
+
+    return `
+        <div class="historico-item">
+            <strong>${escaparHTMLAdmin(rotuloStatusAdmin(item.status_anterior))} → ${escaparHTMLAdmin(rotuloStatusAdmin(item.status_novo))}</strong>
+            <span>${formatarDataHoraAdmin(item.criado_em)}${administrador}</span>
+            ${item.motivo ? `<span>Motivo: ${escaparHTMLAdmin(item.motivo)}</span>` : ""}
         </div>
     `;
 }
@@ -534,12 +918,21 @@ function detalheAdmin(titulo, valor) {
 
 
 function fecharModalAdmin(tipo) {
-    const id = tipo === "detalhes" ? "modalDetalhesLoja" : "modalMotivoLoja";
+    const modais = {
+        detalhes: "modalDetalhesLoja",
+        motivo: "modalMotivoLoja",
+        edicao: "modalEditarLoja"
+    };
+    const id = modais[tipo];
     const modal = document.getElementById(id);
     if (modal) modal.hidden = true;
 
     if (tipo === "motivo") {
         acaoMotivoAdmin = null;
+    }
+
+    if (tipo === "edicao") {
+        lojaEmEdicaoAdmin = null;
     }
 }
 
@@ -654,3 +1047,10 @@ function escaparHTMLAdmin(valor) {
 function escaparAtributoAdmin(valor) {
     return escaparHTMLAdmin(valor);
 }
+
+
+window.AdminDashboardTestes = Object.freeze({
+    validarDadosEdicaoLojaAdmin,
+    formatarHorarioCampoAdmin,
+    renderizarItemHistoricoAdmin
+});

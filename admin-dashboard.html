@@ -57,7 +57,7 @@
             <div>
                 <span class="eyebrow">Painel administrativo</span>
                 <h1>Gestão de lojas</h1>
-                <p>Aprove, rejeite ou suspenda lojas e acompanhe a situação geral do marketplace.</p>
+                <p>Aprove, edite, rejeite ou suspenda lojas e acompanhe a situação geral do marketplace.</p>
             </div>
             <button type="button" id="btnAtualizarAdmin" class="btn-admin btn-primario">
                 <i class="fa-solid fa-rotate"></i>
@@ -144,6 +144,100 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div id="conteudoDetalhesLoja"></div>
+        </section>
+    </div>
+
+    <div id="modalEditarLoja" class="modal-admin" hidden>
+        <div class="modal-admin-backdrop" data-fechar-modal="edicao"></div>
+        <section class="modal-admin-caixa modal-edicao" role="dialog" aria-modal="true" aria-labelledby="tituloEditarLoja">
+            <button type="button" class="modal-fechar" data-fechar-modal="edicao" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="modal-icone-edicao"><i class="fa-solid fa-pen-to-square"></i></span>
+            <h2 id="tituloEditarLoja">Editar loja</h2>
+            <p>Altere apenas os dados comerciais. Proprietário, aprovação e situação da loja permanecem protegidos.</p>
+
+            <form id="formEditarLojaAdmin" novalidate>
+                <input type="hidden" id="lojaIdEdicaoAdmin">
+
+                <div class="form-edicao-grid">
+                    <label class="campo-admin">
+                        <span>Nome da loja *</span>
+                        <input id="nomeLojaEdicaoAdmin" type="text" minlength="3" maxlength="100" required autocomplete="organization">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Categoria *</span>
+                        <select id="categoriaLojaEdicaoAdmin" required>
+                            <option value="">Carregando categorias...</option>
+                        </select>
+                    </label>
+
+                    <label class="campo-admin campo-largo">
+                        <span>Descrição</span>
+                        <textarea id="descricaoLojaEdicaoAdmin" maxlength="1000" rows="4" placeholder="Apresente a loja aos clientes"></textarea>
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Telefone</span>
+                        <input id="telefoneLojaEdicaoAdmin" type="tel" maxlength="20" inputmode="tel" autocomplete="tel">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>WhatsApp</span>
+                        <input id="whatsappLojaEdicaoAdmin" type="tel" maxlength="20" inputmode="tel">
+                    </label>
+
+                    <label class="campo-admin campo-largo">
+                        <span>Endereço</span>
+                        <input id="enderecoLojaEdicaoAdmin" type="text" maxlength="240" autocomplete="street-address">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Cidade</span>
+                        <input id="cidadeLojaEdicaoAdmin" type="text" maxlength="100" autocomplete="address-level2">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Estado (UF)</span>
+                        <input id="estadoLojaEdicaoAdmin" type="text" maxlength="2" placeholder="SP" autocomplete="address-level1">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Abre às</span>
+                        <input id="aberturaLojaEdicaoAdmin" type="time">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Fecha às</span>
+                        <input id="fechamentoLojaEdicaoAdmin" type="time">
+                    </label>
+
+                    <label class="campo-admin">
+                        <span>Taxa de entrega</span>
+                        <input id="taxaEntregaLojaEdicaoAdmin" type="number" min="0" max="9999.99" step="0.01" inputmode="decimal" required>
+                    </label>
+
+                    <label class="campo-admin campo-largo">
+                        <span>Motivo da alteração *</span>
+                        <textarea id="motivoEdicaoLojaAdmin" minlength="5" maxlength="500" rows="3" required placeholder="Explique por que os dados serão alterados"></textarea>
+                        <small><span id="contadorMotivoEdicao">0</span>/500</small>
+                    </label>
+                </div>
+
+                <p class="aviso-edicao-admin">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    A alteração será registrada no histórico administrativo da loja.
+                </p>
+
+                <div class="modal-acoes">
+                    <button type="button" class="btn-admin btn-claro" data-fechar-modal="edicao">Cancelar</button>
+                    <button type="submit" id="btnSalvarEdicaoLojaAdmin" class="btn-admin btn-primario">
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar alterações
+                    </button>
+                </div>
+            </form>
         </section>
     </div>
 
