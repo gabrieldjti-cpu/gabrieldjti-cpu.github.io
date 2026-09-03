@@ -3,7 +3,7 @@
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
 **PRD:** `PRD-Marketplace.md` — versão 1.0
 **Branch de referência:** `main`
-**Atualizado em:** 01/09/2026
+**Atualizado em:** 03/09/2026
 
 Este documento compara o PRD com o código, as migrations e os testes atualmente versionados. Ele substitui a auditoria inicial, que não representava mais o estado da `main` após as PRs de conclusão do MVP, aprovação de lojas, estoque, paginação e hardening.
 
@@ -66,7 +66,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **Performance** | 🟡 | Lazy loading, índices de foreign keys e paginação visual. Listagens grandes ainda devem migrar para paginação server-side. |
 | **Responsividade** | 🟡 | Todas as páginas possuem viewport e CSS responsivo; falta auditoria formal dos três breakpoints do PRD. |
 | **Acessibilidade** | 🟡 | HTML semântico, labels, `alt` e ARIA em vários fluxos; falta auditoria WCAG 2.1 AA automatizada e manual. |
-| **SEO** | ❌ | Apenas a home possui description. Faltam catálogo indexável, URLs amigáveis, Open Graph, canonical, Schema.org, sitemap e robots. |
+| **SEO** | ❌ | Home, produto e páginas institucionais possuem descrição, mas ainda faltam catálogo plenamente indexável, URLs amigáveis, Open Graph nas demais páginas, canonical, Schema.org amplo, sitemap e robots. |
 | **Escalabilidade** | 🟡 | Frontend estático + Supabase é adequado ao MVP, mas scripts globais e paginação client-side limitam a evolução. |
 | **Disponibilidade** | ❌ | Não há monitoramento de erros ou medição de SLA. |
 | **Manutenibilidade** | 🟡 | Componentes e extensões reutilizáveis existem, mas os scripts principais ainda são globais e muito grandes. |
@@ -95,6 +95,9 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - taxa fixa de entrega configurável por loja, exibida no carrinho e checkout e gravada separadamente no pedido com recálculo seguro no servidor.
 - painel privado de clientes do lojista com indicadores de recorrência, filtros, paginação e histórico consolidado, sem exposição de dados de contato ou endereço.
 - painel administrativo de usuários com paginação server-side, filtros, bloqueio real no Supabase Auth, gestão de papéis, proteção da própria conta e do último administrador e histórico de auditoria.
+- Central de Ajuda e Confiança pública com FAQ pesquisável, guia de funcionamento, Termos de Uso, Política de Privacidade/LGPD e política de cancelamento, devolução e reembolso, integrada ao menu, cadastro e rodapés públicos.
+
+Os textos institucionais refletem os fluxos técnicos atuais e apontam para fontes legais oficiais. Antes do lançamento comercial definitivo, devem passar por revisão jurídica e receber a identificação e o canal formal do operador da plataforma.
 
 ## Pendências prioritárias do MVP
 

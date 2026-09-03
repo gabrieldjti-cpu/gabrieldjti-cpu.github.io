@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Encontre respostas sobre compras, pedidos, lojas, cancelamentos, conta e privacidade no Comércio da Cidade."
+  >
+  <title>Central de Ajuda | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css">
+  <link rel="stylesheet" href="components/feedback.css">
+  <link rel="stylesheet" href="css/institucional.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body class="pagina-institucional pagina-ajuda">
+  <div id="header"></div>
+
+  <main class="institucional-main">
+    <nav class="institucional-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Início</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span aria-current="page">Central de Ajuda</span>
+    </nav>
+
+    <section class="institucional-hero" aria-labelledby="tituloAjuda">
+      <div class="institucional-hero-conteudo">
+        <span class="institucional-selo">
+          <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+          Ajuda e suporte
+        </span>
+        <h1 id="tituloAjuda">Como podemos ajudar?</h1>
+        <p>Pesquise uma dúvida ou escolha o assunto relacionado à sua compra, conta ou loja.</p>
+
+        <div class="ajuda-busca" role="search">
+          <div class="ajuda-busca-campo">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <label class="sr-only" for="buscaAjuda">Pesquisar na Central de Ajuda</label>
+            <input
+              id="buscaAjuda"
+              type="search"
+              placeholder="Ex.: cancelar pedido, entrega ou senha"
+              autocomplete="off"
+            >
+            <button id="limparBuscaAjuda" class="ajuda-busca-limpar" type="button" aria-label="Limpar pesquisa" hidden>
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+          <span id="statusBuscaAjuda" class="ajuda-busca-status" aria-live="polite"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="institucional-secao" aria-labelledby="tituloAtendimento">
+      <div class="institucional-secao-cabecalho">
+        <span class="institucional-eyebrow">Atendimento por assunto</span>
+        <h2 id="tituloAtendimento">Chegue rápido ao lugar certo</h2>
+        <p>Os canais abaixo usam os recursos que já fazem parte do marketplace.</p>
+      </div>
+
+      <div class="ajuda-atalhos">
+        <a class="ajuda-atalho" href="meus-pedidos.html">
+          <span class="ajuda-atalho-icone"><i class="fa-solid fa-box" aria-hidden="true"></i></span>
+          <h3>Pedido e entrega</h3>
+          <p>Acompanhe o status, veja os detalhes ou solicite um cancelamento.</p>
+          <span>Abrir meus pedidos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+
+        <a class="ajuda-atalho" href="index.html#lojas">
+          <span class="ajuda-atalho-icone"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></span>
+          <h3>Produto ou loja</h3>
+          <p>Abra a loja responsável e use o botão de WhatsApp quando estiver disponível.</p>
+          <span>Encontrar uma loja <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+
+        <a class="ajuda-atalho" href="perfil.html">
+          <span class="ajuda-atalho-icone"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></span>
+          <h3>Conta e dados</h3>
+          <p>Atualize seus dados, endereços, telefone ou solicite a exclusão da conta.</p>
+          <span>Abrir meu perfil <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+
+        <a class="ajuda-atalho" href="painel-loja.html">
+          <span class="ajuda-atalho-icone"><i class="fa-solid fa-store" aria-hidden="true"></i></span>
+          <h3>Suporte ao lojista</h3>
+          <p>Gerencie produtos, pedidos, clientes e as informações da sua loja.</p>
+          <span>Abrir painel da loja <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+      </div>
+    </section>
+
+    <section id="perguntas-frequentes" class="institucional-secao" aria-labelledby="tituloFaq">
+      <div class="institucional-secao-cabecalho">
+        <span class="institucional-eyebrow">Perguntas frequentes</span>
+        <h2 id="tituloFaq">Respostas para as principais dúvidas</h2>
+      </div>
+
+      <div class="ajuda-faq-lista">
+        <div class="ajuda-faq-grupo" data-faq-grupo>
+          <h3>Compras e pagamento</h3>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Preciso entrar na conta para adicionar produtos ao carrinho?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Não. Você pode montar o carrinho como visitante. Ao entrar, os itens são associados à sua conta para que continuem disponíveis em outros acessos.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Por que meu carrinho é separado por loja?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Cada loja prepara, entrega e acompanha seus próprios produtos. Por isso, o checkout cria um pedido separado para cada estabelecimento e mostra a entrega de cada um.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>O Comércio da Cidade processa Pix ou cartão?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Na versão atual, o método escolhido é registrado no pedido, mas a plataforma não processa pagamentos automaticamente. A confirmação e as orientações são combinadas com a loja responsável.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="ajuda-faq-grupo" data-faq-grupo>
+          <h3>Pedidos, entrega e cancelamento</h3>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Onde acompanho meu pedido?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Acesse <a href="meus-pedidos.html">Meus Pedidos</a>. Lá ficam o status, os itens, o valor, o rastreio e as ações disponíveis.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Como cancelar um pedido?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Em <a href="meus-pedidos.html">Meus Pedidos</a>, pedidos aguardando pagamento ou pagos podem ser cancelados diretamente. Se já estiverem em preparação, você poderá enviar uma solicitação para a loja. Consulte a <a href="cancelamentos.html">Política de Cancelamentos</a>.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>O estoque volta quando um pedido é cancelado?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Sim. Quando o cancelamento é confirmado pelo sistema, as quantidades dos produtos são devolvidas automaticamente ao estoque.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Quem define o prazo e o valor da entrega?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>A loja define sua taxa de entrega e é responsável pela preparação e entrega. O valor estimado aparece no carrinho e no checkout antes da confirmação.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="ajuda-faq-grupo" data-faq-grupo>
+          <h3>Conta, privacidade e segurança</h3>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Esqueci minha senha. O que devo fazer?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Abra a página de <a href="recuperar-senha.html">recuperação de senha</a>, informe o e-mail cadastrado e use o link recebido. Esse link é temporário e não pode ser reutilizado.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Como altero meus dados ou endereços?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Entre em <a href="perfil.html">Meu Perfil</a> para atualizar nome, telefone, foto e endereços. Você também pode escolher um endereço padrão.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>As lojas veem todos os meus dados?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Não. Cada lojista acessa somente as informações necessárias para gerenciar os pedidos da própria loja. Senhas nunca são exibidas, e o painel de clientes não mostra telefone, e-mail ou endereço.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Como excluo minha conta?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>A solicitação pode ser feita em <a href="perfil.html">Meu Perfil</a>. Alguns registros podem ser conservados pelo período necessário para cumprir obrigações legais, prevenir fraudes ou preservar o histórico dos pedidos.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="ajuda-faq-grupo" data-faq-grupo>
+          <h3>Lojas e avaliações</h3>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Como cadastro minha loja?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Crie uma conta, abra <a href="cadastrar-loja.html">Cadastrar Loja</a> e preencha os dados comerciais. A loja começa pendente e só aparece publicamente depois da aprovação administrativa.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Como sei que uma loja foi aprovada?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Somente lojas ativas e aprovadas aparecem no catálogo público. A aprovação confirma o acesso à plataforma, mas não substitui a avaliação do consumidor sobre produto, prazo e atendimento.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Quem pode avaliar um produto?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>A avaliação fica disponível para clientes com compra entregue. Isso ajuda a manter opiniões ligadas a experiências reais de compra.</p>
+            </div>
+          </details>
+
+          <details class="ajuda-faq" data-faq>
+            <summary>Como encontro o canal de atendimento correto?</summary>
+            <div class="ajuda-faq-resposta">
+              <p>Para pedidos, use <a href="meus-pedidos.html">Meus Pedidos</a>; para dúvidas sobre um produto ou entrega, abra a loja e use o WhatsApp disponível; para dados da conta, acesse <a href="perfil.html">Meu Perfil</a>. Esses caminhos preservam o contexto da solicitação.</p>
+            </div>
+          </details>
+        </div>
+
+        <div id="ajudaSemResultados" class="ajuda-sem-resultados" hidden>
+          <div>
+            <i class="fa-regular fa-face-frown" aria-hidden="true"></i>
+            <h3>Nenhuma resposta encontrada</h3>
+            <p>Tente pesquisar com menos palavras ou escolha um dos assuntos acima.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="institucional-chamada" aria-labelledby="tituloConhecer">
+      <div>
+        <h2 id="tituloConhecer">Quer entender o marketplace do começo ao fim?</h2>
+        <p>Veja como clientes e lojistas usam o Comércio da Cidade e quais proteções fazem parte da plataforma.</p>
+      </div>
+      <div class="institucional-acoes">
+        <a class="institucional-btn" href="como-funciona.html">Como funciona</a>
+        <a class="institucional-btn secundario" href="termos.html">Consultar os Termos</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="institucional-footer">
+    <div class="institucional-footer-principal">
+      <div class="institucional-footer-marca">
+        <div class="institucional-footer-logo"><i class="fa-solid fa-store" aria-hidden="true"></i><strong>Comércio da Cidade</strong></div>
+        <p>Compras locais com informações claras para clientes e lojistas.</p>
+      </div>
+      <nav class="institucional-footer-links" aria-label="Informações institucionais">
+        <a href="como-funciona.html">Como funciona</a>
+        <a href="ajuda.html">Ajuda</a>
+        <a href="cancelamentos.html">Cancelamentos</a>
+        <a href="privacidade.html">Privacidade</a>
+        <a href="termos.html">Termos de Uso</a>
+      </nav>
+    </div>
+    <div class="institucional-footer-copyright">© 2026 Comércio da Cidade. Todos os direitos reservados.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/carrinho-sync.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="js/ajuda.js"></script>
+</body>
+</html>

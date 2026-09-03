@@ -232,6 +232,22 @@ body{
 
 }
 
+.termos a{
+
+    color:#e85b2b;
+
+    font-weight:600;
+
+    text-underline-offset:2px;
+
+}
+
+.termos a:hover{
+
+    color:#c9471d;
+
+}
+
 /* ===========================
    MENSAGEM
 =========================== */

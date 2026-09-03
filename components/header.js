@@ -120,6 +120,20 @@
 
 
                         <a
+                            href="ajuda.html"
+                            id="btnAjuda"
+                        >
+
+                            <i class="fa-regular fa-circle-question"></i>
+
+                            <span>
+                                Ajuda
+                            </span>
+
+                        </a>
+
+
+                        <a
                             href="carrinho.html"
                             class="btn-carrinho"
                         >
@@ -250,6 +264,11 @@
             "index.html": '.menu a[href="index.html"]',
             "categoria.html": '.menu a[href="index.html#categorias"]',
             "favoritos.html": '#btnFavoritos',
+            "ajuda.html": '#btnAjuda',
+            "como-funciona.html": '#btnAjuda',
+            "termos.html": '#btnAjuda',
+            "privacidade.html": '#btnAjuda',
+            "cancelamentos.html": '#btnAjuda',
             "carrinho.html": '.menu a[href="carrinho.html"]',
             "painel-loja.html": '#btnMinhaLoja',
             "perfil.html": '#btnPerfil',
@@ -374,7 +393,7 @@
             () => {
 
                 if (
-                    window.innerWidth > 900
+                    window.innerWidth > 1024
                 ) {
 
                     fecharMenuMobile();

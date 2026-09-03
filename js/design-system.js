@@ -53,7 +53,12 @@
             "index.html",
             "categoria.html",
             "loja.html",
-            "produto.html"
+            "produto.html",
+            "ajuda.html",
+            "como-funciona.html",
+            "termos.html",
+            "privacidade.html",
+            "cancelamentos.html"
         ])
     };
 

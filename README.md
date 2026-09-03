@@ -26,6 +26,7 @@ Marketplace web multi-lojas para conectar clientes e comerciantes locais em um �
 - avaliações e resposta do lojista;
 - histórico de compras e recompra;
 - dashboards de lojista e administrador.
+- Central de Ajuda pública com busca em perguntas frequentes, guia de funcionamento, Termos de Uso, Política de Privacidade e regras de cancelamento e reembolso.
 
 ## Estrutura
 
@@ -56,7 +57,7 @@ As migrations incrementais estão em `supabase/migrations/`. Como as tabelas pri
 
 ## Estado do PRD
 
-O acompanhamento atualizado está em `docs/STATUS-PRD.md`. A gestão de usuários está implementada e aguarda validação no site; cupons, relatórios avançados e pagamento real permanecem no roadmap.
+O acompanhamento atualizado está em `docs/STATUS-PRD.md`. Cupons, relatórios avançados e pagamento real permanecem no roadmap.
 
 ## Segurança
 
