@@ -35,6 +35,7 @@
         ]),
         lojista: new Set([
             "cadastrar-loja.html",
+            "clientes-loja.html",
             "editar-loja.html",
             "editar-produto.html",
             "novo-produto.html",
@@ -45,10 +46,12 @@
         ]),
         admin: new Set([
             "admin-dashboard.html",
-            "admin-categorias.html"
+            "admin-categorias.html",
+            "admin-usuarios.html"
         ]),
         publico: new Set([
             "index.html",
+            "categoria.html",
             "loja.html",
             "produto.html"
         ])
@@ -61,7 +64,9 @@
         "pedidos-loja.html",
         "avaliacoes-loja.html",
         "admin-dashboard.html",
-        "admin-categorias.html"
+        "admin-categorias.html",
+        "admin-usuarios.html",
+        "clientes-loja.html"
     ]);
 
     function obterGrupo() {
@@ -187,7 +192,7 @@
         document.body.appendChild(script);
     }
 
-    if (document.readyState === "loading") {
+    if (!document.body) {
         document.addEventListener(
             "DOMContentLoaded",
             aplicarClasses,

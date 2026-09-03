@@ -6,8 +6,13 @@
 function carregarDesignSystemGlobal() {
     const css = "css/design-system.css";
     const scriptSrc = "js/design-system.js";
+    const temaJaCarregado = getComputedStyle(document.documentElement)
+        .getPropertyValue("--app-primary")
+        .trim();
 
-    if (!document.querySelector(`link[href="${css}"]`)) {
+    // O feedback.css importa o tema no <head>. Mantém este link como
+    // fallback para páginas antigas ou em caso de falha no carregamento.
+    if (!temaJaCarregado && !document.querySelector(`link[href="${css}"]`)) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href = css;
