@@ -11,6 +11,8 @@
 
         criarHeader();
 
+        marcarPaginaAtual();
+
         atualizarContadorCarrinho();
 
         configurarMenuMobile();
@@ -227,6 +229,39 @@
             );
 
         }
+
+    }
+
+
+    // ==========================================
+    // INDICAR PÁGINA ATUAL
+    // ==========================================
+
+    function marcarPaginaAtual() {
+
+        const pagina = (
+            window.location.pathname
+                .split("/")
+                .pop()
+            || "index.html"
+        ).toLowerCase();
+
+        const seletores = {
+            "index.html": '.menu a[href="index.html"]',
+            "categoria.html": '.menu a[href="index.html#categorias"]',
+            "favoritos.html": '#btnFavoritos',
+            "carrinho.html": '.menu a[href="carrinho.html"]',
+            "painel-loja.html": '#btnMinhaLoja',
+            "perfil.html": '#btnPerfil',
+            "login.html": '#btnLogin'
+        };
+
+        const linkAtual = document.querySelector(seletores[pagina]);
+
+        if (!linkAtual) return;
+
+        linkAtual.classList.add("ativo-pagina");
+        linkAtual.setAttribute("aria-current", "page");
 
     }
 

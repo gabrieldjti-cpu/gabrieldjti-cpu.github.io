@@ -33,6 +33,11 @@
     --app-shadow-sm: 0 8px 24px rgba(24, 24, 27, .06);
     --app-shadow: 0 16px 42px rgba(24, 24, 27, .08);
     --app-shadow-lg: 0 24px 60px rgba(24, 24, 27, .12);
+    --app-shadow-hover: 0 18px 42px rgba(131, 55, 25, .12);
+    --app-gradient: linear-gradient(135deg, var(--app-primary), var(--app-primary-dark));
+    --app-gradient-soft: linear-gradient(135deg, #fff 0%, #fff8f4 100%);
+    --app-page-width: 1180px;
+    --app-control-height: 46px;
 }
 
 html.theme-comercio {
@@ -41,10 +46,47 @@ html.theme-comercio {
 }
 
 body.app-theme {
+    --primary: var(--app-primary);
+    --primary-dark: var(--app-primary-dark);
+    --primary-soft: var(--app-primary-soft);
+    --background: var(--app-bg);
+    --card: var(--app-surface);
+    --text: var(--app-text);
+    --text-light: var(--app-muted);
+    --border: var(--app-border);
+    --shadow: var(--app-shadow-sm);
     font-family: 'Poppins', sans-serif;
     color: var(--app-text);
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+}
+
+body.app-theme h1,
+body.app-theme h2,
+body.app-theme h3 {
+    color: var(--app-text-strong);
+    line-height: 1.2;
+    text-wrap: balance;
+}
+
+body.app-theme p {
+    text-wrap: pretty;
+}
+
+body.app-theme button,
+body.app-theme input,
+body.app-theme select,
+body.app-theme textarea {
+    font: inherit;
+}
+
+body.app-theme button:disabled,
+body.app-theme input:disabled,
+body.app-theme select:disabled,
+body.app-theme textarea:disabled {
+    cursor: not-allowed;
+    opacity: .62;
 }
 
 body.app-theme :focus-visible {
@@ -60,6 +102,12 @@ body.app-theme ::selection {
 body.app-theme input[type="checkbox"],
 body.app-theme input[type="radio"] {
     accent-color: var(--app-primary);
+}
+
+body.app-theme input::placeholder,
+body.app-theme textarea::placeholder {
+    color: #98a2b3;
+    opacity: 1;
 }
 
 body.app-theme:not(.page-index):not(.page-loja) {
@@ -112,6 +160,91 @@ body.app-theme .theme-control:active,
 body.app-theme .btn:active,
 body.app-theme [class*="btn-"]:active {
     transform: translateY(0);
+}
+
+body.app-theme .theme-control:disabled,
+body.app-theme .btn:disabled,
+body.app-theme [class*="btn-"]:disabled {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ==========================================
+   CABEÇALHO COMPARTILHADO
+========================================== */
+
+body.app-theme .header {
+    border-bottom-color: rgba(231, 233, 238, .82);
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 8px 28px rgba(24, 24, 27, .065);
+    backdrop-filter: blur(16px) saturate(145%);
+}
+
+body.app-theme .header-container {
+    width: min(calc(100% - 32px), 1280px);
+    height: 72px;
+}
+
+body.app-theme .header .logo {
+    gap: 10px;
+    color: var(--app-text-strong);
+    font-size: 20px;
+    letter-spacing: -.025em;
+}
+
+body.app-theme .header .logo i {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: var(--app-gradient);
+    color: #fff;
+    font-size: 19px;
+    box-shadow: 0 9px 20px rgba(255, 107, 53, .22);
+}
+
+body.app-theme .header .menu a,
+body.app-theme .header .menu button {
+    min-height: 42px;
+    color: #475467;
+    font-weight: 600;
+}
+
+body.app-theme .header .menu a:hover,
+body.app-theme .header .menu button:hover,
+body.app-theme .header .menu a.ativo-pagina {
+    color: var(--app-primary-dark);
+    background: var(--app-primary-soft);
+}
+
+body.app-theme .header .menu a.ativo-pagina:not(#btnLogin) {
+    box-shadow: inset 0 0 0 1px rgba(255, 107, 53, .12);
+}
+
+body.app-theme .header #btnLogin {
+    background: var(--app-gradient);
+    box-shadow: 0 8px 18px rgba(255, 107, 53, .18);
+}
+
+body.app-theme .header #btnLogout {
+    background: var(--app-danger-soft);
+    color: var(--app-danger-dark);
+    box-shadow: inset 0 0 0 1px rgba(220, 53, 69, .10);
+}
+
+body.app-theme .header #btnLogout:hover {
+    background: #ffe4e7;
+    color: #9f1d2b;
+}
+
+body.app-theme .header .contador {
+    box-shadow: 0 0 0 3px #fff;
+}
+
+body.app-theme .btn-menu-mobile {
+    border: 1px solid rgba(255, 107, 53, .13);
+    border-radius: 13px;
 }
 
 /* ==========================================
@@ -760,10 +893,418 @@ body.theme-lojista .estado-vazio {
 }
 
 /* ==========================================
+   REVISÃO VISUAL GERAL
+========================================== */
+
+/* Cabeçalhos das áreas autenticadas */
+
+.theme-cliente :is(.topo-pagina, .historico-topo),
+.theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    padding: 24px 26px;
+    border: 1px solid rgba(255, 107, 53, .13);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-gradient-soft);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.theme-cliente :is(.topo-pagina, .historico-topo)::after,
+.theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes)::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: 132px;
+    height: 132px;
+    top: -74px;
+    right: -58px;
+    border-radius: 50%;
+    background: rgba(255, 107, 53, .075);
+    pointer-events: none;
+}
+
+.theme-cliente :is(.topo-pagina, .historico-topo) > *,
+.theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) > * {
+    position: relative;
+    z-index: 1;
+}
+
+.theme-cliente :is(.topo-pagina, .historico-topo) h1,
+.theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) h1 {
+    margin-top: 0;
+    color: var(--app-text-strong);
+    font-size: clamp(1.65rem, 3.2vw, 2.15rem);
+    letter-spacing: -.035em;
+}
+
+.theme-cliente :is(.topo-pagina, .historico-topo) h1 i,
+.theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) h1 i,
+.theme-cliente :is(.historico-etiqueta, .topo-etiqueta),
+.theme-lojista :is(.topo-etiqueta, .voltar-painel) {
+    color: var(--app-primary-dark);
+}
+
+.theme-cliente :is(.topo-pagina, .historico-topo) p,
+.theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) p {
+    color: var(--app-muted);
+    line-height: 1.65;
+}
+
+.theme-cliente :is(.btn-voltar, .btn-atualizar, .btn-limpar),
+.theme-lojista :is(.btn-voltar, .btn-atualizar, .btn-limpar, .voltar-painel) {
+    min-height: 44px;
+    border-radius: 12px;
+}
+
+.theme-cliente :is(.btn-voltar, .btn-limpar),
+.theme-lojista :is(.btn-voltar, .btn-limpar, .voltar-painel) {
+    border: 1px solid rgba(255, 107, 53, .18);
+    background: #fff;
+    color: var(--app-primary-dark);
+    box-shadow: var(--app-shadow-xs);
+}
+
+.theme-cliente .btn-atualizar,
+.theme-lojista .btn-atualizar {
+    border-color: var(--app-primary);
+    background: var(--app-gradient);
+    color: #fff;
+    box-shadow: 0 9px 22px rgba(255, 107, 53, .18);
+}
+
+/* Cartões, filtros e resumos */
+
+.theme-cliente :is(
+    .historico-filtros,
+    .historico-card,
+    .estado-historico,
+    .filtros,
+    .resumo
+),
+.theme-lojista :is(
+    .estatistica-card,
+    .resumo-card,
+    .painel-filtros,
+    .resultado-clientes,
+    .avaliacao-card,
+    .estado-avaliacoes,
+    .controles
+) {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-surface);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.theme-cliente :is(.historico-card, .pedido-card, .card),
+.theme-lojista :is(.estatistica-card, .resumo-card, .avaliacao-card, .cliente-card),
+.theme-admin :is(.metrica-card, .loja-admin-card, .usuario-admin-card, .categoria-admin-card) {
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.theme-lojista :is(.painel-filtros, .resultado-clientes, .filtros-avaliacoes),
+.theme-cliente :is(.historico-filtros, .filtros) {
+    padding: 22px;
+}
+
+.theme-lojista :is(.filtros-topo, .resultado-topo) h2,
+.theme-cliente :is(.filtros-topo, .resultado-topo) h2 {
+    color: var(--app-text-strong);
+    letter-spacing: -.02em;
+}
+
+.theme-lojista :is(.filtros-topo, .resultado-topo) h2 i,
+.theme-cliente :is(.filtros-topo, .resultado-topo) h2 i {
+    color: var(--app-primary);
+}
+
+.page-clientes-loja .estatistica-card:first-child,
+.page-avaliacoes-loja .resumo-card:first-child,
+.page-historico-compras .historico-resumo strong {
+    color: var(--app-primary-dark);
+}
+
+.page-clientes-loja .icone-clientes,
+.page-clientes-loja .estado-clientes > i,
+.page-avaliacoes-loja .estado-avaliacoes > i,
+.page-historico-compras .estado-historico > i {
+    background: var(--app-primary-soft);
+    color: var(--app-primary-dark);
+}
+
+.page-clientes-loja .icone-clientes {
+    border: 1px solid rgba(255, 107, 53, .12);
+}
+
+.page-historico-compras .btn-recomprar,
+.page-avaliacoes-loja .btn-responder,
+.page-produtos .barra-pesquisa button,
+.page-produtos .btn-editar,
+.page-produtos .acoes button:first-child {
+    border-color: var(--app-primary);
+    background: var(--app-gradient);
+    color: #fff;
+    box-shadow: 0 9px 22px rgba(255, 107, 53, .18);
+}
+
+.page-avaliacoes-loja .filtro-avaliacao.ativo {
+    border-color: var(--app-primary);
+    background: var(--app-primary);
+    color: #fff;
+}
+
+.page-avaliacoes-loja .form-resposta textarea:focus,
+.page-clientes-loja :is(input, select):focus,
+.page-historico-compras select:focus {
+    border-color: rgba(255, 107, 53, .72);
+    box-shadow: 0 0 0 4px rgba(255, 107, 53, .10);
+}
+
+.page-produtos .produto-card {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.page-produtos :is(.preco, .sem-produtos h2, .sem-produtos > i),
+.page-painel-loja :is(.preco, .categoria, .sem-produtos > i, .sem-pedidos > i) {
+    color: var(--app-primary-dark);
+}
+
+.page-painel-loja .categoria {
+    background: var(--app-primary-soft);
+}
+
+.page-painel-loja .estatisticas .box {
+    background: var(--app-gradient);
+    box-shadow: 0 12px 28px rgba(255, 107, 53, .18);
+}
+
+.page-painel-loja :is(.produto-card, .box-acesso, .estoque-resumo-card) {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-sm);
+}
+
+/* Formulários e controles */
+
+body.app-theme:not(.page-index):not(.page-loja)
+:is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select) {
+    min-height: var(--app-control-height);
+}
+
+body.app-theme:not(.page-index):not(.page-loja) textarea {
+    min-height: 112px;
+    line-height: 1.55;
+    resize: vertical;
+}
+
+.theme-cliente :is(.campo, .campo-filtro, .form-grupo, .input-group) label,
+.theme-lojista :is(.campo, .campo-filtro, .form-grupo, .input-group) label,
+.theme-admin .campo-admin label {
+    color: #414651;
+    font-size: .875rem;
+    font-weight: 650;
+}
+
+.theme-lojista :is(.campo-pesquisa, .barra-pesquisa) i,
+.theme-cliente :is(.campo-pesquisa, .barra-pesquisa) i {
+    color: #98a2b3;
+}
+
+/* Listagens e estados de interface */
+
+body.app-theme :is(
+    .estado-clientes,
+    .estado-avaliacoes,
+    .estado-historico,
+    .estado-admin,
+    .estado-vazio,
+    .sem-produtos,
+    .carrinho-vazio
+) {
+    border: 1px dashed rgba(255, 107, 53, .24);
+    border-radius: var(--app-radius-lg);
+    background: linear-gradient(145deg, #fff, #fffaf7);
+    color: var(--app-muted);
+    box-shadow: var(--app-shadow-xs);
+}
+
+body.app-theme :is(
+    .estado-clientes,
+    .estado-avaliacoes,
+    .estado-historico,
+    .estado-admin,
+    .estado-vazio,
+    .sem-produtos,
+    .carrinho-vazio
+) h2,
+body.app-theme :is(
+    .estado-clientes,
+    .estado-avaliacoes,
+    .estado-historico,
+    .estado-admin,
+    .estado-vazio,
+    .sem-produtos,
+    .carrinho-vazio
+) h3 {
+    color: var(--app-text-strong);
+}
+
+body.app-theme :is(
+    .estado-clientes,
+    .estado-avaliacoes,
+    .estado-historico,
+    .estado-admin,
+    .estado-vazio,
+    .sem-produtos,
+    .carrinho-vazio
+) > i {
+    color: var(--app-primary);
+    filter: drop-shadow(0 8px 14px rgba(255, 107, 53, .13));
+}
+
+body.app-theme :is(.carregando, .estado-carregando) i {
+    color: var(--app-primary);
+}
+
+/* Área administrativa */
+
+body.theme-admin {
+    --admin-bg: var(--app-bg);
+    --admin-card: var(--app-surface);
+    --admin-text: var(--app-text);
+    --admin-muted: var(--app-muted);
+    --admin-border: var(--app-border);
+    --admin-primary: var(--app-primary);
+    --admin-primary-dark: var(--app-primary-dark);
+    --admin-shadow: var(--app-shadow-sm);
+}
+
+.theme-admin .admin-header {
+    background: rgba(255, 255, 255, .95);
+    backdrop-filter: blur(16px) saturate(145%);
+}
+
+.theme-admin .admin-header-conteudo,
+.theme-admin .admin-container {
+    width: min(var(--app-page-width), calc(100% - 32px));
+}
+
+.theme-admin .admin-nav {
+    border-color: var(--app-border);
+    background: #f7f7f8;
+}
+
+.theme-admin .admin-nav a.ativo {
+    color: var(--app-primary-dark);
+    box-shadow: 0 4px 13px rgba(255, 107, 53, .11);
+}
+
+.theme-admin .admin-intro {
+    padding: 25px 27px;
+}
+
+.theme-admin .admin-intro h1 {
+    letter-spacing: -.04em;
+}
+
+.theme-admin .admin-intro p {
+    line-height: 1.65;
+}
+
+.theme-admin .metrica-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-admin .metrica-card::after {
+    content: "";
+    position: absolute;
+    width: 64px;
+    height: 3px;
+    left: 20px;
+    bottom: 0;
+    border-radius: 999px 999px 0 0;
+    background: var(--app-primary);
+    opacity: .72;
+}
+
+.theme-admin :is(.lista-lojas-admin, .lista-usuarios-admin, .lista-categorias-admin) {
+    gap: 16px;
+}
+
+.theme-admin :is(.loja-admin-card, .usuario-admin-card, .categoria-admin-card) {
+    border-color: var(--app-border);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-xs);
+}
+
+.theme-admin .modal-admin-caixa {
+    border: 1px solid rgba(255, 255, 255, .56);
+    box-shadow: var(--app-shadow-lg);
+}
+
+/* Feedback */
+
+body.app-theme .feedback-toast {
+    border: 1px solid var(--app-border);
+    border-left-width: 5px;
+    border-radius: var(--app-radius);
+    box-shadow: var(--app-shadow-lg);
+}
+
+body.app-theme .feedback-conteudo strong {
+    color: var(--app-text-strong);
+    font-size: .9rem;
+}
+
+body.app-theme .feedback-conteudo p {
+    color: var(--app-muted);
+    font-size: .8rem;
+}
+
+body.app-theme .feedback-modal-box {
+    border: 1px solid rgba(255, 255, 255, .55);
+    border-radius: var(--app-radius-lg);
+    box-shadow: var(--app-shadow-lg);
+}
+
+@media (hover: hover) {
+    .theme-cliente :is(.historico-card, .pedido-card, .card):hover,
+    .theme-lojista :is(.estatistica-card, .resumo-card, .avaliacao-card, .cliente-card):hover,
+    .theme-admin :is(.metrica-card, .loja-admin-card, .usuario-admin-card, .categoria-admin-card):hover {
+        border-color: rgba(255, 107, 53, .20);
+        box-shadow: var(--app-shadow-hover);
+        transform: translateY(-2px);
+    }
+}
+
+/* ==========================================
    RESPONSIVO
 ========================================== */
 
 @media (max-width: 900px) {
+    body.app-theme .header-container {
+        width: 100%;
+    }
+
+    body.app-theme .header .menu {
+        top: 68px;
+        border: 1px solid var(--app-border);
+        border-top: 0;
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 20px 42px rgba(24, 24, 27, .12);
+    }
+
+    body.app-theme .header .menu a.ativo-pagina:not(#btnLogin) {
+        box-shadow: inset 3px 0 0 var(--app-primary);
+    }
+
     .theme-cliente main.container,
     .theme-lojista main.container,
     .page-perfil .container-perfil {
@@ -774,6 +1315,11 @@ body.theme-lojista .estado-vazio {
     .theme-lojista .topo {
         padding: 20px;
         border-radius: 18px;
+    }
+
+    .theme-admin .admin-header-conteudo,
+    .theme-admin .admin-container {
+        width: min(100% - 24px, var(--app-page-width));
     }
 }
 
@@ -822,6 +1368,23 @@ body.theme-lojista .estado-vazio {
         padding: 18px;
     }
 
+    .theme-cliente :is(.topo-pagina, .historico-topo),
+    .theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) {
+        align-items: stretch;
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .theme-cliente :is(.topo-pagina, .historico-topo) h1,
+    .theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) h1 {
+        font-size: 1.55rem;
+    }
+
+    .theme-lojista :is(.painel-filtros, .resultado-clientes, .filtros-avaliacoes),
+    .theme-cliente :is(.historico-filtros, .filtros) {
+        padding: 18px;
+    }
+
     .theme-cliente .topo h1,
     .theme-lojista .topo h1 {
         font-size: 25px;
@@ -837,7 +1400,44 @@ body.theme-lojista .estado-vazio {
     }
 
     .theme-admin .admin-intro {
+        padding: 21px 20px;
         border-radius: 18px;
+    }
+
+    body.app-theme .feedback-modal-box {
+        border-radius: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    body.app-theme .header .logo {
+        font-size: 17px;
+    }
+
+    body.app-theme .header .logo i {
+        width: 37px;
+        height: 37px;
+        border-radius: 12px;
+        font-size: 17px;
+    }
+
+    .theme-cliente :is(.topo-pagina, .historico-topo),
+    .theme-lojista :is(.topo-pagina, .cabecalho-avaliacoes) {
+        padding: 18px 16px;
+    }
+
+    .theme-cliente :is(.btn-voltar, .btn-atualizar),
+    .theme-lojista :is(.btn-voltar, .btn-atualizar) {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .theme-admin .admin-container {
+        width: calc(100% - 20px);
+    }
+
+    .theme-admin .admin-intro {
+        padding: 19px 17px;
     }
 }
 
