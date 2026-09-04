@@ -11,7 +11,8 @@
         cancelamentos: ["cancelamento_solicitado", "cancelamento_resolvido"],
         lojas: ["loja_pendente", "loja_status"],
         estoque: ["estoque_baixo"],
-        avaliacoes: ["avaliacao_nova"]
+        avaliacoes: ["avaliacao_nova"],
+        moderacao: ["moderacao_nova", "moderacao_resolvida", "conteudo_moderado"]
     };
 
     const APRESENTACAO_TIPOS = {
@@ -22,7 +23,10 @@
         estoque_baixo: { icone: "fa-solid fa-boxes-stacked", classe: "estoque", nome: "Estoque" },
         avaliacao_nova: { icone: "fa-solid fa-star", classe: "avaliacao", nome: "Avaliação" },
         loja_pendente: { icone: "fa-solid fa-shop-lock", classe: "loja", nome: "Loja" },
-        loja_status: { icone: "fa-solid fa-store", classe: "loja", nome: "Loja" }
+        loja_status: { icone: "fa-solid fa-store", classe: "loja", nome: "Loja" },
+        moderacao_nova: { icone: "fa-solid fa-shield-halved", classe: "moderacao", nome: "Moderação" },
+        moderacao_resolvida: { icone: "fa-solid fa-clipboard-check", classe: "moderacao", nome: "Moderação" },
+        conteudo_moderado: { icone: "fa-solid fa-eye-slash", classe: "moderacao", nome: "Moderação" }
     };
 
     const estado = {

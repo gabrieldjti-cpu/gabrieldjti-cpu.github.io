@@ -300,6 +300,27 @@ Hardening já aplicado:
 - upload de avatar fica isolado pela pasta do `auth.uid()`;
 - nenhuma `service_role` foi adicionada ao frontend.
 
+### RF-26 — Moderação de conteúdo
+
+Implementado:
+
+- denúncia autenticada de produtos e avaliações na página do produto;
+- motivos específicos por tipo de conteúdo e limite de uso por conta;
+- bloqueio de denúncias duplicadas enquanto a análise estiver pendente;
+- fila administrativa com busca, filtros, paginação e indicadores;
+- decisão procedente ou improcedente com justificativa obrigatória;
+- ocultação lógica de produtos e avaliações, preservando pedidos e histórico;
+- avaliações ocultas deixam de compor a média pública;
+- produtos moderados não podem ser reativados diretamente pelo lojista;
+- notificações para administrador, denunciante e responsável pelo conteúdo;
+- histórico imutável com autor, motivo e data de cada ação.
+
+Migration: `supabase/migrations/20260904214706_rf26_moderacao_conteudo.sql`.
+
+Checklist: `docs/TESTES-RF26-MODERACAO.md`.
+
+**Situação:** implementação concluída; validação funcional no site publicado ainda pendente.
+
 ## Migrations aplicadas e registradas
 
 1. `20260819174044_fluxo_seguro_pedidos.sql`
@@ -318,6 +339,22 @@ Hardening já aplicado:
 14. `20260826141254_busca_full_text_relevancia.sql`
 15. `20260827164519_subcategorias_produtos.sql`
 16. `20260827220506_filtros_avaliacao_vendas.sql`
+17. `20260827222856_painel_admin_categorias.sql`
+18. `20260827223002_otimiza_rls_painel_admin_categorias.sql`
+19. `20260828100457_rf07_favoritos.sql`
+20. `20260828141150_rf08_carrinho_usuario.sql`
+21. `20260828214743_rf08_frete_por_loja.sql`
+22. `20260829134529_rf21_clientes_loja.sql`
+23. `20260901222305_rf22_gestao_usuarios_admin.sql`
+24. `20260901222448_rf22_politica_auditoria_admin.sql`
+25. `20260902002058_rf22_admin_principal_unico.sql`
+26. `20260902002540_rf22_vincular_admin_principal.sql`
+27. `20260902165653_rf23_edicao_lojas_admin.sql`
+28. `20260902170145_rf23_hardening_edicao_lojas_admin.sql`
+29. `20260904005558_central_notificacoes.sql`
+30. `20260904214706_rf26_moderacao_conteudo.sql`
+31. `20260904220343_rf26_hardening_moderacao.sql`
+32. `20260904220632_rf26_indices_fks_moderacao.sql`
 
 ## Próximas prioridades do MVP
 

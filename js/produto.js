@@ -57,6 +57,7 @@
             "adicionarCarrinhoProduto",
             "comprarAgoraProduto",
             "compartilharProduto",
+            "denunciarProduto",
             "logoLojaProduto",
             "logoLojaProdutoPlaceholder",
             "nomeLojaProduto",
@@ -469,6 +470,8 @@
 
         elementos.favoritarProduto.dataset.favoritoProduto = produto.id;
         elementos.favoritarProduto.dataset.favoritoNome = produto.nome || "Produto";
+        elementos.denunciarProduto.dataset.conteudoId = produto.id;
+        elementos.denunciarProduto.dataset.conteudoTitulo = produto.nome || "Produto";
 
         const emEstoque = estoque > 0;
         elementos.situacaoEstoque.classList.toggle("em-estoque", emEstoque);
@@ -670,6 +673,7 @@
         const comentario = String(avaliacao?.comentario || "").trim();
         const resposta = String(avaliacao?.resposta_loja || "").trim();
         const data = formatarData(avaliacao?.criado_em);
+        const avaliacaoId = String(avaliacao?.id || "");
 
         return `
             <article class="produto-avaliacao-card">
@@ -698,6 +702,19 @@
                         </strong>
                         <p>${escaparHTML(resposta)}</p>
                     </div>
+                ` : ""}
+                ${avaliacaoId ? `
+                    <button
+                        type="button"
+                        class="produto-denunciar-avaliacao"
+                        data-denunciar-conteudo
+                        data-tipo-conteudo="avaliacao"
+                        data-conteudo-id="${escaparAtributo(avaliacaoId)}"
+                        data-conteudo-titulo="Avaliação de ${escaparAtributo(estado.produto?.nome || "produto")}"
+                    >
+                        <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                        Denunciar avaliação
+                    </button>
                 ` : ""}
             </article>
         `;

@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="components/feedback.css">
   <link rel="stylesheet" href="components/favoritos.css">
   <link rel="stylesheet" href="css/produto.css">
+  <link rel="stylesheet" href="css/moderacao-conteudo.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -186,6 +187,17 @@
               <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
               Compartilhar produto
             </button>
+            <button
+              id="denunciarProduto"
+              type="button"
+              data-denunciar-conteudo
+              data-tipo-conteudo="produto"
+              data-conteudo-id=""
+              data-conteudo-titulo="Produto"
+            >
+              <i class="fa-regular fa-flag" aria-hidden="true"></i>
+              Denunciar produto
+            </button>
             <span>
               <i class="fa-solid fa-store" aria-hidden="true"></i>
               Produto vendido por uma loja aprovada
@@ -337,6 +349,7 @@
   <script src="components/header.js"></script>
   <script src="components/feedback.js"></script>
   <script src="components/favoritos.js"></script>
+  <script src="js/moderacao-conteudo.js"></script>
   <script src="js/produto.js"></script>
 </body>
 </html>

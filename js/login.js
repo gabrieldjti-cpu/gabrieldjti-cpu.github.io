@@ -10,6 +10,7 @@ const btnMostrarSenha = document.getElementById("toggleSenha");
 const btnLogin = document.querySelector(".btn-login");
 const CHAVE_RETORNO_FAVORITOS = "destino_apos_login_favoritos";
 const CHAVE_RETORNO_NOTIFICACOES = "destino_apos_login_notificacoes";
+const CHAVE_RETORNO_MODERACAO = "destino_apos_login_moderacao";
 
 if (!window.db) {
     console.error("Erro: Supabase não foi inicializado.");
@@ -63,10 +64,12 @@ function obterRetornoFavoritosSeguro() {
     try {
         destino =
             sessionStorage.getItem(CHAVE_RETORNO_NOTIFICACOES)
+            || sessionStorage.getItem(CHAVE_RETORNO_MODERACAO)
             || sessionStorage.getItem(CHAVE_RETORNO_FAVORITOS)
             || "";
         sessionStorage.removeItem(CHAVE_RETORNO_FAVORITOS);
         sessionStorage.removeItem(CHAVE_RETORNO_NOTIFICACOES);
+        sessionStorage.removeItem(CHAVE_RETORNO_MODERACAO);
     } catch (erro) {
         console.warn("Não foi possível recuperar o destino após o login:", erro);
         return null;
@@ -77,7 +80,8 @@ function obterRetornoFavoritosSeguro() {
         "categoria.html",
         "loja.html",
         "favoritos.html",
-        "notificacoes.html"
+        "notificacoes.html",
+        "produto.html"
     ]);
 
     try {

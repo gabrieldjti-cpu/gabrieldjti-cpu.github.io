@@ -19,9 +19,9 @@ Este documento compara o PRD com o código, as migrations e os testes atualmente
 | Classificação | Quantidade |
 |---|---:|
 | ✅ Concluído e validado | 4 |
-| 🟡 Parcial | 18 |
+| 🟡 Parcial | 19 |
 | ❌ Pendente | 1 |
-| 🔵 Fora do MVP atual | 4 |
+| 🔵 Fora do MVP atual | 3 |
 | **Total** | **27** |
 
 O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovação administrativa, produtos, estoque, carrinho multi-loja, checkout autenticado, pedidos, cancelamento, avaliações e histórico. A conclusão formal do MVP depende principalmente de testes de regressão e de fechar as lacunas listadas abaixo.
@@ -55,7 +55,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão, edição segura dos dados comerciais e histórico administrativo implementados. A edição preserva proprietário/status, passa por Edge Function com JWT e é exclusiva do administrador principal. Falta validar o novo formulário no site publicado. |
 | **RF-24 — Gestão de Categorias Admin** | 🟡 | Painel com CRUD, busca, filtros, paginação, ativação, hierarquia e reordenação de destaques implementado com RLS. Falta validação no site publicado. |
 | **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado, com notificação automática ao admin e ao lojista. Ainda faltam documentos. |
-| **RF-26 — Moderação** | 🔵 | Previsto para v1.1. |
+| **RF-26 — Moderação** | 🟡 | Denúncias autenticadas de produtos e avaliações, prevenção de duplicidade/abuso, fila administrativa paginada, ocultação por soft delete, notificações e auditoria implementadas. Falta validar o fluxo no site publicado. |
 | **RF-27 — Dashboard Administrativo** | 🟡 | Métricas globais básicas e gestão de lojas implementadas. Faltam GMV completo, ranking, disputas e módulos administrativos restantes. |
 
 ## Requisitos não funcionais
@@ -97,20 +97,21 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - painel administrativo de usuários com paginação server-side, filtros, bloqueio real no Supabase Auth, gestão de papéis, proteção da própria conta e do último administrador e histórico de auditoria.
 - Central de Ajuda e Confiança pública com FAQ pesquisável, guia de funcionamento, Termos de Uso, Política de Privacidade/LGPD e política de cancelamento, devolução e reembolso, integrada ao menu, cadastro e rodapés públicos.
 - central privada de notificações in-app com contador, histórico paginado, leitura individual/em massa e avisos em tempo real para pedidos, cancelamentos, avaliações, estoque e aprovação de lojas.
+- moderação de produtos e avaliações com denúncia autenticada, decisão exclusiva do administrador principal, justificativa obrigatória, ocultação segura, proteção contra reativação e trilha de auditoria.
 
 Os textos institucionais refletem os fluxos técnicos atuais e apontam para fontes legais oficiais. Antes do lançamento comercial definitivo, devem passar por revisão jurídica e receber a identificação e o canal formal do operador da plataforma.
 
 ## Pendências prioritárias do MVP
 
-1. Validar no site publicado o painel de usuários: filtros, bloqueio, desbloqueio, papéis e auditoria.
-2. Validar no site publicado o frete por loja no carrinho, checkout e detalhes do pedido.
-3. Validar no site publicado o painel administrativo de categorias e os destaques da home.
-4. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
-5. Ampliar os testes automatizados para os demais fluxos críticos.
+1. Validar no site publicado o RF-26: denúncias, decisões, ocultação, notificações e auditoria.
+2. Validar no site publicado o painel de usuários: filtros, bloqueio, desbloqueio, papéis e auditoria.
+3. Validar no site publicado o frete por loja no carrinho, checkout e detalhes do pedido.
+4. Validar no site publicado o painel administrativo de categorias e os destaques da home.
+5. Gerar uma baseline oficial do schema remoto com `supabase db pull`.
 
 ## Versionamento do banco
 
-As 28 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
+As 32 migrations incrementais do projeto estão versionadas no repositório. Elas começam depois da criação manual das tabelas principais, portanto ainda falta uma baseline inicial reproduzível.
 
 Essa baseline não deve ser escrita manualmente nem aplicada como uma migration comum sobre o banco existente. O procedimento seguro está documentado em `docs/REPRODUCAO-SUPABASE.md` e deve usar o schema real gerado pelo Supabase CLI.
 
