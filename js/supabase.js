@@ -74,6 +74,44 @@ if (!window.supabase) {
 
 
 // =======================================
+// CENTRAL DE NOTIFICAÇÕES
+// =======================================
+
+function carregarCentralNotificacoesGlobal() {
+    const css = "components/notificacoes.css";
+    const scriptSrc = "components/notificacoes.js";
+
+    if (!document.querySelector(`link[href="${css}"]`)) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = css;
+        link.dataset.centralNotificacoes = "true";
+        document.head.appendChild(link);
+    }
+
+    const carregarScript = () => {
+        if (document.querySelector(`script[src="${scriptSrc}"]`)) return;
+
+        const script = document.createElement("script");
+        script.src = scriptSrc;
+        script.dataset.centralNotificacoes = "true";
+        script.onerror = () => {
+            console.error("Não foi possível carregar a central de notificações.");
+        };
+        document.body.appendChild(script);
+    };
+
+    if (document.body) {
+        carregarScript();
+    } else {
+        document.addEventListener("DOMContentLoaded", carregarScript, { once: true });
+    }
+}
+
+carregarCentralNotificacoesGlobal();
+
+
+// =======================================
 // GUARDA DE CONTA INATIVA — RF-04 / RF-22
 // =======================================
 

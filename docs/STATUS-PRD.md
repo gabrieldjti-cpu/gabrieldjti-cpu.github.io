@@ -3,7 +3,7 @@
 **Projeto:** Comércio da Cidade — Marketplace Multi-Lojas  
 **PRD:** `PRD-Marketplace.md` — versão 1.0
 **Branch de referência:** `main`
-**Atualizado em:** 03/09/2026
+**Atualizado em:** 04/09/2026
 
 Este documento compara o PRD com o código, as migrations e os testes atualmente versionados. Ele substitui a auditoria inicial, que não representava mais o estado da `main` após as PRs de conclusão do MVP, aprovação de lojas, estoque, paginação e hardening.
 
@@ -54,7 +54,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 | **RF-22 — Gestão de Usuários Admin** | 🟡 | Painel paginado com busca, filtros, indicadores, bloqueio/desbloqueio no Auth, alteração entre cliente/lojista, suspensão preventiva das lojas e auditoria. A conta administrativa principal é única e protegida no banco. Ações críticas passam por Edge Function e validação no banco. Falta validar o fluxo no site publicado. |
 | **RF-23 — Gestão de Lojas Admin** | 🟡 | Listagem, busca, filtros, detalhes, aprovação, rejeição, suspensão, edição segura dos dados comerciais e histórico administrativo implementados. A edição preserva proprietário/status, passa por Edge Function com JWT e é exclusiva do administrador principal. Falta validar o novo formulário no site publicado. |
 | **RF-24 — Gestão de Categorias Admin** | 🟡 | Painel com CRUD, busca, filtros, paginação, ativação, hierarquia e reordenação de destaques implementado com RLS. Falta validação no site publicado. |
-| **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado. Faltam documentos e notificação automática. |
+| **RF-25 — Aprovação de Lojas** | 🟡 | Fluxo seguro de pendência, aprovação, rejeição, suspensão e reabertura implementado, com notificação automática ao admin e ao lojista. Ainda faltam documentos. |
 | **RF-26 — Moderação** | 🔵 | Previsto para v1.1. |
 | **RF-27 — Dashboard Administrativo** | 🟡 | Métricas globais básicas e gestão de lojas implementadas. Faltam GMV completo, ranking, disputas e módulos administrativos restantes. |
 
@@ -96,6 +96,7 @@ O núcleo do marketplace já funciona: autenticação, perfil, lojas, aprovaçã
 - painel privado de clientes do lojista com indicadores de recorrência, filtros, paginação e histórico consolidado, sem exposição de dados de contato ou endereço.
 - painel administrativo de usuários com paginação server-side, filtros, bloqueio real no Supabase Auth, gestão de papéis, proteção da própria conta e do último administrador e histórico de auditoria.
 - Central de Ajuda e Confiança pública com FAQ pesquisável, guia de funcionamento, Termos de Uso, Política de Privacidade/LGPD e política de cancelamento, devolução e reembolso, integrada ao menu, cadastro e rodapés públicos.
+- central privada de notificações in-app com contador, histórico paginado, leitura individual/em massa e avisos em tempo real para pedidos, cancelamentos, avaliações, estoque e aprovação de lojas.
 
 Os textos institucionais refletem os fluxos técnicos atuais e apontam para fontes legais oficiais. Antes do lançamento comercial definitivo, devem passar por revisão jurídica e receber a identificação e o canal formal do operador da plataforma.
 
