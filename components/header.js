@@ -120,6 +120,32 @@
 
 
                         <a
+                            href="notificacoes.html"
+                            id="btnNotificacoes"
+                            class="btn-notificacoes"
+                            aria-label="Notificações"
+                            hidden
+                        >
+
+                            <i class="fa-regular fa-bell"></i>
+
+                            <span>
+                                Notificações
+                            </span>
+
+                            <span
+                                id="contadorNotificacoes"
+                                class="contador-notificacoes"
+                                aria-hidden="true"
+                                hidden
+                            >
+                                0
+                            </span>
+
+                        </a>
+
+
+                        <a
                             href="ajuda.html"
                             id="btnAjuda"
                         >
@@ -264,6 +290,7 @@
             "index.html": '.menu a[href="index.html"]',
             "categoria.html": '.menu a[href="index.html#categorias"]',
             "favoritos.html": '#btnFavoritos',
+            "notificacoes.html": '#btnNotificacoes',
             "ajuda.html": '#btnAjuda',
             "como-funciona.html": '#btnAjuda',
             "termos.html": '#btnAjuda',

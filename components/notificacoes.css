@@ -1,0 +1,27 @@
+.btn-notificacoes-admin {
+    position: relative;
+}
+
+.btn-notificacoes-admin .contador-notificacoes {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 21px;
+    height: 21px;
+    padding: 0 5px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+@media (max-width: 760px) {
+    .btn-notificacoes-admin span:not(.contador-notificacoes) {
+        display: none;
+    }
+}

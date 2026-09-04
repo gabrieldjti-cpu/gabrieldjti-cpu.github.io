@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Acompanhe pedidos, cancelamentos, avaliações, estoque e atualizações da sua conta no Comércio da Cidade." />
+  <title>Notificações | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css" />
+  <link rel="stylesheet" href="components/feedback.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/notificacoes.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+</head>
+<body class="pagina-notificacoes">
+  <div id="header"></div>
+
+  <main class="notificacoes-main">
+    <nav class="notificacoes-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html">
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        Início
+      </a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span>Notificações</span>
+    </nav>
+
+    <section class="notificacoes-hero" aria-labelledby="titulo-notificacoes">
+      <div class="notificacoes-hero-icone" aria-hidden="true">
+        <i class="fa-regular fa-bell"></i>
+      </div>
+
+      <div class="notificacoes-hero-texto">
+        <span class="notificacoes-eyebrow">Fique por dentro</span>
+        <h1 id="titulo-notificacoes">Central de Notificações</h1>
+        <p>Pedidos, cancelamentos, avaliações e alertas importantes reunidos em um só lugar.</p>
+      </div>
+
+      <div class="notificacoes-resumo" aria-live="polite">
+        <strong id="total-nao-lidas">—</strong>
+        <span id="rotulo-nao-lidas">não lidas</span>
+      </div>
+    </section>
+
+    <section class="notificacoes-conteudo" aria-labelledby="titulo-lista-notificacoes">
+      <div class="notificacoes-barra">
+        <div>
+          <span class="notificacoes-eyebrow">Seu histórico</span>
+          <h2 id="titulo-lista-notificacoes">Avisos recentes</h2>
+          <p id="texto-resultado-notificacoes" aria-live="polite">Carregando notificações...</p>
+        </div>
+
+        <button type="button" id="btn-marcar-todas-lidas" class="btn-marcar-todas" disabled>
+          <i class="fa-solid fa-check-double" aria-hidden="true"></i>
+          Marcar todas como lidas
+        </button>
+      </div>
+
+      <div class="notificacoes-filtros" aria-label="Filtros de notificações">
+        <div class="notificacoes-abas" role="group" aria-label="Situação da leitura">
+          <button type="button" class="filtro-leitura ativo" data-leitura="todas" aria-pressed="true">Todas</button>
+          <button type="button" class="filtro-leitura" data-leitura="nao_lidas" aria-pressed="false">Não lidas</button>
+        </div>
+
+        <label class="filtro-tipo">
+          <span>Tipo</span>
+          <select id="filtro-tipo-notificacao">
+            <option value="">Todos os avisos</option>
+            <option value="pedidos">Pedidos</option>
+            <option value="cancelamentos">Cancelamentos</option>
+            <option value="lojas">Lojas</option>
+            <option value="estoque">Estoque</option>
+            <option value="avaliacoes">Avaliações</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="lista-notificacoes" class="lista-notificacoes" aria-live="polite" aria-busy="true">
+        <div class="notificacoes-estado">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+          <h3>Carregando notificações...</h3>
+          <p>Estamos buscando seus avisos mais recentes.</p>
+        </div>
+      </div>
+
+      <nav id="paginacao-notificacoes" class="paginacao-notificacoes" aria-label="Paginação das notificações" hidden></nav>
+    </section>
+  </main>
+
+  <footer class="footer-home">
+    <div class="footer-home-container">
+      <div class="footer-marca">
+        <div class="footer-logo">
+          <i class="fa-solid fa-store" aria-hidden="true"></i>
+          <strong>Comércio da Cidade</strong>
+        </div>
+        <p>Conectando pessoas aos comércios da própria cidade.</p>
+      </div>
+
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
+        <a href="index.html#categorias">Categorias</a>
+        <a href="index.html#produtos-globais">Produtos</a>
+        <a href="carrinho.html">Carrinho</a>
+        <a href="como-funciona.html">Como funciona</a>
+        <a href="ajuda.html">Ajuda</a>
+        <a href="privacidade.html">Privacidade</a>
+      </nav>
+    </div>
+
+    <div class="footer-copyright">
+      <p>© 2026 Comércio da Cidade. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/carrinho-sync.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="js/notificacoes.js"></script>
+</body>
+</html>

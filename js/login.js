@@ -9,6 +9,7 @@ const senha = document.getElementById("senha");
 const btnMostrarSenha = document.getElementById("toggleSenha");
 const btnLogin = document.querySelector(".btn-login");
 const CHAVE_RETORNO_FAVORITOS = "destino_apos_login_favoritos";
+const CHAVE_RETORNO_NOTIFICACOES = "destino_apos_login_notificacoes";
 
 if (!window.db) {
     console.error("Erro: Supabase não foi inicializado.");
@@ -60,8 +61,12 @@ function obterRetornoFavoritosSeguro() {
     let destino = "";
 
     try {
-        destino = sessionStorage.getItem(CHAVE_RETORNO_FAVORITOS) || "";
+        destino =
+            sessionStorage.getItem(CHAVE_RETORNO_NOTIFICACOES)
+            || sessionStorage.getItem(CHAVE_RETORNO_FAVORITOS)
+            || "";
         sessionStorage.removeItem(CHAVE_RETORNO_FAVORITOS);
+        sessionStorage.removeItem(CHAVE_RETORNO_NOTIFICACOES);
     } catch (erro) {
         console.warn("Não foi possível recuperar o destino após o login:", erro);
         return null;
@@ -71,7 +76,8 @@ function obterRetornoFavoritosSeguro() {
         "index.html",
         "categoria.html",
         "loja.html",
-        "favoritos.html"
+        "favoritos.html",
+        "notificacoes.html"
     ]);
 
     try {
@@ -94,7 +100,7 @@ function resolverDestinoAposLogin(destinoPerfil, destinoSolicitado) {
         "painel-loja.html"
     ]);
 
-    // Um retorno salvo pelos Favoritos pertence ao fluxo de cliente e nunca
+    // Um retorno salvo pertence ao fluxo comum e nunca
     // pode substituir o painel obrigatório de um administrador ou lojista.
     if (destinosPrioritarios.has(destinoPerfil)) {
         return destinoPerfil;

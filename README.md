@@ -25,7 +25,8 @@ Marketplace web multi-lojas para conectar clientes e comerciantes locais em um �
 - painel privado de clientes do lojista, com métricas e histórico de pedidos;
 - avaliações e resposta do lojista;
 - histórico de compras e recompra;
-- dashboards de lojista e administrador.
+- dashboards de lojista e administrador;
+- central de notificações privada e em tempo real para pedidos, cancelamentos, lojas, avaliações e estoque;
 - Central de Ajuda pública com busca em perguntas frequentes, guia de funcionamento, Termos de Uso, Política de Privacidade e regras de cancelamento e reembolso.
 
 ## Estrutura

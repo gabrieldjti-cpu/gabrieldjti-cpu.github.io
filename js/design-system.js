@@ -29,6 +29,7 @@
             "perfil.html",
             "carrinho.html",
             "favoritos.html",
+            "notificacoes.html",
             "checkout.html",
             "meus-pedidos.html",
             "historico-compras.html"
@@ -66,6 +67,7 @@
         "produtos.html",
         "loja.html",
         "meus-pedidos.html",
+        "notificacoes.html",
         "pedidos-loja.html",
         "avaliacoes-loja.html",
         "admin-dashboard.html",
