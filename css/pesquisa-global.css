@@ -289,6 +289,7 @@
 }
 
 .produto-global-card {
+    position: relative;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -296,8 +297,21 @@
     border-radius: 20px;
     background: #fff;
     box-shadow: 0 10px 30px rgba(31, 37, 45, .06);
+    cursor: pointer;
     overflow: hidden;
     transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.produto-global-link-card {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+.produto-global-link-card:focus-visible {
+    outline: 3px solid rgba(255, 107, 53, .45);
+    outline-offset: -3px;
 }
 
 .produto-global-card:hover {
@@ -502,28 +516,6 @@
     text-decoration: line-through;
 }
 
-.produto-global-rodape a {
-    min-height: 39px;
-    padding: 0 12px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    border-radius: 10px;
-    background: var(--home-text);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    white-space: nowrap;
-    transition: background .2s ease, transform .2s ease;
-}
-
-.produto-global-rodape a:hover {
-    transform: translateY(-1px);
-    background: var(--home-primary);
-}
-
-.produto-global-rodape a:focus-visible,
 .btn-limpar-filtros:focus-visible,
 .estado-produtos-globais button:focus-visible,
 .paginacao-produtos-globais button:focus-visible {
