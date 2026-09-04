@@ -326,6 +326,7 @@ section h2 {
 }
 
 .produto {
+    position: relative;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -333,7 +334,20 @@ section h2 {
     border-radius: 22px;
     background: #fff;
     box-shadow: var(--loja-shadow-soft);
+    cursor: pointer;
     transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.produto-link-card {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+.produto-link-card:focus-visible {
+    outline: 3px solid rgba(255, 107, 53, .48);
+    outline-offset: -3px;
 }
 
 .produto:hover {
@@ -416,6 +430,12 @@ section h2 {
 
 .avaliacao-produto-clicavel:hover {
     background: #fff9f5;
+}
+
+.produto .avaliacao-produto-clicavel,
+.produto .btn-comprar {
+    position: relative;
+    z-index: 2;
 }
 
 .preco {

@@ -727,6 +727,12 @@
 
         return `
             <article class="produto-global-card" data-produto-id="${produtoId}" data-loja-id="${lojaId}">
+                <a
+                    class="produto-global-link-card"
+                    href="${escaparAtributo(link)}"
+                    aria-label="Abrir página do produto ${nome}"
+                ></a>
+
                 <div class="produto-global-imagem">
                     ${imagem}
                     ${temPromocao ? '<span class="produto-global-oferta"><i class="fa-solid fa-tag" aria-hidden="true"></i> Oferta</span>' : ""}
@@ -773,10 +779,6 @@
 
                     <div class="produto-global-rodape">
                         <div class="produto-global-preco">${precoHTML}</div>
-                        <a href="${escaparAtributo(link)}" aria-label="Ver detalhes de ${nome}">
-                            Ver produto
-                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                        </a>
                     </div>
                 </div>
             </article>

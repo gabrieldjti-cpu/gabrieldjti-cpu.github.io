@@ -2518,6 +2518,12 @@ function criarCardProduto(
             )}"
         >
 
+            <a
+                class="produto-link-card"
+                href="${escaparHTML(linkProduto)}"
+                aria-label="Abrir página do produto ${nome}"
+            ></a>
+
             ${imagemHTML}
 
 
@@ -2527,15 +2533,7 @@ function criarCardProduto(
                     ${categoria}
                 </span>
 
-                <h3>
-                    <a
-                        class="produto-link-detalhes"
-                        href="${escaparHTML(linkProduto)}"
-                        aria-label="Ver detalhes de ${nome}"
-                    >
-                        ${nome}
-                    </a>
-                </h3>
+                <h3>${nome}</h3>
 
 
                 <p>
