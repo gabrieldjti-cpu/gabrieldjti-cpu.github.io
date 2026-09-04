@@ -312,6 +312,7 @@
 .notificacao-icone.estoque { background: #fff0f0; color: #dc2626; }
 .notificacao-icone.avaliacao { background: #fff8dc; color: #a16207; }
 .notificacao-icone.loja { background: #eaf8f0; color: #198754; }
+.notificacao-icone.moderacao { background: #f3e8ff; color: #7e22ce; }
 
 .notificacao-corpo h3 {
   margin: 0 26px 4px 0;
