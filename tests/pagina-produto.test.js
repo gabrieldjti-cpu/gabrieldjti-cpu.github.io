@@ -6,6 +6,7 @@ const test = require("node:test");
 const raiz = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(raiz, "produto.html"), "utf8");
 const codigo = fs.readFileSync(path.join(raiz, "js", "produto.js"), "utf8");
+const estilos = fs.readFileSync(path.join(raiz, "css", "produto.css"), "utf8");
 
 test("a página possui as áreas essenciais do detalhe do produto", () => {
     for (const id of [
@@ -24,6 +25,11 @@ test("a página possui as áreas essenciais do detalhe do produto", () => {
     ]) {
         assert.match(html, new RegExp(`id=["']${id}["']`));
     }
+});
+
+test("o estado de carregamento desaparece quando recebe hidden", () => {
+    assert.match(codigo, /elementos\.estadoProduto\.hidden = true/);
+    assert.match(estilos, /\.produto-estado\[hidden\]\s*\{\s*display:\s*none;/);
 });
 
 test("todos os elementos usados pelo JavaScript existem no HTML", () => {

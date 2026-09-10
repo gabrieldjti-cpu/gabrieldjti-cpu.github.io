@@ -462,6 +462,10 @@ body.pagina-produto {
     background: #fff;
 }
 
+.produto-estado[hidden] {
+    display: none;
+}
+
 .produto-quantidade-controle button,
 .produto-quantidade-controle input {
     min-width: 0;
