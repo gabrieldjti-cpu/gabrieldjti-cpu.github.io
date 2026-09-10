@@ -29,7 +29,14 @@ test("a página possui as áreas essenciais do detalhe do produto", () => {
 
 test("o estado de carregamento desaparece quando recebe hidden", () => {
     assert.match(codigo, /elementos\.estadoProduto\.hidden = true/);
-    assert.match(estilos, /\.produto-estado\[hidden\]\s*\{\s*display:\s*none;/);
+    assert.match(estilos, /\.pagina-produto \[hidden\]\s*\{\s*display:\s*none !important;/);
+});
+
+test("imagem principal quebrada é substituída pelo placeholder", () => {
+    assert.match(codigo, /imagemProdutoPrincipal\.addEventListener\("error"/);
+    assert.match(codigo, /imagemProdutoPrincipal\.hidden = true/);
+    assert.match(codigo, /imagemProdutoPrincipal\.removeAttribute\("src"\)/);
+    assert.match(codigo, /imagemProdutoPlaceholder\.hidden = false/);
 });
 
 test("todos os elementos usados pelo JavaScript existem no HTML", () => {
