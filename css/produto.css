@@ -31,6 +31,10 @@ body.pagina-produto {
     text-decoration: none;
 }
 
+.pagina-produto [hidden] {
+    display: none !important;
+}
+
 .produto-main {
     width: min(1180px, calc(100% - 40px));
     min-height: calc(100vh - 180px);
@@ -460,10 +464,6 @@ body.pagina-produto {
     border: 1px solid #dfe2e8;
     border-radius: 13px;
     background: #fff;
-}
-
-.produto-estado[hidden] {
-    display: none;
 }
 
 .produto-quantidade-controle button,
