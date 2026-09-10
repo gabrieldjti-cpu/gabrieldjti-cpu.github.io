@@ -181,8 +181,14 @@
         elementos.limpar?.addEventListener("click", limparFiltros);
 
         elementos.lista?.addEventListener("click", event => {
+            const card = event.target.closest("[data-link-produto]");
             const tentarNovamente = event.target.closest("[data-recarregar-produtos]");
             const limparBusca = event.target.closest("[data-limpar-pesquisa-global]");
+
+            if (card && !event.target.closest("a, button, input, select, textarea, label")) {
+                window.location.href = card.dataset.linkProduto;
+                return;
+            }
 
             if (tentarNovamente) {
                 buscarProdutos();
@@ -191,6 +197,14 @@
             if (limparBusca) {
                 limparFiltros();
             }
+        });
+
+        elementos.lista?.addEventListener("keydown", event => {
+            const card = event.target.closest("[data-link-produto]");
+            if (!card || event.target !== card || !["Enter", " "].includes(event.key)) return;
+
+            event.preventDefault();
+            window.location.href = card.dataset.linkProduto;
         });
 
         elementos.paginacao?.addEventListener("click", event => {
@@ -890,7 +904,15 @@
             : `<strong>${formatarMoeda(precoAtual)}</strong>`;
 
         return `
-            <article class="produto-global-card" data-produto-id="${produtoId}" data-loja-id="${lojaId}">
+            <article
+                class="produto-global-card produto-card-clicavel"
+                data-produto-id="${produtoId}"
+                data-loja-id="${lojaId}"
+                data-link-produto="${escaparAtributo(link)}"
+                role="link"
+                tabindex="0"
+                aria-label="Ver detalhes de ${nome}"
+            >
                 <div class="produto-global-imagem">
                     ${imagem}
                     ${temPromocao ? '<span class="produto-global-oferta"><i class="fa-solid fa-tag" aria-hidden="true"></i> Oferta</span>' : ""}
@@ -937,10 +959,6 @@
 
                     <div class="produto-global-rodape">
                         <div class="produto-global-preco">${precoHTML}</div>
-                        <a href="${escaparAtributo(link)}" aria-label="Ver detalhes de ${nome}">
-                            Ver produto
-                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                        </a>
                     </div>
                 </div>
             </article>
