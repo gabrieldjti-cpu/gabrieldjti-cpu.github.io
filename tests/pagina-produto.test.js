@@ -74,6 +74,20 @@ test("busca, categoria e favoritos abrem a nova página individual", () => {
     }
 });
 
+test("os cards públicos abrem os detalhes sem exibir o botão Ver produto", () => {
+    for (const arquivo of [
+        path.join(raiz, "js", "pesquisa-global.js"),
+        path.join(raiz, "js", "categoria.js"),
+        path.join(raiz, "js", "loja.js")
+    ]) {
+        const conteudo = fs.readFileSync(arquivo, "utf8");
+        assert.match(conteudo, /data-link-produto=/);
+        assert.match(conteudo, /role="link"/);
+        assert.match(conteudo, /tabindex="0"/);
+        assert.doesNotMatch(conteudo, />\s*Ver produto\s*</);
+    }
+});
+
 test("a página atualiza metadados e dados estruturados do produto", () => {
     assert.match(html, /property="og:type" content="product"/);
     assert.match(codigo, /application\/ld\+json/);

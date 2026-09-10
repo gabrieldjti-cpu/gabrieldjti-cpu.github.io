@@ -300,6 +300,15 @@
     transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
 }
 
+.produto-card-clicavel {
+    cursor: pointer;
+}
+
+.produto-card-clicavel:focus-visible {
+    outline: 3px solid rgba(234, 88, 12, .38);
+    outline-offset: 4px;
+}
+
 .produto-global-card:hover {
     transform: translateY(-5px);
     border-color: #f1d2c6;

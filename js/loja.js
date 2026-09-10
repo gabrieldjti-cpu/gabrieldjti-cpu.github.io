@@ -27,6 +27,8 @@ document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
+        configurarNavegacaoCardsProdutos();
+
         console.log(
             "Página da loja iniciada."
         );
@@ -2507,9 +2509,13 @@ function criarCardProduto(
     return `
 
         <div
-            class="produto"
+            class="produto produto-card-clicavel"
             id="produto-${produtoId}"
             data-produto-id="${produtoId}"
+            data-link-produto="${escaparHTML(linkProduto)}"
+            role="link"
+            tabindex="0"
+            aria-label="Ver detalhes de ${nome}"
             data-nome="${escaparHTML(
                 normalizarTexto(
                     produto.nome ||
@@ -2527,15 +2533,7 @@ function criarCardProduto(
                     ${categoria}
                 </span>
 
-                <h3>
-                    <a
-                        class="produto-link-detalhes"
-                        href="${escaparHTML(linkProduto)}"
-                        aria-label="Ver detalhes de ${nome}"
-                    >
-                        ${nome}
-                    </a>
-                </h3>
+                <h3>${nome}</h3>
 
 
                 <p>
@@ -2564,6 +2562,26 @@ function criarCardProduto(
         </div>
 
     `;
+}
+
+function configurarNavegacaoCardsProdutos() {
+    const container = document.getElementById("listaProdutos");
+    if (!container) return;
+
+    container.addEventListener("click", event => {
+        const card = event.target.closest("[data-link-produto]");
+        if (!card || event.target.closest("a, button, input, select, textarea, label")) return;
+
+        window.location.href = card.dataset.linkProduto;
+    });
+
+    container.addEventListener("keydown", event => {
+        const card = event.target.closest("[data-link-produto]");
+        if (!card || event.target !== card || !["Enter", " "].includes(event.key)) return;
+
+        event.preventDefault();
+        window.location.href = card.dataset.linkProduto;
+    });
 }
 
 
