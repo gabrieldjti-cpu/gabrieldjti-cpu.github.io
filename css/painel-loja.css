@@ -269,6 +269,34 @@ body{
 
 }
 
+.documentos-loja-card { border: 1px solid #dbeafe; }
+.documentos-loja-topo, .documentos-loja-topo > div { display: flex; align-items: center; gap: 14px; }
+.documentos-loja-topo { justify-content: space-between; margin-bottom: 20px; }
+.documentos-loja-topo h2 { margin: 0; font-size: 21px; color: #1e293b; }
+.documentos-loja-topo p { margin: 3px 0 0; color: #64748b; font-size: 14px; }
+.documentos-loja-icone { display: grid; place-items: center; width: 45px; height: 45px; border-radius: 13px; color: #2563eb; background: #eff6ff; font-size: 20px; }
+.progresso-documentos-loja { padding: 8px 12px; border-radius: 999px; color: #1d4ed8; background: #dbeafe; font-size: 13px; white-space: nowrap; }
+.lista-documentos-loja { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.documento-lojista { padding: 18px; border: 1px solid #e2e8f0; border-radius: 15px; background: #f8fafc; }
+.documento-lojista-cabecalho { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.documento-lojista-cabecalho h3 { margin: 0; font-size: 16px; color: #1e293b; }
+.documento-status { padding: 5px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.documento-status-pendente { color: #92400e; background: #fef3c7; }
+.documento-status-aprovado { color: #166534; background: #dcfce7; }
+.documento-status-rejeitado { color: #991b1b; background: #fee2e2; }
+.documento-status-nao_enviado { color: #475569; background: #e2e8f0; }
+.documento-lojista-info { margin: 12px 0; color: #64748b; font-size: 13px; line-height: 1.55; }
+.documento-motivo { padding: 10px; margin: 12px 0; border-left: 3px solid #ef4444; border-radius: 7px; color: #991b1b; background: #fff1f2; font-size: 13px; }
+.documento-reenvio { display: grid; gap: 10px; margin-top: 14px; }
+.documento-reenvio select, .documento-reenvio input { width: 100%; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff; font: inherit; font-size: 14px; }
+.documento-reenvio .btn { width: fit-content; }
+.documentos-carregando { grid-column: 1 / -1; padding: 20px; text-align: center; color: #64748b; }
+
+@media (max-width: 700px) {
+    .lista-documentos-loja { grid-template-columns: 1fr; }
+    .documentos-loja-topo { align-items: flex-start; flex-direction: column; }
+}
+
 
 /* ===================================
    INFORMAÇÕES DA LOJA

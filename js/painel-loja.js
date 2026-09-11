@@ -5,6 +5,7 @@
 
 let usuario = null;
 let loja = null;
+let documentosLoja = [];
 
 // ==========================================
 // INICIAR
@@ -164,6 +165,8 @@ async function carregarLoja() {
 
         configurarBotaoEditar();
 
+        await carregarDocumentosLoja();
+
         await carregarProdutos();
 
         await Promise.all([
@@ -179,6 +182,90 @@ async function carregarLoja() {
             "Não foi possível carregar a loja",
             5500
         );
+    }
+}
+
+async function carregarDocumentosLoja() {
+    const lista = document.getElementById("lista-documentos-loja");
+    if (!lista || !loja?.id) return;
+    try {
+        const { data, error } = await window.db.from("documentos_loja")
+            .select("id,tipo,tipo_pessoa,numero_fiscal,arquivo_path,nome_arquivo,mime_type,tamanho_bytes,status,motivo_rejeicao,atualizado_em")
+            .eq("loja_id", loja.id);
+        if (error) throw error;
+        documentosLoja = Array.isArray(data) ? data : [];
+        renderizarDocumentosLoja();
+    } catch (erro) {
+        console.error("Erro ao carregar documentos:", erro);
+        lista.innerHTML = '<div class="documentos-carregando">Não foi possível carregar a documentação.</div>';
+    }
+}
+
+function renderizarDocumentosLoja() {
+    const lista = document.getElementById("lista-documentos-loja");
+    const progresso = document.getElementById("progresso-documentos-loja");
+    if (!lista) return;
+    const tipos = [
+        { tipo: "documento_fiscal", titulo: "CPF ou CNPJ", descricao: "Documento fiscal do responsável pela loja." },
+        { tipo: "comprovante_endereco", titulo: "Comprovante de endereço", descricao: "Comprovante do endereço informado no cadastro." }
+    ];
+    const aprovados = documentosLoja.filter(item => item.status === "aprovado").length;
+    if (progresso) progresso.textContent = `${aprovados} de 2 aprovados`;
+    lista.innerHTML = tipos.map(config => {
+        const documento = documentosLoja.find(item => item.tipo === config.tipo);
+        const status = documento?.status || "nao_enviado";
+        const rotulos = { pendente: "Em análise", aprovado: "Aprovado", rejeitado: "Rejeitado", nao_enviado: "Não enviado" };
+        const podeEnviar = status === "rejeitado" || status === "nao_enviado";
+        const motivo = documento?.motivo_rejeicao
+            ? `<div class="documento-motivo"><strong>Motivo da rejeição:</strong> ${escaparHTML(documento.motivo_rejeicao)}</div>` : "";
+        const nome = documento?.nome_arquivo ? `<p class="documento-lojista-info"><strong>Arquivo:</strong> ${escaparHTML(documento.nome_arquivo)}</p>` : `<p class="documento-lojista-info">${config.descricao}</p>`;
+        const fiscal = config.tipo === "documento_fiscal" && podeEnviar ? `
+            <select id="tipo-pessoa-documento" aria-label="Tipo de documento fiscal"><option value="cpf" ${documento?.tipo_pessoa === "cnpj" ? "" : "selected"}>CPF</option><option value="cnpj" ${documento?.tipo_pessoa === "cnpj" ? "selected" : ""}>CNPJ</option></select>
+            <input id="numero-fiscal-documento" type="text" inputmode="numeric" value="${escaparHTML(documento?.numero_fiscal || "")}" placeholder="CPF ou CNPJ" aria-label="Número do CPF ou CNPJ">` : "";
+        const envio = podeEnviar ? `<div class="documento-reenvio">${fiscal}<input id="arquivo-${config.tipo}" type="file" accept="application/pdf,image/jpeg,image/png,image/webp"><button type="button" class="btn" onclick="enviarDocumentoLoja('${config.tipo}', '${escaparJS(documento?.id || "")}')"><i class="fa-solid fa-upload"></i> ${status === "rejeitado" ? "Reenviar" : "Enviar"}</button></div>` : "";
+        return `<article class="documento-lojista"><div class="documento-lojista-cabecalho"><h3>${config.titulo}</h3><span class="documento-status documento-status-${status}">${rotulos[status]}</span></div>${nome}${motivo}${envio}</article>`;
+    }).join("");
+}
+
+async function enviarDocumentoLoja(tipo, documentoId) {
+    const input = document.getElementById(`arquivo-${tipo}`);
+    const arquivo = input?.files?.[0];
+    const permitidos = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+    if (!arquivo || !permitidos.includes(arquivo.type) || arquivo.size > 10 * 1024 * 1024) {
+        notificar("Selecione um PDF, JPG, PNG ou WEBP com no máximo 10 MB.", "aviso", "Arquivo inválido");
+        return;
+    }
+    const tipoPessoa = tipo === "documento_fiscal" ? document.getElementById("tipo-pessoa-documento")?.value : null;
+    const numeroFiscal = tipo === "documento_fiscal" ? String(document.getElementById("numero-fiscal-documento")?.value || "").replace(/\D/g, "") : null;
+    if (tipo === "documento_fiscal" && ![11, 14].includes(numeroFiscal.length)) {
+        notificar("Informe um CPF com 11 dígitos ou CNPJ com 14 dígitos.", "aviso", "Documento inválido");
+        return;
+    }
+    const extensao = arquivo.name.split(".").pop().toLowerCase();
+    const caminho = `${usuario.id}/${loja.id}/${tipo}-${Date.now()}.${extensao}`;
+    const botao = input.parentElement.querySelector("button");
+    if (botao) { botao.disabled = true; botao.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...'; }
+    try {
+        const { error: uploadError } = await window.db.storage.from("documentos-lojas").upload(caminho, arquivo, { cacheControl: "3600", upsert: false });
+        if (uploadError) throw uploadError;
+        const anterior = documentosLoja.find(item => item.id === documentoId);
+        const { error } = await window.db.rpc("enviar_documento_loja", {
+            p_loja_id: loja.id, p_documento_id: documentoId || null, p_tipo: tipo,
+            p_tipo_pessoa: tipoPessoa, p_numero_fiscal: numeroFiscal,
+            p_arquivo_path: caminho, p_nome_arquivo: arquivo.name,
+            p_mime_type: arquivo.type, p_tamanho_bytes: arquivo.size
+        });
+        if (error) {
+            await window.db.storage.from("documentos-lojas").remove([caminho]);
+            throw error;
+        }
+        if (anterior?.arquivo_path) await window.db.storage.from("documentos-lojas").remove([anterior.arquivo_path]);
+        notificar("Documento enviado para uma nova análise.", "sucesso", "Envio concluído");
+        await carregarDocumentosLoja();
+    } catch (erro) {
+        console.error("Erro ao enviar documento:", erro);
+        notificar(tratarErroPainel(erro), "erro", "Não foi possível enviar");
+        renderizarDocumentosLoja();
     }
 }
 
@@ -1360,3 +1447,4 @@ window.carregarPedidos = carregarPedidos;
 window.carregarEstatisticas = carregarEstatisticas;
 window.alternarDetalhesPedido = alternarDetalhesPedido;
 window.avancarStatusPedido = avancarStatusPedido;
+window.enviarDocumentoLoja = enviarDocumentoLoja;
