@@ -10,8 +10,10 @@ let usuario = null;
 let loja = null;
 
 let novaLogo = null;
+let novoBanner = null;
 
 let previewTemporario = null;
+let previewBannerTemporario = null;
 
 
 // ==========================================
@@ -27,6 +29,9 @@ let inputLogo = null;
 let previewLogo = null;
 
 let placeholderLogo = null;
+let inputBanner = null;
+let previewBanner = null;
+let placeholderBanner = null;
 
 let categoria = null;
 
@@ -78,6 +83,10 @@ document.addEventListener(
             document.getElementById(
                 "preview-logo-placeholder"
             );
+
+        inputBanner = document.getElementById("banner");
+        previewBanner = document.getElementById("preview-banner");
+        placeholderBanner = document.getElementById("preview-banner-placeholder");
 
 
         categoria =
@@ -265,6 +274,8 @@ document.addEventListener(
             );
 
         }
+
+        inputBanner?.addEventListener("change", visualizarNovoBanner);
 
 
         // ==================================
@@ -658,6 +669,70 @@ function preencherFormulario(
         dados.logo_url
     );
 
+    atualizarPreviewBanner(dados.banner_url);
+
+}
+
+function atualizarPreviewBanner(url) {
+    if (!previewBanner) return;
+    if (url) {
+        previewBanner.src = url;
+        previewBanner.hidden = false;
+        previewBanner.style.display = "block";
+        if (placeholderBanner) placeholderBanner.style.display = "none";
+        previewBanner.onerror = () => atualizarPreviewBanner(null);
+        return;
+    }
+    previewBanner.hidden = true;
+    previewBanner.style.display = "none";
+    previewBanner.removeAttribute("src");
+    if (placeholderBanner) placeholderBanner.style.display = "flex";
+}
+
+function visualizarNovoBanner(event) {
+    const arquivo = event.target.files?.[0];
+    if (!arquivo) {
+        novoBanner = null;
+        liberarPreviewBannerTemporario();
+        atualizarPreviewBanner(loja?.banner_url || null);
+        return;
+    }
+    const permitidos = ["image/jpeg", "image/png", "image/webp"];
+    if (!permitidos.includes(arquivo.type) || arquivo.size > 5 * 1024 * 1024) {
+        notificar(
+            !permitidos.includes(arquivo.type) ? "Escolha uma imagem JPG, PNG ou WEBP." : "O banner deve possuir no máximo 5 MB.",
+            "aviso",
+            "Banner inválido"
+        );
+        inputBanner.value = "";
+        novoBanner = null;
+        atualizarPreviewBanner(loja?.banner_url || null);
+        return;
+    }
+    novoBanner = arquivo;
+    liberarPreviewBannerTemporario();
+    previewBannerTemporario = URL.createObjectURL(arquivo);
+    atualizarPreviewBanner(previewBannerTemporario);
+    notificar("O novo banner foi selecionado. Clique em Salvar Alterações para confirmar.", "info", "Novo banner selecionado", 3500);
+}
+
+function liberarPreviewBannerTemporario() {
+    if (previewBannerTemporario) URL.revokeObjectURL(previewBannerTemporario);
+    previewBannerTemporario = null;
+}
+
+async function enviarBanner() {
+    if (!novoBanner) return loja.banner_url || null;
+    const extensao = novoBanner.name.split(".").pop().toLowerCase();
+    const caminho = `${usuario.id}/${Date.now()}-banner.${extensao}`;
+    const { error } = await db.storage.from("banners-lojas").upload(caminho, novoBanner, {
+        cacheControl: "3600",
+        upsert: false
+    });
+    if (error) throw new Error("Não foi possível enviar o novo banner.");
+    const { data } = db.storage.from("banners-lojas").getPublicUrl(caminho);
+    if (!data?.publicUrl) throw new Error("Não foi possível obter a URL do novo banner.");
+    return data.publicUrl;
 }
 
 
@@ -1612,6 +1687,12 @@ async function salvarAlteracoes(
 
         }
 
+        let bannerUrl = loja.banner_url || null;
+        if (novoBanner) {
+            atualizarMensagemInterna("Enviando novo banner...");
+            bannerUrl = await enviarBanner();
+        }
+
 
         atualizarMensagemInterna(
             "Salvando alterações..."
@@ -1657,7 +1738,10 @@ async function salvarAlteracoes(
             ativa,
 
             logo_url:
-                logoUrl
+                logoUrl,
+
+            banner_url:
+                bannerUrl
 
         };
 
@@ -1727,14 +1811,17 @@ async function salvarAlteracoes(
 
         novaLogo =
             null;
+        novoBanner = null;
 
 
         liberarPreviewTemporario();
+        liberarPreviewBannerTemporario();
 
 
         atualizarPreviewLogo(
             loja.logo_url
         );
+        atualizarPreviewBanner(loja.banner_url);
 
 
         localStorage.setItem(
@@ -1902,6 +1989,7 @@ function tratarErroEdicaoLoja(
         texto.includes(
             "logo"
         )
+        || texto.includes("banner")
         ||
         texto.includes(
             "storage"
