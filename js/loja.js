@@ -335,6 +335,16 @@ async function carregarLoja() {
             data.logo_url
         );
 
+        const bannerLoja = document.getElementById("bannerLoja");
+        if (bannerLoja && data.banner_url) {
+            bannerLoja.src = data.banner_url;
+            bannerLoja.hidden = false;
+            bannerLoja.addEventListener("error", () => {
+                bannerLoja.hidden = true;
+                bannerLoja.removeAttribute("src");
+            }, { once: true });
+        }
+
 
         // ==================================
         // WHATSAPP

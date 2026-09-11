@@ -10,6 +10,13 @@ const mensagem = document.getElementById("mensagem");
 const categoria = document.getElementById("categoria");
 
 const inputLogo = document.getElementById("logo");
+const inputBanner = document.getElementById("banner");
+const previewBanner = document.getElementById("preview-banner");
+const previewBannerPlaceholder = document.getElementById("preview-banner-placeholder");
+const inputDocumentoFiscal = document.getElementById("documento-fiscal");
+const inputComprovanteEndereco = document.getElementById("comprovante-endereco");
+const campoTipoPessoa = document.getElementById("tipo-pessoa");
+const campoNumeroFiscal = document.getElementById("numero-fiscal");
 
 const previewLogo = document.getElementById(
     "preview-logo"
@@ -86,6 +93,7 @@ document.addEventListener(
         await carregarCategorias();
 
         configurarPreviewLogo();
+        configurarDocumentacao();
 
     }
 );
@@ -178,6 +186,120 @@ async function verificarUsuario() {
 
     }
 
+}
+
+function configurarDocumentacao() {
+    inputBanner?.addEventListener("change", () => visualizarBanner(inputBanner.files?.[0]));
+    campoTipoPessoa?.addEventListener("change", () => {
+        campoNumeroFiscal.value = "";
+        campoNumeroFiscal.placeholder = campoTipoPessoa.value === "cnpj"
+            ? "00.000.000/0000-00"
+            : "000.000.000-00";
+    });
+    campoNumeroFiscal?.addEventListener("input", () => {
+        campoNumeroFiscal.value = formatarDocumentoFiscal(campoNumeroFiscal.value, campoTipoPessoa?.value);
+    });
+}
+
+function visualizarBanner(arquivo) {
+    if (!arquivo) {
+        previewBanner?.removeAttribute("src");
+        if (previewBanner) previewBanner.hidden = true;
+        if (previewBannerPlaceholder) previewBannerPlaceholder.style.display = "flex";
+        return;
+    }
+    if (!validarArquivo(arquivo, true)) {
+        inputBanner.value = "";
+        visualizarBanner(null);
+        return;
+    }
+    const leitor = new FileReader();
+    leitor.onload = evento => {
+        previewBanner.src = evento.target.result;
+        previewBanner.hidden = false;
+        previewBanner.style.display = "block";
+        if (previewBannerPlaceholder) previewBannerPlaceholder.style.display = "none";
+    };
+    leitor.readAsDataURL(arquivo);
+}
+
+function validarArquivo(arquivo, somenteImagem = false) {
+    const imagens = ["image/jpeg", "image/png", "image/webp"];
+    const permitidos = somenteImagem ? imagens : ["application/pdf", ...imagens];
+    const limite = somenteImagem ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (!permitidos.includes(arquivo?.type)) {
+        notificar(somenteImagem ? "Escolha uma imagem JPG, PNG ou WEBP." : "Envie um arquivo PDF, JPG, PNG ou WEBP.", "aviso", "Formato inválido");
+        return false;
+    }
+    if (arquivo.size > limite) {
+        notificar(`O arquivo deve ter no máximo ${somenteImagem ? 5 : 10} MB.`, "aviso", "Arquivo muito grande");
+        return false;
+    }
+    return true;
+}
+
+function formatarDocumentoFiscal(valor, tipo) {
+    const numeros = somenteNumeros(valor).slice(0, tipo === "cnpj" ? 14 : 11);
+    if (tipo === "cnpj") return numeros.replace(/^(\d{2})(\d)/, "$1.$2").replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3").replace(/\.(\d{3})(\d)/, ".$1/$2").replace(/(\d{4})(\d)/, "$1-$2");
+    return numeros.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
+function documentoFiscalValido(valor, tipo) {
+    const numeros = somenteNumeros(valor);
+    const tamanho = tipo === "cnpj" ? 14 : 11;
+    if (numeros.length !== tamanho || /^(\d)\1+$/.test(numeros)) return false;
+    const calcular = (base, pesos) => {
+        const soma = base.split("").reduce((total, digito, indice) => total + Number(digito) * pesos[indice], 0);
+        const resto = soma % 11;
+        return resto < 2 ? 0 : 11 - resto;
+    };
+    if (tipo === "cpf") {
+        const d1 = calcular(numeros.slice(0, 9), [10,9,8,7,6,5,4,3,2]);
+        const d2 = calcular(numeros.slice(0, 9) + d1, [11,10,9,8,7,6,5,4,3,2]);
+        return numeros.endsWith(`${d1}${d2}`);
+    }
+    const d1 = calcular(numeros.slice(0, 12), [5,4,3,2,9,8,7,6,5,4,3,2]);
+    const d2 = calcular(numeros.slice(0, 12) + d1, [6,5,4,3,2,9,8,7,6,5,4,3,2]);
+    return numeros.endsWith(`${d1}${d2}`);
+}
+
+async function enviarArquivo(bucket, caminho, arquivo) {
+    const { error } = await window.db.storage.from(bucket).upload(caminho, arquivo, { cacheControl: "3600", upsert: false });
+    if (error) throw error;
+    return caminho;
+}
+
+async function enviarBanner() {
+    const arquivo = inputBanner.files[0];
+    const extensao = arquivo.name.split(".").pop().toLowerCase();
+    const caminho = `${usuario.id}/${Date.now()}-banner.${extensao}`;
+    await enviarArquivo("banners-lojas", caminho, arquivo);
+    return window.db.storage.from("banners-lojas").getPublicUrl(caminho).data.publicUrl;
+}
+
+async function enviarDocumentos(lojaId, tipoPessoa, numeroFiscal) {
+    const arquivos = [
+        { tipo: "documento_fiscal", arquivo: inputDocumentoFiscal.files[0] },
+        { tipo: "comprovante_endereco", arquivo: inputComprovanteEndereco.files[0] }
+    ];
+    const registros = [];
+    for (const item of arquivos) {
+        const extensao = item.arquivo.name.split(".").pop().toLowerCase();
+        const caminho = `${usuario.id}/${lojaId}/${item.tipo}-${Date.now()}.${extensao}`;
+        await enviarArquivo("documentos-lojas", caminho, item.arquivo);
+        registros.push({
+            loja_id: lojaId,
+            tipo: item.tipo,
+            tipo_pessoa: item.tipo === "documento_fiscal" ? tipoPessoa : null,
+            numero_fiscal: item.tipo === "documento_fiscal" ? numeroFiscal : null,
+            arquivo_path: caminho,
+            nome_arquivo: item.arquivo.name,
+            mime_type: item.arquivo.type,
+            tamanho_bytes: item.arquivo.size
+        });
+    }
+    const { error } = await window.db.from("documentos_loja").insert(registros);
+    if (error) throw error;
 }
 
 
@@ -874,6 +996,31 @@ if (form) {
                     )
                 );
 
+            const tipoPessoa = campoTipoPessoa?.value;
+            const numeroFiscal = somenteNumeros(campoNumeroFiscal?.value || "");
+            const arquivoBanner = inputBanner?.files?.[0];
+            const arquivoFiscal = inputDocumentoFiscal?.files?.[0];
+            const arquivoEndereco = inputComprovanteEndereco?.files?.[0];
+
+            if (!documentoFiscalValido(numeroFiscal, tipoPessoa)) {
+                notificar("Informe um CPF ou CNPJ válido.", "aviso", "Documento inválido");
+                campoNumeroFiscal?.focus();
+                return;
+            }
+
+            if (!arquivoBanner || !validarArquivo(arquivoBanner, true)) {
+                inputBanner?.focus();
+                return;
+            }
+
+            if (!arquivoFiscal || !arquivoEndereco) {
+                notificar("Envie o documento fiscal e o comprovante de endereço.", "aviso", "Documentos obrigatórios");
+                (!arquivoFiscal ? inputDocumentoFiscal : inputComprovanteEndereco)?.focus();
+                return;
+            }
+
+            if (!validarArquivo(arquivoFiscal) || !validarArquivo(arquivoEndereco)) return;
+
 
             if (
                 !Number.isFinite(taxaEntrega) ||
@@ -1051,6 +1198,7 @@ if (form) {
 
             let cadastroConcluido =
                 false;
+            let lojaCriadaId = null;
 
 
             try {
@@ -1076,6 +1224,9 @@ if (form) {
                         await enviarLogo();
 
                 }
+
+                atualizarMensagem("Enviando banner da loja...");
+                const bannerUrl = await enviarBanner();
 
 
                 // ==================================
@@ -1124,6 +1275,9 @@ if (form) {
 
                     logo_url:
                         logoUrl,
+
+                    banner_url:
+                        bannerUrl,
 
                     ativa:
                         true
@@ -1175,6 +1329,11 @@ if (form) {
 
                 }
 
+                lojaCriadaId = data.id;
+
+                atualizarMensagem("Enviando documentos para análise...");
+                await enviarDocumentos(data.id, tipoPessoa, numeroFiscal);
+
 
                 console.log(
                     "Loja cadastrada:",
@@ -1213,9 +1372,9 @@ if (form) {
 
 
                 notificar(
-                    "Sua loja foi cadastrada com sucesso.",
+                    "Sua loja e seus documentos foram enviados para análise.",
                     "sucesso",
-                    "Loja cadastrada!",
+                    "Cadastro enviado!",
                     3500
                 );
 
@@ -1245,6 +1404,13 @@ if (form) {
 
 
             } catch (erro) {
+
+                if (lojaCriadaId) {
+                    const { error: erroLimpeza } = await window.db.rpc("cancelar_cadastro_loja_incompleto", {
+                        p_loja_id: lojaCriadaId
+                    });
+                    if (erroLimpeza) console.warn("Não foi possível desfazer o cadastro incompleto:", erroLimpeza);
+                }
 
                 console.error(
                     "Erro ao cadastrar loja:",

@@ -13,11 +13,8 @@
     <title>Cadastrar Loja | Comércio da Cidade</title>
 
     <!-- CSS DA PÁGINA -->
-    <link
-        rel="stylesheet"
-        href="css/cadastrar-loja.css"
-        href="components/feedback.css"
-    >
+    <link rel="stylesheet" href="css/cadastrar-loja.css">
+    <link rel="stylesheet" href="components/feedback.css">
 
     <!-- CSS DO HEADER -->
     <link
@@ -137,6 +134,18 @@
 
                     </small>
 
+                </div>
+
+                <div class="campo campo-banner">
+                    <label for="banner"><i class="fa-solid fa-panorama"></i> Banner da Loja *</label>
+                    <div class="banner-preview">
+                        <img id="preview-banner" alt="Prévia do banner da loja" hidden>
+                        <div id="preview-banner-placeholder" class="banner-preview-placeholder">
+                            <i class="fa-solid fa-image"></i><span>Prévia do banner</span>
+                        </div>
+                    </div>
+                    <input type="file" id="banner" accept="image/png,image/jpeg,image/webp" required>
+                    <small>Imagem horizontal em JPG, PNG ou WEBP, com no máximo 5 MB.</small>
                 </div>
 
 
@@ -372,6 +381,39 @@
                 <!-- ==============================
                      MENSAGEM
                 =============================== -->
+
+                <section class="secao-documentos" aria-labelledby="titulo-documentos">
+                    <div class="secao-documentos-titulo">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <div>
+                            <h2 id="titulo-documentos">Documentação para validação</h2>
+                            <p>Os arquivos são privados e só poderão ser consultados pela loja e pela administração.</p>
+                        </div>
+                    </div>
+                    <div class="duas-colunas">
+                        <div class="campo">
+                            <label for="tipo-pessoa">Tipo de cadastro *</label>
+                            <select id="tipo-pessoa" required>
+                                <option value="cpf">Pessoa física (CPF)</option>
+                                <option value="cnpj">Pessoa jurídica (CNPJ)</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label for="numero-fiscal">CPF ou CNPJ *</label>
+                            <input type="text" id="numero-fiscal" inputmode="numeric" maxlength="18" placeholder="000.000.000-00" required>
+                        </div>
+                    </div>
+                    <div class="campo">
+                        <label for="documento-fiscal"><i class="fa-solid fa-id-card"></i> Documento fiscal *</label>
+                        <input type="file" id="documento-fiscal" accept="application/pdf,image/png,image/jpeg,image/webp" required>
+                        <small>Envie documento com CPF ou cartão/comprovante de CNPJ.</small>
+                    </div>
+                    <div class="campo">
+                        <label for="comprovante-endereco"><i class="fa-solid fa-file-lines"></i> Comprovante de endereço *</label>
+                        <input type="file" id="comprovante-endereco" accept="application/pdf,image/png,image/jpeg,image/webp" required>
+                        <small>PDF, JPG, PNG ou WEBP, com no máximo 10 MB por arquivo.</small>
+                    </div>
+                </section>
 
                 <div
                     id="mensagem"

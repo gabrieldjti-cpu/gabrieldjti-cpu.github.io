@@ -8,6 +8,7 @@ let lojasAdmin = [];
 let categoriasLojasAdmin = [];
 let acaoMotivoAdmin = null;
 let lojaEmEdicaoAdmin = null;
+let lojaDetalhadaAdmin = null;
 let timerBuscaAdmin = null;
 
 const STATUS_ADMIN = {
@@ -817,6 +818,7 @@ async function verDetalhesLojaAdmin(lojaId) {
     const conteudo = document.getElementById("conteudoDetalhesLoja");
 
     if (!loja || !modal || !conteudo) return;
+    lojaDetalhadaAdmin = lojaId;
 
     modal.hidden = false;
     conteudo.innerHTML = `
@@ -827,14 +829,17 @@ async function verDetalhesLojaAdmin(lojaId) {
     `;
 
     let historico = [];
+    let documentos = [];
 
     try {
-        const { data, error } = await window.db.rpc("listar_historico_loja_admin", {
-            p_loja_id: lojaId
-        });
-
-        if (error) throw error;
-        historico = Array.isArray(data) ? data : [];
+        const [resultadoHistorico, resultadoDocumentos] = await Promise.all([
+            window.db.rpc("listar_historico_loja_admin", { p_loja_id: lojaId }),
+            window.db.rpc("listar_documentos_loja_admin", { p_loja_id: lojaId })
+        ]);
+        if (resultadoHistorico.error) throw resultadoHistorico.error;
+        if (resultadoDocumentos.error) throw resultadoDocumentos.error;
+        historico = Array.isArray(resultadoHistorico.data) ? resultadoHistorico.data : [];
+        documentos = Array.isArray(resultadoDocumentos.data) ? resultadoDocumentos.data : [];
     } catch (erro) {
         console.warn("Não foi possível carregar o histórico da loja:", erro);
     }
@@ -867,6 +872,13 @@ async function verDetalhesLojaAdmin(lojaId) {
         ${loja.descricao ? `<p>${escaparHTMLAdmin(loja.descricao)}</p>` : ""}
         ${loja.motivo_rejeicao ? `<p class="loja-motivo-atual"><strong>Motivo atual:</strong> ${escaparHTMLAdmin(loja.motivo_rejeicao)}</p>` : ""}
 
+        <div class="documentos-admin">
+            <h3><i class="fa-solid fa-shield-halved"></i> Documentação da loja</h3>
+            ${documentos.length
+                ? documentos.map(renderizarDocumentoLojaAdmin).join("")
+                : '<p class="documentos-vazio-admin">Esta loja ainda não enviou a documentação obrigatória.</p>'}
+        </div>
+
         <div class="historico-admin">
             <h3><i class="fa-solid fa-clock-rotate-left"></i> Histórico administrativo</h3>
             ${historico.length
@@ -875,6 +887,79 @@ async function verDetalhesLojaAdmin(lojaId) {
         </div>
     `;
 }
+
+function renderizarDocumentoLojaAdmin(documento) {
+    const nomes = {
+        documento_fiscal: documento.tipo_pessoa === "cnpj" ? "Documento de CNPJ" : "Documento de CPF",
+        comprovante_endereco: "Comprovante de endereço"
+    };
+    const status = documento.status || "pendente";
+    const numero = documento.numero_fiscal
+        ? `<span><strong>Número:</strong> ${escaparHTMLAdmin(formatarNumeroFiscalAdmin(documento.numero_fiscal))}</span>`
+        : "";
+    const motivo = documento.motivo_rejeicao
+        ? `<span class="documento-motivo-admin"><strong>Motivo:</strong> ${escaparHTMLAdmin(documento.motivo_rejeicao)}</span>`
+        : "";
+    const acoes = status === "pendente"
+        ? `<button type="button" class="btn-admin btn-primario" onclick="analisarDocumentoLojaAdmin('${escaparAtributoAdmin(documento.id)}', 'aprovado')"><i class="fa-solid fa-check"></i> Aprovar</button>
+           <button type="button" class="btn-admin btn-perigo" onclick="analisarDocumentoLojaAdmin('${escaparAtributoAdmin(documento.id)}', 'rejeitado')"><i class="fa-solid fa-xmark"></i> Rejeitar</button>`
+        : "";
+    return `<article class="documento-admin documento-${escaparAtributoAdmin(status)}">
+        <div class="documento-info-admin">
+            <strong>${escaparHTMLAdmin(nomes[documento.tipo] || "Documento")}</strong>
+            <span class="documento-status-admin">${escaparHTMLAdmin(status)}</span>
+            ${numero}
+            <span>${escaparHTMLAdmin(documento.nome_arquivo || "Arquivo")}</span>
+            ${motivo}
+        </div>
+        <div class="documento-acoes-admin">
+            <button type="button" class="btn-admin btn-claro" onclick="abrirDocumentoLojaAdmin('${escaparAtributoAdmin(documento.arquivo_path)}')"><i class="fa-solid fa-eye"></i> Visualizar</button>
+            ${acoes}
+        </div>
+    </article>`;
+}
+
+function formatarNumeroFiscalAdmin(valor) {
+    const numeros = String(valor || "").replace(/\D/g, "");
+    if (numeros.length === 14) return numeros.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+    return numeros.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+}
+
+async function abrirDocumentoLojaAdmin(caminho) {
+    try {
+        const { data, error } = await window.db.storage.from("documentos-lojas").createSignedUrl(caminho, 120);
+        if (error) throw error;
+        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    } catch (erro) {
+        console.error("Erro ao abrir documento:", erro);
+        avisarAdmin("Não foi possível abrir o documento.", "erro", "Erro no documento");
+    }
+}
+
+async function analisarDocumentoLojaAdmin(documentoId, status) {
+    let motivo = null;
+    if (status === "rejeitado") {
+        motivo = window.prompt("Informe o motivo da rejeição do documento:")?.trim();
+        if (!motivo || motivo.length < 5) {
+            avisarAdmin("Informe um motivo com pelo menos 5 caracteres.", "aviso", "Motivo obrigatório");
+            return;
+        }
+    }
+    try {
+        const { error } = await window.db.rpc("analisar_documento_loja_admin", {
+            p_documento_id: documentoId,
+            p_status: status,
+            p_motivo: motivo
+        });
+        if (error) throw error;
+        avisarAdmin(`Documento ${status} com sucesso.`, "sucesso", "Análise registrada");
+        if (lojaDetalhadaAdmin) await verDetalhesLojaAdmin(lojaDetalhadaAdmin);
+    } catch (erro) {
+        console.error("Erro ao analisar documento:", erro);
+        avisarAdmin(erro.message || "Não foi possível analisar o documento.", "erro", "Falha na análise");
+    }
+}
+
 
 
 function renderizarItemHistoricoAdmin(item) {
