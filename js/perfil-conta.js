@@ -1,6 +1,6 @@
-// ==========================================
+﻿// ==========================================
 // PERFIL-CONTA.JS
-// RF-04 — foto de perfil e exclusão de conta
+// RF-04 â€” foto de perfil e exclusÃ£o de conta
 // ==========================================
 
 (function () {
@@ -68,7 +68,7 @@
                     <i class="fa-solid fa-trash"></i> Remover
                 </button>
             </div>
-            <span class="perfil-foto-ajuda">JPG, PNG ou WebP • máximo de 5 MB</span>
+            <span class="perfil-foto-ajuda">JPG, PNG ou WebP â€¢ mÃ¡ximo de 5 MB</span>
         `;
 
         avatar.insertAdjacentElement("afterend", controles);
@@ -91,8 +91,8 @@
                 <div class="perfil-conta-perigo-texto">
                     <h3>Excluir minha conta</h3>
                     <p>
-                        A conta será desativada por exclusão lógica. O histórico de pedidos é preservado,
-                        endereços ativos são desativados e lojas pertencentes à conta deixam de ficar ativas.
+                        A conta serÃ¡ desativada por exclusÃ£o lÃ³gica. O histÃ³rico de pedidos Ã© preservado,
+                        endereÃ§os ativos sÃ£o desativados e lojas pertencentes Ã  conta deixam de ficar ativas.
                     </p>
                 </div>
                 <button type="button" class="perfil-conta-excluir" id="btn-excluir-conta-rf04">
@@ -140,7 +140,7 @@
         } catch (erro) {
             console.error("Erro ao carregar foto do perfil:", erro);
             notificar(
-                "Não foi possível carregar sua foto de perfil.",
+                "NÃ£o foi possÃ­vel carregar sua foto de perfil.",
                 "erro",
                 "Foto do perfil"
             );
@@ -160,7 +160,7 @@
                     src="${escaparAtributo(url)}"
                     alt="Foto de perfil"
                     referrerpolicy="no-referrer"
-                >
+                 loading="lazy">
             `;
         } else {
             avatar.innerHTML = '<i class="fa-solid fa-user" aria-hidden="true"></i>';
@@ -195,7 +195,7 @@
             notificar(
                 "Escolha uma imagem JPG, PNG ou WebP.",
                 "aviso",
-                "Formato não permitido"
+                "Formato nÃ£o permitido"
             );
             return;
         }
@@ -203,7 +203,7 @@
         if (arquivo.size > LIMITE_FOTO) {
             input.value = "";
             notificar(
-                "A foto deve ter no máximo 5 MB.",
+                "A foto deve ter no mÃ¡ximo 5 MB.",
                 "aviso",
                 "Arquivo muito grande"
             );
@@ -254,7 +254,7 @@
         } catch (erro) {
             console.error("Erro ao atualizar foto:", erro);
             notificar(
-                erro?.message || "Não foi possível atualizar sua foto.",
+                erro?.message || "NÃ£o foi possÃ­vel atualizar sua foto.",
                 "erro",
                 "Erro ao enviar foto"
             );
@@ -270,7 +270,7 @@
 
         const confirmou = await confirmar({
             titulo: "Remover foto?",
-            mensagem: "Sua foto de perfil será removida.",
+            mensagem: "Sua foto de perfil serÃ¡ removida.",
             textoConfirmar: "Remover foto",
             textoCancelar: "Cancelar",
             perigo: true
@@ -304,7 +304,7 @@
         } catch (erro) {
             console.error("Erro ao remover foto:", erro);
             notificar(
-                erro?.message || "Não foi possível remover sua foto.",
+                erro?.message || "NÃ£o foi possÃ­vel remover sua foto.",
                 "erro",
                 "Erro ao remover"
             );
@@ -319,7 +319,7 @@
         const confirmou = await confirmar({
             titulo: "Excluir sua conta?",
             mensagem:
-                "Esta ação desativa sua conta, seus endereços e suas lojas. O histórico de pedidos será preservado.",
+                "Esta aÃ§Ã£o desativa sua conta, seus endereÃ§os e suas lojas. O histÃ³rico de pedidos serÃ¡ preservado.",
             textoConfirmar: "Continuar",
             textoCancelar: "Cancelar",
             perigo: true
@@ -328,12 +328,12 @@
         if (!confirmou) return;
 
         const texto = window.prompt(
-            'Para confirmar a exclusão da conta, digite exatamente: EXCLUIR'
+            'Para confirmar a exclusÃ£o da conta, digite exatamente: EXCLUIR'
         );
 
         if (texto !== "EXCLUIR") {
             notificar(
-                "A exclusão foi cancelada porque a confirmação não correspondeu.",
+                "A exclusÃ£o foi cancelada porque a confirmaÃ§Ã£o nÃ£o correspondeu.",
                 "info",
                 "Conta preservada"
             );
@@ -359,7 +359,7 @@
             if (error) throw error;
 
             if (!data?.conta_excluida) {
-                throw new Error("Não foi possível confirmar a exclusão da conta.");
+                throw new Error("NÃ£o foi possÃ­vel confirmar a exclusÃ£o da conta.");
             }
 
             sessionStorage.setItem("conta_excluida_rf04", "1");
@@ -376,7 +376,7 @@
         } catch (erro) {
             console.error("Erro ao excluir conta:", erro);
             notificar(
-                erro?.message || "Não foi possível excluir sua conta.",
+                erro?.message || "NÃ£o foi possÃ­vel excluir sua conta.",
                 "erro",
                 "Erro ao excluir conta",
                 6000
@@ -427,7 +427,7 @@
                 .remove([caminho]);
 
             if (error) {
-                console.warn("Não foi possível remover o arquivo antigo do avatar:", error);
+                console.warn("NÃ£o foi possÃ­vel remover o arquivo antigo do avatar:", error);
             }
         } catch (erro) {
             console.warn("Falha ao limpar avatar antigo:", erro);
@@ -439,7 +439,7 @@
             return Boolean(await window.confirmarAcao(opcoes));
         }
 
-        return window.confirm(opcoes?.mensagem || "Confirmar ação?");
+        return window.confirm(opcoes?.mensagem || "Confirmar aÃ§Ã£o?");
     }
 
     function notificar(texto, tipo = "info", titulo = null, duracao = 4000) {
@@ -471,3 +471,4 @@
         iniciarAutomaticamente();
     }
 })();
+

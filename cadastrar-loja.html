@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -10,9 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Cadastrar Loja | Comércio da Cidade</title>
+    <title>Cadastrar Loja | ComÃ©rcio da Cidade</title>
 
-    <!-- CSS DA PÁGINA -->
+    <!-- CSS DA PÃGINA -->
     <link rel="stylesheet" href="css/cadastrar-loja.css">
     <link rel="stylesheet" href="components/feedback.css">
 
@@ -36,6 +36,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     >
 
+<link rel="stylesheet" href="css/dark-mode.css">
 </head>
 
 <body>
@@ -45,14 +46,14 @@
 
 
     <!-- ==============================
-         CONTEÚDO
+         CONTEÃšDO
     =============================== -->
 
     <main class="container">
 
         <div class="card">
 
-            <!-- TÍTULO -->
+            <!-- TÃTULO -->
 
             <div class="titulo">
 
@@ -64,14 +65,14 @@
 
             <p class="subtitulo">
 
-                Preencha as informações abaixo para começar
-                a vender no Comércio da Cidade.
+                Preencha as informaÃ§Ãµes abaixo para comeÃ§ar
+                a vender no ComÃ©rcio da Cidade.
 
             </p>
 
 
             <!-- ==============================
-                 FORMULÁRIO
+                 FORMULÃRIO
             =============================== -->
 
             <form id="formLoja">
@@ -98,7 +99,7 @@
 
                         <img
                             id="preview-logo"
-                            alt="Prévia da logo da loja"
+                            alt="PrÃ©via da logo da loja"
                             hidden
                         >
 
@@ -108,7 +109,7 @@
                             aria-hidden="true"
                         >
                             <i class="fa-solid fa-store"></i>
-                            <span>Prévia da logo</span>
+                            <span>PrÃ©via da logo</span>
                         </div>
 
                     </div>
@@ -139,13 +140,13 @@
                 <div class="campo campo-banner">
                     <label for="banner"><i class="fa-solid fa-panorama"></i> Banner da Loja *</label>
                     <div class="banner-preview">
-                        <img id="preview-banner" alt="Prévia do banner da loja" hidden>
+                        <img id="preview-banner" alt="PrÃ©via do banner da loja" hidden>
                         <div id="preview-banner-placeholder" class="banner-preview-placeholder">
-                            <i class="fa-solid fa-image"></i><span>Prévia do banner</span>
+                            <i class="fa-solid fa-image"></i><span>PrÃ©via do banner</span>
                         </div>
                     </div>
                     <input type="file" id="banner" accept="image/png,image/jpeg,image/webp" required>
-                    <small>Imagem horizontal em JPG, PNG ou WEBP, com no máximo 5 MB.</small>
+                    <small>Imagem horizontal em JPG, PNG ou WEBP, com no mÃ¡ximo 5 MB.</small>
                 </div>
 
 
@@ -243,14 +244,14 @@
 
 
                 <!-- ==============================
-                     DESCRIÇÃO
+                     DESCRIÃ‡ÃƒO
                 =============================== -->
 
                 <div class="campo">
 
                     <label for="descricao">
 
-                        Descrição
+                        DescriÃ§Ã£o
 
                     </label>
 
@@ -264,21 +265,21 @@
 
 
                 <!-- ==============================
-                     ENDEREÇO
+                     ENDEREÃ‡O
                 =============================== -->
 
                 <div class="campo">
 
                     <label for="endereco">
 
-                        Endereço
+                        EndereÃ§o
 
                     </label>
 
                     <input
                         type="text"
                         id="endereco"
-                        placeholder="Rua, número"
+                        placeholder="Rua, nÃºmero"
                     >
 
                 </div>
@@ -306,7 +307,7 @@
 
 
                 <!-- ==============================
-                     HORÁRIOS
+                     HORÃRIOS
                 =============================== -->
 
                 <div class="duas-colunas">
@@ -316,7 +317,7 @@
 
                         <label for="abertura">
 
-                            Horário de abertura
+                            HorÃ¡rio de abertura
 
                         </label>
 
@@ -332,7 +333,7 @@
 
                         <label for="fechamento">
 
-                            Horário de fechamento
+                            HorÃ¡rio de fechamento
 
                         </label>
 
@@ -372,7 +373,7 @@
                     >
 
                     <small>
-                        Informe 0 para oferecer entrega grátis.
+                        Informe 0 para oferecer entrega grÃ¡tis.
                     </small>
 
                 </div>
@@ -386,16 +387,16 @@
                     <div class="secao-documentos-titulo">
                         <i class="fa-solid fa-shield-halved"></i>
                         <div>
-                            <h2 id="titulo-documentos">Documentação para validação</h2>
-                            <p>Os arquivos são privados e só poderão ser consultados pela loja e pela administração.</p>
+                            <h2 id="titulo-documentos">DocumentaÃ§Ã£o para validaÃ§Ã£o</h2>
+                            <p>Os arquivos sÃ£o privados e sÃ³ poderÃ£o ser consultados pela loja e pela administraÃ§Ã£o.</p>
                         </div>
                     </div>
                     <div class="duas-colunas">
                         <div class="campo">
                             <label for="tipo-pessoa">Tipo de cadastro *</label>
                             <select id="tipo-pessoa" required>
-                                <option value="cpf">Pessoa física (CPF)</option>
-                                <option value="cnpj">Pessoa jurídica (CNPJ)</option>
+                                <option value="cpf">Pessoa fÃ­sica (CPF)</option>
+                                <option value="cnpj">Pessoa jurÃ­dica (CNPJ)</option>
                             </select>
                         </div>
                         <div class="campo">
@@ -406,12 +407,12 @@
                     <div class="campo">
                         <label for="documento-fiscal"><i class="fa-solid fa-id-card"></i> Documento fiscal *</label>
                         <input type="file" id="documento-fiscal" accept="application/pdf,image/png,image/jpeg,image/webp" required>
-                        <small>Envie documento com CPF ou cartão/comprovante de CNPJ.</small>
+                        <small>Envie documento com CPF ou cartÃ£o/comprovante de CNPJ.</small>
                     </div>
                     <div class="campo">
-                        <label for="comprovante-endereco"><i class="fa-solid fa-file-lines"></i> Comprovante de endereço *</label>
+                        <label for="comprovante-endereco"><i class="fa-solid fa-file-lines"></i> Comprovante de endereÃ§o *</label>
                         <input type="file" id="comprovante-endereco" accept="application/pdf,image/png,image/jpeg,image/webp" required>
-                        <small>PDF, JPG, PNG ou WEBP, com no máximo 10 MB por arquivo.</small>
+                        <small>PDF, JPG, PNG ou WEBP, com no mÃ¡ximo 10 MB por arquivo.</small>
                     </div>
                 </section>
 
@@ -422,7 +423,7 @@
 
 
                 <!-- ==============================
-                     BOTÃO
+                     BOTÃƒO
                 =============================== -->
 
                 <button
@@ -452,7 +453,7 @@
 
         <p>
 
-            © 2026 Comércio da Cidade -
+            Â© 2026 ComÃ©rcio da Cidade -
             Todos os direitos reservados.
 
         </p>
@@ -470,7 +471,7 @@
     </script>
 
 
-    <!-- CONFIGURAÇÃO SUPABASE -->
+    <!-- CONFIGURAÃ‡ÃƒO SUPABASE -->
     <script src="js/supabase.js"></script>
     <script src="components/carrinho-sync.js"></script>
 
@@ -485,3 +486,4 @@
 </body>
 
 </html>
+

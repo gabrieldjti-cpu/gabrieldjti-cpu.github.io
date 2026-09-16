@@ -1187,3 +1187,34 @@
         iniciar();
     }
 })();
+
+
+// ==========================================
+// LIGHTBOX DE IMAGEM
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const imgPrincipal = document.getElementById('imagemProdutoPrincipal');
+    const lightbox = document.getElementById('lightboxOverlay');
+    const lightboxImg = document.getElementById('lightboxImage');
+    const btnClose = document.getElementById('lightboxClose');
+
+    if (imgPrincipal && lightbox && lightboxImg) {
+        imgPrincipal.addEventListener('click', () => {
+            lightboxImg.src = imgPrincipal.src;
+            lightbox.classList.add('ativo');
+            document.body.style.overflow = 'hidden';
+        });
+
+        function fecharLightbox() {
+            lightbox.classList.remove('ativo');
+            document.body.style.overflow = '';
+        }
+
+        if (btnClose) btnClose.addEventListener('click', fecharLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) fecharLightbox();
+        });
+    }
+});
+

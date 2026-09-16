@@ -1398,3 +1398,50 @@ body.pagina-produto {
         transition: none;
     }
 }
+
+
+/* ==========================================
+   LIGHTBOX / ZOOM
+========================================== */
+
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox-overlay.ativo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lightbox-overlay img {
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    object-fit: contain;
+}
+
+#lightboxClose {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: transparent;
+    color: #fff;
+    font-size: 30px;
+    border: none;
+    cursor: pointer;
+}
+
+.produto-imagem-principal img {
+    cursor: zoom-in;
+}
+

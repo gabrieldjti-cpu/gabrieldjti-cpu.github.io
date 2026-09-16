@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -6,18 +6,18 @@
   <meta
     id="metaDescricaoProduto"
     name="description"
-    content="Veja detalhes, avaliações, disponibilidade e entrega deste produto no Comércio da Cidade."
+    content="Veja detalhes, avaliaÃ§Ãµes, disponibilidade e entrega deste produto no ComÃ©rcio da Cidade."
   >
-  <meta id="metaOgTituloProduto" property="og:title" content="Produto | Comércio da Cidade">
+  <meta id="metaOgTituloProduto" property="og:title" content="Produto | ComÃ©rcio da Cidade">
   <meta
     id="metaOgDescricaoProduto"
     property="og:description"
-    content="Compre de uma loja local pelo Comércio da Cidade."
+    content="Compre de uma loja local pelo ComÃ©rcio da Cidade."
   >
   <meta id="metaOgImagemProduto" property="og:image" content="">
   <meta property="og:type" content="product">
   <meta id="metaOgUrlProduto" property="og:url" content="">
-  <title>Produto | Comércio da Cidade</title>
+  <title>Produto | ComÃ©rcio da Cidade</title>
 
   <link rel="stylesheet" href="components/header.css">
   <link rel="stylesheet" href="components/feedback.css">
@@ -35,16 +35,17 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
   >
+<link rel="stylesheet" href="css/dark-mode.css">
 </head>
 
 <body class="pagina-produto">
   <div id="header"></div>
 
   <main class="produto-main">
-    <nav class="produto-breadcrumb" aria-label="Navegação estrutural">
+    <nav class="produto-breadcrumb" aria-label="NavegaÃ§Ã£o estrutural">
       <a href="index.html">
         <i class="fa-solid fa-house" aria-hidden="true"></i>
-        Início
+        InÃ­cio
       </a>
       <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
       <a id="breadcrumbLojaLink" href="index.html#lojas">Loja</a>
@@ -65,7 +66,7 @@
             <img id="imagemProdutoPrincipal" alt="" hidden>
             <div id="imagemProdutoPlaceholder" class="produto-imagem-placeholder">
               <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-              <span>Imagem indisponível</span>
+              <span>Imagem indisponÃ­vel</span>
             </div>
 
             <span id="seloOfertaProduto" class="produto-selo-oferta" hidden>
@@ -103,21 +104,21 @@
           <button id="atalhoAvaliacoes" class="produto-avaliacao-atalho" type="button">
             <span id="estrelasProduto" class="produto-estrelas" aria-hidden="true"></span>
             <strong id="mediaProduto">0,0</strong>
-            <span id="totalAvaliacoesProduto">Sem avaliações</span>
+            <span id="totalAvaliacoesProduto">Sem avaliaÃ§Ãµes</span>
             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
           </button>
 
           <p id="descricaoCurtaProduto" class="produto-resumo">
-            Produto disponível no comércio local.
+            Produto disponÃ­vel no comÃ©rcio local.
           </p>
 
-          <div class="produto-precos" aria-label="Preço do produto">
+          <div class="produto-precos" aria-label="PreÃ§o do produto">
             <span id="precoAntigoProduto" class="produto-preco-antigo" hidden></span>
             <strong id="precoAtualProduto">R$ 0,00</strong>
             <span id="descontoProduto" class="produto-desconto" hidden></span>
           </div>
 
-          <div class="produto-beneficios" aria-label="Informações da compra">
+          <div class="produto-beneficios" aria-label="InformaÃ§Ãµes da compra">
             <article>
               <span class="produto-beneficio-icone entrega">
                 <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
@@ -167,7 +168,7 @@
                   <i class="fa-solid fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
-              <small id="limiteQuantidadeProduto">1 unidade disponível</small>
+              <small id="limiteQuantidadeProduto">1 unidade disponÃ­vel</small>
             </div>
 
             <div class="produto-acoes-compra">
@@ -218,18 +219,18 @@
               Loja aprovada
             </span>
             <h2 id="nomeLojaProduto">Loja</h2>
-            <p id="localLojaProduto">Comércio local</p>
+            <p id="localLojaProduto">ComÃ©rcio local</p>
           </div>
         </div>
 
         <div class="produto-loja-dados">
           <p>
             <i class="fa-regular fa-clock" aria-hidden="true"></i>
-            <span id="horarioLojaProduto">Horário não informado</span>
+            <span id="horarioLojaProduto">HorÃ¡rio nÃ£o informado</span>
           </p>
           <p>
             <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-            <span id="enderecoLojaProduto">Endereço não informado</span>
+            <span id="enderecoLojaProduto">EndereÃ§o nÃ£o informado</span>
           </p>
         </div>
 
@@ -255,25 +256,25 @@
       <div class="produto-conteudo-grid">
         <section class="produto-secao produto-descricao-completa" aria-labelledby="tituloDescricaoProduto">
           <span class="produto-secao-eyebrow">Sobre o item</span>
-          <h2 id="tituloDescricaoProduto">Descrição do produto</h2>
+          <h2 id="tituloDescricaoProduto">DescriÃ§Ã£o do produto</h2>
           <p id="descricaoCompletaProduto"></p>
         </section>
 
         <aside class="produto-secao produto-informacoes-extras" aria-labelledby="tituloInformacoesProduto">
-          <span class="produto-secao-eyebrow">Informações</span>
+          <span class="produto-secao-eyebrow">InformaÃ§Ãµes</span>
           <h2 id="tituloInformacoesProduto">Detalhes da compra</h2>
           <dl>
             <div>
               <dt>Disponibilidade</dt>
-              <dd id="detalheEstoqueProduto">—</dd>
+              <dd id="detalheEstoqueProduto">â€”</dd>
             </div>
             <div>
               <dt>Categoria</dt>
-              <dd id="detalheCategoriaProduto">—</dd>
+              <dd id="detalheCategoriaProduto">â€”</dd>
             </div>
             <div>
               <dt>Loja</dt>
-              <dd id="detalheLojaProduto">—</dd>
+              <dd id="detalheLojaProduto">â€”</dd>
             </div>
             <div>
               <dt>Unidades vendidas</dt>
@@ -286,8 +287,8 @@
       <section id="avaliacoesProduto" class="produto-secao produto-avaliacoes" aria-labelledby="tituloAvaliacoesProduto">
         <div class="produto-secao-cabecalho">
           <div>
-            <span class="produto-secao-eyebrow">Opiniões reais</span>
-            <h2 id="tituloAvaliacoesProduto">Avaliações dos clientes</h2>
+            <span class="produto-secao-eyebrow">OpiniÃµes reais</span>
+            <h2 id="tituloAvaliacoesProduto">AvaliaÃ§Ãµes dos clientes</h2>
           </div>
           <span class="produto-compra-verificada-legenda">
             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
@@ -330,10 +331,10 @@
     <div>
       <a href="index.html" class="produto-footer-marca">
         <i class="fa-solid fa-store" aria-hidden="true"></i>
-        <strong>Comércio da Cidade</strong>
+        <strong>ComÃ©rcio da Cidade</strong>
       </a>
-      <p>Compre local. Fortaleça quem movimenta a sua cidade.</p>
-      <nav class="footer-confianca-links" aria-label="Informações institucionais">
+      <p>Compre local. FortaleÃ§a quem movimenta a sua cidade.</p>
+      <nav class="footer-confianca-links" aria-label="InformaÃ§Ãµes institucionais">
         <a href="como-funciona.html">Como funciona</a>
         <a href="ajuda.html">Ajuda</a>
         <a href="cancelamentos.html">Cancelamentos</a>
@@ -351,5 +352,12 @@
   <script src="components/favoritos.js"></script>
   <script src="js/moderacao-conteudo.js"></script>
   <script src="js/produto.js"></script>
+  <!-- LIGHTBOX -->
+  <div id="lightboxOverlay" class="lightbox-overlay">
+    <button type="button" id="lightboxClose" aria-label="Fechar zoom"><i class="fa-solid fa-xmark"></i></button>
+    <img id="lightboxImage" alt="Zoom do produto">
+  </div>
 </body>
 </html>
+
+

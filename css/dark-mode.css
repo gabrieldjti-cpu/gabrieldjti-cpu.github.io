@@ -1,0 +1,102 @@
+/* ==========================================
+   MODO ESCURO - COMÉRCIO DA CIDADE
+========================================== */
+
+body.dark-theme,
+html.dark-theme {
+    /* Base */
+    --bg: #121212 !important;
+    --text: #e2e8f0 !important;
+    --text-light: #94a3b8 !important;
+    --border: #334155 !important;
+    --shadow: 0 6px 18px rgba(0,0,0,0.6) !important;
+
+    /* Home (style.css) */
+    --home-bg: #121212 !important;
+    --home-card: #1e293b !important;
+    --home-text: #e2e8f0 !important;
+    --home-text-light: #94a3b8 !important;
+    --home-border: #334155 !important;
+    --home-shadow: 0 14px 40px rgba(0, 0, 0, 0.5) !important;
+    --home-shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.7) !important;
+    --home-primary-soft: #331f16 !important;
+    --home-muted: #64748b !important;
+
+    /* App (design-system.css) */
+    --app-bg: #121212 !important;
+    --app-surface: #1e293b !important;
+    --app-surface-soft: #0f172a !important;
+    --app-text: #e2e8f0 !important;
+    --app-text-strong: #f8fafc !important;
+    --app-muted: #94a3b8 !important;
+    --app-border: #334155 !important;
+    --app-border-strong: #475569 !important;
+    --app-primary-soft: #331f16 !important;
+    --app-primary-soft-2: #45271a !important;
+    --app-shadow-xs: 0 2px 8px rgba(0,0,0,0.5) !important;
+    --app-shadow-sm: 0 8px 24px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-theme {
+    background-color: var(--home-bg, var(--app-bg, #121212));
+    color: var(--home-text, var(--app-text, #e2e8f0));
+}
+
+/* Componentes Globais no Modo Escuro */
+body.dark-theme .header {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-bottom-color: var(--border) !important;
+}
+
+body.dark-theme .header .menu {
+    background: #1e293b !important;
+}
+
+body.dark-theme .header .menu a,
+body.dark-theme .header .menu button {
+    color: #cbd5e1 !important;
+}
+
+body.dark-theme .header .menu a:hover,
+body.dark-theme .header .menu button:hover {
+    background: var(--app-primary-soft) !important;
+    color: var(--app-primary-dark) !important;
+}
+
+body.dark-theme input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body.dark-theme select,
+body.dark-theme textarea {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+    color: #64748b !important;
+}
+
+body.dark-theme .card,
+body.dark-theme .perfil-card,
+body.dark-theme .categoria,
+body.dark-theme .categoria-produto-destaque {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-theme .pesquisa-home {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+body.dark-theme .hero-card-principal,
+body.dark-theme .hero-mini-card {
+    background: rgba(30, 41, 59, 0.9) !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-theme .footer-home {
+    background: #0f172a !important;
+    border-top-color: #334155 !important;
+}

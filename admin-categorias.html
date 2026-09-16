@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Administração das categorias de produtos do Comércio da Cidade.">
-    <title>Categorias | Administração | Comércio da Cidade</title>
+    <meta name="description" content="AdministraÃ§Ã£o das categorias de produtos do ComÃ©rcio da Cidade.">
+    <title>Categorias | AdministraÃ§Ã£o | ComÃ©rcio da Cidade</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,26 +15,27 @@
     <link rel="stylesheet" href="css/admin-dashboard.css">
     <link rel="stylesheet" href="css/admin-categorias.css">
     <link rel="stylesheet" href="css/paginacao-listagens.css">
+<link rel="stylesheet" href="css/dark-mode.css">
 </head>
 <body>
     <header class="admin-header">
         <div class="admin-header-conteudo">
-            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a pÃ¡gina inicial">
                 <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
                 <span>
-                    <strong>Comércio da Cidade</strong>
-                    <small>Administração</small>
+                    <strong>ComÃ©rcio da Cidade</strong>
+                    <small>AdministraÃ§Ã£o</small>
                 </span>
             </a>
 
-            <nav class="admin-nav" aria-label="Áreas administrativas">
+            <nav class="admin-nav" aria-label="Ãreas administrativas">
                 <a href="admin-dashboard.html">
                     <i class="fa-solid fa-shop"></i>
                     <span>Lojas</span>
                 </a>
                 <a href="admin-usuarios.html">
                     <i class="fa-solid fa-users-gear"></i>
-                    <span>Usuários</span>
+                    <span>UsuÃ¡rios</span>
                 </a>
                 <a href="admin-categorias.html" class="ativo" aria-current="page">
                     <i class="fa-solid fa-layer-group"></i>
@@ -42,7 +43,7 @@
                 </a>
                 <a href="admin-moderacao.html">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <span>Moderação</span>
+                    <span>ModeraÃ§Ã£o</span>
                 </a>
             </nav>
 
@@ -62,9 +63,9 @@
     <main class="admin-container">
         <section class="admin-intro">
             <div>
-                <span class="eyebrow">RF-24 · Taxonomia do catálogo</span>
+                <span class="eyebrow">RF-24 Â· Taxonomia do catÃ¡logo</span>
                 <h1>Categorias de produtos</h1>
-                <p>Crie categorias e subcategorias, controle a visibilidade e escolha os destaques exibidos na página inicial.</p>
+                <p>Crie categorias e subcategorias, controle a visibilidade e escolha os destaques exibidos na pÃ¡gina inicial.</p>
             </div>
             <div class="intro-acoes-categorias">
                 <button type="button" id="btnAtualizarCategorias" class="btn-admin btn-claro">
@@ -83,7 +84,7 @@
                 <span class="metrica-icone"><i class="fa-solid fa-folder-tree"></i></span>
                 <div>
                     <small>Categorias</small>
-                    <strong id="metricaCategoriasRaiz">—</strong>
+                    <strong id="metricaCategoriasRaiz">â€”</strong>
                 </div>
             </article>
 
@@ -91,7 +92,7 @@
                 <span class="metrica-icone"><i class="fa-solid fa-code-branch"></i></span>
                 <div>
                     <small>Subcategorias</small>
-                    <strong id="metricaSubcategorias">—</strong>
+                    <strong id="metricaSubcategorias">â€”</strong>
                 </div>
             </article>
 
@@ -99,15 +100,15 @@
                 <span class="metrica-icone"><i class="fa-solid fa-circle-check"></i></span>
                 <div>
                     <small>Ativas</small>
-                    <strong id="metricaCategoriasAtivas">—</strong>
+                    <strong id="metricaCategoriasAtivas">â€”</strong>
                 </div>
             </article>
 
             <article class="metrica-card metrica-destaque">
                 <span class="metrica-icone"><i class="fa-solid fa-star"></i></span>
                 <div>
-                    <small>Na página inicial</small>
-                    <strong id="metricaDestaques">—</strong>
+                    <small>Na pÃ¡gina inicial</small>
+                    <strong id="metricaDestaques">â€”</strong>
                 </div>
             </article>
         </section>
@@ -115,7 +116,7 @@
         <section class="admin-card filtros-card">
             <div class="filtros-titulo">
                 <div>
-                    <h2><i class="fa-solid fa-filter"></i> Organização do catálogo</h2>
+                    <h2><i class="fa-solid fa-filter"></i> OrganizaÃ§Ã£o do catÃ¡logo</h2>
                     <p id="textoResultadoCategorias" aria-live="polite">Carregando categorias...</p>
                 </div>
             </div>
@@ -190,12 +191,12 @@
 
                     <label class="campo-admin campo-nome-categoria">
                         <span>Nome</span>
-                        <input id="nomeCategoriaAdmin" type="text" minlength="2" maxlength="80" placeholder="Ex.: Eletrônicos" autocomplete="off" required>
+                        <input id="nomeCategoriaAdmin" type="text" minlength="2" maxlength="80" placeholder="Ex.: EletrÃ´nicos" autocomplete="off" required>
                     </label>
 
                     <label class="campo-admin" id="campoIconeCategoria">
-                        <span>Ícone (emoji)</span>
-                        <input id="iconeCategoriaAdmin" type="text" maxlength="16" placeholder="Ex.: 💻" autocomplete="off">
+                        <span>Ãcone (emoji)</span>
+                        <input id="iconeCategoriaAdmin" type="text" maxlength="16" placeholder="Ex.: ðŸ’»" autocomplete="off">
                     </label>
                 </div>
 
@@ -204,15 +205,15 @@
                         <input id="categoriaAdminAtiva" type="checkbox" checked>
                         <span>
                             <strong>Categoria ativa</strong>
-                            <small>Disponível nos filtros e cadastros de produtos.</small>
+                            <small>DisponÃ­vel nos filtros e cadastros de produtos.</small>
                         </span>
                     </label>
 
                     <label class="opcao-categoria" id="opcaoDestaqueCategoria">
                         <input id="categoriaAdminDestaque" type="checkbox">
                         <span>
-                            <strong>Destacar na página inicial</strong>
-                            <small>Disponível somente para categorias principais ativas.</small>
+                            <strong>Destacar na pÃ¡gina inicial</strong>
+                            <small>DisponÃ­vel somente para categorias principais ativas.</small>
                         </span>
                     </label>
                 </div>
@@ -220,7 +221,7 @@
                 <label class="campo-admin" id="campoOrdemDestaque" hidden>
                     <span>Ordem do destaque</span>
                     <input id="ordemDestaqueCategoria" type="number" min="1" max="99" step="1" value="99">
-                    <small>Os menores números aparecem primeiro.</small>
+                    <small>Os menores nÃºmeros aparecem primeiro.</small>
                 </label>
 
                 <div class="modal-acoes">
@@ -241,3 +242,4 @@
     <script src="js/paginacao-listagens.js"></script>
 </body>
 </html>
+

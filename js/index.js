@@ -103,17 +103,27 @@ async function carregarLojas() {
     // ==================================
 
     lista.innerHTML = `
-
-        <div class="carregando">
-
-            <i class="fa-solid fa-spinner fa-spin"></i>
-
-            <p>
-                Carregando lojas...
-            </p>
-
+        <div class="skeleton-card skeleton">
+            <div class="skeleton-logo skeleton"></div>
+            <div class="skeleton-title skeleton"></div>
+            <div class="skeleton-text skeleton"></div>
+            <div class="skeleton-text short skeleton"></div>
+            <div class="skeleton-button skeleton"></div>
         </div>
-
+        <div class="skeleton-card skeleton">
+            <div class="skeleton-logo skeleton"></div>
+            <div class="skeleton-title skeleton"></div>
+            <div class="skeleton-text skeleton"></div>
+            <div class="skeleton-text short skeleton"></div>
+            <div class="skeleton-button skeleton"></div>
+        </div>
+        <div class="skeleton-card skeleton">
+            <div class="skeleton-logo skeleton"></div>
+            <div class="skeleton-title skeleton"></div>
+            <div class="skeleton-text skeleton"></div>
+            <div class="skeleton-text short skeleton"></div>
+            <div class="skeleton-button skeleton"></div>
+        </div>
     `;
 
 

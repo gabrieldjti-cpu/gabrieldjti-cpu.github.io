@@ -17,6 +17,8 @@
 
         configurarMenuMobile();
 
+        configurarTema();
+
         configurarEventos();
 
         await verificarUsuarioHeader();
@@ -157,6 +159,22 @@
                             </span>
 
                         </a>
+
+
+                        <button
+                            type="button"
+                            id="btnThemeToggle"
+                            class="btn-theme-toggle"
+                            aria-label="Alternar tema escuro"
+                        >
+
+                            <i id="iconeTema" class="fa-solid fa-moon"></i>
+
+                            <span id="textoTema">
+                                Escuro
+                            </span>
+
+                        </button>
 
 
                         <a
@@ -1167,6 +1185,50 @@ async function verificarUsuarioHeader() {
 
         }
 
+    }
+
+
+    // ==========================================
+    // CONFIGURAR TEMA
+    // ==========================================
+
+    function configurarTema() {
+        const btnThemeToggle = document.getElementById("btnThemeToggle");
+        const iconeTema = document.getElementById("iconeTema");
+        const textoTema = document.getElementById("textoTema");
+
+        if (!btnThemeToggle) return;
+
+        const temaSalvo = localStorage.getItem("comercio_theme");
+
+        if (temaSalvo === "dark") {
+            document.body.classList.add("dark-theme");
+            document.documentElement.classList.add("dark-theme");
+            atualizarBotaoTema(true);
+        }
+
+        btnThemeToggle.addEventListener("click", () => {
+            const isDark = document.body.classList.toggle("dark-theme");
+            document.documentElement.classList.toggle("dark-theme");
+            
+            if (isDark) {
+                localStorage.setItem("comercio_theme", "dark");
+            } else {
+                localStorage.setItem("comercio_theme", "light");
+            }
+            
+            atualizarBotaoTema(isDark);
+        });
+
+        function atualizarBotaoTema(isDark) {
+            if (isDark) {
+                iconeTema.className = "fa-solid fa-sun";
+                if(textoTema) textoTema.textContent = "Claro";
+            } else {
+                iconeTema.className = "fa-solid fa-moon";
+                if(textoTema) textoTema.textContent = "Escuro";
+            }
+        }
     }
 
 

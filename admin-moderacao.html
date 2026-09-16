@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fila administrativa de denúncias e moderação de conteúdo do Comércio da Cidade.">
-  <title>Moderação | Administração | Comércio da Cidade</title>
+  <meta name="description" content="Fila administrativa de denÃºncias e moderaÃ§Ã£o de conteÃºdo do ComÃ©rcio da Cidade.">
+  <title>ModeraÃ§Ã£o | AdministraÃ§Ã£o | ComÃ©rcio da Cidade</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,26 +15,27 @@
   <link rel="stylesheet" href="css/admin-dashboard.css">
   <link rel="stylesheet" href="css/admin-moderacao.css">
   <link rel="stylesheet" href="css/paginacao-listagens.css">
+<link rel="stylesheet" href="css/dark-mode.css">
 </head>
 <body>
   <header class="admin-header">
     <div class="admin-header-conteudo">
-      <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
+      <a href="index.html" class="admin-marca" aria-label="Voltar para a pÃ¡gina inicial">
         <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
         <span>
-          <strong>Comércio da Cidade</strong>
-          <small>Administração</small>
+          <strong>ComÃ©rcio da Cidade</strong>
+          <small>AdministraÃ§Ã£o</small>
         </span>
       </a>
 
-      <nav class="admin-nav" aria-label="Áreas administrativas">
+      <nav class="admin-nav" aria-label="Ãreas administrativas">
         <a href="admin-dashboard.html">
           <i class="fa-solid fa-shop"></i>
           <span>Lojas</span>
         </a>
         <a href="admin-usuarios.html">
           <i class="fa-solid fa-users-gear"></i>
-          <span>Usuários</span>
+          <span>UsuÃ¡rios</span>
         </a>
         <a href="admin-categorias.html">
           <i class="fa-solid fa-layer-group"></i>
@@ -42,7 +43,7 @@
         </a>
         <a href="admin-moderacao.html" class="ativo" aria-current="page">
           <i class="fa-solid fa-shield-halved"></i>
-          <span>Moderação</span>
+          <span>ModeraÃ§Ã£o</span>
         </a>
       </nav>
 
@@ -62,9 +63,9 @@
   <main class="admin-container">
     <section class="admin-intro">
       <div>
-        <span class="eyebrow">RF-26 · Segurança do catálogo</span>
-        <h1>Moderação de conteúdo</h1>
-        <p>Analise denúncias de produtos e avaliações, registre a decisão e preserve uma trilha completa de auditoria.</p>
+        <span class="eyebrow">RF-26 Â· SeguranÃ§a do catÃ¡logo</span>
+        <h1>ModeraÃ§Ã£o de conteÃºdo</h1>
+        <p>Analise denÃºncias de produtos e avaliaÃ§Ãµes, registre a decisÃ£o e preserve uma trilha completa de auditoria.</p>
       </div>
       <button type="button" id="btnAtualizarModeracao" class="btn-admin btn-primario">
         <i class="fa-solid fa-rotate"></i>
@@ -72,41 +73,41 @@
       </button>
     </section>
 
-    <aside class="aviso-moderacao" aria-label="Orientação para decisões de moderação">
+    <aside class="aviso-moderacao" aria-label="OrientaÃ§Ã£o para decisÃµes de moderaÃ§Ã£o">
       <i class="fa-solid fa-scale-balanced"></i>
       <div>
         <strong>Analise o contexto antes de decidir</strong>
-        <p>Confirmar uma violação oculta o conteúdo imediatamente. A justificativa, o administrador e a data ficam registrados no histórico.</p>
+        <p>Confirmar uma violaÃ§Ã£o oculta o conteÃºdo imediatamente. A justificativa, o administrador e a data ficam registrados no histÃ³rico.</p>
       </div>
     </aside>
 
-    <section class="metricas-admin" aria-label="Resumo da moderação">
+    <section class="metricas-admin" aria-label="Resumo da moderaÃ§Ã£o">
       <article class="metrica-card">
         <span class="metrica-icone"><i class="fa-solid fa-flag"></i></span>
         <div>
-          <small>Total de denúncias</small>
-          <strong id="metricaTotalDenuncias">—</strong>
+          <small>Total de denÃºncias</small>
+          <strong id="metricaTotalDenuncias">â€”</strong>
         </div>
       </article>
       <article class="metrica-card metrica-pendente">
         <span class="metrica-icone"><i class="fa-solid fa-clock"></i></span>
         <div>
-          <small>Aguardando análise</small>
-          <strong id="metricaDenunciasPendentes">—</strong>
+          <small>Aguardando anÃ¡lise</small>
+          <strong id="metricaDenunciasPendentes">â€”</strong>
         </div>
       </article>
       <article class="metrica-card metrica-procedente">
         <span class="metrica-icone"><i class="fa-solid fa-circle-check"></i></span>
         <div>
-          <small>Violações confirmadas</small>
-          <strong id="metricaDenunciasProcedentes">—</strong>
+          <small>ViolaÃ§Ãµes confirmadas</small>
+          <strong id="metricaDenunciasProcedentes">â€”</strong>
         </div>
       </article>
       <article class="metrica-card metrica-ocultada">
         <span class="metrica-icone"><i class="fa-solid fa-eye-slash"></i></span>
         <div>
-          <small>Conteúdos ocultados</small>
-          <strong id="metricaConteudosOcultados">—</strong>
+          <small>ConteÃºdos ocultados</small>
+          <strong id="metricaConteudosOcultados">â€”</strong>
         </div>
       </article>
     </section>
@@ -114,8 +115,8 @@
     <section class="admin-card filtros-card">
       <div class="filtros-titulo">
         <div>
-          <h2><i class="fa-solid fa-filter"></i> Fila de denúncias</h2>
-          <p id="textoResultadoModeracao" aria-live="polite">Carregando denúncias...</p>
+          <h2><i class="fa-solid fa-filter"></i> Fila de denÃºncias</h2>
+          <p id="textoResultadoModeracao" aria-live="polite">Carregando denÃºncias...</p>
         </div>
         <button type="button" id="btnLimparFiltrosModeracao" class="btn-admin btn-claro btn-limpar-filtros">
           <i class="fa-solid fa-eraser"></i>
@@ -128,7 +129,7 @@
           <span>Pesquisar</span>
           <div class="campo-com-icone">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="buscaModeracao" type="search" maxlength="100" placeholder="Conteúdo, loja, denunciante ou motivo" autocomplete="off">
+            <input id="buscaModeracao" type="search" maxlength="100" placeholder="ConteÃºdo, loja, denunciante ou motivo" autocomplete="off">
           </div>
         </label>
 
@@ -143,11 +144,11 @@
         </label>
 
         <label class="campo-admin">
-          <span>Conteúdo</span>
+          <span>ConteÃºdo</span>
           <select id="filtroTipoModeracao">
             <option value="">Todos</option>
             <option value="produto">Produtos</option>
-            <option value="avaliacao">Avaliações</option>
+            <option value="avaliacao">AvaliaÃ§Ãµes</option>
           </select>
         </label>
       </form>
@@ -156,20 +157,20 @@
     <section id="listaModeracao" class="lista-moderacao" aria-live="polite" aria-busy="true">
       <div class="estado-admin">
         <i class="fa-solid fa-spinner fa-spin"></i>
-        <h3>Carregando denúncias...</h3>
+        <h3>Carregando denÃºncias...</h3>
       </div>
     </section>
 
-    <nav id="paginacaoModeracao" class="paginacao-listagem paginacao-servidor" aria-label="Paginação das denúncias" hidden>
+    <nav id="paginacaoModeracao" class="paginacao-listagem paginacao-servidor" aria-label="PaginaÃ§Ã£o das denÃºncias" hidden>
       <div class="paginacao-resumo" id="resumoPaginacaoModeracao"></div>
       <div class="paginacao-acoes">
         <button type="button" id="paginaAnteriorModeracao" class="paginacao-btn">
           <i class="fa-solid fa-chevron-left"></i>
           <span>Anterior</span>
         </button>
-        <span id="paginaAtualModeracao">Página 1 de 1</span>
+        <span id="paginaAtualModeracao">PÃ¡gina 1 de 1</span>
         <button type="button" id="proximaPaginaModeracao" class="paginacao-btn">
-          <span>Próxima</span>
+          <span>PrÃ³xima</span>
           <i class="fa-solid fa-chevron-right"></i>
         </button>
       </div>
@@ -183,21 +184,21 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
       <span id="iconeModalDecisaoModeracao" class="modal-icone-moderacao"><i class="fa-solid fa-shield-halved"></i></span>
-      <h2 id="tituloModalDecisaoModeracao">Analisar denúncia</h2>
+      <h2 id="tituloModalDecisaoModeracao">Analisar denÃºncia</h2>
       <p id="descricaoModalDecisaoModeracao"></p>
       <div id="alertaModalDecisaoModeracao" class="alerta-decisao-moderacao" hidden></div>
 
       <form id="formDecisaoModeracao" novalidate>
         <label class="campo-admin">
-          <span>Justificativa da decisão</span>
-          <textarea id="justificativaModeracao" minlength="5" maxlength="500" rows="5" required placeholder="Registre os critérios usados nesta análise..."></textarea>
+          <span>Justificativa da decisÃ£o</span>
+          <textarea id="justificativaModeracao" minlength="5" maxlength="500" rows="5" required placeholder="Registre os critÃ©rios usados nesta anÃ¡lise..."></textarea>
           <small><span id="contadorJustificativaModeracao">0</span>/500</small>
         </label>
         <div class="modal-acoes">
           <button type="button" class="btn-admin btn-claro" data-fechar-modal-moderacao="decisao">Cancelar</button>
           <button type="submit" id="btnConfirmarDecisaoModeracao" class="btn-admin btn-primario">
             <i class="fa-solid fa-check"></i>
-            Confirmar decisão
+            Confirmar decisÃ£o
           </button>
         </div>
       </form>
@@ -211,7 +212,7 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
       <span class="modal-icone-moderacao icone-historico"><i class="fa-solid fa-clock-rotate-left"></i></span>
-      <h2 id="tituloHistoricoModeracao">Histórico da denúncia</h2>
+      <h2 id="tituloHistoricoModeracao">HistÃ³rico da denÃºncia</h2>
       <p id="descricaoHistoricoModeracao"></p>
       <div id="listaHistoricoModeracao" class="lista-historico-moderacao" aria-live="polite"></div>
     </section>
@@ -223,3 +224,4 @@
   <script src="js/admin-moderacao.js"></script>
 </body>
 </html>
+
