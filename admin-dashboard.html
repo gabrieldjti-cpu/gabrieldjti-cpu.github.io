@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdministraÃ§Ã£o | ComÃ©rcio da Cidade</title>
+    <title>Administração | Comércio da Cidade</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,22 +17,22 @@
 <body>
     <header class="admin-header">
         <div class="admin-header-conteudo">
-            <a href="index.html" class="admin-marca" aria-label="Voltar para a pÃ¡gina inicial">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
                 <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
                 <span>
-                    <strong>ComÃ©rcio da Cidade</strong>
-                    <small>AdministraÃ§Ã£o</small>
+                    <strong>Comércio da Cidade</strong>
+                    <small>Administração</small>
                 </span>
             </a>
 
-            <nav class="admin-nav" aria-label="Ãreas administrativas">
+            <nav class="admin-nav" aria-label="Áreas administrativas">
                 <a href="admin-dashboard.html" class="ativo" aria-current="page">
                     <i class="fa-solid fa-shop"></i>
                     <span>Lojas</span>
                 </a>
                 <a href="admin-usuarios.html">
                     <i class="fa-solid fa-users-gear"></i>
-                    <span>UsuÃ¡rios</span>
+                    <span>Usuários</span>
                 </a>
                 <a href="admin-categorias.html">
                     <i class="fa-solid fa-layer-group"></i>
@@ -40,7 +40,7 @@
                 </a>
                 <a href="admin-moderacao.html">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <span>ModeraÃ§Ã£o</span>
+                    <span>Moderação</span>
                 </a>
             </nav>
 
@@ -61,8 +61,8 @@
         <section class="admin-intro">
             <div>
                 <span class="eyebrow">Painel administrativo</span>
-                <h1>GestÃ£o de lojas</h1>
-                <p>Aprove, edite, rejeite ou suspenda lojas e acompanhe a situaÃ§Ã£o geral do marketplace.</p>
+                <h1>Gestão de lojas</h1>
+                <p>Aprove, edite, rejeite ou suspenda lojas e acompanhe a situação geral do marketplace.</p>
             </div>
             <button type="button" id="btnAtualizarAdmin" class="btn-admin btn-primario">
                 <i class="fa-solid fa-rotate"></i>
@@ -74,8 +74,8 @@
             <article class="metrica-card">
                 <span class="metrica-icone"><i class="fa-solid fa-users"></i></span>
                 <div>
-                    <small>UsuÃ¡rios ativos</small>
-                    <strong id="metricaUsuarios">â€”</strong>
+                    <small>Usuários ativos</small>
+                    <strong id="metricaUsuarios">—</strong>
                 </div>
             </article>
 
@@ -83,15 +83,15 @@
                 <span class="metrica-icone"><i class="fa-solid fa-shop"></i></span>
                 <div>
                     <small>Total de lojas</small>
-                    <strong id="metricaLojas">â€”</strong>
+                    <strong id="metricaLojas">—</strong>
                 </div>
             </article>
 
             <article class="metrica-card metrica-pendente">
                 <span class="metrica-icone"><i class="fa-solid fa-clock"></i></span>
                 <div>
-                    <small>Aguardando anÃ¡lise</small>
-                    <strong id="metricaPendentes">â€”</strong>
+                    <small>Aguardando análise</small>
+                    <strong id="metricaPendentes">—</strong>
                 </div>
             </article>
 
@@ -99,7 +99,7 @@
                 <span class="metrica-icone"><i class="fa-solid fa-bag-shopping"></i></span>
                 <div>
                     <small>Pedidos</small>
-                    <strong id="metricaPedidos">â€”</strong>
+                    <strong id="metricaPedidos">—</strong>
                 </div>
             </article>
         </section>
@@ -117,7 +117,7 @@
                     <span>Pesquisar</span>
                     <div class="campo-com-icone">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input id="buscaLojasAdmin" type="search" placeholder="Loja, proprietÃ¡rio, cidade ou categoria" autocomplete="off">
+                        <input id="buscaLojasAdmin" type="search" placeholder="Loja, proprietário, cidade ou categoria" autocomplete="off">
                     </div>
                 </label>
 
@@ -161,7 +161,7 @@
 
             <span class="modal-icone-edicao"><i class="fa-solid fa-pen-to-square"></i></span>
             <h2 id="tituloEditarLoja">Editar loja</h2>
-            <p>Altere apenas os dados comerciais. ProprietÃ¡rio, aprovaÃ§Ã£o e situaÃ§Ã£o da loja permanecem protegidos.</p>
+            <p>Altere apenas os dados comerciais. Proprietário, aprovação e situação da loja permanecem protegidos.</p>
 
             <form id="formEditarLojaAdmin" novalidate>
                 <input type="hidden" id="lojaIdEdicaoAdmin">
@@ -180,7 +180,7 @@
                     </label>
 
                     <label class="campo-admin campo-largo">
-                        <span>DescriÃ§Ã£o</span>
+                        <span>Descrição</span>
                         <textarea id="descricaoLojaEdicaoAdmin" maxlength="1000" rows="4" placeholder="Apresente a loja aos clientes"></textarea>
                     </label>
 
@@ -195,7 +195,7 @@
                     </label>
 
                     <label class="campo-admin campo-largo">
-                        <span>EndereÃ§o</span>
+                        <span>Endereço</span>
                         <input id="enderecoLojaEdicaoAdmin" type="text" maxlength="240" autocomplete="street-address">
                     </label>
 
@@ -210,12 +210,12 @@
                     </label>
 
                     <label class="campo-admin">
-                        <span>Abre Ã s</span>
+                        <span>Abre às</span>
                         <input id="aberturaLojaEdicaoAdmin" type="time">
                     </label>
 
                     <label class="campo-admin">
-                        <span>Fecha Ã s</span>
+                        <span>Fecha às</span>
                         <input id="fechamentoLojaEdicaoAdmin" type="time">
                     </label>
 
@@ -225,21 +225,21 @@
                     </label>
 
                     <label class="campo-admin campo-largo">
-                        <span>Motivo da alteraÃ§Ã£o *</span>
-                        <textarea id="motivoEdicaoLojaAdmin" minlength="5" maxlength="500" rows="3" required placeholder="Explique por que os dados serÃ£o alterados"></textarea>
+                        <span>Motivo da alteração *</span>
+                        <textarea id="motivoEdicaoLojaAdmin" minlength="5" maxlength="500" rows="3" required placeholder="Explique por que os dados serão alterados"></textarea>
                         <small><span id="contadorMotivoEdicao">0</span>/500</small>
                     </label>
                 </div>
 
                 <p class="aviso-edicao-admin">
                     <i class="fa-solid fa-shield-halved"></i>
-                    A alteraÃ§Ã£o serÃ¡ registrada no histÃ³rico administrativo da loja.
+                    A alteração será registrada no histórico administrativo da loja.
                 </p>
 
                 <div class="modal-acoes">
                     <button type="button" class="btn-admin btn-claro" data-fechar-modal="edicao">Cancelar</button>
                     <button type="submit" id="btnSalvarEdicaoLojaAdmin" class="btn-admin btn-primario">
-                        <i class="fa-solid fa-floppy-disk"></i> Salvar alteraÃ§Ãµes
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar alterações
                     </button>
                 </div>
             </form>
@@ -255,7 +255,7 @@
 
             <span class="modal-icone-alerta"><i class="fa-solid fa-triangle-exclamation"></i></span>
             <h2 id="tituloModalMotivo">Informar motivo</h2>
-            <p id="textoModalMotivo">Explique o motivo desta decisÃ£o para manter o histÃ³rico administrativo.</p>
+            <p id="textoModalMotivo">Explique o motivo desta decisão para manter o histórico administrativo.</p>
 
             <label class="campo-admin">
                 <span>Motivo</span>
