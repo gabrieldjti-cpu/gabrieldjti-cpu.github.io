@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Ãrea privada para o lojista acompanhar clientes e histÃ³rico de compras da sua loja."
+    content="Área privada para o lojista acompanhar clientes e histórico de compras da sua loja."
   />
 
-  <title>Clientes da Loja | ComÃ©rcio da Cidade</title>
+  <title>Clientes da Loja | Comércio da Cidade</title>
 
   <link rel="stylesheet" href="components/header.css" />
   <link rel="stylesheet" href="components/feedback.css" />
@@ -36,7 +36,7 @@
       <div>
         <p class="topo-etiqueta">
           <i class="fa-solid fa-store"></i>
-          Ãrea do lojista
+          Área do lojista
         </p>
 
         <h1>
@@ -45,7 +45,7 @@
         </h1>
 
         <p id="nome-loja-clientes">
-          Acompanhe quem jÃ¡ comprou na sua loja.
+          Acompanhe quem já comprou na sua loja.
         </p>
       </div>
 
@@ -55,13 +55,13 @@
       </a>
     </header>
 
-    <aside class="aviso-privacidade" aria-label="ProteÃ§Ã£o de dados dos clientes">
+    <aside class="aviso-privacidade" aria-label="Proteção de dados dos clientes">
       <i class="fa-solid fa-shield-halved"></i>
       <div>
         <strong>Privacidade protegida</strong>
         <p>
-          Esta Ã¡rea mostra somente nome e informaÃ§Ãµes de compras realizadas na sua loja.
-          Dados de contato, endereÃ§o e e-mail nÃ£o sÃ£o compartilhados.
+          Esta área mostra somente nome e informações de compras realizadas na sua loja.
+          Dados de contato, endereço e e-mail não são compartilhados.
         </p>
       </div>
     </aside>
@@ -73,7 +73,7 @@
         </span>
         <div>
           <span>Clientes</span>
-          <strong id="estat-total-clientes">â€”</strong>
+          <strong id="estat-total-clientes">—</strong>
         </div>
       </article>
 
@@ -83,7 +83,7 @@
         </span>
         <div>
           <span>Recorrentes</span>
-          <strong id="estat-clientes-recorrentes">â€”</strong>
+          <strong id="estat-clientes-recorrentes">—</strong>
         </div>
       </article>
 
@@ -93,7 +93,7 @@
         </span>
         <div>
           <span>Pedidos</span>
-          <strong id="estat-total-pedidos">â€”</strong>
+          <strong id="estat-total-pedidos">—</strong>
         </div>
       </article>
 
@@ -103,8 +103,8 @@
         </span>
         <div>
           <span>Receita confirmada</span>
-          <strong id="estat-receita-total">â€”</strong>
-          <small id="estat-ticket-medio">Ticket mÃ©dio: â€”</small>
+          <strong id="estat-receita-total">—</strong>
+          <small id="estat-ticket-medio">Ticket médio: —</small>
         </div>
       </article>
     </section>
@@ -141,12 +141,12 @@
         </div>
 
         <div class="campo">
-          <label for="periodo-clientes">PerÃ­odo das compras</label>
+          <label for="periodo-clientes">Período das compras</label>
           <select id="periodo-clientes">
-            <option value="0">Todo o histÃ³rico</option>
-            <option value="30">Ãšltimos 30 dias</option>
-            <option value="90">Ãšltimos 90 dias</option>
-            <option value="365">Ãšltimos 12 meses</option>
+            <option value="0">Todo o histórico</option>
+            <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="365">Últimos 12 meses</option>
           </select>
         </div>
 
@@ -182,20 +182,20 @@
         <div class="estado-clientes">
           <i class="fa-solid fa-spinner fa-spin"></i>
           <h3>Carregando clientes...</h3>
-          <p>Aguarde enquanto organizamos o histÃ³rico da loja.</p>
+          <p>Aguarde enquanto organizamos o histórico da loja.</p>
         </div>
       </div>
 
-      <nav id="paginacao-clientes" class="paginacao" aria-label="PaginaÃ§Ã£o de clientes" hidden>
+      <nav id="paginacao-clientes" class="paginacao" aria-label="Paginação de clientes" hidden>
         <button type="button" id="pagina-anterior-clientes">
           <i class="fa-solid fa-chevron-left"></i>
           Anterior
         </button>
 
-        <span id="info-pagina-clientes">PÃ¡gina 1 de 1</span>
+        <span id="info-pagina-clientes">Página 1 de 1</span>
 
         <button type="button" id="proxima-pagina-clientes">
-          PrÃ³xima
+          Próxima
           <i class="fa-solid fa-chevron-right"></i>
         </button>
       </nav>
@@ -213,7 +213,7 @@
     >
       <header class="modal-topo">
         <div>
-          <span>HistÃ³rico na sua loja</span>
+          <span>Histórico na sua loja</span>
           <h2 id="titulo-modal-cliente">Cliente</h2>
         </div>
 
@@ -221,7 +221,7 @@
           type="button"
           id="btn-fechar-modal-cliente"
           class="btn-fechar-modal"
-          aria-label="Fechar histÃ³rico do cliente"
+          aria-label="Fechar histórico do cliente"
         >
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -234,7 +234,7 @@
       <nav
         id="paginacao-historico-cliente"
         class="paginacao paginacao-modal"
-        aria-label="PaginaÃ§Ã£o do histÃ³rico do cliente"
+        aria-label="Paginação do histórico do cliente"
         hidden
       >
         <button type="button" id="historico-anterior">
@@ -242,10 +242,10 @@
           Anterior
         </button>
 
-        <span id="info-pagina-historico">PÃ¡gina 1 de 1</span>
+        <span id="info-pagina-historico">Página 1 de 1</span>
 
         <button type="button" id="historico-proximo">
-          PrÃ³xima
+          Próxima
           <i class="fa-solid fa-chevron-right"></i>
         </button>
       </nav>
@@ -253,7 +253,7 @@
   </div>
 
   <footer>
-    <p>Â© 2026 ComÃ©rcio da Cidade - Todos os direitos reservados.</p>
+    <p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
