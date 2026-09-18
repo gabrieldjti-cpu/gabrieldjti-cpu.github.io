@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Explore lojas e produtos de uma categoria no ComÃ©rcio da Cidade." />
-  <title>Categoria | ComÃ©rcio da Cidade</title>
+  <meta name="description" content="Explore lojas e produtos de uma categoria no Comércio da Cidade." />
+  <title>Categoria | Comércio da Cidade</title>
 
   <link rel="stylesheet" href="components/header.css" />
   <link rel="stylesheet" href="components/feedback.css" />
@@ -24,10 +24,10 @@
   <div id="header"></div>
 
   <main class="categoria-main">
-    <nav class="categoria-breadcrumb" aria-label="NavegaÃ§Ã£o estrutural">
+    <nav class="categoria-breadcrumb" aria-label="Navegação estrutural">
       <a href="index.html">
         <i class="fa-solid fa-house" aria-hidden="true"></i>
-        InÃ­cio
+        Início
       </a>
       <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
       <a href="index.html#categorias">Categorias</a>
@@ -42,21 +42,21 @@
         </span>
 
         <div class="categoria-hero-texto">
-          <span class="categoria-hero-selo">Explore o comÃ©rcio local</span>
+          <span class="categoria-hero-selo">Explore o comércio local</span>
           <h1 id="titulo-categoria">Carregando categoria...</h1>
           <p id="descricao-categoria">
-            Encontre lojas e produtos desta categoria em um sÃ³ lugar.
+            Encontre lojas e produtos desta categoria em um só lugar.
           </p>
         </div>
       </div>
 
       <div class="categoria-resumo" aria-label="Resumo da categoria">
         <div>
-          <strong id="resumo-lojas">â€”</strong>
+          <strong id="resumo-lojas">—</strong>
           <span>Lojas</span>
         </div>
         <div>
-          <strong id="resumo-produtos">â€”</strong>
+          <strong id="resumo-produtos">—</strong>
           <span>Produtos</span>
         </div>
       </div>
@@ -81,7 +81,7 @@
         <div>
           <span class="secao-eyebrow">Comerciantes</span>
           <h2 id="titulo-lojas-categoria">Lojas da categoria</h2>
-          <p>ConheÃ§a os estabelecimentos disponÃ­veis e acesse seus catÃ¡logos.</p>
+          <p>Conheça os estabelecimentos disponíveis e acesse seus catálogos.</p>
         </div>
         <span id="total-lojas-categoria" class="total-produtos-badge" aria-live="polite"></span>
       </div>
@@ -98,7 +98,7 @@
     <section class="categoria-secao" id="produtos-categoria" aria-labelledby="titulo-produtos-categoria">
       <div class="categoria-secao-cabecalho">
         <div>
-          <span class="secao-eyebrow">CatÃ¡logo</span>
+          <span class="secao-eyebrow">Catálogo</span>
           <h2 id="titulo-produtos-categoria">Produtos da categoria</h2>
           <p>Pesquise e compare os produtos das lojas desta categoria.</p>
         </div>
@@ -144,7 +144,7 @@
         </div>
 
         <div class="categoria-campo">
-          <label for="preco-minimo-categoria">PreÃ§o mÃ­nimo</label>
+          <label for="preco-minimo-categoria">Preço mínimo</label>
           <input
             id="preco-minimo-categoria"
             type="number"
@@ -157,7 +157,7 @@
         </div>
 
         <div class="categoria-campo">
-          <label for="preco-maximo-categoria">PreÃ§o mÃ¡ximo</label>
+          <label for="preco-maximo-categoria">Preço máximo</label>
           <input
             id="preco-maximo-categoria"
             type="number"
@@ -170,7 +170,7 @@
         </div>
 
         <div class="categoria-campo">
-          <label for="avaliacao-minima-categoria">AvaliaÃ§Ã£o mÃ­nima</label>
+          <label for="avaliacao-minima-categoria">Avaliação mínima</label>
           <select id="avaliacao-minima-categoria">
             <option value="">Todas as notas</option>
             <option value="5">5 estrelas</option>
@@ -184,11 +184,11 @@
         <div class="categoria-campo">
           <label for="ordenacao-categoria">Ordenar por</label>
           <select id="ordenacao-categoria">
-            <option value="relevancia">RelevÃ¢ncia</option>
+            <option value="relevancia">Relevância</option>
             <option value="destaques">Destaques</option>
             <option value="nome">Nome</option>
-            <option value="menor-preco">Menor preÃ§o</option>
-            <option value="maior-preco">Maior preÃ§o</option>
+            <option value="menor-preco">Menor preço</option>
+            <option value="maior-preco">Maior preço</option>
             <option value="mais-vendidos">Mais vendidos</option>
             <option value="melhor-avaliados">Melhor avaliados</option>
             <option value="recentes">Mais recentes</option>
@@ -205,25 +205,25 @@
         <div class="estado-produtos-globais">
           <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
           <h3>Carregando produtos...</h3>
-          <p>Estamos preparando o catÃ¡logo desta categoria.</p>
+          <p>Estamos preparando o catálogo desta categoria.</p>
         </div>
       </div>
 
       <nav
         id="paginacao-categoria"
         class="paginacao-produtos-globais"
-        aria-label="PaginaÃ§Ã£o dos produtos da categoria"
+        aria-label="Paginação dos produtos da categoria"
         hidden
       ></nav>
     </section>
 
     <section id="categoria-invalida" class="categoria-invalida" hidden>
       <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-      <h1>Categoria nÃ£o encontrada</h1>
-      <p>Escolha uma categoria vÃ¡lida para continuar explorando o comÃ©rcio local.</p>
+      <h1>Categoria não encontrada</h1>
+      <p>Escolha uma categoria válida para continuar explorando o comércio local.</p>
       <a href="index.html#categorias">
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        Voltar Ã s categorias
+        Voltar às categorias
       </a>
     </section>
   </main>
@@ -233,13 +233,13 @@
       <div class="footer-marca">
         <div class="footer-logo">
           <i class="fa-solid fa-store" aria-hidden="true"></i>
-          <strong>ComÃ©rcio da Cidade</strong>
+          <strong>Comércio da Cidade</strong>
         </div>
-        <p>Conectando pessoas aos comÃ©rcios da prÃ³pria cidade.</p>
+        <p>Conectando pessoas aos comércios da própria cidade.</p>
       </div>
 
-      <nav class="footer-links" aria-label="Links do rodapÃ©">
-        <a href="index.html">InÃ­cio</a>
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
         <a href="index.html#categorias">Categorias</a>
         <a href="index.html#produtos-globais">Produtos</a>
         <a href="index.html#lojas">Lojas</a>
@@ -253,7 +253,7 @@
     </div>
 
     <div class="footer-copyright">
-      <p>Â© 2026 ComÃ©rcio da Cidade. Todos os direitos reservados.</p>
+      <p>© 2026 Comércio da Cidade. Todos os direitos reservados.</p>
     </div>
   </footer>
 
