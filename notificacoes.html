@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Acompanhe pedidos, cancelamentos, avaliaÃ§Ãµes, estoque e atualizaÃ§Ãµes da sua conta no ComÃ©rcio da Cidade." />
-  <title>NotificaÃ§Ãµes | ComÃ©rcio da Cidade</title>
+  <meta name="description" content="Acompanhe pedidos, cancelamentos, avaliações, estoque e atualizações da sua conta no Comércio da Cidade." />
+  <title>Notificações | Comércio da Cidade</title>
 
   <link rel="stylesheet" href="components/header.css" />
   <link rel="stylesheet" href="components/feedback.css" />
@@ -21,13 +21,13 @@
   <div id="header"></div>
 
   <main class="notificacoes-main">
-    <nav class="notificacoes-breadcrumb" aria-label="NavegaÃ§Ã£o estrutural">
+    <nav class="notificacoes-breadcrumb" aria-label="Navegação estrutural">
       <a href="index.html">
         <i class="fa-solid fa-house" aria-hidden="true"></i>
-        InÃ­cio
+        Início
       </a>
       <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-      <span>NotificaÃ§Ãµes</span>
+      <span>Notificações</span>
     </nav>
 
     <section class="notificacoes-hero" aria-labelledby="titulo-notificacoes">
@@ -37,22 +37,22 @@
 
       <div class="notificacoes-hero-texto">
         <span class="notificacoes-eyebrow">Fique por dentro</span>
-        <h1 id="titulo-notificacoes">Central de NotificaÃ§Ãµes</h1>
-        <p>Pedidos, cancelamentos, avaliaÃ§Ãµes e alertas importantes reunidos em um sÃ³ lugar.</p>
+        <h1 id="titulo-notificacoes">Central de Notificações</h1>
+        <p>Pedidos, cancelamentos, avaliações e alertas importantes reunidos em um só lugar.</p>
       </div>
 
       <div class="notificacoes-resumo" aria-live="polite">
-        <strong id="total-nao-lidas">â€”</strong>
-        <span id="rotulo-nao-lidas">nÃ£o lidas</span>
+        <strong id="total-nao-lidas">—</strong>
+        <span id="rotulo-nao-lidas">não lidas</span>
       </div>
     </section>
 
     <section class="notificacoes-conteudo" aria-labelledby="titulo-lista-notificacoes">
       <div class="notificacoes-barra">
         <div>
-          <span class="notificacoes-eyebrow">Seu histÃ³rico</span>
+          <span class="notificacoes-eyebrow">Seu histórico</span>
           <h2 id="titulo-lista-notificacoes">Avisos recentes</h2>
-          <p id="texto-resultado-notificacoes" aria-live="polite">Carregando notificaÃ§Ãµes...</p>
+          <p id="texto-resultado-notificacoes" aria-live="polite">Carregando notificações...</p>
         </div>
 
         <button type="button" id="btn-marcar-todas-lidas" class="btn-marcar-todas" disabled>
@@ -61,10 +61,10 @@
         </button>
       </div>
 
-      <div class="notificacoes-filtros" aria-label="Filtros de notificaÃ§Ãµes">
-        <div class="notificacoes-abas" role="group" aria-label="SituaÃ§Ã£o da leitura">
+      <div class="notificacoes-filtros" aria-label="Filtros de notificações">
+        <div class="notificacoes-abas" role="group" aria-label="Situação da leitura">
           <button type="button" class="filtro-leitura ativo" data-leitura="todas" aria-pressed="true">Todas</button>
-          <button type="button" class="filtro-leitura" data-leitura="nao_lidas" aria-pressed="false">NÃ£o lidas</button>
+          <button type="button" class="filtro-leitura" data-leitura="nao_lidas" aria-pressed="false">Não lidas</button>
         </div>
 
         <label class="filtro-tipo">
@@ -75,8 +75,8 @@
             <option value="cancelamentos">Cancelamentos</option>
             <option value="lojas">Lojas</option>
             <option value="estoque">Estoque</option>
-            <option value="avaliacoes">AvaliaÃ§Ãµes</option>
-            <option value="moderacao">ModeraÃ§Ã£o</option>
+            <option value="avaliacoes">Avaliações</option>
+            <option value="moderacao">Moderação</option>
           </select>
         </label>
       </div>
@@ -84,12 +84,12 @@
       <div id="lista-notificacoes" class="lista-notificacoes" aria-live="polite" aria-busy="true">
         <div class="notificacoes-estado">
           <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-          <h3>Carregando notificaÃ§Ãµes...</h3>
+          <h3>Carregando notificações...</h3>
           <p>Estamos buscando seus avisos mais recentes.</p>
         </div>
       </div>
 
-      <nav id="paginacao-notificacoes" class="paginacao-notificacoes" aria-label="PaginaÃ§Ã£o das notificaÃ§Ãµes" hidden></nav>
+      <nav id="paginacao-notificacoes" class="paginacao-notificacoes" aria-label="Paginação das notificações" hidden></nav>
     </section>
   </main>
 
@@ -98,13 +98,13 @@
       <div class="footer-marca">
         <div class="footer-logo">
           <i class="fa-solid fa-store" aria-hidden="true"></i>
-          <strong>ComÃ©rcio da Cidade</strong>
+          <strong>Comércio da Cidade</strong>
         </div>
-        <p>Conectando pessoas aos comÃ©rcios da prÃ³pria cidade.</p>
+        <p>Conectando pessoas aos comércios da própria cidade.</p>
       </div>
 
-      <nav class="footer-links" aria-label="Links do rodapÃ©">
-        <a href="index.html">InÃ­cio</a>
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
         <a href="index.html#categorias">Categorias</a>
         <a href="index.html#produtos-globais">Produtos</a>
         <a href="carrinho.html">Carrinho</a>
@@ -115,7 +115,7 @@
     </div>
 
     <div class="footer-copyright">
-      <p>Â© 2026 ComÃ©rcio da Cidade. Todos os direitos reservados.</p>
+      <p>© 2026 Comércio da Cidade. Todos os direitos reservados.</p>
     </div>
   </footer>
 
