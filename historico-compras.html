@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>HistÃ³rico de Compras | ComÃ©rcio da Cidade</title>
+    <title>Histórico de Compras | Comércio da Cidade</title>
 
     <link rel="stylesheet" href="components/header.css">
     <link rel="stylesheet" href="components/feedback.css">
@@ -29,12 +29,12 @@
 
                 <h1>
                     <i class="fa-solid fa-clock-rotate-left"></i>
-                    HistÃ³rico de Compras
+                    Histórico de Compras
                 </h1>
 
                 <p>
-                    Consulte pedidos anteriores, filtre por perÃ­odo ou loja
-                    e adicione novamente ao carrinho os produtos que ainda estÃ£o disponÃ­veis.
+                    Consulte pedidos anteriores, filtre por período ou loja
+                    e adicione novamente ao carrinho os produtos que ainda estão disponíveis.
                 </p>
             </div>
 
@@ -44,18 +44,18 @@
             </a>
         </section>
 
-        <section class="historico-filtros" aria-label="Filtros do histÃ³rico de compras">
+        <section class="historico-filtros" aria-label="Filtros do histórico de compras">
             <div class="campo-filtro">
                 <label for="filtro-periodo">
                     <i class="fa-regular fa-calendar"></i>
-                    PerÃ­odo
+                    Período
                 </label>
 
                 <select id="filtro-periodo">
-                    <option value="30">Ãšltimos 30 dias</option>
-                    <option value="90">Ãšltimos 90 dias</option>
-                    <option value="365">Ãšltimos 12 meses</option>
-                    <option value="todos" selected>Todo o histÃ³rico</option>
+                    <option value="30">Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                    <option value="365">Últimos 12 meses</option>
+                    <option value="todos" selected>Todo o histórico</option>
                 </select>
             </div>
 
@@ -84,34 +84,34 @@
 
             <p>
                 A recompra sempre consulta o produto novamente para usar
-                <strong>preÃ§o atual, estoque atual e disponibilidade atual</strong>.
+                <strong>preço atual, estoque atual e disponibilidade atual</strong>.
             </p>
         </section>
 
         <section id="lista-historico" class="lista-historico" aria-live="polite">
             <div class="estado-historico">
                 <i class="fa-solid fa-spinner fa-spin"></i>
-                <h2>Carregando seu histÃ³rico...</h2>
+                <h2>Carregando seu histórico...</h2>
             </div>
         </section>
 
-        <nav class="paginacao-historico" aria-label="PaginaÃ§Ã£o do histÃ³rico">
+        <nav class="paginacao-historico" aria-label="Paginação do histórico">
             <button type="button" id="btn-pagina-anterior" disabled>
                 <i class="fa-solid fa-chevron-left"></i>
                 Anterior
             </button>
 
-            <span id="texto-paginacao">PÃ¡gina 1 de 1</span>
+            <span id="texto-paginacao">Página 1 de 1</span>
 
             <button type="button" id="btn-proxima-pagina" disabled>
-                PrÃ³xima
+                Próxima
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
         </nav>
     </main>
 
     <footer>
-        <p>Â© 2026 ComÃ©rcio da Cidade - Todos os direitos reservados.</p>
+        <p>© 2026 Comércio da Cidade - Todos os direitos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
