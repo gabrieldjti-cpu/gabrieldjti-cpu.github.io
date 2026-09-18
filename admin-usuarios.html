@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GestÃ£o administrativa de usuÃ¡rios do ComÃ©rcio da Cidade.">
-    <title>UsuÃ¡rios | AdministraÃ§Ã£o | ComÃ©rcio da Cidade</title>
+    <meta name="description" content="Gestão administrativa de usuários do Comércio da Cidade.">
+    <title>Usuários | Administração | Comércio da Cidade</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,22 +20,22 @@
 <body>
     <header class="admin-header">
         <div class="admin-header-conteudo">
-            <a href="index.html" class="admin-marca" aria-label="Voltar para a pÃ¡gina inicial">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
                 <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
                 <span>
-                    <strong>ComÃ©rcio da Cidade</strong>
-                    <small>AdministraÃ§Ã£o</small>
+                    <strong>Comércio da Cidade</strong>
+                    <small>Administração</small>
                 </span>
             </a>
 
-            <nav class="admin-nav" aria-label="Ãreas administrativas">
+            <nav class="admin-nav" aria-label="Áreas administrativas">
                 <a href="admin-dashboard.html">
                     <i class="fa-solid fa-shop"></i>
                     <span>Lojas</span>
                 </a>
                 <a href="admin-usuarios.html" class="ativo" aria-current="page">
                     <i class="fa-solid fa-users-gear"></i>
-                    <span>UsuÃ¡rios</span>
+                    <span>Usuários</span>
                 </a>
                 <a href="admin-categorias.html">
                     <i class="fa-solid fa-layer-group"></i>
@@ -43,7 +43,7 @@
                 </a>
                 <a href="admin-moderacao.html">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <span>ModeraÃ§Ã£o</span>
+                    <span>Moderação</span>
                 </a>
             </nav>
 
@@ -63,9 +63,9 @@
     <main class="admin-container">
         <section class="admin-intro">
             <div>
-                <span class="eyebrow">RF-22 Â· Controle de acesso</span>
-                <h1>GestÃ£o de usuÃ¡rios</h1>
-                <p>Localize contas, acompanhe sua utilizaÃ§Ã£o e administre bloqueios e papÃ©is com registro de auditoria.</p>
+                <span class="eyebrow">RF-22 · Controle de acesso</span>
+                <h1>Gestão de usuários</h1>
+                <p>Localize contas, acompanhe sua utilização e administre bloqueios e papéis com registro de auditoria.</p>
             </div>
             <button type="button" id="btnAtualizarUsuarios" class="btn-admin btn-primario">
                 <i class="fa-solid fa-rotate"></i>
@@ -73,20 +73,20 @@
             </button>
         </section>
 
-        <aside class="aviso-privacidade-admin" aria-label="ProteÃ§Ã£o dos dados dos usuÃ¡rios">
+        <aside class="aviso-privacidade-admin" aria-label="Proteção dos dados dos usuários">
             <i class="fa-solid fa-shield-halved"></i>
             <div>
                 <strong>Dados administrativos protegidos</strong>
-                <p>Esta Ã¡rea apresenta somente identificaÃ§Ã£o, acesso e informaÃ§Ãµes consolidadas de uso. EndereÃ§os, telefones e senhas nunca sÃ£o exibidos.</p>
+                <p>Esta área apresenta somente identificação, acesso e informações consolidadas de uso. Endereços, telefones e senhas nunca são exibidos.</p>
             </div>
         </aside>
 
-        <section class="metricas-admin" aria-label="Resumo dos usuÃ¡rios">
+        <section class="metricas-admin" aria-label="Resumo dos usuários">
             <article class="metrica-card">
                 <span class="metrica-icone"><i class="fa-solid fa-users"></i></span>
                 <div>
-                    <small>Total de usuÃ¡rios</small>
-                    <strong id="metricaTotalUsuarios">â€”</strong>
+                    <small>Total de usuários</small>
+                    <strong id="metricaTotalUsuarios">—</strong>
                 </div>
             </article>
 
@@ -94,7 +94,7 @@
                 <span class="metrica-icone"><i class="fa-solid fa-user-check"></i></span>
                 <div>
                     <small>Contas ativas</small>
-                    <strong id="metricaUsuariosAtivos">â€”</strong>
+                    <strong id="metricaUsuariosAtivos">—</strong>
                 </div>
             </article>
 
@@ -102,26 +102,26 @@
                 <span class="metrica-icone"><i class="fa-solid fa-user-lock"></i></span>
                 <div>
                     <small>Contas bloqueadas</small>
-                    <strong id="metricaUsuariosBloqueados">â€”</strong>
+                    <strong id="metricaUsuariosBloqueados">—</strong>
                 </div>
             </article>
 
             <article class="metrica-card metrica-excluida">
                 <span class="metrica-icone"><i class="fa-solid fa-user-slash"></i></span>
                 <div>
-                    <small>Contas excluÃ­das</small>
-                    <strong id="metricaUsuariosExcluidos">â€”</strong>
+                    <small>Contas excluídas</small>
+                    <strong id="metricaUsuariosExcluidos">—</strong>
                 </div>
             </article>
         </section>
 
-        <p id="resumoPapeisUsuarios" class="resumo-papeis" aria-live="polite">Carregando distribuiÃ§Ã£o de papÃ©is...</p>
+        <p id="resumoPapeisUsuarios" class="resumo-papeis" aria-live="polite">Carregando distribuição de papéis...</p>
 
         <section class="admin-card filtros-card">
             <div class="filtros-titulo">
                 <div>
-                    <h2><i class="fa-solid fa-filter"></i> UsuÃ¡rios</h2>
-                    <p id="textoResultadoUsuarios" aria-live="polite">Carregando usuÃ¡rios...</p>
+                    <h2><i class="fa-solid fa-filter"></i> Usuários</h2>
+                    <p id="textoResultadoUsuarios" aria-live="polite">Carregando usuários...</p>
                 </div>
                 <button type="button" id="btnLimparFiltrosUsuarios" class="btn-admin btn-claro btn-limpar-filtros">
                     <i class="fa-solid fa-eraser"></i>
@@ -149,12 +149,12 @@
                 </label>
 
                 <label class="campo-admin">
-                    <span>SituaÃ§Ã£o</span>
+                    <span>Situação</span>
                     <select id="filtroStatusUsuario">
                         <option value="">Todas</option>
                         <option value="ativo">Ativas</option>
                         <option value="bloqueado">Bloqueadas</option>
-                        <option value="excluido">ExcluÃ­das</option>
+                        <option value="excluido">Excluídas</option>
                     </select>
                 </label>
 
@@ -164,7 +164,7 @@
                         <option value="recentes">Cadastro mais recente</option>
                         <option value="antigos">Cadastro mais antigo</option>
                         <option value="nome">Nome</option>
-                        <option value="ultimo_acesso">Ãšltimo acesso</option>
+                        <option value="ultimo_acesso">Último acesso</option>
                     </select>
                 </label>
             </form>
@@ -173,20 +173,20 @@
         <section id="listaUsuariosAdmin" class="lista-usuarios-admin" aria-live="polite" aria-busy="true">
             <div class="estado-admin">
                 <i class="fa-solid fa-spinner fa-spin"></i>
-                <h3>Carregando usuÃ¡rios...</h3>
+                <h3>Carregando usuários...</h3>
             </div>
         </section>
 
-        <nav id="paginacaoUsuariosAdmin" class="paginacao-listagem paginacao-servidor" aria-label="PaginaÃ§Ã£o dos usuÃ¡rios" hidden>
+        <nav id="paginacaoUsuariosAdmin" class="paginacao-listagem paginacao-servidor" aria-label="Paginação dos usuários" hidden>
             <div class="paginacao-resumo" id="resumoPaginacaoUsuarios"></div>
             <div class="paginacao-acoes">
                 <button type="button" id="paginaAnteriorUsuarios" class="paginacao-btn">
                     <i class="fa-solid fa-chevron-left"></i>
                     <span>Anterior</span>
                 </button>
-                <span id="paginaAtualUsuarios" class="pagina-atual-usuarios">PÃ¡gina 1 de 1</span>
+                <span id="paginaAtualUsuarios" class="pagina-atual-usuarios">Página 1 de 1</span>
                 <button type="button" id="proximaPaginaUsuarios" class="paginacao-btn">
-                    <span>PrÃ³xima</span>
+                    <span>Próxima</span>
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
@@ -201,7 +201,7 @@
             </button>
 
             <span id="iconeModalAcaoUsuario" class="modal-icone-usuario"><i class="fa-solid fa-user-gear"></i></span>
-            <h2 id="tituloModalAcaoUsuario">Administrar usuÃ¡rio</h2>
+            <h2 id="tituloModalAcaoUsuario">Administrar usuário</h2>
             <p id="descricaoModalAcaoUsuario"></p>
 
             <div id="alertaModalAcaoUsuario" class="alerta-acao-usuario" hidden></div>
@@ -213,12 +213,12 @@
                         <option value="cliente">Cliente</option>
                         <option value="lojista">Lojista</option>
                     </select>
-                    <small>A conta administrativa principal Ã© Ãºnica e nÃ£o pode ser atribuÃ­da a outro usuÃ¡rio.</small>
+                    <small>A conta administrativa principal é única e não pode ser atribuída a outro usuário.</small>
                 </label>
 
                 <label class="campo-admin campo-motivo-usuario">
-                    <span>Motivo da alteraÃ§Ã£o</span>
-                    <textarea id="motivoAcaoUsuario" minlength="5" maxlength="500" rows="5" placeholder="Explique por que esta alteraÃ§Ã£o Ã© necessÃ¡ria..." required></textarea>
+                    <span>Motivo da alteração</span>
+                    <textarea id="motivoAcaoUsuario" minlength="5" maxlength="500" rows="5" placeholder="Explique por que esta alteração é necessária..." required></textarea>
                     <small><span id="contadorMotivoUsuario">0</span>/500</small>
                 </label>
 
@@ -241,19 +241,19 @@
             </button>
 
             <span class="modal-icone-usuario icone-historico"><i class="fa-solid fa-clock-rotate-left"></i></span>
-            <h2 id="tituloHistoricoUsuario">HistÃ³rico administrativo</h2>
+            <h2 id="tituloHistoricoUsuario">Histórico administrativo</h2>
             <p id="descricaoHistoricoUsuario"></p>
 
             <div id="listaHistoricoUsuario" class="lista-historico-usuario" aria-live="polite"></div>
 
-            <nav id="paginacaoHistoricoUsuario" class="paginacao-historico-usuario" aria-label="PaginaÃ§Ã£o do histÃ³rico" hidden>
+            <nav id="paginacaoHistoricoUsuario" class="paginacao-historico-usuario" aria-label="Paginação do histórico" hidden>
                 <button type="button" id="historicoUsuarioAnterior" class="btn-admin btn-claro">
                     <i class="fa-solid fa-chevron-left"></i>
                     Anterior
                 </button>
-                <span id="paginaHistoricoUsuario">PÃ¡gina 1 de 1</span>
+                <span id="paginaHistoricoUsuario">Página 1 de 1</span>
                 <button type="button" id="historicoUsuarioProximo" class="btn-admin btn-claro">
-                    PrÃ³xima
+                    Próxima
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </nav>
