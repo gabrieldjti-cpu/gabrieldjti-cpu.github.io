@@ -1,7 +1,7 @@
 ﻿// ==========================================
 // ADMIN-DASHBOARD.JS
-// ComÃ©rcio da Cidade
-// RF-23 â€” GestÃ£o de Lojas
+// Comércio da Cidade
+// RF-23 — Gestão de Lojas
 // ==========================================
 
 let lojasAdmin = [];
@@ -42,10 +42,10 @@ async function iniciarDashboardAdmin() {
     if (!window.db) {
         mostrarEstadoAdmin(
             "fa-triangle-exclamation",
-            "NÃ£o foi possÃ­vel conectar",
-            "Atualize a pÃ¡gina e tente novamente."
+            "Não foi possível conectar",
+            "Atualize a página e tente novamente."
         );
-        avisarAdmin("NÃ£o foi possÃ­vel conectar ao sistema.", "erro", "Erro de conexÃ£o");
+        avisarAdmin("Não foi possível conectar ao sistema.", "erro", "Erro de conexão");
         return;
     }
 
@@ -63,9 +63,9 @@ async function iniciarDashboardAdmin() {
     if (adminError) {
         console.error("Erro ao verificar administrador:", adminError);
         avisarAdmin(
-            "NÃ£o foi possÃ­vel validar sua permissÃ£o administrativa.",
+            "Não foi possível validar sua permissão administrativa.",
             "erro",
-            "Erro de permissÃ£o"
+            "Erro de permissão"
         );
         return;
     }
@@ -74,11 +74,11 @@ async function iniciarDashboardAdmin() {
         mostrarEstadoAdmin(
             "fa-lock",
             "Acesso restrito",
-            "Esta Ã¡rea Ã© exclusiva para administradores da plataforma."
+            "Esta área é exclusiva para administradores da plataforma."
         );
 
         avisarAdmin(
-            "Esta Ã¡rea Ã© exclusiva para administradores.",
+            "Esta área é exclusiva para administradores.",
             "aviso",
             "Acesso restrito"
         );
@@ -197,7 +197,7 @@ async function carregarCategoriasLojasAdmin() {
         categoriasLojasAdmin = [];
 
         if (select) {
-            select.innerHTML = '<option value="">Categorias indisponÃ­veis</option>';
+            select.innerHTML = '<option value="">Categorias indisponíveis</option>';
         }
     }
 }
@@ -215,7 +215,7 @@ async function carregarResumoAdmin() {
     } catch (erro) {
         console.error("Erro ao carregar resumo administrativo:", erro);
         ["metricaUsuarios", "metricaLojas", "metricaPendentes", "metricaPedidos"]
-            .forEach(id => definirTextoAdmin(id, "â€”"));
+            .forEach(id => definirTextoAdmin(id, "—"));
     }
 }
 
@@ -249,12 +249,12 @@ async function carregarLojasAdmin() {
 
         mostrarEstadoAdmin(
             "fa-triangle-exclamation",
-            "NÃ£o foi possÃ­vel carregar as lojas",
+            "Não foi possível carregar as lojas",
             "Tente atualizar o painel."
         );
 
         avisarAdmin(
-            "NÃ£o foi possÃ­vel carregar as lojas.",
+            "Não foi possível carregar as lojas.",
             "erro",
             "Erro ao carregar"
         );
@@ -294,9 +294,9 @@ function criarCardLojaAdmin(loja) {
     const status = STATUS_ADMIN[loja.status_aprovacao] || STATUS_ADMIN.pendente;
     const id = escaparAtributoAdmin(loja.id || "");
     const nome = escaparHTMLAdmin(loja.nome || "Loja");
-    const proprietario = escaparHTMLAdmin(loja.proprietario_nome || "NÃ£o informado");
+    const proprietario = escaparHTMLAdmin(loja.proprietario_nome || "Não informado");
     const categoria = escaparHTMLAdmin(loja.categoria || "Sem categoria");
-    const cidade = escaparHTMLAdmin(loja.cidade || "NÃ£o informada");
+    const cidade = escaparHTMLAdmin(loja.cidade || "Não informada");
     const totalProdutos = Number(loja.total_produtos || 0);
     const totalPedidos = Number(loja.total_pedidos || 0);
 
@@ -329,7 +329,7 @@ function criarCardLojaAdmin(loja) {
                     ${logo}
                     <div>
                         <h3>${nome}</h3>
-                        <p>${categoria} â€¢ ${cidade}</p>
+                        <p>${categoria} • ${cidade}</p>
                     </div>
                 </div>
 
@@ -341,7 +341,7 @@ function criarCardLojaAdmin(loja) {
 
             <div class="loja-admin-dados">
                 <div class="loja-admin-dado">
-                    <small>ProprietÃ¡rio</small>
+                    <small>Proprietário</small>
                     <strong>${proprietario}</strong>
                 </div>
                 <div class="loja-admin-dado">
@@ -403,7 +403,7 @@ function acoesStatusLojaAdmin(loja) {
             <i class="fa-solid fa-check"></i> Aprovar
         </button>
         <button type="button" class="btn-admin btn-claro" onclick="mudarStatusLojaAdmin('${id}', 'pendente')">
-            <i class="fa-solid fa-clock-rotate-left"></i> Reabrir anÃ¡lise
+            <i class="fa-solid fa-clock-rotate-left"></i> Reabrir análise
         </button>
     `;
 }
@@ -418,9 +418,9 @@ function abrirModalEdicaoLojaAdmin(lojaId) {
 
     if (categoriasLojasAdmin.length === 0) {
         avisarAdmin(
-            "NÃ£o foi possÃ­vel carregar as categorias disponÃ­veis.",
+            "Não foi possível carregar as categorias disponíveis.",
             "erro",
-            "EdiÃ§Ã£o indisponÃ­vel"
+            "Edição indisponível"
         );
         return;
     }
@@ -480,7 +480,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
     };
 
     if (!dados.lojaId) {
-        return erroValidacaoEdicaoAdmin("Loja invÃ¡lida.", "lojaIdEdicaoAdmin");
+        return erroValidacaoEdicaoAdmin("Loja inválida.", "lojaIdEdicaoAdmin");
     }
 
     if (dados.nome.length < 3 || dados.nome.length > 100) {
@@ -499,7 +499,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
 
     if (dados.descricao && dados.descricao.length > 1000) {
         return erroValidacaoEdicaoAdmin(
-            "A descriÃ§Ã£o deve ter no mÃ¡ximo 1.000 caracteres.",
+            "A descrição deve ter no máximo 1.000 caracteres.",
             "descricaoLojaEdicaoAdmin"
         );
     }
@@ -512,7 +512,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
             const totalDigitos = valor.replace(/[^0-9]/g, "").length;
             if (valor.length > 20 || totalDigitos < 10 || totalDigitos > 13) {
                 return erroValidacaoEdicaoAdmin(
-                    `Informe um ${rotulo} vÃ¡lido com DDD.`,
+                    `Informe um ${rotulo} válido com DDD.`,
                     campo
                 );
             }
@@ -521,7 +521,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
 
     if (dados.endereco && dados.endereco.length > 240) {
         return erroValidacaoEdicaoAdmin(
-            "O endereÃ§o deve ter no mÃ¡ximo 240 caracteres.",
+            "O endereço deve ter no máximo 240 caracteres.",
             "enderecoLojaEdicaoAdmin"
         );
     }
@@ -542,7 +542,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
 
     if (Boolean(dados.abertura) !== Boolean(dados.fechamento)) {
         return erroValidacaoEdicaoAdmin(
-            "Informe os horÃ¡rios de abertura e fechamento juntos.",
+            "Informe os horários de abertura e fechamento juntos.",
             dados.abertura ? "fechamentoLojaEdicaoAdmin" : "aberturaLojaEdicaoAdmin"
         );
     }
@@ -553,7 +553,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
     ]) {
         if (valor && !/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(valor)) {
             return erroValidacaoEdicaoAdmin(
-                "Informe um horÃ¡rio vÃ¡lido.",
+                "Informe um horário válido.",
                 campo
             );
         }
@@ -570,7 +570,7 @@ function validarDadosEdicaoLojaAdmin(entrada) {
 
     if (dados.motivo.length < 5 || dados.motivo.length > 500) {
         return erroValidacaoEdicaoAdmin(
-            "Explique o motivo da alteraÃ§Ã£o usando entre 5 e 500 caracteres.",
+            "Explique o motivo da alteração usando entre 5 e 500 caracteres.",
             "motivoEdicaoLojaAdmin"
         );
     }
@@ -649,7 +649,7 @@ async function salvarEdicaoLojaAdmin(event) {
         fecharModalAdmin("edicao");
 
         avisarAdmin(
-            `AlteraÃ§Ãµes salvas: ${campos}.`,
+            `Alterações salvas: ${campos}.`,
             "sucesso",
             "Loja atualizada"
         );
@@ -658,7 +658,7 @@ async function salvarEdicaoLojaAdmin(event) {
     } catch (erro) {
         console.error("Erro ao editar loja como administrador:", erro);
         avisarAdmin(
-            erro?.message || "NÃ£o foi possÃ­vel salvar as alteraÃ§Ãµes da loja.",
+            erro?.message || "Não foi possível salvar as alterações da loja.",
             "erro",
             "Erro ao salvar"
         );
@@ -678,10 +678,10 @@ async function extrairMensagemErroFuncaoAdmin(erro) {
             if (corpo?.erro) return corpo.erro;
         }
     } catch (falha) {
-        console.warn("NÃ£o foi possÃ­vel interpretar o erro da funÃ§Ã£o:", falha);
+        console.warn("Não foi possível interpretar o erro da função:", falha);
     }
 
-    return erro?.message || "NÃ£o foi possÃ­vel concluir a alteraÃ§Ã£o.";
+    return erro?.message || "Não foi possível concluir a alteração.";
 }
 
 
@@ -721,10 +721,10 @@ async function mudarStatusLojaAdmin(lojaId, novoStatus, motivo = null) {
 
     if (novoStatus === "aprovada" || novoStatus === "pendente") {
         const confirmou = await confirmarAdmin({
-            titulo: novoStatus === "aprovada" ? "Aprovar esta loja?" : "Reabrir anÃ¡lise?",
+            titulo: novoStatus === "aprovada" ? "Aprovar esta loja?" : "Reabrir análise?",
             mensagem: novoStatus === "aprovada"
-                ? `A loja â€œ${loja.nome}â€ ficarÃ¡ disponÃ­vel para os clientes.`
-                : `A loja â€œ${loja.nome}â€ voltarÃ¡ ao status pendente.`,
+                ? `A loja “${loja.nome}” ficará disponível para os clientes.`
+                : `A loja “${loja.nome}” voltará ao status pendente.`,
             textoConfirmar: novoStatus === "aprovada" ? "Aprovar" : "Confirmar"
         });
 
@@ -752,7 +752,7 @@ async function mudarStatusLojaAdmin(lojaId, novoStatus, motivo = null) {
     } catch (erro) {
         console.error("Erro ao alterar status da loja:", erro);
         avisarAdmin(
-            erro?.message || "NÃ£o foi possÃ­vel alterar o status da loja.",
+            erro?.message || "Não foi possível alterar o status da loja.",
             "erro",
             "Erro ao atualizar"
         );
@@ -778,8 +778,8 @@ function abrirModalMotivoStatus(lojaId, novoStatus) {
     if (titulo) titulo.textContent = suspender ? "Suspender loja" : "Rejeitar loja";
     if (texto) {
         texto.textContent = suspender
-            ? `Informe por que a loja â€œ${loja.nome}â€ serÃ¡ suspensa.`
-            : `Informe por que a solicitaÃ§Ã£o da loja â€œ${loja.nome}â€ serÃ¡ rejeitada.`;
+            ? `Informe por que a loja “${loja.nome}” será suspensa.`
+            : `Informe por que a solicitação da loja “${loja.nome}” será rejeitada.`;
     }
 
     if (campo) campo.value = "";
@@ -802,7 +802,7 @@ async function confirmarMotivoStatusAdmin() {
     const motivo = campo?.value?.trim() || "";
 
     if (!motivo) {
-        avisarAdmin("Informe o motivo antes de continuar.", "aviso", "Motivo obrigatÃ³rio");
+        avisarAdmin("Informe o motivo antes de continuar.", "aviso", "Motivo obrigatório");
         campo?.focus();
         return;
     }
@@ -841,7 +841,7 @@ async function verDetalhesLojaAdmin(lojaId) {
         historico = Array.isArray(resultadoHistorico.data) ? resultadoHistorico.data : [];
         documentos = Array.isArray(resultadoDocumentos.data) ? resultadoDocumentos.data : [];
     } catch (erro) {
-        console.warn("NÃ£o foi possÃ­vel carregar o histÃ³rico da loja:", erro);
+        console.warn("Não foi possível carregar o histórico da loja:", erro);
     }
 
     const status = STATUS_ADMIN[loja.status_aprovacao] || STATUS_ADMIN.pendente;
@@ -860,10 +860,10 @@ async function verDetalhesLojaAdmin(lojaId) {
 
         <div class="detalhes-grid">
             ${detalheAdmin("Status", status.rotulo)}
-            ${detalheAdmin("ProprietÃ¡rio", loja.proprietario_nome || "NÃ£o informado")}
-            ${detalheAdmin("Telefone", loja.telefone || loja.whatsapp || "NÃ£o informado")}
-            ${detalheAdmin("Cidade", loja.cidade || "NÃ£o informada")}
-            ${detalheAdmin("EndereÃ§o", loja.endereco || "NÃ£o informado")}
+            ${detalheAdmin("Proprietário", loja.proprietario_nome || "Não informado")}
+            ${detalheAdmin("Telefone", loja.telefone || loja.whatsapp || "Não informado")}
+            ${detalheAdmin("Cidade", loja.cidade || "Não informada")}
+            ${detalheAdmin("Endereço", loja.endereco || "Não informado")}
             ${detalheAdmin("Cadastro", formatarDataAdmin(loja.criado_em))}
             ${detalheAdmin("Produtos", String(loja.total_produtos || 0))}
             ${detalheAdmin("Pedidos", String(loja.total_pedidos || 0))}
@@ -873,17 +873,17 @@ async function verDetalhesLojaAdmin(lojaId) {
         ${loja.motivo_rejeicao ? `<p class="loja-motivo-atual"><strong>Motivo atual:</strong> ${escaparHTMLAdmin(loja.motivo_rejeicao)}</p>` : ""}
 
         <div class="documentos-admin">
-            <h3><i class="fa-solid fa-shield-halved"></i> DocumentaÃ§Ã£o da loja</h3>
+            <h3><i class="fa-solid fa-shield-halved"></i> Documentação da loja</h3>
             ${documentos.length
                 ? documentos.map(renderizarDocumentoLojaAdmin).join("")
-                : '<p class="documentos-vazio-admin">Esta loja ainda nÃ£o enviou a documentaÃ§Ã£o obrigatÃ³ria.</p>'}
+                : '<p class="documentos-vazio-admin">Esta loja ainda não enviou a documentação obrigatória.</p>'}
         </div>
 
         <div class="historico-admin">
-            <h3><i class="fa-solid fa-clock-rotate-left"></i> HistÃ³rico administrativo</h3>
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Histórico administrativo</h3>
             ${historico.length
                 ? historico.map(renderizarItemHistoricoAdmin).join("")
-                : '<p>Nenhuma alteraÃ§Ã£o administrativa registrada ainda.</p>'}
+                : '<p>Nenhuma alteração administrativa registrada ainda.</p>'}
         </div>
     `;
 }
@@ -891,11 +891,11 @@ async function verDetalhesLojaAdmin(lojaId) {
 function renderizarDocumentoLojaAdmin(documento) {
     const nomes = {
         documento_fiscal: documento.tipo_pessoa === "cnpj" ? "Documento de CNPJ" : "Documento de CPF",
-        comprovante_endereco: "Comprovante de endereÃ§o"
+        comprovante_endereco: "Comprovante de endereço"
     };
     const status = documento.status || "pendente";
     const numero = documento.numero_fiscal
-        ? `<span><strong>NÃºmero:</strong> ${escaparHTMLAdmin(formatarNumeroFiscalAdmin(documento.numero_fiscal))}</span>`
+        ? `<span><strong>Número:</strong> ${escaparHTMLAdmin(formatarNumeroFiscalAdmin(documento.numero_fiscal))}</span>`
         : "";
     const motivo = documento.motivo_rejeicao
         ? `<span class="documento-motivo-admin"><strong>Motivo:</strong> ${escaparHTMLAdmin(documento.motivo_rejeicao)}</span>`
@@ -932,16 +932,16 @@ async function abrirDocumentoLojaAdmin(caminho) {
         window.open(data.signedUrl, "_blank", "noopener,noreferrer");
     } catch (erro) {
         console.error("Erro ao abrir documento:", erro);
-        avisarAdmin("NÃ£o foi possÃ­vel abrir o documento.", "erro", "Erro no documento");
+        avisarAdmin("Não foi possível abrir o documento.", "erro", "Erro no documento");
     }
 }
 
 async function analisarDocumentoLojaAdmin(documentoId, status) {
     let motivo = null;
     if (status === "rejeitado") {
-        motivo = window.prompt("Informe o motivo da rejeiÃ§Ã£o do documento:")?.trim();
+        motivo = window.prompt("Informe o motivo da rejeição do documento:")?.trim();
         if (!motivo || motivo.length < 5) {
-            avisarAdmin("Informe um motivo com pelo menos 5 caracteres.", "aviso", "Motivo obrigatÃ³rio");
+            avisarAdmin("Informe um motivo com pelo menos 5 caracteres.", "aviso", "Motivo obrigatório");
             return;
         }
     }
@@ -952,11 +952,11 @@ async function analisarDocumentoLojaAdmin(documentoId, status) {
             p_motivo: motivo
         });
         if (error) throw error;
-        avisarAdmin(`Documento ${status} com sucesso.`, "sucesso", "AnÃ¡lise registrada");
+        avisarAdmin(`Documento ${status} com sucesso.`, "sucesso", "Análise registrada");
         if (lojaDetalhadaAdmin) await verDetalhesLojaAdmin(lojaDetalhadaAdmin);
     } catch (erro) {
         console.error("Erro ao analisar documento:", erro);
-        avisarAdmin(erro.message || "NÃ£o foi possÃ­vel analisar o documento.", "erro", "Falha na anÃ¡lise");
+        avisarAdmin(erro.message || "Não foi possível analisar o documento.", "erro", "Falha na análise");
     }
 }
 
@@ -964,7 +964,7 @@ async function analisarDocumentoLojaAdmin(documentoId, status) {
 
 function renderizarItemHistoricoAdmin(item) {
     const administrador = item.administrador_nome
-        ? ` â€¢ ${escaparHTMLAdmin(item.administrador_nome)}`
+        ? ` • ${escaparHTMLAdmin(item.administrador_nome)}`
         : "";
 
     if (item.tipo_evento === "edicao") {
@@ -1080,23 +1080,23 @@ function definirTextoAdmin(id, valor) {
 
 
 function rotuloStatusAdmin(status) {
-    if (!status) return "InÃ­cio";
+    if (!status) return "Início";
     return STATUS_ADMIN[status]?.rotulo || status;
 }
 
 
 function formatarDataAdmin(valor) {
-    if (!valor) return "â€”";
+    if (!valor) return "—";
     const data = new Date(valor);
-    if (Number.isNaN(data.getTime())) return "â€”";
+    if (Number.isNaN(data.getTime())) return "—";
     return data.toLocaleDateString("pt-BR");
 }
 
 
 function formatarDataHoraAdmin(valor) {
-    if (!valor) return "â€”";
+    if (!valor) return "—";
     const data = new Date(valor);
-    if (Number.isNaN(data.getTime())) return "â€”";
+    if (Number.isNaN(data.getTime())) return "—";
     return data.toLocaleString("pt-BR", {
         dateStyle: "short",
         timeStyle: "short"
