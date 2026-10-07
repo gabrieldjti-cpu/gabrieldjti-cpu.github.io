@@ -1,0 +1,68 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acompanhe os anúncios que você publicou no Comércio da Cidade.">
+  <title>Meus anúncios | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css">
+  <link rel="stylesheet" href="components/feedback.css">
+  <link rel="stylesheet" href="css/institucional.css">
+  <link rel="stylesheet" href="css/planos.css">
+  <link rel="stylesheet" href="css/anuncios.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/dark-mode.css">
+</head>
+
+<body class="pagina-institucional pagina-meus-anuncios">
+  <div id="header"></div>
+
+  <main class="institucional-main">
+    <nav class="institucional-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Início</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span aria-current="page">Meus anúncios</span>
+    </nav>
+
+    <section class="anuncios-cabecalho anuncios-cabecalho-acoes">
+      <div>
+        <h1>Meus anúncios</h1>
+        <p id="resumoMeusAnuncios" aria-live="polite">Carregando seus anúncios...</p>
+      </div>
+      <div class="institucional-acoes">
+        <a id="btnNovoAnuncio" class="institucional-btn" href="novo-produto.html">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i> Novo anúncio
+        </a>
+        <a id="btnPerfilPublico" class="institucional-btn secundario" href="index.html" hidden>Ver meu perfil público</a>
+      </div>
+    </section>
+
+    <section class="anuncios-card anuncios-plano">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <p>Plano gratuito: 5 anúncios a cada 30 dias, cada um no ar por 60 dias. O anúncio publicado não pode ser editado; você pode marcar como indisponível ou excluir. <a href="planos.html">Ver planos</a></p>
+    </section>
+
+    <section id="listaMeusAnuncios" class="anuncios-lista" aria-live="polite"></section>
+  </main>
+
+  <footer class="institucional-footer">
+    <div class="institucional-footer-principal">
+      <div class="institucional-footer-marca"><div class="institucional-footer-logo"><i class="fa-solid fa-store" aria-hidden="true"></i><strong>Comércio da Cidade</strong></div><p>Compras locais com informações claras para clientes e lojistas.</p></div>
+      <nav class="institucional-footer-links" aria-label="Informações institucionais"><a href="como-funciona.html">Como funciona</a><a href="planos.html">Planos</a><a href="ajuda.html">Ajuda</a><a href="cancelamentos.html">Cancelamentos</a><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos de Uso</a></nav>
+    </div>
+    <div class="institucional-footer-copyright">© 2026 Comércio da Cidade. Todos os direitos reservados.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/carrinho-sync.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="js/meus-anuncios.js"></script>
+</body>
+</html>
+

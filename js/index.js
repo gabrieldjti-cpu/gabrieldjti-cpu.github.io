@@ -159,6 +159,12 @@ async function carregarLojas() {
                     true
                 )
 
+                // Perfis de anunciante (usuário comum) não são lojas.
+                .eq(
+                    "tipo",
+                    "loja"
+                )
+
                 .order(
                     "nome",
                     {

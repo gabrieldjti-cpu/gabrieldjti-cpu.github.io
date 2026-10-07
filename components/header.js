@@ -178,6 +178,41 @@
 
 
                         <a
+
+
+                            href="anunciar.html"
+
+
+                            id="btnAnunciar"
+
+
+                            class="btn-anunciar"
+
+
+                        >
+
+
+
+                            <i class="fa-solid fa-bullhorn"></i>
+
+
+
+                            <span>
+
+
+                                Anunciar
+
+
+                            </span>
+
+
+
+                        </a>
+
+
+
+
+                        <a
                             href="painel-loja.html"
                             id="btnMinhaLoja"
                             style="display:none;"
@@ -294,6 +329,8 @@
             "privacidade.html": '#btnAjuda',
             "cancelamentos.html": '#btnAjuda',
             "painel-loja.html": '#btnMinhaLoja',
+            "meus-anuncios.html": '#btnMinhaLoja',
+            "anunciar.html": '#btnAnunciar',
             "perfil.html": '#btnPerfil',
             "login.html": '#btnLogin'
         };
@@ -858,7 +895,7 @@ async function verificarUsuarioHeader() {
                 .from("lojas")
 
                 .select(
-                    "id,nome"
+                    "id,nome,tipo"
                 )
 
                 .eq(
@@ -891,8 +928,24 @@ async function verificarUsuarioHeader() {
                     "flex";
 
 
+                // Perfil de anunciante (usuário comum) vai para "Meus anúncios".
+                const perfilPessoal =
+                    loja.tipo === "pessoal";
+
                 btnMinhaLoja.href =
-                    "painel-loja.html";
+                    perfilPessoal
+                        ? "meus-anuncios.html"
+                        : "painel-loja.html";
+
+                const textoMinhaLoja =
+                    btnMinhaLoja.querySelector("span");
+
+                if (textoMinhaLoja) {
+                    textoMinhaLoja.textContent =
+                        perfilPessoal
+                            ? "Meus anúncios"
+                            : "Minha Loja";
+                }
 
 
                 localStorage.setItem(

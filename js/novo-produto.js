@@ -202,7 +202,7 @@ async function verificarUsuario() {
                 )
 
                 .select(
-                    "id,nome"
+                    "id,nome,tipo"
                 )
 
                 .eq(
@@ -251,7 +251,7 @@ async function verificarUsuario() {
                 () => {
 
                     window.location.href =
-                        "painel-loja.html";
+                        "anunciar.html";
 
                 },
                 1200
@@ -265,6 +265,22 @@ async function verificarUsuario() {
 
         lojaId =
             loja.id;
+
+        // Perfil de anunciante (usuário comum, plano gratuito).
+        window.perfilAnunciantePessoal =
+            loja.tipo === "pessoal";
+
+        // No plano gratuito o anúncio nasce disponível (1 unidade).
+        const campoEstoque =
+            document.getElementById("estoque");
+
+        if (
+            window.perfilAnunciantePessoal &&
+            campoEstoque &&
+            ["", "0"].includes(campoEstoque.value)
+        ) {
+            campoEstoque.value = "1";
+        }
 
 
         const nomeLoja =
@@ -1343,7 +1359,9 @@ async function salvarProduto(
             () => {
 
                 window.location.href =
-                    "produtos.html";
+                    window.perfilAnunciantePessoal
+                        ? "meus-anuncios.html"
+                        : "produtos.html";
 
             },
             1200

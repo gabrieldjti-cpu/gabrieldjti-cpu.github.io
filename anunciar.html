@@ -1,0 +1,91 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Anuncie um produto no Comércio da Cidade: grátis para qualquer pessoa, sem limite para lojas assinantes.">
+  <title>Anunciar | Comércio da Cidade</title>
+
+  <link rel="stylesheet" href="components/header.css">
+  <link rel="stylesheet" href="components/feedback.css">
+  <link rel="stylesheet" href="css/institucional.css">
+  <link rel="stylesheet" href="css/planos.css">
+  <link rel="stylesheet" href="css/anuncios.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/dark-mode.css">
+</head>
+
+<body class="pagina-institucional pagina-anunciar">
+  <div id="header"></div>
+
+  <main class="institucional-main">
+    <nav class="institucional-breadcrumb" aria-label="Navegação estrutural">
+      <a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Início</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span aria-current="page">Anunciar</span>
+    </nav>
+
+    <section class="anuncios-cabecalho">
+      <h1>Anunciar</h1>
+      <p id="textoAnunciar" aria-live="polite">Verificando sua conta...</p>
+    </section>
+
+    <section id="blocoLoginAnunciar" class="anuncios-card" hidden>
+      <h2>Entre para anunciar</h2>
+      <p>Você precisa de uma conta para publicar e acompanhar seus anúncios.</p>
+      <div class="institucional-acoes">
+        <a class="institucional-btn" href="login.html">Entrar</a>
+        <a class="institucional-btn secundario" href="cadastro.html">Criar conta</a>
+      </div>
+    </section>
+
+    <section id="blocoPerfilAnunciar" class="anuncios-card" hidden>
+      <h2>Como os interessados falam com você?</h2>
+      <p>Estes dados aparecem nos seus anúncios. Você só preenche uma vez.</p>
+
+      <form id="formPerfilAnunciante" class="anuncios-form" novalidate>
+        <label for="nomeAnunciante">Nome que aparece no anúncio
+          <input id="nomeAnunciante" name="nome" type="text" minlength="2" maxlength="80" autocomplete="name" required>
+        </label>
+        <label for="whatsappAnunciante">WhatsApp com DDD
+          <input id="whatsappAnunciante" name="whatsapp" type="tel" inputmode="tel" maxlength="20" placeholder="(33) 99999-0000" autocomplete="tel" required>
+        </label>
+        <div class="anuncios-form-linha">
+          <label for="cidadeAnunciante">Cidade
+            <input id="cidadeAnunciante" name="cidade" type="text" maxlength="100" autocomplete="address-level2" required>
+          </label>
+          <label for="estadoAnunciante">Estado (UF)
+            <input id="estadoAnunciante" name="estado" type="text" minlength="2" maxlength="2" placeholder="MG" autocomplete="address-level1" required>
+          </label>
+        </div>
+        <p id="erroPerfilAnunciante" class="anuncios-erro" role="alert" hidden></p>
+        <button id="btnCriarPerfilAnunciante" class="institucional-btn" type="submit">Continuar para o anúncio</button>
+      </form>
+
+      <p class="anuncios-nota">
+        No plano gratuito você publica 5 anúncios a cada 30 dias e cada um fica no ar por 60 dias.
+        Tem uma loja? <a href="planos.html">Veja o plano de lojista</a>.
+      </p>
+    </section>
+  </main>
+
+  <footer class="institucional-footer">
+    <div class="institucional-footer-principal">
+      <div class="institucional-footer-marca"><div class="institucional-footer-logo"><i class="fa-solid fa-store" aria-hidden="true"></i><strong>Comércio da Cidade</strong></div><p>Compras locais com informações claras para clientes e lojistas.</p></div>
+      <nav class="institucional-footer-links" aria-label="Informações institucionais"><a href="como-funciona.html">Como funciona</a><a href="planos.html">Planos</a><a href="ajuda.html">Ajuda</a><a href="cancelamentos.html">Cancelamentos</a><a href="privacidade.html">Privacidade</a><a href="termos.html">Termos de Uso</a></nav>
+    </div>
+    <div class="institucional-footer-copyright">© 2026 Comércio da Cidade. Todos os direitos reservados.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script src="js/supabase.js"></script>
+  <script src="components/carrinho-sync.js"></script>
+  <script src="components/header.js"></script>
+  <script src="components/feedback.js"></script>
+  <script src="js/anunciar.js"></script>
+</body>
+</html>
+

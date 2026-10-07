@@ -188,7 +188,8 @@
                     logo_url,
                     taxa_entrega,
                     ativa,
-                    status_aprovacao
+                    status_aprovacao,
+                    tipo
                 ),
                 categoria:categorias_produtos!produtos_categoria_id_fkey(
                     id,
@@ -526,6 +527,25 @@
                 elementos.logoLojaProdutoPlaceholder.hidden = false;
             }, { once: true });
         }
+
+        // Perfil de anunciante (usuário comum) não é uma loja aprovada.
+        const pessoal = loja.tipo === "pessoal";
+        const selo = document.querySelector(".produto-loja-selo");
+        if (selo) {
+            selo.lastChild.textContent = pessoal ? " Anunciante" : " Loja aprovada";
+        }
+        const origem = document.getElementById("origemAnuncioProduto");
+        if (origem) {
+            origem.textContent = pessoal
+                ? "Anúncio de um usuário da plataforma"
+                : "Produto vendido por uma loja aprovada";
+        }
+        elementos.verLojaProduto.firstChild.textContent = pessoal
+            ? "Ver todos os anúncios deste anunciante "
+            : "Ver todos os produtos da loja ";
+        elementos.whatsappLojaProduto.lastChild.textContent = pessoal
+            ? " Falar com o anunciante"
+            : " Falar com a loja";
 
         configurarWhatsapp(loja);
 

@@ -671,6 +671,7 @@
             .select("id,nome")
             .eq("ativa", true)
             .eq("status_aprovacao", "aprovada")
+            .eq("tipo", "loja")
             .order("nome", { ascending: true });
 
         if (error) {
