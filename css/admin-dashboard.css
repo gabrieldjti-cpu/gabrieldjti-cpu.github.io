@@ -903,3 +903,36 @@ a {
 .assinatura-admin-selo.expirada { color: #b91c1c; background: #fee2e2; }
 .assinatura-admin-selo.sem { color: #475569; background: #e2e8f0; }
 body.dark-theme .assinatura-admin { border-color: #475569; background: #0f172a; }
+
+/* Classificados: fila de aprovação de anúncios */
+.fila-anuncios-acoes { display: flex; flex-wrap: wrap; gap: 10px; }
+.fila-anuncios-resumo { margin: 0 0 18px; color: #475569; font-weight: 600; }
+.fila-anuncios-lista { display: grid; gap: 16px; }
+.fila-anuncio { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+.fila-anuncio-imagem { display: grid; place-items: center; width: 120px; height: 120px; border-radius: 12px; overflow: hidden; background: #f1f5f9; color: #94a3b8; font-size: 28px; }
+.fila-anuncio-imagem img { width: 100%; height: 100%; object-fit: cover; }
+.fila-anuncio-topo { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px; }
+.fila-anuncio-topo small { color: #64748b; font-size: 13px; }
+.fila-anuncio-tipo { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.fila-anuncio-tipo.novo { color: #1d4ed8; background: #dbeafe; }
+.fila-anuncio-tipo.edicao { color: #7c3aed; background: #ede9fe; }
+.fila-anuncio h3 { margin: 0 0 4px; font-size: 18px; color: #1e293b; overflow-wrap: anywhere; }
+.fila-anuncio-preco { margin: 0 0 8px; font-weight: 700; color: #111827; }
+.fila-anuncio-descricao { margin: 0 0 12px; color: #475569; font-size: 14px; white-space: pre-line; overflow-wrap: anywhere; }
+.fila-anuncio-comparacao { width: 100%; margin: 0 0 12px; border-collapse: collapse; font-size: 13px; }
+.fila-anuncio-comparacao th, .fila-anuncio-comparacao td { padding: 7px 9px; border: 1px solid #e2e8f0; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.fila-anuncio-comparacao thead th { background: #f8fafc; color: #475569; }
+.fila-anuncio-comparacao td:last-child { background: #f5f3ff; }
+.fila-anuncio-comparacao img { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; }
+.fila-anuncio-botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.fila-anuncio-rejeicao { margin-bottom: 10px; }
+.fila-anuncio-rejeicao label { display: grid; gap: 6px; margin-bottom: 8px; color: #334155; font-size: 13px; font-weight: 600; }
+.fila-anuncio-rejeicao textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; font: inherit; font-weight: 400; resize: vertical; box-sizing: border-box; }
+@media (max-width: 640px) {
+    .fila-anuncio { grid-template-columns: 1fr; }
+    .fila-anuncio-imagem { width: 100%; height: 180px; }
+}
+body.dark-theme .fila-anuncio { border-color: #334155; background: #1e293b; }
+body.dark-theme .fila-anuncio h3, body.dark-theme .fila-anuncio-preco { color: #f8fafc; }
+body.dark-theme .fila-anuncio-comparacao th, body.dark-theme .fila-anuncio-comparacao td { border-color: #334155; }
+body.dark-theme .fila-anuncio-comparacao thead th, body.dark-theme .fila-anuncio-comparacao td:last-child { background: #0f172a; }

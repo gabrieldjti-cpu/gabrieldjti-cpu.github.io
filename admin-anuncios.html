@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovação de anúncios | Comércio da Cidade</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet" href="components/feedback.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+<link rel="stylesheet" href="css/dark-mode.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="admin-header-conteudo">
+            <a href="index.html" class="admin-marca" aria-label="Voltar para a página inicial">
+                <span class="admin-marca-icone"><i class="fa-solid fa-store"></i></span>
+                <span>
+                    <strong>Comércio da Cidade</strong>
+                    <small>Administração</small>
+                </span>
+            </a>
+
+            <nav class="admin-nav" aria-label="Áreas administrativas">
+                <a href="admin-dashboard.html">
+                    <i class="fa-solid fa-shop"></i>
+                    <span>Lojas</span>
+                </a>
+                <a href="admin-usuarios.html">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="admin-categorias.html">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Categorias</span>
+                </a>
+                <a href="admin-anuncios.html" class="ativo" aria-current="page">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>Anúncios</span>
+                </a>
+                <a href="admin-moderacao.html">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Moderação</span>
+                </a>
+            </nav>
+
+            <div class="admin-header-acoes">
+                <a href="index.html" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Ver site</span>
+                </a>
+                <button type="button" id="btnSairAdmin" class="btn-admin btn-sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <section class="admin-intro">
+            <div>
+                <span class="eyebrow">Painel administrativo</span>
+                <h1>Aprovação de anúncios</h1>
+                <p>Todo anúncio novo e toda edição de lojista esperam aqui antes de aparecer no site.</p>
+            </div>
+            <div class="fila-anuncios-acoes">
+                <button type="button" id="btnAprovarTodosAnuncios" class="btn-admin btn-primario" hidden>
+                    <i class="fa-solid fa-check-double"></i>
+                    Aprovar todos
+                </button>
+                <button type="button" id="btnAtualizarFilaAnuncios" class="btn-admin btn-claro">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizar
+                </button>
+            </div>
+        </section>
+
+        <section class="admin-card">
+            <p id="resumoFilaAnuncios" class="fila-anuncios-resumo" aria-live="polite">Carregando a fila...</p>
+            <div id="listaFilaAnuncios" class="fila-anuncios-lista"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+    <script src="js/supabase.js"></script>
+    <script src="components/feedback.js"></script>
+    <script src="js/admin-anuncios.js"></script>
+</body>
+</html>

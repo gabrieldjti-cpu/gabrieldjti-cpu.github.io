@@ -689,6 +689,28 @@ function obterNomeCategoriaProduto(
 }
 
 
+// Classificados: situação do anúncio na fila de aprovação.
+function criarSeloAprovacaoProduto(produto) {
+    const status = produto?.status_aprovacao;
+
+    if (status === "pendente") {
+        return '<span class="selo-aprovacao pendente"><i class="fa-solid fa-hourglass-half"></i> Aguardando aprovação</span>';
+    }
+
+    if (status === "rejeitado") {
+        const motivo = String(produto.motivo_rejeicao || "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+
+        return `<span class="selo-aprovacao rejeitado" title="${motivo}"><i class="fa-solid fa-circle-xmark"></i> Rejeitado${motivo ? `: ${motivo}` : ""}</span>`;
+    }
+
+    return "";
+}
+
+
 function criarCardProduto(
     produto
 ) {
@@ -876,6 +898,8 @@ function criarCardProduto(
 
 
             <div class="produto-info">
+
+                ${criarSeloAprovacaoProduto(produto)}
 
                 <span class="categoria">
 
