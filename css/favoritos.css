@@ -509,3 +509,8 @@
         transition: none;
     }
 }
+
+/* Classificados: o botão principal leva ao anúncio e ocupa a linha inteira. */
+.favorito-card-acoes a.favorito-adicionar {
+    grid-column: 1 / -1;
+}

@@ -178,27 +178,6 @@
 
 
                         <a
-                            href="carrinho.html"
-                            class="btn-carrinho"
-                        >
-
-                            <i class="fa-solid fa-cart-shopping"></i>
-
-                            <span>
-                                Carrinho
-                            </span>
-
-                            <span
-                                id="contador-carrinho"
-                                class="contador"
-                            >
-                                0
-                            </span>
-
-                        </a>
-
-
-                        <a
                             href="painel-loja.html"
                             id="btnMinhaLoja"
                             style="display:none;"
@@ -314,7 +293,6 @@
             "termos.html": '#btnAjuda',
             "privacidade.html": '#btnAjuda',
             "cancelamentos.html": '#btnAjuda',
-            "carrinho.html": '.menu a[href="carrinho.html"]',
             "painel-loja.html": '#btnMinhaLoja',
             "perfil.html": '#btnPerfil',
             "login.html": '#btnLogin'

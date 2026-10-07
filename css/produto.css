@@ -1445,3 +1445,19 @@ body.pagina-produto {
     cursor: zoom-in;
 }
 
+
+/* Classificados: sem seletor de quantidade, as ações de contato
+   ocupam a linha inteira. */
+.produto-compra {
+    grid-template-columns: 1fr;
+}
+
+.produto-acoes-compra {
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 420px) {
+    .produto-acoes-compra {
+        grid-template-columns: 1fr;
+    }
+}

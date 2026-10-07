@@ -178,3 +178,13 @@
         left: 10px;
     }
 }
+
+/* Classificados: "Ver a oferta" é um link com aparência de botão. */
+a.btn-comprar.btn-ver-oferta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    text-decoration: none;
+}
