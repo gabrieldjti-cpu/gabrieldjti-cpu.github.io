@@ -566,3 +566,19 @@
     }
 
 }
+
+/* Classificados: botão "Anunciar" */
+.header .menu a.btn-anunciar,
+#btnAnunciar {
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: #ff6b35;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.header .menu a.btn-anunciar:hover,
+#btnAnunciar:hover {
+    background: #e85b2b;
+    color: #fff !important;
+}

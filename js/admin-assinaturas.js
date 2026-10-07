@@ -16,6 +16,7 @@
     };
 
     let assinaturas = new Map();
+    let perfisPessoais = new Set();
     let carregando = null;
     let observador = null;
 
@@ -77,6 +78,20 @@
     }
 
     function criarBloco(lojaId, lojaAprovada) {
+        if (perfisPessoais.has(lojaId)) {
+            return `
+                <div class="assinatura-admin" data-assinatura-loja="${escapar(lojaId)}">
+                    <div class="assinatura-admin-info">
+                        <span class="assinatura-admin-selo sem">
+                            <i class="fa-solid fa-user"></i>
+                            Perfil de anunciante
+                        </span>
+                        <small>Usuário comum no plano gratuito. Não tem assinatura.</small>
+                    </div>
+                </div>
+            `;
+        }
+
         const assinatura = assinaturas.get(lojaId);
         const situacao = assinatura?.situacao || "sem_assinatura";
         const config = SITUACOES[situacao] || SITUACOES.sem_assinatura;
@@ -166,6 +181,16 @@
 
                 assinaturas = new Map(
                     (data || []).map(item => [item.loja_id, item])
+                );
+
+                // Perfis de anunciante usam o plano gratuito, sem assinatura.
+                const pessoais = await window.db
+                    .from("lojas")
+                    .select("id")
+                    .eq("tipo", "pessoal");
+
+                perfisPessoais = new Set(
+                    (pessoais.data || []).map(item => item.id)
                 );
             } catch (erro) {
                 console.error("Erro ao carregar assinaturas:", erro);
