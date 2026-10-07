@@ -891,3 +891,15 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+/* Classificados: assinatura em cada loja */
+.assinatura-admin { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin: 14px 0; padding: 12px 14px; border: 1px dashed #cbd5e1; border-radius: 12px; background: #f8fafc; }
+.assinatura-admin-info { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.assinatura-admin-info small, .assinatura-admin-aviso { color: #64748b; font-size: 13px; }
+.assinatura-admin-acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.assinatura-admin-selo { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.assinatura-admin-selo.ativa { color: #15803d; background: #dcfce7; }
+.assinatura-admin-selo.carencia { color: #b45309; background: #fef3c7; }
+.assinatura-admin-selo.expirada { color: #b91c1c; background: #fee2e2; }
+.assinatura-admin-selo.sem { color: #475569; background: #e2e8f0; }
+body.dark-theme .assinatura-admin { border-color: #475569; background: #0f172a; }

@@ -1550,3 +1550,18 @@ footer{
     }
 
 }
+
+/* Classificados: assinatura da loja */
+.assinatura-loja-card { border: 1px solid #fde7dc; }
+.assinatura-loja-card .documentos-loja-topo { align-items: flex-start; margin-bottom: 14px; }
+.assinatura-loja-icone { color: #e85b2b; background: #fff1eb; flex-shrink: 0; }
+.selo-assinatura-loja { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.selo-assinatura-loja.ativa { color: #15803d; background: #dcfce7; }
+.selo-assinatura-loja.carencia { color: #b45309; background: #fef3c7; }
+.selo-assinatura-loja.expirada { color: #b91c1c; background: #fee2e2; }
+.selo-assinatura-loja.sem { color: #475569; background: #e2e8f0; }
+.link-planos-loja { display: inline-flex; align-items: center; gap: 8px; color: #e85b2b; font-size: 14px; font-weight: 600; text-decoration: none; }
+.link-planos-loja:hover { text-decoration: underline; }
+@media (max-width: 640px) {
+    .assinatura-loja-card .documentos-loja-topo { flex-direction: column; }
+}

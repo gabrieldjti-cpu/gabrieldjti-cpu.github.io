@@ -1,0 +1,136 @@
+/* Página de planos (classificados). Reaproveita a base institucional. */
+
+.planos-grade {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin: 28px 0;
+}
+
+.plano-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .06);
+}
+
+.plano-card.plano-destaque {
+    border-color: #ff6b35;
+    box-shadow: 0 16px 36px rgba(255, 107, 53, .16);
+}
+
+.plano-card header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.plano-card h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #1e293b;
+}
+
+.plano-card header p {
+    margin: 2px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.plano-icone {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #fff1eb;
+    color: #e85b2b;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.plano-preco {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+}
+
+.plano-preco strong {
+    font-size: 30px;
+    color: #111827;
+}
+
+.plano-preco span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.plano-lista {
+    display: grid;
+    gap: 11px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.plano-lista li {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    color: #334155;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.plano-lista li > i {
+    margin-top: 4px;
+    color: #16a34a;
+}
+
+.plano-lista li.plano-nao {
+    color: #64748b;
+}
+
+.plano-lista li.plano-nao > i {
+    color: #94a3b8;
+}
+
+.plano-card .institucional-btn {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+@media (max-width: 760px) {
+    .planos-grade {
+        grid-template-columns: 1fr;
+    }
+
+    .plano-card {
+        padding: 22px;
+    }
+}
+
+html.dark-theme .plano-card,
+body.dark-theme .plano-card {
+    border-color: #334155;
+    background: #1e293b;
+}
+
+html.dark-theme .plano-card h2,
+html.dark-theme .plano-preco strong,
+body.dark-theme .plano-card h2,
+body.dark-theme .plano-preco strong {
+    color: #f8fafc;
+}
+
+html.dark-theme .plano-lista li,
+body.dark-theme .plano-lista li {
+    color: #cbd5e1;
+}
