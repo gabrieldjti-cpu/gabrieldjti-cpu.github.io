@@ -118,7 +118,7 @@
             <span id="descontoProduto" class="produto-desconto" hidden></span>
           </div>
 
-          <div class="produto-beneficios" aria-label="Informações da compra">
+          <div class="produto-beneficios" aria-label="Informações da compra" style="display:none" data-desativado="classificados">
             <article>
               <span class="produto-beneficio-icone entrega">
                 <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
@@ -141,7 +141,7 @@
           </div>
 
           <div class="produto-compra">
-            <div class="produto-quantidade-area">
+            <div class="produto-quantidade-area" hidden>
               <label for="quantidadeProduto">Quantidade</label>
               <div class="produto-quantidade-controle">
                 <button
@@ -172,13 +172,13 @@
             </div>
 
             <div class="produto-acoes-compra">
-              <button id="adicionarCarrinhoProduto" class="produto-btn-carrinho" type="button">
-                <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
-                Adicionar ao carrinho
+              <button id="falarAnuncianteProduto" class="produto-btn-comprar" type="button">
+                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                Falar com o anunciante
               </button>
-              <button id="comprarAgoraProduto" class="produto-btn-comprar" type="button">
-                Comprar agora
-                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              <button id="comoChegarProduto" class="produto-btn-carrinho" type="button">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                Ir até a loja
               </button>
             </div>
           </div>
@@ -321,9 +321,9 @@
       <small id="nomeProdutoMobile">Produto</small>
       <strong id="precoProdutoMobile">R$ 0,00</strong>
     </div>
-    <button id="adicionarCarrinhoProdutoMobile" type="button">
-      <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
-      Adicionar
+    <button id="contatoProdutoMobile" type="button">
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+      Falar com anunciante
     </button>
   </div>
 

@@ -15,8 +15,8 @@ test("a página possui as áreas essenciais do detalhe do produto", () => {
         "nomeProduto",
         "precoAtualProduto",
         "quantidadeProduto",
-        "adicionarCarrinhoProduto",
-        "comprarAgoraProduto",
+        "falarAnuncianteProduto",
+        "comoChegarProduto",
         "favoritarProduto",
         "compartilharProduto",
         "nomeLojaProduto",
@@ -52,11 +52,14 @@ test("todos os elementos usados pelo JavaScript existem no HTML", () => {
     });
 });
 
-test("a página preserva carrinho persistente e favoritos compartilhados", () => {
-    assert.match(html, /components\/carrinho-sync\.js/);
+test("a página troca a compra por contato com o anunciante", () => {
+    assert.doesNotMatch(html, /Adicionar ao carrinho|Comprar agora/);
+    assert.doesNotMatch(codigo, /adicionarAoCarrinho|carrinho\.html/);
+    assert.match(html, /Falar com o anunciante/);
+    assert.match(html, /id=["']contatoProdutoMobile["']/);
+    assert.match(codigo, /function falarComAnunciante/);
+    assert.match(codigo, /function irAteALoja/);
     assert.match(html, /components\/favoritos\.js/);
-    assert.match(codigo, /CarrinhoSync\?\.iniciar/);
-    assert.match(codigo, /CarrinhoSync\?\.notificarAlteracao/);
     assert.match(codigo, /dataset\.favoritoProduto = produto\.id/);
 });
 

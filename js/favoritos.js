@@ -202,18 +202,9 @@
                     <div class="favorito-card-preco">${precoHTML}</div>
 
                     <div class="favorito-card-acoes">
-                        <button
-                            type="button"
-                            class="favorito-adicionar"
-                            data-adicionar-favorito-carrinho="${produtoId}"
-                            ${estoque <= 0 ? "disabled" : ""}
-                        >
-                            <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
-                            ${estoque > 0 ? "Adicionar ao carrinho" : "Sem estoque"}
-                        </button>
-                        <a class="favorito-ver" href="${escaparAtributo(link)}" aria-label="Ver detalhes de ${nome}">
-                            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-                            <span class="texto-acessivel">Ver produto</span>
+                        <a class="favorito-adicionar" href="${escaparAtributo(link)}" aria-label="Ver a oferta de ${nome}">
+                            <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                            ${estoque > 0 ? "Ver a oferta" : "Indisponível · ver anúncio"}
                         </a>
                         <button
                             type="button"
@@ -357,90 +348,11 @@
         return obterRelacao(item?.produto);
     }
 
-    function adicionarAoCarrinho(produtoId) {
-        const produto = obterProduto(produtoId);
-        if (!produto) {
-            notificar("Este produto não está mais disponível.", "erro", "Produto não encontrado");
-            return;
-        }
-
-        const estoque = Math.max(0, Number(produto.estoque || 0));
-        if (estoque <= 0) {
-            notificar("O produto está sem estoque no momento.", "aviso", "Produto indisponível");
-            return;
-        }
-
-        const loja = obterRelacao(produto.loja) || {};
-        let carrinho = [];
-
-        try {
-            const salvo = JSON.parse(localStorage.getItem("carrinho"));
-            carrinho = Array.isArray(salvo) ? salvo : [];
-        } catch (erro) {
-            console.warn("O carrinho salvo estava inválido e foi reiniciado:", erro);
-        }
-
-        const existente = carrinho.find(item =>
-            String(item.id) === String(produto.id)
-            && String(item.loja_id) === String(produto.loja_id)
-        );
-
-        if (existente) {
-            const quantidade = Math.max(1, Number(existente.quantidade || 1));
-            if (quantidade >= estoque) {
-                notificar(
-                    `Você já adicionou todas as ${estoque} unidade(s) disponíveis.`,
-                    "aviso",
-                    "Limite de estoque"
-                );
-                return;
-            }
-
-            existente.quantidade = quantidade + 1;
-            existente.estoque = estoque;
-        } else {
-            carrinho.push({
-                id: produto.id,
-                loja_id: produto.loja_id,
-                nome_loja: loja.nome || "Loja",
-                nome: produto.nome,
-                descricao: produto.descricao || "",
-                preco: Number(produto.preco || 0),
-                preco_promocional: produto.preco_promocional
-                    ? Number(produto.preco_promocional)
-                    : null,
-                imagem_url: produto.imagem_url || null,
-                estoque,
-                quantidade: 1
-            });
-        }
-
-        try {
-            localStorage.setItem("carrinho", JSON.stringify(carrinho));
-            window.CarrinhoSync?.notificarAlteracao();
-            window.atualizarContadorCarrinho?.();
-            notificar(
-                `${produto.nome || "Produto"} foi adicionado ao carrinho.`,
-                "sucesso",
-                "Produto adicionado"
-            );
-        } catch (erro) {
-            console.error("Não foi possível salvar o carrinho:", erro);
-            notificar("Não foi possível atualizar o carrinho.", "erro", "Erro no carrinho");
-        }
-    }
-
     function configurarEventos() {
         document.addEventListener("click", async event => {
             const recarregar = event.target.closest?.("[data-recarregar-favoritos]");
             if (recarregar) {
                 carregarFavoritos();
-                return;
-            }
-
-            const adicionar = event.target.closest?.("[data-adicionar-favorito-carrinho]");
-            if (adicionar) {
-                adicionarAoCarrinho(adicionar.dataset.adicionarFavoritoCarrinho);
                 return;
             }
 

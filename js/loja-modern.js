@@ -9,7 +9,6 @@
 
     const carregarLojaOriginal = window.carregarLoja;
     const mostrarProdutosOriginal = window.mostrarProdutos;
-    const adicionarCarrinhoOriginal = window.adicionarCarrinho;
 
     const lojaIdAtual = new URLSearchParams(window.location.search).get("id") || "";
 
@@ -40,24 +39,6 @@
 
             atualizarContadorProdutos(produtosVisiveis.length, pesquisando);
             decorarCardsProdutos(produtosVisiveis);
-
-            return retorno;
-        };
-    }
-
-    // ==========================================
-    // FEEDBACK AO ADICIONAR AO CARRINHO
-    // ==========================================
-
-    if (typeof adicionarCarrinhoOriginal === "function") {
-        window.adicionarCarrinho = function (id) {
-            const quantidadeAntes = quantidadeNoCarrinho(id);
-            const retorno = adicionarCarrinhoOriginal.apply(this, arguments);
-            const quantidadeDepois = quantidadeNoCarrinho(id);
-
-            if (quantidadeDepois > quantidadeAntes) {
-                mostrarFeedbackBotaoCarrinho(id);
-            }
 
             return retorno;
         };
@@ -250,48 +231,5 @@
             <i class="fa-solid fa-circle-check"></i>
             ${estoque} unidades disponíveis
         `;
-    }
-
-    // ==========================================
-    // FEEDBACK DO BOTÃO DE CARRINHO
-    // ==========================================
-
-    function quantidadeNoCarrinho(produtoId) {
-        try {
-            const dados = JSON.parse(localStorage.getItem("carrinho"));
-            const carrinho = Array.isArray(dados) ? dados : [];
-
-            const item = carrinho.find(itemCarrinho =>
-                String(itemCarrinho?.id) === String(produtoId) &&
-                String(itemCarrinho?.loja_id) === String(lojaIdAtual)
-            );
-
-            return Math.max(0, Number(item?.quantidade || 0));
-        } catch (_) {
-            return 0;
-        }
-    }
-
-    function mostrarFeedbackBotaoCarrinho(produtoId) {
-        const card = Array.from(document.querySelectorAll(".produto"))
-            .find(elemento => elemento.dataset.produtoId === String(produtoId));
-
-        const botao = card?.querySelector(".btn-comprar:not(:disabled)");
-        if (!botao) return;
-
-        const htmlOriginal = botao.innerHTML;
-
-        botao.classList.add("produto-adicionado");
-        botao.innerHTML = `
-            <i class="fa-solid fa-check"></i>
-            Adicionado ao carrinho
-        `;
-
-        window.setTimeout(() => {
-            if (!botao.isConnected) return;
-
-            botao.classList.remove("produto-adicionado");
-            botao.innerHTML = htmlOriginal;
-        }, 1200);
     }
 })();

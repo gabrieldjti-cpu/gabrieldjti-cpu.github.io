@@ -54,8 +54,8 @@
             "diminuirQuantidadeProduto",
             "aumentarQuantidadeProduto",
             "limiteQuantidadeProduto",
-            "adicionarCarrinhoProduto",
-            "comprarAgoraProduto",
+            "falarAnuncianteProduto",
+            "comoChegarProduto",
             "compartilharProduto",
             "denunciarProduto",
             "logoLojaProduto",
@@ -79,7 +79,7 @@
             "produtoBarraMobile",
             "nomeProdutoMobile",
             "precoProdutoMobile",
-            "adicionarCarrinhoProdutoMobile"
+            "contatoProdutoMobile"
         ].forEach(id => {
             elementos[id] = document.getElementById(id);
         });
@@ -488,23 +488,6 @@
             ? `${estoque} ${estoque === 1 ? "unidade disponível" : "unidades disponíveis"}`
             : "Produto indisponível no momento";
 
-        [
-            elementos.adicionarCarrinhoProduto,
-            elementos.comprarAgoraProduto,
-            elementos.adicionarCarrinhoProdutoMobile
-        ].forEach(botao => {
-            botao.disabled = !emEstoque;
-        });
-
-        if (!emEstoque) {
-            elementos.adicionarCarrinhoProduto.innerHTML =
-                '<i class="fa-solid fa-ban" aria-hidden="true"></i> Produto sem estoque';
-            elementos.comprarAgoraProduto.innerHTML =
-                '<i class="fa-solid fa-ban" aria-hidden="true"></i> Indisponível';
-            elementos.adicionarCarrinhoProdutoMobile.innerHTML =
-                '<i class="fa-solid fa-ban" aria-hidden="true"></i> Sem estoque';
-        }
-
         const taxaEntrega = Math.max(0, Number(estado.loja?.taxa_entrega || 0));
         elementos.taxaEntregaProduto.textContent = taxaEntrega > 0
             ? `${formatarMoeda(taxaEntrega)} por pedido`
@@ -589,6 +572,45 @@
 
         elementos.whatsappLojaProduto.href = `https://wa.me/${numero}?text=${mensagem}`;
         elementos.whatsappLojaProduto.hidden = false;
+    }
+
+    // Classificados: a compra acontece direto com o anunciante.
+    // Sem WhatsApp cadastrado, leva o visitante ao cartão da loja.
+    function mostrarCartaoLoja() {
+        document.querySelector(".produto-loja-card")?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+    function falarComAnunciante() {
+        const link = elementos.whatsappLojaProduto;
+
+        if (link && !link.hidden && link.href.startsWith("https://wa.me/")) {
+            window.open(link.href, "_blank", "noopener,noreferrer");
+            return;
+        }
+
+        mostrarCartaoLoja();
+    }
+
+    function irAteALoja() {
+        const loja = estado.loja || {};
+        const partes = [loja.endereco, loja.cidade, loja.estado]
+            .map(parte => String(parte || "").trim())
+            .filter(Boolean);
+
+        if (!String(loja.endereco || "").trim()) {
+            mostrarCartaoLoja();
+            return;
+        }
+
+        const destino = encodeURIComponent(partes.join(", "));
+        window.open(
+            `https://www.google.com/maps/search/?api=1&query=${destino}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
     }
 
     function renderizarDescricao() {
@@ -863,99 +885,6 @@
         elementos.aumentarQuantidadeProduto.disabled = estado.quantidade >= estoque || estoque <= 0;
     }
 
-    async function adicionarAoCarrinho({ redirecionar = false, quantidade = estado.quantidade } = {}) {
-        const produto = estado.produto;
-        const estoque = Math.max(0, Math.floor(Number(produto?.estoque || 0)));
-        const quantidadeAdicionar = normalizarQuantidade(quantidade);
-
-        if (!produto || estoque <= 0) {
-            notificar(
-                "Este produto está sem estoque no momento.",
-                "aviso",
-                "Produto indisponível"
-            );
-            return false;
-        }
-
-        try {
-            await window.CarrinhoSync?.iniciar();
-
-            let carrinho = [];
-            try {
-                const salvo = JSON.parse(localStorage.getItem("carrinho"));
-                carrinho = Array.isArray(salvo) ? salvo : [];
-            } catch (erro) {
-                console.warn("O carrinho salvo estava inválido e foi reiniciado:", erro);
-            }
-
-            const existente = carrinho.find(item =>
-                String(item.id) === String(produto.id)
-                && String(item.loja_id) === String(produto.loja_id)
-            );
-
-            if (existente) {
-                const quantidadeAtual = Math.max(1, Number(existente.quantidade || 1));
-                if (quantidadeAtual + quantidadeAdicionar > estoque) {
-                    notificar(
-                        `Você já possui ${quantidadeAtual} unidade(s) no carrinho. O estoque disponível é ${estoque}.`,
-                        "aviso",
-                        "Limite de estoque"
-                    );
-                    return false;
-                }
-
-                Object.assign(existente, criarItemCarrinho(produto, quantidadeAtual + quantidadeAdicionar));
-            } else {
-                carrinho.push(criarItemCarrinho(produto, quantidadeAdicionar));
-            }
-
-            localStorage.setItem("carrinho", JSON.stringify(carrinho));
-            window.CarrinhoSync?.notificarAlteracao();
-            window.atualizarContadorCarrinho?.();
-
-            if (redirecionar) {
-                window.location.href = "carrinho.html";
-                return true;
-            }
-
-            notificar(
-                quantidadeAdicionar === 1
-                    ? `"${produto.nome}" foi adicionado ao seu carrinho.`
-                    : `${quantidadeAdicionar} unidades de "${produto.nome}" foram adicionadas ao carrinho.`,
-                "sucesso",
-                "Produto adicionado",
-                3000
-            );
-
-            return true;
-        } catch (erro) {
-            console.error("Não foi possível adicionar o produto ao carrinho:", erro);
-            notificar(
-                "Não foi possível atualizar o carrinho. Tente novamente.",
-                "erro",
-                "Erro no carrinho"
-            );
-            return false;
-        }
-    }
-
-    function criarItemCarrinho(produto, quantidade) {
-        return {
-            id: produto.id,
-            loja_id: produto.loja_id,
-            nome_loja: estado.loja?.nome || "Loja",
-            nome: produto.nome || "Produto",
-            descricao: produto.descricao || "",
-            preco: Number(produto.preco || 0),
-            preco_promocional: produto.preco_promocional
-                ? Number(produto.preco_promocional)
-                : null,
-            imagem_url: produto.imagem_url || null,
-            estoque: Math.max(0, Math.floor(Number(produto.estoque || 0))),
-            quantidade
-        };
-    }
-
     async function compartilharProduto() {
         const dados = {
             title: `${estado.produto?.nome || "Produto"} | Comércio da Cidade`,
@@ -1096,17 +1025,9 @@
             atualizarQuantidade(event.target.value);
         });
 
-        elementos.adicionarCarrinhoProduto.addEventListener("click", () => {
-            adicionarAoCarrinho();
-        });
-
-        elementos.adicionarCarrinhoProdutoMobile.addEventListener("click", () => {
-            adicionarAoCarrinho({ quantidade: 1 });
-        });
-
-        elementos.comprarAgoraProduto.addEventListener("click", () => {
-            adicionarAoCarrinho({ redirecionar: true });
-        });
+        elementos.falarAnuncianteProduto.addEventListener("click", falarComAnunciante);
+        elementos.contatoProdutoMobile.addEventListener("click", falarComAnunciante);
+        elementos.comoChegarProduto.addEventListener("click", irAteALoja);
 
         elementos.compartilharProduto.addEventListener("click", compartilharProduto);
 
