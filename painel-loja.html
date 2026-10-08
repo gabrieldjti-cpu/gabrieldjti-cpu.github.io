@@ -281,20 +281,25 @@
         </div>
     </section>
 
-    <section class="card documentos-loja-card" aria-labelledby="titulo-documentos-loja">
+    <section class="card documentos-loja-card" aria-labelledby="titulo-fiscal-loja">
         <div class="documentos-loja-topo">
             <div>
-                <span class="documentos-loja-icone"><i class="fa-solid fa-shield-halved"></i></span>
+                <span class="documentos-loja-icone"><i class="fa-solid fa-id-card"></i></span>
                 <div>
-                    <h2 id="titulo-documentos-loja">Validação da loja</h2>
-                    <p>Acompanhe a análise e reenvie apenas documentos rejeitados.</p>
+                    <h2 id="titulo-fiscal-loja">CPF ou CNPJ da loja</h2>
+                    <p id="texto-fiscal-loja">Só a loja e a administração veem este número.</p>
                 </div>
             </div>
-            <strong id="progresso-documentos-loja" class="progresso-documentos-loja">Carregando...</strong>
+            <strong id="selo-fiscal-loja" class="progresso-documentos-loja">Carregando...</strong>
         </div>
-        <div id="lista-documentos-loja" class="lista-documentos-loja" aria-live="polite">
-            <div class="documentos-carregando"><i class="fa-solid fa-spinner fa-spin"></i> Carregando documentação...</div>
-        </div>
+        <form id="form-fiscal-loja" class="form-fiscal-loja" novalidate>
+            <select id="tipo-fiscal-loja" aria-label="Tipo de cadastro">
+                <option value="cpf">CPF</option>
+                <option value="cnpj">CNPJ</option>
+            </select>
+            <input id="numero-fiscal-loja" type="text" inputmode="numeric" maxlength="18" placeholder="Somente números" aria-label="Número do CPF ou CNPJ">
+            <button type="submit" id="btn-salvar-fiscal-loja"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
+        </form>
     </section>
 
 
@@ -552,6 +557,7 @@
 
 <script src="js/painel-loja.js?v=20260911-2"></script>
 <script src="js/painel-loja-assinatura.js"></script>
+<script src="js/painel-loja-fiscal.js"></script>
 
 
 </body>
