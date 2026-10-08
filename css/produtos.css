@@ -548,3 +548,8 @@ nav button:hover{
 .btn-excluir:hover{
     background:#bb2d3b;
 }
+
+/* Classificados: situação do anúncio na fila de aprovação */
+.selo-aprovacao { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.selo-aprovacao.pendente { color: #b45309; background: #fef3c7; }
+.selo-aprovacao.rejeitado { color: #b91c1c; background: #fee2e2; }

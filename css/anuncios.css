@@ -66,3 +66,5 @@ body.dark-theme .anuncios-plano { background: #1e293b; }
 body.dark-theme .anuncios-plano p { color: #cbd5e1; }
 body.dark-theme .anuncio-item-acoes a,
 body.dark-theme .anuncio-item-acoes button { border-color: #475569; background: #0f172a; color: #e2e8f0; }
+
+.anuncio-item-motivo { margin: 8px 0 0; color: #b91c1c; font-size: 13px; }

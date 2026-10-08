@@ -1340,7 +1340,7 @@ async function salvarProduto(
 
                 <i class="fa-solid fa-circle-check"></i>
 
-                Produto cadastrado
+                Anúncio enviado
 
             `;
 
@@ -1348,9 +1348,9 @@ async function salvarProduto(
 
 
         notificar(
-            `"${data.nome}" foi cadastrado com sucesso.`,
+            `"${data.nome}" foi enviado para aprovação e aparece no site assim que a administração liberar.`,
             "sucesso",
-            "Produto cadastrado!",
+            "Anúncio enviado!",
             3000
         );
 

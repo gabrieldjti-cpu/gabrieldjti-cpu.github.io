@@ -1714,10 +1714,10 @@ async function atualizarProduto(
 
 
         notificar(
-            `"${data.nome}" foi atualizado com sucesso.`,
+            "Disponibilidade e estoque já valem. Mudanças de título, preço, descrição, categoria ou foto aparecem no site depois da aprovação da administração; até lá a versão atual continua no ar.",
             "sucesso",
-            "Produto atualizado!",
-            3000
+            "Alterações enviadas!",
+            7000
         );
 
 

@@ -64,6 +64,12 @@
         if (!anuncio.ativo) {
             return { classe: "excluido", rotulo: "Excluído", icone: "fa-trash-can" };
         }
+        if (anuncio.status_aprovacao === "pendente") {
+            return { classe: "indisponivel", rotulo: "Aguardando aprovação", icone: "fa-hourglass-half" };
+        }
+        if (anuncio.status_aprovacao === "rejeitado") {
+            return { classe: "moderado", rotulo: "Rejeitado", icone: "fa-circle-xmark" };
+        }
         if (Number(anuncio.estoque) > 0) {
             return { classe: "disponivel", rotulo: "Disponível", icone: "fa-circle-check" };
         }
@@ -84,16 +90,18 @@
 
         const ativo = anuncio.ativo && !anuncio.moderado_em;
         const disponivel = Number(anuncio.estoque) > 0;
+        const aprovado = anuncio.status_aprovacao === "aprovado";
 
         const acoes = ativo
             ? `
                 <a href="produto.html?id=${encodeURIComponent(anuncio.id)}">
                     <i class="fa-solid fa-eye" aria-hidden="true"></i> Ver anúncio
                 </a>
+                ${aprovado ? `
                 <button type="button" data-acao="disponibilidade" data-id="${id}">
                     <i class="fa-solid ${disponivel ? "fa-circle-pause" : "fa-circle-check"}" aria-hidden="true"></i>
                     ${disponivel ? "Marcar como indisponível" : "Marcar como disponível"}
-                </button>
+                </button>` : ""}
                 <button type="button" class="perigo" data-acao="excluir" data-id="${id}">
                     <i class="fa-solid fa-trash-can" aria-hidden="true"></i> Excluir
                 </button>
@@ -110,8 +118,11 @@
                         <span class="anuncio-selo ${info.classe}">
                             <i class="fa-solid ${info.icone}" aria-hidden="true"></i> ${info.rotulo}
                         </span>
-                        <span>Publicado em ${escapar(formatarData(anuncio.criado_em))}</span>
+                        <span>Enviado em ${escapar(formatarData(anuncio.criado_em))}</span>
                     </div>
+                    ${anuncio.ativo && anuncio.status_aprovacao === "rejeitado" && anuncio.motivo_rejeicao
+                        ? `<p class="anuncio-item-motivo"><strong>Motivo:</strong> ${escapar(anuncio.motivo_rejeicao)}</p>`
+                        : ""}
                 </div>
                 <div class="anuncio-item-acoes">${acoes}</div>
             </article>
@@ -123,12 +134,14 @@
         const resumo = el("resumoMeusAnuncios");
         if (!lista) return;
 
-        const ativos = estado.anuncios.filter(a => a.ativo && !a.moderado_em).length;
+        const ativos = estado.anuncios.filter(a =>
+            a.ativo && !a.moderado_em && a.status_aprovacao === "aprovado"
+        ).length;
 
         if (resumo) {
             resumo.textContent = estado.anuncios.length === 0
                 ? "Você ainda não publicou nenhum anúncio."
-                : `${ativos} ${ativos === 1 ? "anúncio no ar" : "anúncios no ar"} de ${estado.anuncios.length} publicados.`;
+                : `${ativos} ${ativos === 1 ? "anúncio no ar" : "anúncios no ar"} de ${estado.anuncios.length} enviados.`;
         }
 
         if (estado.anuncios.length === 0) {
@@ -147,7 +160,7 @@
     async function carregarAnuncios() {
         const { data, error } = await window.db
             .from("produtos")
-            .select("id,nome,preco,preco_promocional,estoque,imagem_url,ativo,criado_em,moderado_em")
+            .select("id,nome,preco,preco_promocional,estoque,imagem_url,ativo,criado_em,moderado_em,status_aprovacao,motivo_rejeicao")
             .eq("loja_id", estado.perfil.id)
             .order("criado_em", { ascending: false });
 
