@@ -10,7 +10,8 @@
 
     const estado = {
         perfil: null,
-        anuncios: []
+        anuncios: [],
+        limite: null
     };
 
     const el = id => document.getElementById(id);
@@ -57,6 +58,17 @@
         return window.confirm(`${titulo}\n\n${mensagem}`);
     }
 
+    function vencido(anuncio) {
+        return Boolean(anuncio.vence_em) && new Date(anuncio.vence_em).getTime() <= Date.now();
+    }
+
+    function noAr(anuncio) {
+        return anuncio.ativo
+            && !anuncio.moderado_em
+            && anuncio.status_aprovacao === "aprovado"
+            && !vencido(anuncio);
+    }
+
     function situacao(anuncio) {
         if (anuncio.moderado_em) {
             return { classe: "moderado", rotulo: "Removido pela moderação", icone: "fa-shield-halved" };
@@ -69,6 +81,9 @@
         }
         if (anuncio.status_aprovacao === "rejeitado") {
             return { classe: "moderado", rotulo: "Rejeitado", icone: "fa-circle-xmark" };
+        }
+        if (vencido(anuncio)) {
+            return { classe: "excluido", rotulo: "Vencido", icone: "fa-calendar-xmark" };
         }
         if (Number(anuncio.estoque) > 0) {
             return { classe: "disponivel", rotulo: "Disponível", icone: "fa-circle-check" };
@@ -90,7 +105,10 @@
 
         const ativo = anuncio.ativo && !anuncio.moderado_em;
         const disponivel = Number(anuncio.estoque) > 0;
-        const aprovado = anuncio.status_aprovacao === "aprovado";
+        const aprovado = anuncio.status_aprovacao === "aprovado" && !vencido(anuncio);
+        const validade = anuncio.vence_em && anuncio.status_aprovacao === "aprovado"
+            ? `<span>${vencido(anuncio) ? "Venceu em" : "Válido até"} ${escapar(formatarData(anuncio.vence_em))}</span>`
+            : "";
 
         const acoes = ativo
             ? `
@@ -119,6 +137,7 @@
                             <i class="fa-solid ${info.icone}" aria-hidden="true"></i> ${info.rotulo}
                         </span>
                         <span>Enviado em ${escapar(formatarData(anuncio.criado_em))}</span>
+                        ${validade}
                     </div>
                     ${anuncio.ativo && anuncio.status_aprovacao === "rejeitado" && anuncio.motivo_rejeicao
                         ? `<p class="anuncio-item-motivo"><strong>Motivo:</strong> ${escapar(anuncio.motivo_rejeicao)}</p>`
@@ -134,9 +153,7 @@
         const resumo = el("resumoMeusAnuncios");
         if (!lista) return;
 
-        const ativos = estado.anuncios.filter(a =>
-            a.ativo && !a.moderado_em && a.status_aprovacao === "aprovado"
-        ).length;
+        const ativos = estado.anuncios.filter(noAr).length;
 
         if (resumo) {
             resumo.textContent = estado.anuncios.length === 0
@@ -157,10 +174,57 @@
         lista.innerHTML = estado.anuncios.map(criarItem).join("");
     }
 
+    // Mostra quanto do ciclo de 30 dias já foi usado e trava o botão
+    // quando acaba. A regra de verdade é aplicada pelo banco.
+    function renderizarLimite() {
+        const texto = el("textoLimiteAnuncios");
+        const novo = el("btnNovoAnuncio");
+        const limite = estado.limite;
+
+        if (!texto || !limite || limite.plano !== "gratuito" || limite.limite === null) return;
+
+        const validade = limite.dias_validade
+            ? ` Cada anúncio fica no ar por ${limite.dias_validade} dias depois de aprovado.`
+            : "";
+
+        if (!limite.ciclo_fim) {
+            texto.textContent = `Plano gratuito: você pode publicar ${limite.limite} anúncios a cada 30 dias, contados a partir do primeiro.${validade}`;
+        } else {
+            const reinicio = formatarData(limite.ciclo_fim);
+            texto.textContent = limite.restantes > 0
+                ? `Plano gratuito: você usou ${limite.usados} de ${limite.limite} anúncios deste ciclo. O ciclo recomeça em ${reinicio}.${validade}`
+                : `Plano gratuito: você já usou os ${limite.limite} anúncios deste ciclo. Você poderá anunciar de novo em ${reinicio}.${validade}`;
+        }
+
+        if (novo) {
+            const esgotado = limite.restantes === 0;
+            novo.classList.toggle("desativado", esgotado);
+            novo.setAttribute("aria-disabled", String(esgotado));
+            if (esgotado) {
+                novo.removeAttribute("href");
+                novo.title = "Limite do ciclo atingido";
+            } else {
+                novo.href = "novo-produto.html";
+                novo.removeAttribute("title");
+            }
+        }
+    }
+
+    async function carregarLimite() {
+        try {
+            const { data, error } = await window.db.rpc("meu_limite_anuncios");
+            if (error) throw error;
+            estado.limite = data;
+            renderizarLimite();
+        } catch (erro) {
+            console.warn("Não foi possível carregar o limite do plano:", erro);
+        }
+    }
+
     async function carregarAnuncios() {
         const { data, error } = await window.db
             .from("produtos")
-            .select("id,nome,preco,preco_promocional,estoque,imagem_url,ativo,criado_em,moderado_em,status_aprovacao,motivo_rejeicao")
+            .select("id,nome,preco,preco_promocional,estoque,imagem_url,ativo,criado_em,moderado_em,status_aprovacao,motivo_rejeicao,vence_em")
             .eq("loja_id", estado.perfil.id)
             .order("criado_em", { ascending: false });
 
@@ -168,6 +232,7 @@
 
         estado.anuncios = data || [];
         renderizar();
+        carregarLimite();
     }
 
     async function alterar(id, campos, mensagemSucesso) {
