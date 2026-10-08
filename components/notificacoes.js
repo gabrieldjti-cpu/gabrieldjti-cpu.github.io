@@ -82,6 +82,22 @@
         renderizarContador(count || 0);
     }
 
+    // Gera, se for a hora, os avisos de fim de assinatura da loja
+    // (7 dias antes, loja pausada e fim dos 15 dias). O banco não repete
+    // um aviso já enviado, então chamar a cada página é seguro.
+    async function verificarAvisosAssinatura() {
+        if (!window.db || !usuarioId) return;
+
+        try {
+            const { error } = await window.db.rpc("verificar_avisos_assinatura");
+            if (error) {
+                console.warn("Não foi possível verificar os avisos da assinatura:", error);
+            }
+        } catch (erro) {
+            console.warn("Não foi possível verificar os avisos da assinatura:", erro);
+        }
+    }
+
     function agendarAtualizacao() {
         window.clearTimeout(atualizacaoPendente);
         atualizacaoPendente = window.setTimeout(atualizarContador, 120);
@@ -151,6 +167,7 @@
 
         if (!usuarioId) return;
 
+        await verificarAvisosAssinatura();
         await atualizarContador();
         assinarTempoReal(usuarioId);
     }
