@@ -1565,3 +1565,9 @@ footer{
 @media (max-width: 640px) {
     .assinatura-loja-card .documentos-loja-topo { flex-direction: column; }
 }
+
+.assinatura-loja-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.btn-solicitar-assinatura { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 0; border-radius: 11px; background: #ff6b35; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.btn-solicitar-assinatura:hover { background: #e85b2b; }
+.btn-solicitar-assinatura:disabled { opacity: .6; cursor: wait; }
+.pedido-assinatura-loja { margin: 0; padding: 8px 12px; border-radius: 10px; background: #fef3c7; color: #92400e; font-size: 13px; font-weight: 600; }

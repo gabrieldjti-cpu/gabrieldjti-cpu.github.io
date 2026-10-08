@@ -47,6 +47,25 @@
     </section>
 
     <section id="listaMeusAnuncios" class="anuncios-lista" aria-live="polite"></section>
+
+    <section class="anuncios-card virar-lojista" aria-labelledby="tituloVirarLojista">
+      <h2 id="tituloVirarLojista">Quero ser lojista</h2>
+      <p>Com a assinatura de lojista você anuncia sem limite, sem vencimento e pode editar os anúncios. Seus anúncios atuais passam para a loja.</p>
+      <ul class="virar-lojista-passos">
+        <li>A loja fica em análise até a administração aprovar. Enquanto isso, seus anúncios saem do ar.</li>
+        <li>No painel da loja você envia o CPF ou CNPJ e um comprovante de endereço, que a administração precisa aprovar.</li>
+        <li>Depois de aprovada, peça a assinatura no painel. Quando ela for ativada, seus anúncios deixam de vencer.</li>
+      </ul>
+      <form id="formVirarLojista" class="anuncios-form" novalidate>
+        <label for="categoriaVirarLojista">Tipo de loja
+          <select id="categoriaVirarLojista" required>
+            <option value="">Carregando...</option>
+          </select>
+        </label>
+        <p id="erroVirarLojista" class="anuncios-erro" role="alert" hidden></p>
+        <button id="btnVirarLojista" class="institucional-btn" type="submit">Transformar em loja</button>
+      </form>
+    </section>
   </main>
 
   <footer class="institucional-footer">
