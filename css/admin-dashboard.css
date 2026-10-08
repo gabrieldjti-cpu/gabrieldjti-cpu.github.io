@@ -936,3 +936,8 @@ body.dark-theme .fila-anuncio { border-color: #334155; background: #1e293b; }
 body.dark-theme .fila-anuncio h3, body.dark-theme .fila-anuncio-preco { color: #f8fafc; }
 body.dark-theme .fila-anuncio-comparacao th, body.dark-theme .fila-anuncio-comparacao td { border-color: #334155; }
 body.dark-theme .fila-anuncio-comparacao thead th, body.dark-theme .fila-anuncio-comparacao td:last-child { background: #0f172a; }
+
+.assinatura-admin-pedido { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: #ffedd5; color: #c2410c; font-size: 12px; font-weight: 700; }
+.filtro-pedidos-opcao { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; font-weight: 600; color: #334155; }
+.filtro-pedidos-opcao input { width: 18px; height: 18px; accent-color: #ff6b35; }
+body.dark-theme .filtro-pedidos-opcao { color: #e2e8f0; }

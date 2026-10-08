@@ -17,6 +17,8 @@
 
     let assinaturas = new Map();
     let perfisPessoais = new Set();
+    let pedidos = new Map();
+    let soPedidos = false;
     let carregando = null;
     let observador = null;
 
@@ -115,9 +117,15 @@
             `
             : "";
 
+        const pedido = pedidos.get(lojaId);
+        const avisoPedido = pedido
+            ? `<span class="assinatura-admin-pedido"><i class="fa-solid fa-bell"></i> ${situacao === "sem_assinatura" ? "Assinatura solicitada" : "Renovação solicitada"} em ${escapar(formatarData(pedido.criado_em))}</span>`
+            : "";
+
         return `
             <div class="assinatura-admin" data-assinatura-loja="${id}">
                 <div class="assinatura-admin-info">
+                    ${avisoPedido}
                     <span class="assinatura-admin-selo ${config.classe}">
                         <i class="fa-solid ${config.icone}"></i>
                         ${config.rotulo}
@@ -167,7 +175,45 @@
             }
         });
 
+        aplicarFiltroPedidos();
         observador?.observe(lista, { childList: true });
+    }
+
+    function aplicarFiltroPedidos() {
+        const lista = document.getElementById("listaLojasAdmin");
+        if (!lista) return;
+
+        lista.querySelectorAll(".loja-admin-card[data-loja-id]").forEach(card => {
+            card.hidden = soPedidos && !pedidos.has(card.dataset.lojaId);
+        });
+
+        const contador = document.getElementById("contadorPedidosAssinatura");
+        if (contador) contador.textContent = String(pedidos.size);
+    }
+
+    // Filtro "Assinatura solicitada" ao lado do filtro de status.
+    function criarFiltroPedidos() {
+        if (document.getElementById("filtroPedidosAssinatura")) return;
+
+        const status = document.getElementById("filtroStatusAdmin");
+        const campo = status?.closest("label");
+        if (!campo) return;
+
+        const rotulo = document.createElement("label");
+        rotulo.className = "campo-admin filtro-pedidos-assinatura";
+        rotulo.innerHTML = `
+            <span>Assinatura</span>
+            <span class="filtro-pedidos-opcao">
+                <input type="checkbox" id="filtroPedidosAssinatura">
+                Só assinatura solicitada (<strong id="contadorPedidosAssinatura">0</strong>)
+            </span>
+        `;
+        campo.insertAdjacentElement("afterend", rotulo);
+
+        rotulo.querySelector("input").addEventListener("change", event => {
+            soPedidos = event.target.checked;
+            aplicarFiltroPedidos();
+        });
     }
 
     async function carregarAssinaturas() {
@@ -191,6 +237,16 @@
 
                 perfisPessoais = new Set(
                     (pessoais.data || []).map(item => item.id)
+                );
+
+                // Pedidos de assinatura ainda não atendidos.
+                const abertos = await window.db
+                    .from("solicitacoes_assinatura")
+                    .select("loja_id,criado_em")
+                    .is("atendida_em", null);
+
+                pedidos = new Map(
+                    (abertos.data || []).map(item => [item.loja_id, item])
                 );
             } catch (erro) {
                 console.error("Erro ao carregar assinaturas:", erro);
@@ -275,6 +331,8 @@
     function iniciar() {
         const lista = document.getElementById("listaLojasAdmin");
         if (!lista) return;
+
+        criarFiltroPedidos();
 
         // A lista é redesenhada a cada busca ou filtro; recarrega as
         // assinaturas sempre que os cartões mudarem.

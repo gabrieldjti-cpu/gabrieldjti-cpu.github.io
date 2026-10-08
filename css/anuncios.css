@@ -70,3 +70,9 @@ body.dark-theme .anuncio-item-acoes button { border-color: #475569; background: 
 .anuncio-item-motivo { margin: 8px 0 0; color: #b91c1c; font-size: 13px; }
 
 .institucional-btn.desativado { opacity: .55; cursor: not-allowed; pointer-events: none; }
+
+.virar-lojista { margin-bottom: 40px; }
+.virar-lojista-passos { margin: 0 0 18px; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.6; }
+.anuncios-form select { min-height: 46px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 12px; font: inherit; font-weight: 400; color: #111827; background: #fff; }
+body.dark-theme .virar-lojista-passos { color: #cbd5e1; }
+body.dark-theme .anuncios-form select { border-color: #475569; background: #0f172a; color: #f8fafc; }

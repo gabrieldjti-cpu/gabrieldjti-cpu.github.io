@@ -296,6 +296,79 @@
         }
     }
 
+    // "Quero ser lojista": o perfil de anunciante vira loja em análise.
+    async function carregarCategoriasLoja() {
+        const select = el("categoriaVirarLojista");
+        if (!select) return;
+
+        try {
+            const { data, error } = await window.db
+                .from("categorias")
+                .select("id,nome,ativa")
+                .order("nome", { ascending: true });
+
+            if (error) throw error;
+
+            const ativas = (data || []).filter(item => item.ativa !== false);
+            select.innerHTML = '<option value="">Escolha o tipo da sua loja</option>'
+                + ativas.map(item => `<option value="${escapar(item.id)}">${escapar(item.nome)}</option>`).join("");
+        } catch (erro) {
+            console.error("Erro ao carregar as categorias de loja:", erro);
+            select.innerHTML = '<option value="">Não foi possível carregar</option>';
+        }
+    }
+
+    async function virarLojista(event) {
+        event.preventDefault();
+
+        const erro = el("erroVirarLojista");
+        const botao = el("btnVirarLojista");
+        const categoria = Number(el("categoriaVirarLojista")?.value || 0);
+
+        const mostrarErro = mensagem => {
+            if (!erro) return;
+            erro.textContent = mensagem || "";
+            erro.hidden = !mensagem;
+        };
+
+        mostrarErro("");
+
+        if (!categoria) {
+            mostrarErro("Escolha o tipo da sua loja.");
+            return;
+        }
+
+        const confirmou = await confirmar(
+            "Transformar em loja?",
+            "Sua loja vai para análise e seus anúncios saem do ar até a aprovação. Esta mudança não pode ser desfeita.",
+            "Transformar"
+        );
+        if (!confirmou) return;
+
+        botao.disabled = true;
+
+        try {
+            const { error } = await window.db.rpc("converter_perfil_em_loja", {
+                p_categoria_id: categoria
+            });
+            if (error) throw error;
+
+            avisar(
+                "Agora envie os documentos no painel da loja para a administração aprovar.",
+                "sucesso",
+                "Sua loja foi criada"
+            );
+
+            setTimeout(() => {
+                window.location.href = "painel-loja.html";
+            }, 1500);
+        } catch (falha) {
+            console.error("Erro ao transformar em loja:", falha);
+            mostrarErro(falha?.message || "Não foi possível transformar em loja.");
+            botao.disabled = false;
+        }
+    }
+
     async function iniciar() {
         const resumo = el("resumoMeusAnuncios");
         if (!window.db) return;
@@ -337,6 +410,8 @@
             }
 
             el("listaMeusAnuncios")?.addEventListener("click", tratarClique);
+            el("formVirarLojista")?.addEventListener("submit", virarLojista);
+            carregarCategoriasLoja();
             await carregarAnuncios();
         } catch (erro) {
             console.error("Erro ao carregar seus anúncios:", erro);
