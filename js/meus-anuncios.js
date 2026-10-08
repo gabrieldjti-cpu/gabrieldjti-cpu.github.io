@@ -354,7 +354,7 @@
             if (error) throw error;
 
             avisar(
-                "Agora envie os documentos no painel da loja para a administração aprovar.",
+                "Agora informe o CPF ou CNPJ no painel da loja e aguarde a aprovação da administração.",
                 "sucesso",
                 "Sua loja foi criada"
             );

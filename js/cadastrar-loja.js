@@ -13,8 +13,6 @@ const inputLogo = document.getElementById("logo");
 const inputBanner = document.getElementById("banner");
 const previewBanner = document.getElementById("preview-banner");
 const previewBannerPlaceholder = document.getElementById("preview-banner-placeholder");
-const inputDocumentoFiscal = document.getElementById("documento-fiscal");
-const inputComprovanteEndereco = document.getElementById("comprovante-endereco");
 const campoTipoPessoa = document.getElementById("tipo-pessoa");
 const campoNumeroFiscal = document.getElementById("numero-fiscal");
 
@@ -245,22 +243,10 @@ function formatarDocumentoFiscal(valor, tipo) {
 }
 
 function documentoFiscalValido(valor, tipo) {
+    // Só confere a quantidade de números: 11 para CPF, 14 para CNPJ.
     const numeros = somenteNumeros(valor);
     const tamanho = tipo === "cnpj" ? 14 : 11;
-    if (numeros.length !== tamanho || /^(\d)\1+$/.test(numeros)) return false;
-    const calcular = (base, pesos) => {
-        const soma = base.split("").reduce((total, digito, indice) => total + Number(digito) * pesos[indice], 0);
-        const resto = soma % 11;
-        return resto < 2 ? 0 : 11 - resto;
-    };
-    if (tipo === "cpf") {
-        const d1 = calcular(numeros.slice(0, 9), [10,9,8,7,6,5,4,3,2]);
-        const d2 = calcular(numeros.slice(0, 9) + d1, [11,10,9,8,7,6,5,4,3,2]);
-        return numeros.endsWith(`${d1}${d2}`);
-    }
-    const d1 = calcular(numeros.slice(0, 12), [5,4,3,2,9,8,7,6,5,4,3,2]);
-    const d2 = calcular(numeros.slice(0, 12) + d1, [6,5,4,3,2,9,8,7,6,5,4,3,2]);
-    return numeros.endsWith(`${d1}${d2}`);
+    return numeros.length === tamanho && !/^(\d)\1+$/.test(numeros);
 }
 
 async function enviarArquivo(bucket, caminho, arquivo) {
@@ -277,30 +263,6 @@ async function enviarBanner() {
     return window.db.storage.from("banners-lojas").getPublicUrl(caminho).data.publicUrl;
 }
 
-async function enviarDocumentos(lojaId, tipoPessoa, numeroFiscal) {
-    const arquivos = [
-        { tipo: "documento_fiscal", arquivo: inputDocumentoFiscal.files[0] },
-        { tipo: "comprovante_endereco", arquivo: inputComprovanteEndereco.files[0] }
-    ];
-    const registros = [];
-    for (const item of arquivos) {
-        const extensao = item.arquivo.name.split(".").pop().toLowerCase();
-        const caminho = `${usuario.id}/${lojaId}/${item.tipo}-${Date.now()}.${extensao}`;
-        await enviarArquivo("documentos-lojas", caminho, item.arquivo);
-        registros.push({
-            loja_id: lojaId,
-            tipo: item.tipo,
-            tipo_pessoa: item.tipo === "documento_fiscal" ? tipoPessoa : null,
-            numero_fiscal: item.tipo === "documento_fiscal" ? numeroFiscal : null,
-            arquivo_path: caminho,
-            nome_arquivo: item.arquivo.name,
-            mime_type: item.arquivo.type,
-            tamanho_bytes: item.arquivo.size
-        });
-    }
-    const { error } = await window.db.from("documentos_loja").insert(registros);
-    if (error) throw error;
-}
 
 
 // ==========================================
@@ -999,8 +961,6 @@ if (form) {
             const tipoPessoa = campoTipoPessoa?.value;
             const numeroFiscal = somenteNumeros(campoNumeroFiscal?.value || "");
             const arquivoBanner = inputBanner?.files?.[0];
-            const arquivoFiscal = inputDocumentoFiscal?.files?.[0];
-            const arquivoEndereco = inputComprovanteEndereco?.files?.[0];
 
             if (!documentoFiscalValido(numeroFiscal, tipoPessoa)) {
                 notificar("Informe um CPF ou CNPJ válido.", "aviso", "Documento inválido");
@@ -1013,13 +973,6 @@ if (form) {
                 return;
             }
 
-            if (!arquivoFiscal || !arquivoEndereco) {
-                notificar("Envie o documento fiscal e o comprovante de endereço.", "aviso", "Documentos obrigatórios");
-                (!arquivoFiscal ? inputDocumentoFiscal : inputComprovanteEndereco)?.focus();
-                return;
-            }
-
-            if (!validarArquivo(arquivoFiscal) || !validarArquivo(arquivoEndereco)) return;
 
 
             if (
@@ -1331,8 +1284,12 @@ if (form) {
 
                 lojaCriadaId = data.id;
 
-                atualizarMensagem("Enviando documentos para análise...");
-                await enviarDocumentos(data.id, tipoPessoa, numeroFiscal);
+                atualizarMensagem("Salvando o CPF ou CNPJ...");
+                const { error: erroFiscal } = await window.db.rpc("salvar_dados_fiscais_loja", {
+                    p_tipo_pessoa: tipoPessoa,
+                    p_numero: numeroFiscal
+                });
+                if (erroFiscal) throw erroFiscal;
 
 
                 console.log(

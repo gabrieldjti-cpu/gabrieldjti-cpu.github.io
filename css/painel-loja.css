@@ -1571,3 +1571,9 @@ footer{
 .btn-solicitar-assinatura:hover { background: #e85b2b; }
 .btn-solicitar-assinatura:disabled { opacity: .6; cursor: wait; }
 .pedido-assinatura-loja { margin: 0; padding: 8px 12px; border-radius: 10px; background: #fef3c7; color: #92400e; font-size: 13px; font-weight: 600; }
+
+.form-fiscal-loja { display: flex; flex-wrap: wrap; gap: 10px; }
+.form-fiscal-loja select, .form-fiscal-loja input { min-height: 42px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 10px; font: inherit; }
+.form-fiscal-loja input { flex: 1 1 220px; }
+.form-fiscal-loja button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 0; border-radius: 10px; background: #2563eb; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.form-fiscal-loja button:disabled { opacity: .6; cursor: wait; }

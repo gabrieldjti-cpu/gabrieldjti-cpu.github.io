@@ -829,17 +829,17 @@ async function verDetalhesLojaAdmin(lojaId) {
     `;
 
     let historico = [];
-    let documentos = [];
+    let fiscal = null;
 
     try {
-        const [resultadoHistorico, resultadoDocumentos] = await Promise.all([
+        const [resultadoHistorico, resultadoFiscal] = await Promise.all([
             window.db.rpc("listar_historico_loja_admin", { p_loja_id: lojaId }),
-            window.db.rpc("listar_documentos_loja_admin", { p_loja_id: lojaId })
+            window.db.from("dados_fiscais_loja").select("tipo_pessoa,numero").eq("loja_id", lojaId).maybeSingle()
         ]);
         if (resultadoHistorico.error) throw resultadoHistorico.error;
-        if (resultadoDocumentos.error) throw resultadoDocumentos.error;
+        if (resultadoFiscal.error) throw resultadoFiscal.error;
         historico = Array.isArray(resultadoHistorico.data) ? resultadoHistorico.data : [];
-        documentos = Array.isArray(resultadoDocumentos.data) ? resultadoDocumentos.data : [];
+        fiscal = resultadoFiscal.data || null;
     } catch (erro) {
         console.warn("Não foi possível carregar o histórico da loja:", erro);
     }
@@ -873,10 +873,10 @@ async function verDetalhesLojaAdmin(lojaId) {
         ${loja.motivo_rejeicao ? `<p class="loja-motivo-atual"><strong>Motivo atual:</strong> ${escaparHTMLAdmin(loja.motivo_rejeicao)}</p>` : ""}
 
         <div class="documentos-admin">
-            <h3><i class="fa-solid fa-shield-halved"></i> Documentação da loja</h3>
-            ${documentos.length
-                ? documentos.map(renderizarDocumentoLojaAdmin).join("")
-                : '<p class="documentos-vazio-admin">Esta loja ainda não enviou a documentação obrigatória.</p>'}
+            <h3><i class="fa-solid fa-id-card"></i> CPF ou CNPJ</h3>
+            ${fiscal
+                ? `<p><strong>${escaparHTMLAdmin(String(fiscal.tipo_pessoa || "").toUpperCase())}:</strong> ${escaparHTMLAdmin(formatarNumeroFiscalAdmin(fiscal.numero))}</p>`
+                : '<p class="documentos-vazio-admin">A loja ainda não informou o CPF ou CNPJ.</p>'}
         </div>
 
         <div class="historico-admin">
