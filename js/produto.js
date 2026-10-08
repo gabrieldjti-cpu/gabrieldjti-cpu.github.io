@@ -174,6 +174,7 @@
                 destaque,
                 ativo,
                 criado_em,
+                vence_em,
                 loja:lojas!produtos_loja_id_fkey(
                     id,
                     nome,
@@ -536,8 +537,15 @@
         }
         const origem = document.getElementById("origemAnuncioProduto");
         if (origem) {
+            const validade = estado.produto?.vence_em
+                ? new Date(estado.produto.vence_em)
+                : null;
+            const textoValidade = validade && !Number.isNaN(validade.getTime())
+                ? ` · válido até ${validade.toLocaleDateString("pt-BR")}`
+                : "";
+
             origem.textContent = pessoal
-                ? "Anúncio de um usuário da plataforma"
+                ? `Anúncio de um usuário da plataforma${textoValidade}`
                 : "Produto vendido por uma loja aprovada";
         }
         elementos.verLojaProduto.firstChild.textContent = pessoal
