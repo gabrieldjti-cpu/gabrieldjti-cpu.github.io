@@ -28,7 +28,7 @@ test("o limite vem da tabela de planos e é aplicado no banco", () => {
     const ciclo = corpo("private.ciclo_anuncios_gratuito");
     assert.match(ciclo, /p\.codigo = 'gratuito'/);
     assert.match(ciclo, /status_aprovacao <> 'rejeitado'/);
-    assert.doesNotMatch(ciclo, /ativo = true/, "anúncio excluído deve continuar contando");
+    assert.doesNotMatch(ciclo, /pr\.ativo/, "anúncio excluído deve continuar contando");
 
     const limite = corpo("private.aplicar_limite_plano_gratuito");
     assert.match(limite, /pg_advisory_xact_lock/);
