@@ -40,10 +40,13 @@ test("a Central de Ajuda oferece busca acessível e canais reais", () => {
     assert.match(html, /id="buscaAjuda"/);
     assert.match(html, /aria-live="polite"/);
     assert.ok((html.match(/data-faq/g) || []).length >= 12);
-    assert.match(html, /href="meus-pedidos\.html"/);
+    assert.match(html, /href="meus-anuncios\.html"/);
+    assert.match(html, /href="interessados\.html"/);
     assert.match(html, /href="perfil\.html"/);
-    assert.match(html, /href="painel-loja\.html"/);
+    assert.match(html, /href="planos\.html"/);
     assert.match(html, /WhatsApp/);
+    // Classificados: nada de carrinho, checkout ou pedidos.
+    assert.doesNotMatch(html, /href="(carrinho|checkout|meus-pedidos)\.html"/);
     assert.match(codigo, /normalize\("NFD"\)/);
     assert.match(codigo, /pergunta\.hidden = !corresponde/);
 });
@@ -81,14 +84,18 @@ test("documentos jurídicos refletem o fluxo atual e citam fontes oficiais", () 
     const privacidade = ler("privacidade.html");
     const cancelamentos = ler("cancelamentos.html");
 
-    assert.match(termos, /não processa Pix, cartão ou dinheiro de forma automática/);
+    assert.match(termos, /não processa Pix, cartão ou dinheiro/);
+    assert.match(termos, /5 anúncios a cada 30 dias/);
     assert.match(termos, /planalto\.gov\.br\/ccivil_03\/leis\/l8078compilado\.htm/);
     assert.match(privacidade, /não comercializa dados pessoais/);
     assert.match(privacidade, /lei\/l13709\.htm/);
-    assert.match(cancelamentos, /aguardando pagamento[\s\S]*pago/);
-    assert.match(cancelamentos, /prazo de 7 dias/);
-    assert.match(cancelamentos, /devolução automática dos itens ao estoque/);
+    assert.match(cancelamentos, /<h1[^>]*>Negociação segura<\/h1>/);
+    assert.match(cancelamentos, /até 7 dias/);
+    assert.match(cancelamentos, /Tenho interesse/);
     assert.match(cancelamentos, /decreto\/d7962\.htm/);
+    for (const html of [termos, privacidade, cancelamentos]) {
+        assert.doesNotMatch(html, /href="(carrinho|checkout|meus-pedidos)\.html"/);
+    }
 });
 
 test("toda referência local das páginas institucionais aponta para um arquivo existente", () => {

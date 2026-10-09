@@ -1,4 +1,6 @@
 # PRD — Marketplace Multi-Lojas
+
+> **Documento histórico.** Este PRD descreve a primeira versão do projeto, um marketplace com carrinho, checkout e pedidos. Desde outubro de 2026 o Comércio da Cidade é um site de classificados com perfis de lojista. Os requisitos atuais estão em [`PRD-Classificados.md`](PRD-Classificados.md).
 ### Product Requirements Document
 
 **Versão:** 1.0

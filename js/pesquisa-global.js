@@ -1062,15 +1062,15 @@
     function atualizarResumo() {
         if (elementos.total) {
             elementos.total.textContent = estado.total === 1
-                ? "1 produto"
-                : `${estado.total} produtos`;
+                ? "1 anúncio"
+                : `${estado.total} anúncios`;
         }
 
         if (!elementos.descricao) return;
 
         elementos.descricao.textContent = estado.termo
-            ? `Resultados para “${estado.termo}” nas lojas da cidade.`
-            : "Pesquise e compare produtos disponíveis no comércio local.";
+            ? `Resultados para “${estado.termo}” nos anúncios da cidade.`
+            : "Ofertas de vizinhos e lojas locais. Filtre por categoria, condição e preço.";
     }
 
     function mostrarErro(mensagem) {
