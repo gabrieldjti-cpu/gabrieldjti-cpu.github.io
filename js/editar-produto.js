@@ -901,6 +901,10 @@ async function carregarProduto() {
         );
 
 
+        // Condição (novo/usado) e disponível/indisponível.
+        window.anuncioCampos?.preencher(produto);
+
+
         // ==================================
         // CHECKBOXES
         // ==================================
@@ -1641,6 +1645,9 @@ async function atualizarProduto(
                         precoPromocional,
 
                     estoque,
+
+                    condicao:
+                        window.anuncioCampos?.condicao() ?? null,
 
                     imagem_url:
                         imagemUrl ||

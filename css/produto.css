@@ -1461,3 +1461,48 @@ body.pagina-produto {
         grid-template-columns: 1fr;
     }
 }
+
+/* Novo ou usado */
+.produto-condicao {
+    min-height: 30px;
+    padding: 0 11px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.produto-condicao.usado {
+    background: #f4f4f5;
+    color: #3f3f46;
+}
+
+.produto-condicao[hidden] {
+    display: none;
+}
+
+body.dark-theme .produto-condicao {
+    background: rgba(37, 99, 235, 0.18);
+    color: #bfdbfe;
+}
+
+body.dark-theme .produto-condicao.usado {
+    background: rgba(148, 163, 184, 0.18);
+    color: #e2e8f0;
+}
+
+/* Categoria à esquerda; disponibilidade e condição juntas à direita */
+@media (min-width: 421px) {
+    .produto-topo-meta {
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .produto-topo-meta .produto-categoria {
+        margin-right: auto;
+    }
+}

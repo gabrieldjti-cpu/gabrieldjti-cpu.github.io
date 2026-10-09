@@ -752,3 +752,18 @@
         width: 100%;
     }
 }
+
+/* Novo ou usado no card do anúncio */
+.produto-global-meta {
+    flex-wrap: wrap;
+}
+
+.produto-global-meta .condicao-anuncio {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+body.dark-theme .produto-global-meta .condicao-anuncio {
+    background: rgba(37, 99, 235, 0.18);
+    color: #bfdbfe;
+}

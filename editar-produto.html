@@ -271,24 +271,37 @@
             </div>
 
 
-            <!-- ESTOQUE -->
+            <!-- CONDIÇÃO (só nas categorias em que faz sentido) -->
 
+            <div class="campo" id="campo-condicao" hidden>
+
+                <label for="condicao">
+                  Condição
+                </label>
+
+                <select id="condicao">
+                  <option value="">Selecione</option>
+                  <option value="novo">Novo</option>
+                  <option value="usado">Usado</option>
+                </select>
+
+            </div>
+
+
+            <!-- DISPONIBILIDADE -->
 
             <div class="campo">
 
-                <label for="estoque">
-                  Estoque
+                <label for="disponibilidade">
+                  Disponibilidade
                 </label>
 
-                <input
-                  type="number"
-                  id="estoque"
-                  min="0"
-                  step="1"
-                  inputmode="numeric"
-                  placeholder="0"
-                  required
-                />
+                <select id="disponibilidade">
+                  <option value="1">Disponível</option>
+                  <option value="0">Indisponível</option>
+                </select>
+
+                <input type="hidden" id="estoque" value="1" />
 
             </div>
 
@@ -472,6 +485,7 @@
   <!-- EDITAR PRODUTO -->
 
   <script src="js/editar-produto.js"></script>
+  <script src="js/anuncio-campos.js"></script>
   <script src="js/limite-anuncios.js"></script>
 
 
