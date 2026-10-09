@@ -75,6 +75,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     >
 
+<link rel="stylesheet" href="css/avaliacoes-vendedor.css">
 <link rel="stylesheet" href="css/dark-mode.css">
 </head>
 
@@ -256,6 +257,30 @@
     <!-- ==================================
          ASSINATURA
     =================================== -->
+
+    <section class="card" aria-labelledby="titulo-resumo-vendedor">
+
+        <h2 id="titulo-resumo-vendedor">
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            Resumo dos anúncios
+
+        </h2>
+
+        <div class="estatisticas" id="resumo-vendedor">
+            <div class="box"><i class="fa-solid fa-bullhorn"></i><h3 id="resumo-no-ar">—</h3><p>No ar</p></div>
+            <div class="box"><i class="fa-solid fa-hourglass-half"></i><h3 id="resumo-aguardando">—</h3><p>Aguardando aprovação</p></div>
+            <div class="box"><i class="fa-solid fa-circle-pause"></i><h3 id="resumo-indisponiveis">—</h3><p>Indisponíveis</p></div>
+            <div class="box"><i class="fa-regular fa-hand"></i><h3 id="resumo-interessados">—</h3><p>Interessados sem venda</p></div>
+            <div class="box"><i class="fa-solid fa-handshake"></i><h3 id="resumo-vendas">—</h3><p>Vendas confirmadas</p></div>
+            <div class="box"><i class="fa-solid fa-star"></i><h3 id="resumo-nota">—</h3><p id="resumo-nota-legenda">Nota média</p></div>
+        </div>
+
+        <ul id="resumo-vendedor-alertas" class="resumo-vendedor-alertas" aria-live="polite" hidden></ul>
+
+    </section>
+
 
     <section class="card assinatura-loja-card" aria-labelledby="titulo-assinatura-loja">
         <div class="documentos-loja-topo">
@@ -440,71 +465,20 @@
          ESTATÍSTICAS
     =================================== -->
 
-    <section class="card">
 
-        <h2>
 
-            <i class="fa-solid fa-chart-column"></i>
 
-            Estatísticas
+    <section class="card" aria-labelledby="titulo-avaliacoes-recebidas">
+
+        <h2 id="titulo-avaliacoes-recebidas">
+
+            <i class="fa-solid fa-star-half-stroke"></i>
+
+            Avaliações recebidas
 
         </h2>
 
-
-        <div class="estatisticas">
-
-
-            <!-- PRODUTOS -->
-
-            <div class="box">
-
-                <i class="fa-solid fa-box"></i>
-
-                <h3 id="total-produtos">
-                    0
-                </h3>
-
-                <p>
-                    Produtos
-                </p>
-
-            </div>
-
-
-            <!-- PEDIDOS -->
-
-            <div class="box" style="display:none" data-desativado="classificados">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                <h3 id="total-pedidos">
-                    0
-                </h3>
-
-                <p>
-                    Pedidos
-                </p>
-
-            </div>
-
-
-            <!-- VENDAS -->
-
-            <div class="box" style="display:none" data-desativado="classificados">
-
-                <i class="fa-solid fa-sack-dollar"></i>
-
-                <h3 id="total-vendas">
-                    R$ 0,00
-                </h3>
-
-                <p>
-                    Vendas
-                </p>
-
-            </div>
-
-        </div>
+        <div id="lista-avaliacoes-recebidas" class="avaliacoes-recebidas" aria-live="polite">Carregando...</div>
 
     </section>
 
@@ -558,6 +532,8 @@
 <script src="js/painel-loja.js?v=20260911-2"></script>
 <script src="js/painel-loja-assinatura.js"></script>
 <script src="js/painel-loja-fiscal.js"></script>
+<script src="js/painel-loja-resumo.js"></script>
+<script src="js/avaliacoes-recebidas.js"></script>
 
 
 </body>

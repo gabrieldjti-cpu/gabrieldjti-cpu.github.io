@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprovação de anúncios | Comércio da Cidade</title>
+    <title>Avaliações | Comércio da Cidade</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,11 +38,11 @@
                     <i class="fa-solid fa-layer-group"></i>
                     <span>Categorias</span>
                 </a>
-                <a href="admin-anuncios.html" class="ativo" aria-current="page">
+                <a href="admin-anuncios.html">
                     <i class="fa-solid fa-bullhorn"></i>
                     <span>Anúncios</span>
                 </a>
-                <a href="admin-avaliacoes.html">
+                <a href="admin-avaliacoes.html" class="ativo" aria-current="page">
                     <i class="fa-solid fa-star-half-stroke"></i>
                     <span>Avaliações</span>
                 </a>
@@ -69,15 +69,19 @@
         <section class="admin-intro">
             <div>
                 <span class="eyebrow">Painel administrativo</span>
-                <h1>Aprovação de anúncios</h1>
-                <p>Todo anúncio novo e toda edição de lojista esperam aqui antes de aparecer no site.</p>
+                <h1>Avaliações de vendedores</h1>
+                <p>Avaliações denunciadas pelos usuários. Oculte as que ferem as regras ou mantenha e descarte as denúncias.</p>
             </div>
             <div class="fila-anuncios-acoes">
-                <button type="button" id="btnAprovarTodosAnuncios" class="btn-admin btn-primario" hidden>
-                    <i class="fa-solid fa-check-double"></i>
-                    Aprovar todos
-                </button>
-                <button type="button" id="btnAtualizarFilaAnuncios" class="btn-admin btn-claro">
+                <label class="filtro-avaliacoes-admin">
+                    <span class="sr-only">Mostrar</span>
+                    <select id="filtroAvaliacoesAdmin">
+                        <option value="denunciadas">Denunciadas</option>
+                        <option value="ocultas">Ocultas</option>
+                        <option value="todas">Todas</option>
+                    </select>
+                </label>
+                <button type="button" id="btnAtualizarAvaliacoesAdmin" class="btn-admin btn-claro">
                     <i class="fa-solid fa-rotate"></i>
                     Atualizar
                 </button>
@@ -85,14 +89,14 @@
         </section>
 
         <section class="admin-card">
-            <p id="resumoFilaAnuncios" class="fila-anuncios-resumo" aria-live="polite">Carregando a fila...</p>
-            <div id="listaFilaAnuncios" class="fila-anuncios-lista"></div>
+            <p id="resumoAvaliacoesAdmin" class="fila-anuncios-resumo" aria-live="polite">Carregando...</p>
+            <div id="listaAvaliacoesAdmin" class="fila-anuncios-lista"></div>
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
     <script src="js/supabase.js"></script>
     <script src="components/feedback.js"></script>
-    <script src="js/admin-anuncios.js"></script>
+    <script src="js/admin-avaliacoes.js"></script>
 </body>
 </html>

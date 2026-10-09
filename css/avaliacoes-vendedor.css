@@ -1,0 +1,167 @@
+/* ==========================================
+   AVALIAÇÕES DE VENDEDOR (etapas 9 e 10)
+   Resumo do painel, avaliações recebidas, resposta e denúncia.
+========================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Alertas do resumo do painel */
+.resumo-vendedor-alertas {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resumo-vendedor-alertas li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fff8f4;
+  color: #475569;
+  font-size: 14px;
+}
+
+.resumo-vendedor-alertas i { color: #e85b2b; }
+.resumo-vendedor-alertas a { color: #e85b2b; font-weight: 700; }
+
+/* Avaliações recebidas */
+.avaliacoes-recebidas { display: grid; gap: 12px; }
+.avaliacoes-recebidas-vazio { margin: 0; color: #64748b; }
+
+.avaliacao-recebida {
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.avaliacao-recebida.oculta { opacity: .7; }
+.avaliacao-recebida p { margin: 8px 0; overflow-wrap: anywhere; }
+
+.avaliacao-recebida-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.avaliacao-recebida-topo small { color: #64748b; }
+.avaliacao-recebida-estrelas { color: #f59e0b; }
+.avaliacao-recebida-aviso { color: #b45309; font-size: 13px; }
+
+.avaliacao-recebida-resposta,
+.avaliacoes-vendedor-resposta {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid #ff6b35;
+  border-radius: 8px;
+  background: #fff8f4;
+  font-size: 14px;
+}
+
+.avaliacao-recebida-resposta p,
+.avaliacoes-vendedor-resposta p { margin: 4px 0 0; }
+
+.avaliacao-recebida-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.avaliacao-recebida-form textarea,
+.denuncia-avaliacao-form textarea {
+  flex: 1 1 260px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.avaliacao-recebida-form button,
+.denuncia-avaliacao-form button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #ff6b35;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.avaliacao-recebida-form button:disabled,
+.denuncia-avaliacao-form button:disabled { opacity: .6; cursor: wait; }
+
+/* Denúncia de avaliação */
+.avaliacoes-vendedor-denunciar {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #94a3b8;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.avaliacoes-vendedor-denunciar:hover { color: #b91c1c; }
+
+.denuncia-avaliacao-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.denuncia-avaliacao-form label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.denuncia-avaliacao-acoes { display: flex; gap: 8px; }
+
+.denuncia-avaliacao-form button[data-cancelar] {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.denuncia-avaliacao-enviada { color: #15803d; font-size: 12px; }
+
+/* Modo escuro */
+body.dark-theme .resumo-vendedor-alertas li,
+body.dark-theme .avaliacao-recebida-resposta,
+body.dark-theme .avaliacoes-vendedor-resposta { background: #0f172a; color: #cbd5e1; }
+
+body.dark-theme .avaliacao-recebida { border-color: #334155; background: #1e293b; color: #e2e8f0; }
+
+body.dark-theme .avaliacao-recebida-form textarea,
+body.dark-theme .denuncia-avaliacao-form textarea { border-color: #475569; background: #0f172a; color: #f8fafc; }
+
+body.dark-theme .denuncia-avaliacao-form label { color: #cbd5e1; }
+body.dark-theme .denuncia-avaliacao-form button[data-cancelar] { border-color: #475569; background: #0f172a; color: #e2e8f0; }

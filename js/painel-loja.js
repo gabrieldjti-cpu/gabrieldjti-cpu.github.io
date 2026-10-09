@@ -170,7 +170,6 @@ async function carregarLoja() {
         await carregarProdutos();
 
         await Promise.all([
-            carregarPedidos(),
             carregarEstatisticas()
         ]);
 
@@ -662,68 +661,10 @@ async function excluirProduto(id, nomeProduto = "Produto") {
 // ==========================================
 
 async function carregarEstatisticas() {
-    try {
-        if (!loja?.id) return;
-
-        const consultaProdutos = window.db
-            .from("produtos")
-            .select("*", { count: "exact", head: true })
-            .eq("loja_id", loja.id);
-
-        const consultaPedidos = window.db
-            .from("pedidos")
-            .select("id, status, valor_total")
-            .eq("loja_id", loja.id);
-
-        const [resultadoProdutos, resultadoPedidos] = await Promise.all([
-            consultaProdutos,
-            consultaPedidos
-        ]);
-
-        if (resultadoProdutos.error) {
-            console.error(
-                "Erro ao contar produtos:",
-                resultadoProdutos.error
-            );
-        }
-
-        definirTexto("total-produtos", resultadoProdutos.count || 0);
-
-        if (resultadoPedidos.error) throw resultadoPedidos.error;
-
-        const pedidos = Array.isArray(resultadoPedidos.data)
-            ? resultadoPedidos.data
-            : [];
-
-        definirTexto("total-pedidos", pedidos.length);
-
-        const statusQueContamComoVenda = new Set([
-            "pago",
-            "em_preparacao",
-            "enviado",
-            "entregue"
-        ]);
-
-        const totalVendas = pedidos.reduce((total, pedido) => {
-            const status = normalizarStatusPedido(pedido.status);
-
-            if (!statusQueContamComoVenda.has(status)) {
-                return total;
-            }
-
-            return total + Number(pedido.valor_total || 0);
-        }, 0);
-
-        definirTexto("total-vendas", formatarMoeda(totalVendas));
-
-    } catch (erro) {
-        console.error("Erro ao carregar estatísticas:", erro);
-        notificar(
-            tratarErroPainel(erro),
-            "erro",
-            "Erro nas estatísticas",
-            4500
-        );
+    // Classificados: o resumo vem de resumo_painel_vendedor
+    // (js/painel-loja-resumo.js), sem pedidos nem faturamento.
+    if (typeof window.carregarResumoVendedor === "function") {
+        await window.carregarResumoVendedor();
     }
 }
 
@@ -1164,7 +1105,6 @@ async function avancarStatusPedido(pedidoId, statusAtual) {
         );
 
         await Promise.all([
-            carregarPedidos(),
             carregarEstatisticas()
         ]);
 
