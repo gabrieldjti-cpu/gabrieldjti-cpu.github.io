@@ -214,3 +214,74 @@ html.dark-theme .aviso-loja-pausada {
   background: rgba(217, 119, 6, 0.14);
   color: #e2e8f0;
 }
+
+/* Avaliações do vendedor / da loja (etapa 9) */
+.avaliacoes-vendedor {
+  margin: 28px 0 40px;
+  padding: 24px;
+  border: 1px solid var(--app-border, #e7e9ee);
+  border-radius: 20px;
+  background: var(--app-surface, #fff);
+}
+
+.avaliacoes-vendedor-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.avaliacoes-vendedor-topo h2 { margin: 0 0 4px; font-size: 22px; }
+.avaliacoes-vendedor-topo p { margin: 0; color: #64748b; font-size: 14px; }
+
+.avaliacoes-vendedor-media {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+
+.avaliacoes-vendedor-media strong { font-size: 30px; line-height: 1; }
+.avaliacoes-vendedor-media small { color: #64748b; }
+.avaliacoes-vendedor-estrelas { color: #f59e0b; }
+
+.avaliacoes-vendedor-lista {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.avaliacoes-vendedor-lista li {
+  padding: 14px;
+  border: 1px solid var(--app-border, #e7e9ee);
+  border-radius: 14px;
+}
+
+.avaliacoes-vendedor-item-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.avaliacoes-vendedor-lista p { margin: 8px 0 4px; overflow-wrap: anywhere; }
+.avaliacoes-vendedor-lista small { color: #64748b; }
+.avaliacoes-vendedor-vazio { margin: 0; color: #64748b; }
+
+@media (max-width: 520px) {
+  .avaliacoes-vendedor { padding: 18px; }
+  .avaliacoes-vendedor-media { justify-items: start; }
+}
+
+body.dark-theme .avaliacoes-vendedor,
+html.dark-theme .avaliacoes-vendedor {
+  border-color: #334155;
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+body.dark-theme .avaliacoes-vendedor-lista li { border-color: #334155; }

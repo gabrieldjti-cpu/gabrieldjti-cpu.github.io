@@ -330,6 +330,7 @@
             "cancelamentos.html": '#btnAjuda',
             "painel-loja.html": '#btnMinhaLoja',
             "meus-anuncios.html": '#btnMinhaLoja',
+            "interessados.html": '#btnMinhaLoja',
             "anunciar.html": '#btnAnunciar',
             "perfil.html": '#btnPerfil',
             "login.html": '#btnLogin'
