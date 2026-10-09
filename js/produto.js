@@ -170,6 +170,7 @@
                 preco,
                 preco_promocional,
                 estoque,
+                condicao,
                 imagem_url,
                 destaque,
                 ativo,
@@ -479,16 +480,31 @@
         elementos.situacaoEstoque.classList.toggle("em-estoque", emEstoque);
         elementos.situacaoEstoque.classList.toggle("sem-estoque", !emEstoque);
         elementos.situacaoEstoque.innerHTML = emEstoque
-            ? '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Em estoque'
-            : '<i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Sem estoque';
+            ? '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Disponível'
+            : '<i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Indisponível';
+
+        // Novo ou usado (só nas categorias em que faz sentido).
+        const textoCondicao = produto.condicao === "usado"
+            ? "Usado"
+            : (produto.condicao === "novo" ? "Novo" : "");
+        const seloCondicao = document.getElementById("condicaoProduto");
+        if (seloCondicao) {
+            seloCondicao.hidden = !textoCondicao;
+            seloCondicao.textContent = textoCondicao;
+            seloCondicao.classList.toggle("usado", produto.condicao === "usado");
+        }
+        const linhaCondicao = document.getElementById("linhaCondicaoProduto");
+        if (linhaCondicao) linhaCondicao.hidden = !textoCondicao;
+        const detalheCondicao = document.getElementById("detalheCondicaoProduto");
+        if (detalheCondicao) detalheCondicao.textContent = textoCondicao || "—";
 
         elementos.quantidadeProduto.max = String(Math.max(1, estoque));
         elementos.quantidadeProduto.disabled = !emEstoque;
         elementos.diminuirQuantidadeProduto.disabled = true;
         elementos.aumentarQuantidadeProduto.disabled = !emEstoque || estoque <= 1;
         elementos.limiteQuantidadeProduto.textContent = emEstoque
-            ? `${estoque} ${estoque === 1 ? "unidade disponível" : "unidades disponíveis"}`
-            : "Produto indisponível no momento";
+            ? "Disponível"
+            : "Indisponível no momento";
 
         const taxaEntrega = Math.max(0, Number(estado.loja?.taxa_entrega || 0));
         elementos.taxaEntregaProduto.textContent = taxaEntrega > 0
@@ -496,8 +512,8 @@
             : "Grátis";
 
         elementos.detalheEstoqueProduto.textContent = emEstoque
-            ? `${estoque} ${estoque === 1 ? "unidade" : "unidades"}`
-            : "Sem estoque";
+            ? "Disponível"
+            : "Indisponível";
         elementos.detalheCategoriaProduto.textContent = categoria;
         elementos.detalheLojaProduto.textContent = estado.loja?.nome || "Loja";
         elementos.detalheVendasProduto.textContent = formatarNumero(
@@ -824,7 +840,7 @@
     }
 
     async function buscarRelacionados({ categoriaId, lojaId }) {
-        const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
+        const { data, error } = await window.db.rpc("buscar_anuncios_publicos", {
             p_termo: "",
             p_categoria_id: categoriaId ? Number(categoriaId) : null,
             p_loja_id: lojaId || null,

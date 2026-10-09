@@ -932,10 +932,10 @@ function criarCardProduto(
                 <p>
 
                     <strong>
-                        Estoque:
+                        Situação:
                     </strong>
 
-                    ${estoque}
+                    ${estoque > 0 ? "Disponível" : "Indisponível"}
 
                 </p>
 

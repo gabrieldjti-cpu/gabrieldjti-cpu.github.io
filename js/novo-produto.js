@@ -1274,6 +1274,9 @@ async function salvarProduto(
 
             estoque,
 
+            condicao:
+                window.anuncioCampos?.condicao() ?? null,
+
             imagem_url:
                 imagemUrl ||
                 null,

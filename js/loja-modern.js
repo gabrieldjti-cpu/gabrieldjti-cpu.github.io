@@ -208,20 +208,12 @@
             "estoque-esgotado"
         );
 
+        // Anúncio é só disponível ou indisponível.
         if (estoque <= 0) {
             estoqueElemento.classList.add("estoque-esgotado");
             estoqueElemento.innerHTML = `
                 <i class="fa-solid fa-circle-xmark"></i>
-                Sem estoque
-            `;
-            return;
-        }
-
-        if (estoque <= 5) {
-            estoqueElemento.classList.add("estoque-baixo");
-            estoqueElemento.innerHTML = `
-                <i class="fa-solid fa-fire"></i>
-                Últimas ${estoque} unidade${estoque === 1 ? "" : "s"}
+                Indisponível
             `;
             return;
         }
@@ -229,7 +221,7 @@
         estoqueElemento.classList.add("estoque-disponivel");
         estoqueElemento.innerHTML = `
             <i class="fa-solid fa-circle-check"></i>
-            ${estoque} unidades disponíveis
+            Disponível
         `;
     }
 })();

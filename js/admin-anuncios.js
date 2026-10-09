@@ -62,6 +62,12 @@
         return `${item.tipo_item}:${item.produto_id}`;
     }
 
+    function rotuloCondicao(valor) {
+        if (valor === "novo") return "Novo";
+        if (valor === "usado") return "Usado";
+        return "";
+    }
+
     // Em uma edição, mostra lado a lado só o que mudou.
     function criarComparacao(item) {
         const novos = item.dados_novos || {};
@@ -72,6 +78,15 @@
             ["Categoria", item.categoria, novos.categoria],
             ["Descrição", item.descricao, novos.descricao]
         ];
+
+        // Edições antigas não traziam a condição.
+        if (Object.prototype.hasOwnProperty.call(novos, "condicao")) {
+            campos.push([
+                "Condição",
+                rotuloCondicao(novos.condicao_atual),
+                rotuloCondicao(novos.condicao)
+            ]);
+        }
 
         const linhas = campos
             .filter(([, antes, depois]) => String(antes ?? "") !== String(depois ?? ""))
@@ -127,7 +142,7 @@
                         <small>${escapar(anunciante)}: ${escapar(item.loja_nome || "")} · enviado em ${escapar(dataHora(item.enviado_em))}</small>
                     </div>
                     <h3>${escapar(item.nome || "Anúncio")}</h3>
-                    <p class="fila-anuncio-preco">${escapar(preco)}${item.categoria ? ` · ${escapar(item.categoria)}` : ""}</p>
+                    <p class="fila-anuncio-preco">${escapar(preco)}${item.categoria ? ` · ${escapar(item.categoria)}` : ""}${!edicao && rotuloCondicao(item.dados_novos?.condicao_atual) ? ` · ${rotuloCondicao(item.dados_novos.condicao_atual)}` : ""}</p>
                     ${edicao ? criarComparacao(item) : `<p class="fila-anuncio-descricao">${escapar(item.descricao || "Sem descrição.")}</p>`}
 
                     <div class="fila-anuncio-rejeicao" hidden>

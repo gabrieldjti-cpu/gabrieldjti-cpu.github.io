@@ -95,8 +95,9 @@
             <span id="categoriaProduto" class="produto-categoria">Produto local</span>
             <span id="situacaoEstoque" class="produto-estoque em-estoque">
               <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-              Em estoque
+              Disponível
             </span>
+            <span id="condicaoProduto" class="produto-condicao" hidden></span>
           </div>
 
           <h1 id="nomeProduto">Produto</h1>
@@ -262,11 +263,15 @@
 
         <aside class="produto-secao produto-informacoes-extras" aria-labelledby="tituloInformacoesProduto">
           <span class="produto-secao-eyebrow">Informações</span>
-          <h2 id="tituloInformacoesProduto">Detalhes da compra</h2>
+          <h2 id="tituloInformacoesProduto">Detalhes do anúncio</h2>
           <dl>
             <div>
               <dt>Disponibilidade</dt>
               <dd id="detalheEstoqueProduto">—</dd>
+            </div>
+            <div id="linhaCondicaoProduto" hidden>
+              <dt>Condição</dt>
+              <dd id="detalheCondicaoProduto">—</dd>
             </div>
             <div>
               <dt>Categoria</dt>

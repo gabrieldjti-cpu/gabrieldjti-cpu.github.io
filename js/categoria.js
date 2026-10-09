@@ -16,6 +16,7 @@
         categoriaProdutoId: "",
         subcategoriaProdutoId: "",
         disponibilidade: "",
+        condicao: "",
         precoMinimo: "",
         precoMaximo: "",
         avaliacaoMinima: "",
@@ -83,6 +84,7 @@
         elementos.categoriaProduto = document.getElementById("categoria-produto-categoria");
         elementos.subcategoriaProduto = document.getElementById("subcategoria-produto-categoria");
         elementos.disponibilidade = document.getElementById("disponibilidade-categoria");
+        elementos.condicao = document.getElementById("condicao-categoria");
         elementos.precoMinimo = document.getElementById("preco-minimo-categoria");
         elementos.precoMaximo = document.getElementById("preco-maximo-categoria");
         elementos.avaliacaoMinima = document.getElementById("avaliacao-minima-categoria");
@@ -125,6 +127,7 @@
         [
             elementos.subcategoriaProduto,
             elementos.disponibilidade,
+            elementos.condicao,
             elementos.precoMinimo,
             elementos.precoMaximo,
             elementos.avaliacaoMinima,
@@ -507,7 +510,7 @@
 
         const inicio = (estado.pagina - 1) * TAMANHO_PAGINA;
         try {
-            const { data, error } = await window.db.rpc("buscar_produtos_publicos", {
+            const { data, error } = await window.db.rpc("buscar_anuncios_publicos", {
                 p_termo: estado.termo,
                 p_categoria_id: estado.subcategoriaProdutoId
                     ? Number(estado.subcategoriaProdutoId)
@@ -517,6 +520,7 @@
                 p_loja_id: null,
                 p_categoria_loja_id: estado.categoriaId,
                 p_disponibilidade: estado.disponibilidade || null,
+                p_condicao: estado.condicao || null,
                 p_preco_min: estado.precoMinimo === ""
                     ? null
                     : Number(estado.precoMinimo),
@@ -577,6 +581,7 @@
             elementos.subcategoriaProduto?.value || ""
         );
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
+        estado.condicao = String(elementos.condicao?.value || "");
         estado.precoMinimo = sanitizarPrecoFiltro(elementos.precoMinimo?.value);
         estado.precoMaximo = sanitizarPrecoFiltro(elementos.precoMaximo?.value);
         estado.avaliacaoMinima = sanitizarAvaliacaoFiltro(
@@ -665,6 +670,7 @@
                 || estado.categoriaProdutoId
                 || estado.subcategoriaProdutoId
                 || estado.disponibilidade
+                || estado.condicao
                 || estado.precoMinimo
                 || estado.precoMaximo
                 || estado.avaliacaoMinima
@@ -769,8 +775,11 @@
                     <div class="produto-global-meta">
                         <span>${nomeCategoria}</span>
                         <span class="${estoque > 0 ? "em-estoque" : "sem-estoque"}">
-                            ${estoque > 0 ? `${estoque} em estoque` : "Sem estoque"}
+                            ${estoque > 0 ? "Disponível" : "Indisponível"}
                         </span>
+                        ${produto.condicao === "novo" || produto.condicao === "usado"
+                            ? `<span class="condicao-anuncio">${produto.condicao === "usado" ? "Usado" : "Novo"}</span>`
+                            : ""}
                     </div>
 
                     <h3>${nome}</h3>
@@ -932,6 +941,7 @@
         estado.subcategoriaProdutoId = "";
         preencherSubcategoriasProdutos("");
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
+        if (elementos.condicao) elementos.condicao.value = "";
         if (elementos.precoMinimo) elementos.precoMinimo.value = "";
         if (elementos.precoMaximo) elementos.precoMaximo.value = "";
         if (elementos.avaliacaoMinima) elementos.avaliacaoMinima.value = "";
@@ -947,6 +957,7 @@
         const categoriaProduto = String(params.get("categoria_produto") || "");
         const subcategoriaProduto = String(params.get("subcategoria_produto") || "");
         const disponibilidade = String(params.get("disponibilidade") || "");
+        const condicao = String(params.get("condicao") || "");
         const precoMinimo = sanitizarPrecoFiltro(params.get("preco_minimo"));
         const precoMaximo = sanitizarPrecoFiltro(params.get("preco_maximo"));
         const avaliacaoMinima = sanitizarAvaliacaoFiltro(params.get("avaliacao_minima"));
@@ -959,6 +970,7 @@
         estado.subcategoriaProdutoId = /^\d+$/.test(subcategoriaProduto)
             ? subcategoriaProduto
             : "";
+        estado.condicao = ["novo", "usado"].includes(condicao) ? condicao : "";
         estado.disponibilidade = ["estoque", "esgotado"].includes(disponibilidade)
             ? disponibilidade
             : "";
@@ -981,6 +993,7 @@
         estado.pagina = Number.isSafeInteger(pagina) && pagina > 0 ? pagina : 1;
 
         if (elementos.pesquisa) elementos.pesquisa.value = termo;
+        if (elementos.condicao) elementos.condicao.value = estado.condicao;
         if (elementos.disponibilidade) {
             elementos.disponibilidade.value = estado.disponibilidade;
         }
@@ -999,6 +1012,7 @@
         atualizarParametro(url, "categoria_produto", estado.categoriaProdutoId);
         atualizarParametro(url, "subcategoria_produto", estado.subcategoriaProdutoId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
+        atualizarParametro(url, "condicao", estado.condicao);
         atualizarParametro(url, "preco_minimo", estado.precoMinimo);
         atualizarParametro(url, "preco_maximo", estado.precoMaximo);
         atualizarParametro(url, "avaliacao_minima", estado.avaliacaoMinima);

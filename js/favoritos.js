@@ -189,7 +189,7 @@
                     <div class="favorito-card-meta">
                         <span>${nomeCategoria}</span>
                         <span class="${estoque > 0 ? "em-estoque" : "sem-estoque"}">
-                            ${estoque > 0 ? `${estoque} em estoque` : "Sem estoque"}
+                            ${estoque > 0 ? "Disponível" : "Indisponível"}
                         </span>
                     </div>
 

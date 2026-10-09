@@ -120,7 +120,7 @@
             const [categoriasResultado, produtosResultado] = await Promise.all([
                 window.db
                     .from("categorias_produtos")
-                    .select("id,nome,ativa,criado_em,categoria_pai_id,icone,destaque,ordem_destaque")
+                    .select("id,nome,ativa,criado_em,categoria_pai_id,icone,destaque,ordem_destaque,pede_condicao")
                     .order("nome", { ascending: true }),
                 window.db
                     .from("produtos")
@@ -276,6 +276,12 @@
                             <i class="fa-solid ${ativa ? "fa-circle-check" : "fa-circle-pause"}"></i>
                             ${ativa ? "Ativa" : "Inativa"}
                         </span>
+                        ${categoria.pede_condicao === true || pai?.pede_condicao === true ? `
+                            <span class="categoria-badge condicao">
+                                <i class="fa-solid fa-tags"></i>
+                                Novo ou usado${categoria.pede_condicao !== true ? " (da principal)" : ""}
+                            </span>
+                        ` : ""}
                         ${destaque ? `
                             <span class="categoria-badge destaque">
                                 <i class="fa-solid fa-star"></i>
@@ -349,6 +355,8 @@
         const destaque = document.getElementById("categoriaAdminDestaque");
         if (ativa) ativa.checked = categoria ? categoria.ativa === true : true;
         if (destaque) destaque.checked = categoria?.destaque === true;
+        const pedeCondicao = document.getElementById("categoriaAdminCondicao");
+        if (pedeCondicao) pedeCondicao.checked = categoria?.pede_condicao === true;
 
         definirTexto(
             "tituloModalCategoria",
@@ -428,6 +436,7 @@
         const nome = String(document.getElementById("nomeCategoriaAdmin")?.value || "").trim();
         const ativa = document.getElementById("categoriaAdminAtiva")?.checked === true;
         const destaqueMarcado = document.getElementById("categoriaAdminDestaque")?.checked === true;
+        const pedeCondicao = document.getElementById("categoriaAdminCondicao")?.checked === true;
         const paiId = tipo === "subcategoria"
             ? numeroOuNulo(document.getElementById("paiCategoriaAdmin")?.value)
             : null;
@@ -463,7 +472,8 @@
             categoria_pai_id: paiId,
             icone,
             destaque,
-            ordem_destaque: ordem
+            ordem_destaque: ordem,
+            pede_condicao: pedeCondicao
         };
         const botao = document.getElementById("btnSalvarCategoria");
 
