@@ -365,9 +365,10 @@ function carregarExtensoesDaPagina() {
             css:
                 "css/painel-loja-aprovacao.css",
 
+            // O controle de estoque (alerta de poucas unidades) saiu:
+            // nos classificados o anúncio é só disponível ou indisponível.
             scripts: [
-                "js/painel-loja-aprovacao.js",
-                "js/painel-loja-estoque.js"
+                "js/painel-loja-aprovacao.js"
             ],
 
             iniciar:

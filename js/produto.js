@@ -748,8 +748,10 @@
         const comentario = String(avaliacao?.comentario || "").trim();
         const resposta = String(avaliacao?.resposta_loja || "").trim();
         const data = formatarData(avaliacao?.criado_em);
-        // A denúncia de avaliação ainda é do modelo antigo (pedidos).
+        // A denúncia antiga (data-denunciar-conteudo) era do modelo de
+        // pedidos; a avaliação de vendedor usa denunciar-avaliacao.js.
         const avaliacaoId = "";
+        const avaliacaoVendedorId = String(avaliacao?.id || "");
         const autor = String(avaliacao?.avaliador_nome || "").trim();
         const produtoAvaliado = String(avaliacao?.produto_nome || "").trim();
 
@@ -785,6 +787,16 @@
                         </strong>
                         <p>${escaparHTML(resposta)}</p>
                     </div>
+                ` : ""}
+                ${avaliacaoVendedorId ? `
+                    <button
+                        type="button"
+                        class="produto-denunciar-avaliacao"
+                        data-denunciar-avaliacao-vendedor="${escaparAtributo(avaliacaoVendedorId)}"
+                    >
+                        <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                        Denunciar avaliação
+                    </button>
                 ` : ""}
                 ${avaliacaoId ? `
                     <button

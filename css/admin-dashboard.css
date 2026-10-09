@@ -941,3 +941,15 @@ body.dark-theme .fila-anuncio-comparacao thead th, body.dark-theme .fila-anuncio
 .filtro-pedidos-opcao { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; font-weight: 600; color: #334155; }
 .filtro-pedidos-opcao input { width: 18px; height: 18px; accent-color: #ff6b35; }
 body.dark-theme .filtro-pedidos-opcao { color: #e2e8f0; }
+
+/* Avaliações de vendedores (etapa 10) */
+.avaliacao-admin-nota { display: grid; align-content: center; justify-items: center; gap: 4px; color: #f59e0b; }
+.avaliacao-admin-nota strong { color: #1e293b; font-size: 34px; line-height: 1; }
+.avaliacao-admin-nota span { font-size: 12px; }
+.fila-anuncio-tipo.denunciada { color: #b91c1c; background: #fee2e2; }
+.avaliacao-admin-motivos { display: grid; gap: 6px; margin: 8px 0; padding: 10px 12px; list-style: none; border-radius: 10px; background: #fef2f2; color: #7f1d1d; font-size: 13px; }
+.filtro-avaliacoes-admin select { min-height: 42px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 10px; font: inherit; background: #fff; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+body.dark-theme .avaliacao-admin-nota strong { color: #f8fafc; }
+body.dark-theme .avaliacao-admin-motivos { background: #3f1d1d; color: #fecaca; }
+body.dark-theme .filtro-avaliacoes-admin select { border-color: #475569; background: #0f172a; color: #f8fafc; }

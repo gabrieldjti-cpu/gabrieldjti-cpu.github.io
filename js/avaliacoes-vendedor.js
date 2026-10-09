@@ -84,6 +84,10 @@
                                 </div>
                                 <p>${item.comentario ? escapar(item.comentario) : "<em>Sem comentário.</em>"}</p>
                                 <small>${escapar(item.avaliador_nome || "Comprador")}${item.produto_nome ? ` · comprou ${escapar(item.produto_nome)}` : ""}</small>
+                                ${item.resposta_loja ? `<div class="avaliacoes-vendedor-resposta"><strong>Resposta do vendedor</strong><p>${escapar(item.resposta_loja)}</p></div>` : ""}
+                                <button type="button" class="avaliacoes-vendedor-denunciar" data-denunciar-avaliacao-vendedor="${escapar(item.id)}">
+                                    <i class="fa-regular fa-flag" aria-hidden="true"></i> Denunciar
+                                </button>
                             </li>
                         `).join("")}
                     </ul>

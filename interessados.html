@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="css/avaliacoes-vendedor.css">
 <link rel="stylesheet" href="css/dark-mode.css">
 </head>
 
@@ -46,6 +47,12 @@
     </section>
 
     <section id="listaInteressados" class="interessados-lista" aria-live="polite"></section>
+
+    <section class="anuncios-card" aria-labelledby="tituloAvaliacoesRecebidas">
+      <h2 id="tituloAvaliacoesRecebidas">Avaliações recebidas</h2>
+      <p>Responda com educação: a resposta aparece junto da avaliação no seu perfil ou na sua loja.</p>
+      <div id="lista-avaliacoes-recebidas" class="avaliacoes-recebidas" aria-live="polite">Carregando...</div>
+    </section>
   </main>
 
   <footer class="institucional-footer">
@@ -62,6 +69,7 @@
   <script src="components/header.js"></script>
   <script src="components/feedback.js"></script>
   <script src="js/interessados.js"></script>
+  <script src="js/avaliacoes-recebidas.js"></script>
 </body>
 </html>
 
