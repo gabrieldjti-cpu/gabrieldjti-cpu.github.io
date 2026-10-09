@@ -282,39 +282,6 @@ function carregarExtensoesDaPagina() {
 
     const extensoes = {
 
-        "meus-pedidos.html": {
-
-            css:
-                "css/cancelamento-cliente.css",
-
-            scripts: [
-                "js/meus-pedidos-cancelamento.js",
-                "js/meus-pedidos-historico.js",
-                "js/cancelamento-observer-fix.js"
-            ],
-
-            iniciar:
-                "iniciarCancelamentoCliente"
-
-        },
-
-
-        "pedidos-loja.html": {
-
-            css:
-                "css/cancelamento-cliente.css",
-
-            scripts: [
-                "js/pedidos-loja-solicitacoes.js",
-                "js/cancelamento-observer-fix.js"
-            ],
-
-            iniciar:
-                "iniciarSolicitacoesCancelamentoLoja"
-
-        },
-
-
         "perfil.html": {
 
             css:
@@ -328,22 +295,6 @@ function carregarExtensoesDaPagina() {
 
             iniciar:
                 "iniciarEnderecosPerfil"
-
-        },
-
-
-        "checkout.html": {
-
-            css:
-                "css/enderecos-cliente.css",
-
-            scripts: [
-                "js/enderecos-cliente.js",
-                "js/checkout-enderecos.js"
-            ],
-
-            iniciar:
-                "iniciarEnderecosCheckout"
 
         },
 

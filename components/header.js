@@ -13,8 +13,6 @@
 
         marcarPaginaAtual();
 
-        atualizarContadorCarrinho();
-
         configurarMenuMobile();
 
         configurarTema();
@@ -996,84 +994,6 @@ async function verificarUsuarioHeader() {
 
 
     // ==========================================
-    // CONTADOR DO CARRINHO
-    // ==========================================
-
-    function atualizarContadorCarrinho() {
-
-        const contador =
-            document.getElementById(
-                "contador-carrinho"
-            );
-
-
-        if (!contador) {
-
-            return;
-
-        }
-
-
-        let carrinho = [];
-
-
-        try {
-
-            carrinho =
-                JSON.parse(
-                    localStorage.getItem(
-                        "carrinho"
-                    )
-                ) || [];
-
-
-        } catch (erro) {
-
-            console.error(
-                "Erro ao ler carrinho:",
-                erro
-            );
-
-
-            carrinho = [];
-
-        }
-
-
-        let total = 0;
-
-
-        carrinho.forEach(
-            (produto) => {
-
-                const quantidade =
-                    Number(
-                        produto.quantidade || 1
-                    );
-
-
-                if (
-                    Number.isFinite(
-                        quantidade
-                    )
-                ) {
-
-                    total +=
-                        quantidade;
-
-                }
-
-            }
-        );
-
-
-        contador.textContent =
-            total;
-
-    }
-
-
-    // ==========================================
     // CONFIGURAR EVENTOS
     // ==========================================
 
@@ -1095,33 +1015,6 @@ async function verificarUsuarioHeader() {
         }
 
 
-        window.addEventListener(
-            "focus",
-            atualizarContadorCarrinho
-        );
-
-
-        window.addEventListener(
-            "storage",
-            (event) => {
-
-                if (
-                    event.key ===
-                    "carrinho"
-                ) {
-
-                    atualizarContadorCarrinho();
-
-                }
-
-            }
-        );
-
-
-        document.addEventListener(
-            "carrinho:sincronizado",
-            atualizarContadorCarrinho
-        );
 
     }
 
@@ -1157,12 +1050,6 @@ async function verificarUsuarioHeader() {
 
 
         try {
-
-            if (window.CarrinhoSync) {
-
-                await window.CarrinhoSync.prepararLogout();
-
-            }
 
             const {
                 error
@@ -1270,8 +1157,6 @@ async function verificarUsuarioHeader() {
 
     async function atualizarHeader() {
 
-        atualizarContadorCarrinho();
-
         await verificarUsuarioHeader();
 
     }
@@ -1283,10 +1168,6 @@ async function verificarUsuarioHeader() {
 
     window.atualizarHeader =
         atualizarHeader;
-
-
-    window.atualizarContadorCarrinho =
-        atualizarContadorCarrinho;
 
 
 })(); // FIM DO HEADER

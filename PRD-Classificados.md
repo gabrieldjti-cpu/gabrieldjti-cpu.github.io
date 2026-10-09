@@ -137,12 +137,12 @@ O site **não vende, não recebe pagamentos e não faz entregas**. Ele organiza 
 | `avaliacoes_vendedor`, `denuncias_avaliacao_vendedor` | Avaliações, respostas e denúncias |
 | `notificacoes` | Avisos no sininho |
 
-As tabelas de carrinho e pedidos do modelo antigo continuam no banco, sem uso, até a limpeza depois da feira.
+As tabelas de carrinho, pedidos, avaliação de pedido e documentos do modelo antigo foram removidas na etapa 12 (migrations `20261009030000` e `20261009040000`).
 
 ---
 
 ## 7. Roadmap
 
 - **Até a feira (30/10/2026):** testes com dados reais e ajustes.
-- **Depois da feira:** apagar os arquivos de compra do repositório e aposentar tabelas, gatilhos e funções de pedido.
+- **Limpeza (etapa 12, feita):** arquivos de compra apagados do repositório; tabelas, gatilhos e funções de pedido removidos do banco.
 - **Ideias:** anúncio em destaque como benefício do assinante; comparação do mesmo item entre anunciantes; aviso de "anúncio vence amanhã".
