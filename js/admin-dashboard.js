@@ -349,7 +349,7 @@ function criarCardLojaAdmin(loja) {
                     <strong>${totalProdutos}</strong>
                 </div>
                 <div class="loja-admin-dado">
-                    <small>Pedidos</small>
+                    <small>Vendas</small>
                     <strong>${totalPedidos}</strong>
                 </div>
                 <div class="loja-admin-dado">
@@ -866,7 +866,7 @@ async function verDetalhesLojaAdmin(lojaId) {
             ${detalheAdmin("Endereço", loja.endereco || "Não informado")}
             ${detalheAdmin("Cadastro", formatarDataAdmin(loja.criado_em))}
             ${detalheAdmin("Produtos", String(loja.total_produtos || 0))}
-            ${detalheAdmin("Pedidos", String(loja.total_pedidos || 0))}
+            ${detalheAdmin("Vendas confirmadas", String(loja.total_pedidos || 0))}
         </div>
 
         ${loja.descricao ? `<p>${escaparHTMLAdmin(loja.descricao)}</p>` : ""}
@@ -888,79 +888,11 @@ async function verDetalhesLojaAdmin(lojaId) {
     `;
 }
 
-function renderizarDocumentoLojaAdmin(documento) {
-    const nomes = {
-        documento_fiscal: documento.tipo_pessoa === "cnpj" ? "Documento de CNPJ" : "Documento de CPF",
-        comprovante_endereco: "Comprovante de endereço"
-    };
-    const status = documento.status || "pendente";
-    const numero = documento.numero_fiscal
-        ? `<span><strong>Número:</strong> ${escaparHTMLAdmin(formatarNumeroFiscalAdmin(documento.numero_fiscal))}</span>`
-        : "";
-    const motivo = documento.motivo_rejeicao
-        ? `<span class="documento-motivo-admin"><strong>Motivo:</strong> ${escaparHTMLAdmin(documento.motivo_rejeicao)}</span>`
-        : "";
-    const acoes = status === "pendente"
-        ? `<button type="button" class="btn-admin btn-primario" onclick="analisarDocumentoLojaAdmin('${escaparAtributoAdmin(documento.id)}', 'aprovado')"><i class="fa-solid fa-check"></i> Aprovar</button>
-           <button type="button" class="btn-admin btn-perigo" onclick="analisarDocumentoLojaAdmin('${escaparAtributoAdmin(documento.id)}', 'rejeitado')"><i class="fa-solid fa-xmark"></i> Rejeitar</button>`
-        : "";
-    return `<article class="documento-admin documento-${escaparAtributoAdmin(status)}">
-        <div class="documento-info-admin">
-            <strong>${escaparHTMLAdmin(nomes[documento.tipo] || "Documento")}</strong>
-            <span class="documento-status-admin">${escaparHTMLAdmin(status)}</span>
-            ${numero}
-            <span>${escaparHTMLAdmin(documento.nome_arquivo || "Arquivo")}</span>
-            ${motivo}
-        </div>
-        <div class="documento-acoes-admin">
-            <button type="button" class="btn-admin btn-claro" onclick="abrirDocumentoLojaAdmin('${escaparAtributoAdmin(documento.arquivo_path)}')"><i class="fa-solid fa-eye"></i> Visualizar</button>
-            ${acoes}
-        </div>
-    </article>`;
-}
-
 function formatarNumeroFiscalAdmin(valor) {
     const numeros = String(valor || "").replace(/\D/g, "");
     if (numeros.length === 14) return numeros.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
     return numeros.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 }
-
-async function abrirDocumentoLojaAdmin(caminho) {
-    try {
-        const { data, error } = await window.db.storage.from("documentos-lojas").createSignedUrl(caminho, 120);
-        if (error) throw error;
-        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
-    } catch (erro) {
-        console.error("Erro ao abrir documento:", erro);
-        avisarAdmin("Não foi possível abrir o documento.", "erro", "Erro no documento");
-    }
-}
-
-async function analisarDocumentoLojaAdmin(documentoId, status) {
-    let motivo = null;
-    if (status === "rejeitado") {
-        motivo = window.prompt("Informe o motivo da rejeição do documento:")?.trim();
-        if (!motivo || motivo.length < 5) {
-            avisarAdmin("Informe um motivo com pelo menos 5 caracteres.", "aviso", "Motivo obrigatório");
-            return;
-        }
-    }
-    try {
-        const { error } = await window.db.rpc("analisar_documento_loja_admin", {
-            p_documento_id: documentoId,
-            p_status: status,
-            p_motivo: motivo
-        });
-        if (error) throw error;
-        avisarAdmin(`Documento ${status} com sucesso.`, "sucesso", "Análise registrada");
-        if (lojaDetalhadaAdmin) await verDetalhesLojaAdmin(lojaDetalhadaAdmin);
-    } catch (erro) {
-        console.error("Erro ao analisar documento:", erro);
-        avisarAdmin(erro.message || "Não foi possível analisar o documento.", "erro", "Falha na análise");
-    }
-}
-
-
 
 function renderizarItemHistoricoAdmin(item) {
     const administrador = item.administrador_nome

@@ -29,27 +29,6 @@
             rotuloSingular: "produto",
             rotuloPlural: "produtos"
         },
-        "meus-pedidos.html": {
-            container: "#lista-pedidos",
-            item: ".pedido-card",
-            porPagina: 5,
-            rotuloSingular: "pedido",
-            rotuloPlural: "pedidos"
-        },
-        "pedidos-loja.html": {
-            container: "#lista-pedidos-loja",
-            item: ".pedido-card",
-            porPagina: 5,
-            rotuloSingular: "pedido",
-            rotuloPlural: "pedidos"
-        },
-        "avaliacoes-loja.html": {
-            container: "#lista-avaliacoes-loja",
-            item: ".avaliacao-card",
-            porPagina: 5,
-            rotuloSingular: "avaliação",
-            rotuloPlural: "avaliações"
-        },
         "admin-dashboard.html": {
             container: "#listaLojasAdmin",
             item: ".loja-admin-card",

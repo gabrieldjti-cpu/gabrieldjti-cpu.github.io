@@ -15,13 +15,21 @@ const paginasDeCompra = [
     "clientes-loja.html"
 ];
 
-test("as páginas de compra redirecionam para a home", () => {
+test("as páginas de compra foram removidas do site", () => {
     for (const pagina of paginasDeCompra) {
-        assert.match(
-            ler(pagina),
-            /window\.location\.replace\("index\.html"\)/,
-            `${pagina} deveria redirecionar`
-        );
+        assert.ok(!fs.existsSync(path.join(raiz, pagina)), `${pagina} ainda existe`);
+    }
+    for (const arquivo of ["js/carrinho.js", "js/checkout.js", "components/carrinho-sync.js", "js/meus-pedidos.js", "js/pedidos-loja.js"]) {
+        assert.ok(!fs.existsSync(path.join(raiz, arquivo)), `${arquivo} ainda existe`);
+    }
+});
+
+test("nenhuma página aponta para as páginas de compra removidas", () => {
+    const paginas = fs.readdirSync(raiz).filter(nome => nome.endsWith(".html"));
+    for (const pagina of paginas) {
+        const html = ler(pagina);
+        assert.doesNotMatch(html, /(href|src)="(carrinho|checkout|meus-pedidos|historico-compras|pedidos-loja|clientes-loja|avaliacoes-loja)\.html"/, pagina);
+        assert.doesNotMatch(html, /carrinho-sync\.js|frete-loja\.js/, pagina);
     }
 });
 

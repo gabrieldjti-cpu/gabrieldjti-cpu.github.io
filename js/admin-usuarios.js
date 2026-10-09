@@ -343,12 +343,12 @@
 
                 <div class="usuario-dados-admin">
                     <div class="usuario-dado-admin">
-                        <span>Pedidos</span>
+                        <span>Compras confirmadas</span>
                         <strong>${formatarInteiro(usuario.total_pedidos)}</strong>
                     </div>
                     <div class="usuario-dado-admin">
-                        <span>Total confirmado</span>
-                        <strong>${formatarMoeda(usuario.total_compras)}</strong>
+                        <span>Anúncios ativos</span>
+                        <strong>${formatarInteiro(usuario.total_compras)}</strong>
                     </div>
                     <div class="usuario-dado-admin">
                         <span>Lojas</span>

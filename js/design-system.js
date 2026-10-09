@@ -27,23 +27,16 @@
         ]),
         cliente: new Set([
             "perfil.html",
-            "carrinho.html",
             "favoritos.html",
-            "notificacoes.html",
-            "checkout.html",
-            "meus-pedidos.html",
-            "historico-compras.html"
+            "notificacoes.html"
         ]),
         lojista: new Set([
             "cadastrar-loja.html",
-            "clientes-loja.html",
             "editar-loja.html",
             "editar-produto.html",
             "novo-produto.html",
             "produtos.html",
-            "painel-loja.html",
-            "pedidos-loja.html",
-            "avaliacoes-loja.html"
+            "painel-loja.html"
         ]),
         admin: new Set([
             "admin-dashboard.html",
@@ -66,14 +59,10 @@
     const paginasComPaginacao = new Set([
         "produtos.html",
         "loja.html",
-        "meus-pedidos.html",
         "notificacoes.html",
-        "pedidos-loja.html",
-        "avaliacoes-loja.html",
         "admin-dashboard.html",
         "admin-categorias.html",
-        "admin-usuarios.html",
-        "clientes-loja.html"
+        "admin-usuarios.html"
     ]);
 
     function obterGrupo() {

@@ -39,7 +39,7 @@ test("todas as páginas carregam a base visual compartilhada no head", () => {
 });
 
 test("páginas novas pertencem aos grupos visuais corretos", () => {
-    assert.match(designJs, /lojista:[\s\S]*"clientes-loja\.html"/);
+    assert.match(designJs, /lojista:[\s\S]*"painel-loja\.html"/);
     assert.match(designJs, /admin:[\s\S]*"admin-usuarios\.html"/);
     assert.match(designJs, /publico:[\s\S]*"categoria\.html"/);
 });
