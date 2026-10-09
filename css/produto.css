@@ -1506,3 +1506,141 @@ body.dark-theme .produto-condicao.usado {
         margin-right: auto;
     }
 }
+
+/* Tenho interesse / avaliação do vendedor (etapa 9) */
+.interesse-anuncio {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #fde7dc;
+    border-radius: 16px;
+    background: #fff8f4;
+}
+
+.interesse-texto {
+    margin: 0;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.interesse-texto i {
+    margin-right: 6px;
+    color: #e85b2b;
+}
+
+.interesse-texto a {
+    color: #e85b2b;
+    font-weight: 700;
+}
+
+.interesse-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.interesse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 12px;
+    background: #ff6b35;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.interesse-btn:hover { background: #e85b2b; }
+.interesse-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.interesse-btn.secundario {
+    border: 1px solid #fdba9b;
+    background: #fff;
+    color: #c2410c;
+}
+
+.interesse-btn.perigo {
+    border: 1px solid #fecaca;
+    background: #fff;
+    color: #b91c1c;
+}
+
+.interesse-dica {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.interesse-avaliar {
+    display: grid;
+    gap: 10px;
+}
+
+.interesse-estrelas {
+    display: flex;
+    gap: 4px;
+}
+
+.interesse-estrela {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #f59e0b;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.interesse-estrela:hover,
+.interesse-estrela:focus-visible { background: #fef3c7; }
+
+.interesse-label {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.interesse-avaliar textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font: inherit;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.interesse-avaliar .interesse-btn { justify-self: start; }
+
+body.dark-theme .interesse-anuncio {
+    border-color: #334155;
+    background: #1e293b;
+}
+
+body.dark-theme .interesse-texto,
+body.dark-theme .interesse-label { color: #cbd5e1; }
+
+body.dark-theme .interesse-btn.secundario,
+body.dark-theme .interesse-btn.perigo { background: #0f172a; }
+
+body.dark-theme .interesse-avaliar textarea {
+    border-color: #475569;
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+.produto-avaliacao-origem {
+    display: block;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 12px;
+}

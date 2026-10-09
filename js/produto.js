@@ -291,6 +291,12 @@
         estado.imagens = imagens.slice(0, 8);
     }
 
+    // Quando o comprador envia a avaliação, atualiza a lista.
+    window.addEventListener("comercio:avaliacao-vendedor-enviada", async () => {
+        await carregarAvaliacoes();
+        renderizarAvaliacoes();
+    });
+
     async function carregarAvaliacoes() {
         const resumoPadrao = {
             media: 0,
@@ -304,11 +310,14 @@
 
         try {
             const [resultadoResumo, resultadoLista] = await Promise.all([
-                window.db.rpc("obter_resumo_avaliacoes_produto", {
-                    p_produto_id: estado.produtoId
+                // Avaliações de quem vende (perfil ou loja), feitas por
+                // compradores com a venda confirmada.
+                window.db.rpc("resumo_avaliacoes_vendedor", {
+                    p_loja_id: estado.produto?.loja_id || estado.loja?.id
                 }),
-                window.db.rpc("listar_avaliacoes_produto", {
-                    p_produto_id: estado.produtoId
+                window.db.rpc("listar_avaliacoes_vendedor", {
+                    p_loja_id: estado.produto?.loja_id || estado.loja?.id,
+                    p_limite: 20
                 })
             ]);
 
@@ -700,8 +709,8 @@
             elementos.listaAvaliacoesProduto.innerHTML = `
                 <div class="produto-avaliacoes-vazio">
                     <i class="fa-regular fa-star" aria-hidden="true"></i>
-                    <h3>Este produto ainda não recebeu avaliações.</h3>
-                    <p>Depois de uma compra entregue, o cliente poderá contar como foi a experiência.</p>
+                    <h3>Este vendedor ainda não recebeu avaliações.</h3>
+                    <p>Quem clica em "Tenho interesse" pode avaliar depois que o vendedor confirmar a venda.</p>
                 </div>
             `;
             return;
@@ -739,7 +748,10 @@
         const comentario = String(avaliacao?.comentario || "").trim();
         const resposta = String(avaliacao?.resposta_loja || "").trim();
         const data = formatarData(avaliacao?.criado_em);
-        const avaliacaoId = String(avaliacao?.id || "");
+        // A denúncia de avaliação ainda é do modelo antigo (pedidos).
+        const avaliacaoId = "";
+        const autor = String(avaliacao?.avaliador_nome || "").trim();
+        const produtoAvaliado = String(avaliacao?.produto_nome || "").trim();
 
         return `
             <article class="produto-avaliacao-card">
@@ -750,7 +762,7 @@
                         </span>
                         <span class="produto-avaliacao-verificada">
                             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-                            Compra verificada
+                            Venda confirmada
                         </span>
                     </div>
                     ${data ? `<time datetime="${escaparAtributo(avaliacao.criado_em)}">${escaparHTML(data)}</time>` : ""}
@@ -758,8 +770,13 @@
                 <p class="${comentario ? "" : "sem-comentario"}">
                     ${comentario
                         ? escaparHTML(comentario)
-                        : "O cliente avaliou este produto sem deixar comentário."}
+                        : "O comprador avaliou sem deixar comentário."}
                 </p>
+                ${autor || produtoAvaliado ? `
+                    <small class="produto-avaliacao-origem">
+                        ${autor ? escaparHTML(autor) : "Comprador"}${produtoAvaliado ? ` · comprou ${escaparHTML(produtoAvaliado)}` : ""}
+                    </small>
+                ` : ""}
                 ${resposta ? `
                     <div class="produto-resposta-loja">
                         <strong>
