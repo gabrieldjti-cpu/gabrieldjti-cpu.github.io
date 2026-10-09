@@ -16,8 +16,8 @@
     };
 
     const APRESENTACAO_TIPOS = {
-        pedido_novo: { icone: "fa-solid fa-bag-shopping", classe: "pedido", nome: "Pedido" },
-        pedido_status: { icone: "fa-solid fa-box", classe: "pedido", nome: "Pedido" },
+        pedido_novo: { icone: "fa-regular fa-hand", classe: "pedido", nome: "Interessado" },
+        pedido_status: { icone: "fa-solid fa-handshake", classe: "pedido", nome: "Venda" },
         cancelamento_solicitado: { icone: "fa-solid fa-rotate-left", classe: "cancelamento", nome: "Cancelamento" },
         cancelamento_resolvido: { icone: "fa-solid fa-circle-check", classe: "cancelamento", nome: "Cancelamento" },
         estoque_baixo: { icone: "fa-solid fa-boxes-stacked", classe: "estoque", nome: "Estoque" },
