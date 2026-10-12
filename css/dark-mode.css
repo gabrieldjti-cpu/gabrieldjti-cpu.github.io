@@ -100,3 +100,332 @@ body.dark-theme .footer-home {
     background: #0f172a !important;
     border-top-color: #334155 !important;
 }
+
+/* ==========================================
+   AJUSTES POR PÁGINA (revisão de 12/10/2026)
+   Muitas páginas tinham fundo branco e texto escuro fixos no CSS. No
+   modo escuro isso virava caixa branca com texto claro (ilegível) ou
+   texto escuro sobre fundo escuro. As regras abaixo trocam superfícies,
+   textos e botões de uma vez.
+========================================== */
+
+html.dark-theme body.dark-theme {
+    --dk-bg: #0f172a;
+    --dk-surface: #1e293b;
+    --dk-surface-2: #273449;
+    --dk-border: #334155;
+    --dk-text: #e2e8f0;
+    --dk-strong: #f8fafc;
+    --dk-muted: #cbd5e1;
+    --dk-soft: #94a3b8;
+    --dk-accent: #fb923c;
+}
+
+/* ---------- Menu do cabeçalho (celular) ---------- */
+
+html.dark-theme body.dark-theme .header #btnMinhaLoja,
+html.dark-theme body.dark-theme .header #btnPerfil {
+    background: var(--dk-surface-2) !important;
+    border-color: var(--dk-border) !important;
+    color: var(--dk-text) !important;
+}
+
+html.dark-theme body.dark-theme .header #btnMinhaLoja *,
+html.dark-theme body.dark-theme .header #btnPerfil * {
+    color: var(--dk-text) !important;
+}
+
+html.dark-theme body.dark-theme .header #btnLogout {
+    background: rgba(220, 53, 69, 0.2) !important;
+    border-color: rgba(248, 113, 113, 0.45) !important;
+    color: #fecaca !important;
+}
+
+html.dark-theme body.dark-theme .header #btnLogout * {
+    color: #fecaca !important;
+}
+
+html.dark-theme body.dark-theme .header #btnAnunciar,
+html.dark-theme body.dark-theme .header #btnAnunciar * {
+    color: #fff !important;
+}
+
+/* ---------- Superfícies (cartões, caixas, rodapés) ---------- */
+
+html.dark-theme body.dark-theme :is(
+    .produto-global-card, .beneficio-card, .area-logo-card,
+    #filtros-produtos-globais, .categoria-navegacao, .categoria-loja-card,
+    #filtros-categoria, .categoria-pesquisa,
+    .produto-detalhe, .produto-loja-card, .produto-secao, .produto-avaliacao-card,
+    .produto-relacionado-card, .produto-footer, .produto-compra-verificada-legenda,
+    .loja-ferramentas, #listaProdutos > .produto, .favoritos-resumo, .favoritos-estado,
+    .notificacoes-conteudo, .notificacoes-filtros, .notificacao-item,
+    #perf-endereco-resumo, .info, #avisoAprovacaoLoja, .info-loja p, .produto-card,
+    .preview, .logo-preview, .banner-preview, .secao-documentos,
+    .campo-logo, .campo-banner, .campo-status, .feedback-conteudo,
+    .ajuda-atalho, .ajuda-faq, #ajudaSemResultados, .como-trilha, .confianca-card,
+    .como-observacao, .documento-indice, .documento-conteudo, .documento-resumo,
+    .documento-alerta, .documento-referencias, .politica-resumo-card,
+    .plano-card, .institucional-chamada, .anuncios-card, .anuncio-item,
+    .interessado-item, .avaliacao-recebida, .avaliacoes-vendedor, .avaliacoes-vendedor-lista li,
+    .interesse-anuncio, .aviso-loja-pausada, .assinatura-loja-card, .documentos-loja-card
+) {
+    background: var(--dk-surface) !important;
+    border-color: var(--dk-border) !important;
+    color: var(--dk-text) !important;
+}
+
+/* Áreas internas um pouco mais claras que o cartão */
+html.dark-theme body.dark-theme :is(
+    .produto-global-imagem, .produto-relacionado-imagem, .produto-loja-logo,
+    .imagem-produto-placeholder, #logoLojaPlaceholder, .foto-produto-placeholder,
+    .anuncio-item-imagem, .documento-alerta, .ajuda-faq[open],
+    #preview-logo-placeholder, #preview-banner-placeholder, .produto-distribuicao-barra
+) {
+    background: var(--dk-surface-2) !important;
+    border-color: var(--dk-border) !important;
+}
+
+/* Rodapés simples das páginas internas */
+html.dark-theme body.dark-theme > footer {
+    background: var(--dk-bg) !important;
+    border-top: 1px solid var(--dk-border) !important;
+    color: var(--dk-soft) !important;
+}
+
+/* ---------- Textos ---------- */
+
+html.dark-theme body.dark-theme :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--dk-strong) !important;
+}
+
+html.dark-theme body.dark-theme main :is(p, li, dd, dt, td, th, label, legend, summary, time),
+html.dark-theme body.dark-theme .campo label,
+html.dark-theme body.dark-theme .subtitulo {
+    color: var(--dk-muted) !important;
+}
+
+html.dark-theme body.dark-theme main strong,
+html.dark-theme body.dark-theme .produto-info p strong,
+html.dark-theme body.dark-theme .info-loja p span {
+    color: var(--dk-strong) !important;
+}
+
+html.dark-theme body.dark-theme main small {
+    color: var(--dk-soft) !important;
+}
+
+/* Nomes das categorias da página inicial e dos cartões */
+html.dark-theme body.dark-theme .categoria > span:not(.categoria-icone),
+html.dark-theme body.dark-theme .categoria strong,
+html.dark-theme body.dark-theme .produto-global-descricao,
+html.dark-theme body.dark-theme .loja-ferramentas-texto small,
+html.dark-theme body.dark-theme .secao-eyebrow,
+html.dark-theme body.dark-theme .produto-secao-eyebrow {
+    color: var(--dk-muted) !important;
+}
+
+html.dark-theme body.dark-theme .secao-eyebrow,
+html.dark-theme body.dark-theme .produto-secao-eyebrow,
+html.dark-theme body.dark-theme .institucional-eyebrow {
+    color: var(--dk-accent) !important;
+}
+
+/* Preços em laranja continuam laranja, mais claro para ler no escuro */
+html.dark-theme body.dark-theme :is(.preco, .produto-global-preco, .preco-atual) {
+    color: var(--dk-accent) !important;
+}
+
+/* Links de rodapé e links de texto */
+html.dark-theme body.dark-theme :is(.footer-confianca-links a, .produto-footer-marca strong, .institucional-footer a) {
+    color: var(--dk-muted) !important;
+}
+
+html.dark-theme body.dark-theme main :is(p, li, .documento-bloco) a:not([class*="btn"]) {
+    color: var(--dk-accent) !important;
+}
+
+/* ---------- Botões claros (secundários) ---------- */
+
+html.dark-theme body.dark-theme :is(
+    .card > button.theme-control, .categoria-loja-acao, #comoChegarProduto,
+    #whatsappLojaProduto, .favoritos-explorar, #btn-marcar-todas-lidas,
+    .filtro-leitura, #limpar-filtros-produtos, #limpar-filtros-categoria,
+    .btn-cancelar, .institucional-btn.secundario, #perfil-foto-alterar-rf04,
+    .anuncio-item-acoes a, .anuncio-item-acoes button, .notificacoes-estado a,
+    #btnVoltarAnuncios, .link-planos-loja
+) {
+    background: var(--dk-surface-2) !important;
+    border-color: #475569 !important;
+    color: var(--dk-text) !important;
+}
+
+html.dark-theme body.dark-theme .filtro-leitura.ativo {
+    background: #45271a !important;
+    border-color: var(--dk-accent) !important;
+    color: #fed7aa !important;
+}
+
+/* Botão "Pesquisar" da página inicial */
+html.dark-theme body.dark-theme #btnPesquisar {
+    background: #ff6b35 !important;
+    color: #fff !important;
+}
+
+/* Botões brancos sobre fundo laranja (hero e chamada final) */
+html.dark-theme body.dark-theme .btn-home-primary,
+html.dark-theme body.dark-theme .btn-home-claro {
+    background: #fff !important;
+    color: #c2410c !important;
+}
+
+/* Etiquetas da página do anúncio */
+html.dark-theme body.dark-theme #categoriaProduto {
+    background: #45271a !important;
+    color: #fed7aa !important;
+}
+
+html.dark-theme body.dark-theme .produto-estoque.em-estoque {
+    background: rgba(22, 163, 74, 0.2) !important;
+    color: #86efac !important;
+}
+
+html.dark-theme body.dark-theme .produto-estoque.sem-estoque {
+    background: rgba(220, 38, 38, 0.2) !important;
+    color: #fca5a5 !important;
+}
+
+/* Selos de disponível/indisponível nas listas */
+html.dark-theme body.dark-theme .anuncio-selo.disponivel,
+html.dark-theme body.dark-theme .produto-global-meta .em-estoque {
+    background: rgba(22, 163, 74, 0.2) !important;
+    color: #86efac !important;
+}
+
+html.dark-theme body.dark-theme .anuncio-selo.indisponivel,
+html.dark-theme body.dark-theme .produto-global-meta .sem-estoque {
+    background: rgba(217, 119, 6, 0.2) !important;
+    color: #fcd34d !important;
+}
+
+html.dark-theme body.dark-theme .produto-global-meta span:not(.em-estoque):not(.sem-estoque):not(.condicao-anuncio) {
+    background: var(--dk-surface-2) !important;
+    color: var(--dk-muted) !important;
+}
+
+html.dark-theme body.dark-theme #selo-fiscal-loja,
+html.dark-theme body.dark-theme #contadorProdutos,
+html.dark-theme body.dark-theme .produto-compra-verificada-legenda {
+    background: var(--dk-surface-2) !important;
+    color: var(--dk-muted) !important;
+}
+
+/* Avisos de avaliação ocultada e texto auxiliar */
+html.dark-theme body.dark-theme .avaliacao-recebida-aviso {
+    color: #fcd34d !important;
+}
+
+html.dark-theme body.dark-theme .interessado-indisponivel {
+    color: var(--dk-muted) !important;
+}
+
+html.dark-theme body.dark-theme :is(
+    #resumoAvaliacoesProduto, .card > p, #compartilharProduto, #verLojaProduto,
+    .titulo > i.fa-pen-to-square
+) {
+    background: var(--dk-surface-2) !important;
+    border-color: var(--dk-border) !important;
+    color: var(--dk-text) !important;
+}
+
+html.dark-theme body.dark-theme :is(.produto-loja-selo, .produto-avaliacao-verificada) {
+    background: rgba(22, 163, 74, 0.2) !important;
+    color: #86efac !important;
+}
+
+html.dark-theme body.dark-theme :is(#preview-logo-placeholder, #preview-banner-placeholder) span {
+    color: var(--dk-muted) !important;
+}
+
+html.dark-theme body.dark-theme .produto-acoes-secundarias button {
+    color: var(--dk-muted) !important;
+}
+
+/* ---------- Fundo único em tons de azul-escuro ---------- */
+/* Antes a página era preta (#121212) e os cartões azul-ardósia, o que
+   deixava tudo com cara de remendo. Agora a base é uma só. */
+html.dark-theme,
+html.dark-theme body.dark-theme {
+    --bg: #0f172a !important;
+    --home-bg: #0f172a !important;
+    --app-bg: #0f172a !important;
+    background-color: #0f172a !important;
+}
+
+html.dark-theme body.dark-theme :is(main, .secao-home, .produtos-globais, .lojas, .valor-local, .categorias, .institucional-main, .notificacoes-main, .categoria-main) {
+    background-color: transparent !important;
+}
+
+/* Imagens sem foto: placeholder escuro em vez de branco */
+html.dark-theme body.dark-theme :is(
+    .produto-imagem-principal, .produto-imagem-placeholder, .produto-global-placeholder,
+    .area-logo-loja, .logo-loja-placeholder, #logo-loja-placeholder, .categoria-icone,
+    .dados-loja-painel
+) {
+    background: var(--dk-surface-2) !important;
+    border-color: var(--dk-border) !important;
+    color: var(--dk-soft) !important;
+}
+
+html.dark-theme body.dark-theme .dados-loja-painel {
+    background: var(--dk-bg) !important;
+}
+
+html.dark-theme body.dark-theme .produto-imagem-placeholder span {
+    color: var(--dk-soft) !important;
+}
+
+/* Barra fixa do anúncio no celular */
+html.dark-theme body.dark-theme .produto-barra-mobile {
+    background: rgba(15, 23, 42, 0.96) !important;
+    border-top: 1px solid var(--dk-border) !important;
+}
+
+html.dark-theme body.dark-theme .produto-barra-mobile :is(span, strong, small, p) {
+    color: var(--dk-text) !important;
+}
+
+/* Números do resumo do painel: texto branco sobre laranja */
+html.dark-theme body.dark-theme .estatisticas .box,
+html.dark-theme body.dark-theme .estatisticas .box :is(h3, p, i) {
+    color: #fff !important;
+}
+
+/* Ícones em quadradinhos claros (avisos do painel, assinatura, CPF) */
+html.dark-theme body.dark-theme :is(.aviso-aprovacao-icone, .assinatura-loja-icone, .documentos-loja-icone, .beneficio-icone, .metrica-icone) {
+    background: #45271a !important;
+    color: var(--dk-accent) !important;
+}
+
+/* Botão "Compartilhar produto" e link "Ver o que cada plano inclui" sem caixa */
+html.dark-theme body.dark-theme #compartilharProduto,
+html.dark-theme body.dark-theme .link-planos-loja {
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+/* Botão do menu no celular e faixa "Encontre por categoria" */
+html.dark-theme body.dark-theme #btnMenuMobile {
+    background: var(--dk-surface-2) !important;
+    border-color: var(--dk-border) !important;
+    color: var(--dk-accent) !important;
+}
+
+html.dark-theme body.dark-theme #categorias,
+html.dark-theme body.dark-theme #categorias .secao-cabecalho {
+    background: transparent !important;
+}
+
+html.dark-theme body.dark-theme #categorias h2 {
+    opacity: 1 !important;
+}
