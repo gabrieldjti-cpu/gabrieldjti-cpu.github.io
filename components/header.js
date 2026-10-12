@@ -709,6 +709,17 @@ async function verificarUsuarioHeader() {
         );
 
 
+        // A conta de administrador não tem loja nem perfil de
+        // anunciante: no lugar de "Perfil" aparece "Painel ADM".
+        if (await ehAdministrador()) {
+
+            configurarHeaderAdmin();
+
+            return;
+
+        }
+
+
         await verificarLojaUsuario(
             user.id
         );
@@ -727,6 +738,80 @@ async function verificarUsuarioHeader() {
     }
 
 }
+
+
+    // ==========================================
+    // ADMINISTRADOR
+    // ==========================================
+
+    const PAGINAS_SEM_ADMIN = new Set([
+        "perfil.html",
+        "painel-loja.html",
+        "meus-anuncios.html",
+        "anunciar.html",
+        "novo-produto.html",
+        "editar-produto.html",
+        "produtos.html",
+        "cadastrar-loja.html",
+        "editar-loja.html",
+        "interessados.html"
+    ]);
+
+    async function ehAdministrador() {
+
+        try {
+
+            const { data, error } =
+                await window.db.rpc("sou_admin");
+
+            return !error && data === true;
+
+        } catch (erro) {
+
+            return false;
+
+        }
+
+    }
+
+    function configurarHeaderAdmin() {
+
+        const pagina =
+            window.location.pathname.split("/").pop() || "index.html";
+
+        if (PAGINAS_SEM_ADMIN.has(pagina)) {
+
+            window.location.replace("admin-dashboard.html");
+
+            return;
+
+        }
+
+        const btnPerfil =
+            document.getElementById("btnPerfil");
+
+        if (btnPerfil) {
+
+            btnPerfil.href = "admin-dashboard.html";
+            btnPerfil.style.display = "flex";
+            btnPerfil.setAttribute("aria-label", "Abrir o painel do administrador");
+
+            const icone = btnPerfil.querySelector("i");
+            if (icone) icone.className = "fa-solid fa-shield-halved";
+
+            const texto = document.getElementById("nomeUsuario");
+            if (texto) texto.textContent = "Painel ADM";
+
+        }
+
+        for (const id of ["btnMinhaLoja", "btnAnunciar"]) {
+
+            const botao = document.getElementById(id);
+            if (botao) botao.style.display = "none";
+
+        }
+
+    }
 
 
     // ==========================================
