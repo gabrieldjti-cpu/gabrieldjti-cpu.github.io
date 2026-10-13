@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="components/favoritos.css" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/pesquisa-global.css?v=20260910-2" />
+  <link rel="stylesheet" href="css/filtros-compactos.css" />
   <link rel="preload" as="image" href="assets/jacinto-hero.webp" type="image/webp" fetchpriority="high" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -203,6 +204,26 @@
         <span id="total-produtos-globais" class="total-produtos-badge" aria-live="polite"></span>
       </div>
 
+      <div class="filtros-barra" id="filtros-barra">
+        <button
+          type="button"
+          id="btn-abrir-filtros"
+          class="btn-abrir-filtros"
+          aria-expanded="false"
+          aria-controls="filtros-produtos-globais"
+        >
+          <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+          <span>Filtros</span>
+          <span id="contador-filtros" class="contador-filtros" hidden>0</span>
+        </button>
+
+        <label class="ordenar-rapido" for="ordenacao-rapida">
+          <span class="sr-only">Ordenar por</span>
+          <i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
+          <select id="ordenacao-rapida" aria-label="Ordenar anúncios"></select>
+        </label>
+      </div>
+
       <form id="filtros-produtos-globais" class="filtros-produtos-globais" aria-label="Filtros de produtos">
         <div class="filtro-produto-campo">
           <label for="filtro-categoria-produto">Categoria</label>
@@ -274,7 +295,7 @@
           </select>
         </div>
 
-        <div class="filtro-produto-campo">
+        <div class="filtro-produto-campo filtro-ordenacao">
           <label for="ordenacao-produtos-globais">Ordenar por</label>
           <select id="ordenacao-produtos-globais" name="ordenacao">
             <option value="relevancia">Relevância</option>
@@ -291,6 +312,10 @@
         <button type="button" id="limpar-filtros-produtos" class="btn-limpar-filtros">
           <i class="fa-solid fa-eraser" aria-hidden="true"></i>
           Limpar filtros
+        </button>
+
+        <button type="button" id="btn-ver-anuncios" class="btn-ver-anuncios">
+          Ver anúncios
         </button>
       </form>
 
@@ -404,6 +429,7 @@
   <script src="js/index.js"></script>
   <script src="js/pesquisa-global.js?v=20260910-2"></script>
   <script src="js/index-filtros.js"></script>
+  <script src="js/filtros-compactos.js"></script>
 </body>
 </html>
 
