@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/pesquisa-global.css?v=20260910-2" />
   <link rel="stylesheet" href="css/categoria.css" />
+  <link rel="stylesheet" href="css/filtros-compactos.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -105,21 +106,38 @@
         <span id="total-produtos-categoria" class="total-produtos-badge" aria-live="polite"></span>
       </div>
 
-      <form id="filtros-categoria" class="categoria-filtros" role="search">
-        <div class="categoria-campo categoria-campo-pesquisa">
-          <label for="pesquisa-produtos-categoria">Pesquisar produtos</label>
-          <div class="categoria-pesquisa">
-            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-            <input
-              type="search"
-              id="pesquisa-produtos-categoria"
-              placeholder="Digite o nome do produto..."
-              autocomplete="off"
-              maxlength="80"
-            />
-          </div>
-        </div>
+      <div class="filtros-barra" data-formulario="filtros-categoria" data-ordenacao="ordenacao-categoria" data-lista="lista-produtos-categoria" data-limpar="limpar-filtros-categoria">
+        <label class="categoria-pesquisa filtros-barra-pesquisa" for="pesquisa-produtos-categoria">
+          <span class="sr-only">Pesquisar anúncios</span>
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input
+            type="search"
+            id="pesquisa-produtos-categoria"
+            placeholder="Pesquisar nesta categoria..."
+            autocomplete="off"
+            maxlength="80"
+          />
+        </label>
 
+        <button
+          type="button"
+          class="btn-abrir-filtros"
+          aria-expanded="false"
+          aria-controls="filtros-categoria"
+        >
+          <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+          <span>Filtros</span>
+          <span class="contador-filtros" hidden>0</span>
+        </button>
+
+        <label class="ordenar-rapido">
+          <span class="sr-only">Ordenar por</span>
+          <i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
+          <select aria-label="Ordenar anúncios"></select>
+        </label>
+      </div>
+
+      <form id="filtros-categoria" class="categoria-filtros filtros-recolhiveis" role="search">
         <div class="categoria-campo">
           <label for="categoria-produto-categoria">Categoria do produto</label>
           <select id="categoria-produto-categoria">
@@ -181,7 +199,7 @@
           </select>
         </div>
 
-        <div class="categoria-campo">
+        <div class="categoria-campo filtro-ordenacao">
           <label for="ordenacao-categoria">Ordenar por</label>
           <select id="ordenacao-categoria">
             <option value="relevancia">Relevância</option>
@@ -197,7 +215,11 @@
 
         <button type="button" id="limpar-filtros-categoria" class="categoria-limpar">
           <i class="fa-solid fa-eraser" aria-hidden="true"></i>
-          Limpar
+          Limpar filtros
+        </button>
+
+        <button type="button" class="btn-ver-anuncios">
+          Ver anúncios
         </button>
       </form>
 
@@ -263,6 +285,7 @@
   <script src="components/feedback.js"></script>
   <script src="components/favoritos.js"></script>
   <script src="js/categoria.js?v=20260910-2"></script>
+  <script src="js/filtros-compactos.js"></script>
 </body>
 </html>
 

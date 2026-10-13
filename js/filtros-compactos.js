@@ -1,24 +1,31 @@
 // ==========================================
 // FILTROS-COMPACTOS.JS
-// No celular, os filtros dos anúncios ficam recolhidos atrás do botão
-// "Filtros" (com a quantidade de filtros ativos). A ordenação fica
-// sempre à mão, ao lado do botão. No computador nada muda: o painel
-// continua aberto e esta barra fica escondida pelo CSS.
+// Página inicial e página de categoria: os filtros dos anúncios ficam
+// recolhidos atrás do botão "Filtros" (com a quantidade de filtros
+// ativos), no celular e no computador. A ordenação fica sempre à mão,
+// ao lado do botão.
+//
+// Cada barra diz no HTML com quem trabalha:
+//   data-formulario  id do painel de filtros
+//   data-ordenacao   id do <select> de ordenação do painel
+//   data-lista       id da lista de anúncios
+//   data-limpar      id do botão "Limpar filtros"
 // ==========================================
 
 (() => {
     "use strict";
 
-    const $ = id => document.getElementById(id);
+    const $ = id => (id ? document.getElementById(id) : null);
 
-    function iniciar() {
-        const formulario = $("filtros-produtos-globais");
-        const botao = $("btn-abrir-filtros");
-        const contador = $("contador-filtros");
-        const ordenacao = $("ordenacao-produtos-globais");
-        const ordenacaoRapida = $("ordenacao-rapida");
-        const verAnuncios = $("btn-ver-anuncios");
-        const limpar = $("limpar-filtros-produtos");
+    function configurarBarra(barra) {
+        const formulario = $(barra.dataset.formulario);
+        const ordenacao = $(barra.dataset.ordenacao);
+        const lista = $(barra.dataset.lista);
+        const limpar = $(barra.dataset.limpar);
+        const botao = barra.querySelector(".btn-abrir-filtros");
+        const contador = barra.querySelector(".contador-filtros");
+        const ordenacaoRapida = barra.querySelector(".ordenar-rapido select");
+        const verAnuncios = formulario?.querySelector(".btn-ver-anuncios");
         if (!formulario || !botao) return;
 
         // A ordenação da barra é uma cópia da ordenação do painel.
@@ -33,9 +40,8 @@
         }
 
         function contarFiltros() {
-            const campos = formulario.querySelectorAll("select, input");
             let ativos = 0;
-            campos.forEach(campo => {
+            formulario.querySelectorAll("select, input").forEach(campo => {
                 if (campo === ordenacao) return;
                 if (String(campo.value || "").trim() !== "") ativos += 1;
             });
@@ -69,7 +75,7 @@
 
         verAnuncios?.addEventListener("click", () => {
             abrir(false);
-            $("lista-produtos-globais")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            lista?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
 
         formulario.addEventListener("change", atualizar);
@@ -79,6 +85,11 @@
         // A pesquisa pode restaurar filtros do endereço (?categoria=...).
         atualizar();
         setTimeout(atualizar, 600);
+        setTimeout(atualizar, 2000);
+    }
+
+    function iniciar() {
+        document.querySelectorAll(".filtros-barra[data-formulario]").forEach(configurarBarra);
     }
 
     if (document.readyState === "loading") {

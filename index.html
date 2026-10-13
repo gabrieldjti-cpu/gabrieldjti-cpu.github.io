@@ -204,27 +204,26 @@
         <span id="total-produtos-globais" class="total-produtos-badge" aria-live="polite"></span>
       </div>
 
-      <div class="filtros-barra" id="filtros-barra">
+      <div class="filtros-barra" data-formulario="filtros-produtos-globais" data-ordenacao="ordenacao-produtos-globais" data-lista="lista-produtos-globais" data-limpar="limpar-filtros-produtos">
         <button
           type="button"
-          id="btn-abrir-filtros"
           class="btn-abrir-filtros"
           aria-expanded="false"
           aria-controls="filtros-produtos-globais"
         >
           <i class="fa-solid fa-sliders" aria-hidden="true"></i>
           <span>Filtros</span>
-          <span id="contador-filtros" class="contador-filtros" hidden>0</span>
+          <span class="contador-filtros" hidden>0</span>
         </button>
 
-        <label class="ordenar-rapido" for="ordenacao-rapida">
+        <label class="ordenar-rapido">
           <span class="sr-only">Ordenar por</span>
           <i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
-          <select id="ordenacao-rapida" aria-label="Ordenar anúncios"></select>
+          <select aria-label="Ordenar anúncios"></select>
         </label>
       </div>
 
-      <form id="filtros-produtos-globais" class="filtros-produtos-globais" aria-label="Filtros de produtos">
+      <form id="filtros-produtos-globais" class="filtros-produtos-globais filtros-recolhiveis" aria-label="Filtros de produtos">
         <div class="filtro-produto-campo">
           <label for="filtro-categoria-produto">Categoria</label>
           <select id="filtro-categoria-produto" name="categoria">
@@ -314,7 +313,7 @@
           Limpar filtros
         </button>
 
-        <button type="button" id="btn-ver-anuncios" class="btn-ver-anuncios">
+        <button type="button" class="btn-ver-anuncios">
           Ver anúncios
         </button>
       </form>
