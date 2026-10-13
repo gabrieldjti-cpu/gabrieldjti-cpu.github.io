@@ -248,19 +248,15 @@
 
     async function carregarMetricas() {
         try {
-            const { data, error } = await window.db
-                .from("produto_metricas")
-                .select("avaliacao_media,total_avaliacoes,total_vendido")
-                .eq("produto_id", estado.produtoId)
-                .maybeSingle();
+            // A nota mostrada é a do vendedor (carregada com as avaliações).
+            // Aqui só entram as vendas confirmadas deste anúncio.
+            const { data, error } = await window.db.rpc("total_vendas_anuncio", {
+                p_produto_id: estado.produtoId
+            });
 
             if (error) throw error;
 
-            estado.metricas = {
-                avaliacao_media: Math.min(5, Math.max(0, Number(data?.avaliacao_media || 0))),
-                total_avaliacoes: Math.max(0, Number(data?.total_avaliacoes || 0)),
-                total_vendido: Math.max(0, Number(data?.total_vendido || 0))
-            };
+            estado.metricas.total_vendido = Math.max(0, Number(data || 0));
         } catch (erro) {
             console.warn("Não foi possível carregar as métricas do produto:", erro);
         }
@@ -337,14 +333,8 @@
                 ? resultadoLista.data
                 : [];
 
-            if (Number(estado.resumoAvaliacoes.total || 0) > 0) {
-                estado.metricas.avaliacao_media = Number(
-                    estado.resumoAvaliacoes.media || estado.metricas.avaliacao_media
-                );
-                estado.metricas.total_avaliacoes = Number(
-                    estado.resumoAvaliacoes.total || estado.metricas.total_avaliacoes
-                );
-            }
+            estado.metricas.avaliacao_media = Math.min(5, Math.max(0, Number(estado.resumoAvaliacoes.media || 0)));
+            estado.metricas.total_avaliacoes = Math.max(0, Number(estado.resumoAvaliacoes.total || 0));
         } catch (erro) {
             console.warn("Não foi possível carregar as avaliações:", erro);
             estado.resumoAvaliacoes = resumoPadrao;
@@ -449,22 +439,22 @@
         elementos.nomeProduto.textContent = produto.nome || "Produto";
         elementos.descricaoCurtaProduto.textContent = descricao
             ? resumirTexto(descricao, 190)
-            : "Produto disponível em uma loja aprovada do comércio local.";
+            : "Anúncio do comércio local.";
         elementos.descricaoCompletaProduto.textContent = descricao
-            || "A loja ainda não adicionou uma descrição detalhada para este produto.";
+            || "O anunciante ainda não escreveu uma descrição para este anúncio.";
 
         elementos.estrelasProduto.innerHTML = criarEstrelasHTML(media);
         elementos.mediaProduto.textContent = totalAvaliacoes > 0
             ? formatarMedia(media)
             : "—";
         elementos.totalAvaliacoesProduto.textContent = totalAvaliacoes > 0
-            ? `${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
-            : "Sem avaliações";
+            ? `${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"} do vendedor`
+            : "Vendedor ainda sem avaliações";
         elementos.atalhoAvaliacoes.setAttribute(
             "aria-label",
             totalAvaliacoes > 0
-                ? `Ver ${totalAvaliacoes} avaliações. Média ${formatarMedia(media)} de 5.`
-                : "Este produto ainda não possui avaliações."
+                ? `Ver ${totalAvaliacoes} avaliações do vendedor. Média ${formatarMedia(media)} de 5.`
+                : "O vendedor ainda não tem avaliações."
         );
 
         elementos.precoAtualProduto.textContent = formatarMoeda(precoAtual);
@@ -572,11 +562,11 @@
 
             origem.textContent = pessoal
                 ? `Anúncio de um usuário da plataforma${textoValidade}`
-                : "Produto vendido por uma loja aprovada";
+                : "Anúncio de uma loja aprovada";
         }
         elementos.verLojaProduto.firstChild.textContent = pessoal
             ? "Ver todos os anúncios deste anunciante "
-            : "Ver todos os produtos da loja ";
+            : "Ver todos os anúncios da loja ";
         elementos.whatsappLojaProduto.lastChild.textContent = pessoal
             ? " Falar com o anunciante"
             : " Falar com a loja";
@@ -959,10 +949,28 @@
         elementos.aumentarQuantidadeProduto.disabled = estado.quantidade >= estoque || estoque <= 0;
     }
 
+    function criarTextoCompartilhar() {
+        const produto = estado.produto || {};
+        const preco = Math.max(0, Number(produto.preco || 0));
+        const promocional = Math.max(0, Number(produto.preco_promocional || 0));
+        const precoAtual = promocional > 0 && promocional < preco ? promocional : preco;
+        const partes = [
+            produto.nome || "Anúncio",
+            precoAtual > 0 ? formatarMoeda(precoAtual) : "",
+            estado.loja?.nome ? `anunciado por ${estado.loja.nome}` : ""
+        ].filter(Boolean);
+        return `${partes.join(" · ")} no Comércio da Cidade`;
+    }
+
+    function abrirWhatsappCompartilhar(evento) {
+        const link = evento.currentTarget;
+        link.href = `https://wa.me/?text=${encodeURIComponent(`${criarTextoCompartilhar()}: ${criarURLProduto()}`)}`;
+    }
+
     async function compartilharProduto() {
         const dados = {
-            title: `${estado.produto?.nome || "Produto"} | Comércio da Cidade`,
-            text: `${estado.produto?.nome || "Produto"} — vendido por ${estado.loja?.nome || "uma loja local"}`,
+            title: `${estado.produto?.nome || "Anúncio"} | Comércio da Cidade`,
+            text: criarTextoCompartilhar(),
             url: criarURLProduto()
         };
 
@@ -974,7 +982,7 @@
 
             await navigator.clipboard.writeText(dados.url);
             notificar(
-                "O link do produto foi copiado.",
+                "O link do anúncio foi copiado.",
                 "sucesso",
                 "Link copiado"
             );
@@ -1104,6 +1112,7 @@
         elementos.comoChegarProduto.addEventListener("click", irAteALoja);
 
         elementos.compartilharProduto.addEventListener("click", compartilharProduto);
+        document.getElementById("compartilharWhatsappProduto")?.addEventListener("click", abrirWhatsappCompartilhar);
 
         elementos.atalhoAvaliacoes.addEventListener("click", () => {
             elementos.avaliacoesProduto.scrollIntoView({

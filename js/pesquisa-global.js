@@ -323,7 +323,7 @@
         if (!produtos.length) {
             mostrarEstadoSugestoes(
                 "fa-magnifying-glass",
-                `Nenhum produto sugerido para “${termo}”. Pressione Enter para pesquisar.`
+                `Nenhum anúncio sugerido para “${termo}”. Pressione Enter para pesquisar.`
             );
             anunciarSugestoes(`Nenhuma sugestão encontrada para ${termo}.`);
             return;
@@ -336,7 +336,7 @@
 
         elementos.sugestoes.innerHTML = `
             <div class="sugestoes-cabecalho" role="presentation" aria-hidden="true">
-                <span>Sugestões de produtos</span>
+                <span>Sugestões de anúncios</span>
                 <small>Use ↑ ↓ e Enter</small>
             </div>
 
@@ -390,7 +390,7 @@
                 <span class="sugestao-produto-imagem">${imagem}</span>
                 <span class="sugestao-produto-info">
                     <strong>${nome}</strong>
-                    <span>Vendido por ${nomeLoja}</span>
+                    <span>Anunciado por ${nomeLoja}</span>
                 </span>
                 <span class="sugestao-produto-preco">${formatarMoeda(precoAtual)}</span>
             </a>
@@ -628,12 +628,12 @@
                 <a
                     class="categoria-produto-destaque"
                     href="index.html?categoria_produto=${id}#produtos-globais"
-                    aria-label="Ver produtos de ${nome}"
+                    aria-label="Ver anúncios de ${nome}"
                 >
                     <span class="categoria-produto-destaque-icone" aria-hidden="true">${icone}</span>
                     <span>
                         <strong>${nome}</strong>
-                        <small>Explorar produtos</small>
+                        <small>Ver anúncios</small>
                     </span>
                     <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </a>
@@ -771,7 +771,7 @@
             if (consultaAtual !== numeroConsulta) return;
 
             console.error("Erro na pesquisa global de produtos:", erro);
-            mostrarErro("Não foi possível pesquisar os produtos agora. Tente novamente.");
+            mostrarErro("Não foi possível pesquisar os anúncios agora. Tente novamente.");
         }
     }
 
@@ -837,7 +837,7 @@
         elementos.lista.innerHTML = `
             <div class="estado-produtos-globais">
                 <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                <h3>Pesquisando produtos...</h3>
+                <h3>Pesquisando anúncios...</h3>
                 <p>Aguarde enquanto consultamos as lojas da cidade.</p>
             </div>
         `;
@@ -850,7 +850,7 @@
             elementos.lista.innerHTML = `
                 <div class="estado-produtos-globais">
                     <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-                    <h3>Nenhum produto encontrado.</h3>
+                    <h3>Nenhum anúncio encontrado.</h3>
                     <p>Tente outro nome ou remova alguns filtros.</p>
                     <button type="button" data-limpar-pesquisa-global>
                         <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
@@ -883,10 +883,10 @@
         const avaliacaoMedia = totalAvaliacoes > 0
             ? Math.min(5, Math.max(0, Number(produto.avaliacao_media || 0)))
             : 0;
-        const totalVendido = Math.max(0, Number(produto.total_vendido || 0));
+        const lojaDestaque = produto.destaque === true;
         const textoAvaliacoes = totalAvaliacoes > 0
-            ? `${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5, ${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
-            : "Produto ainda sem avaliações";
+            ? `Nota do vendedor: ${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5, ${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
+            : "Vendedor ainda sem avaliações";
         const link = `produto.html?id=${encodeURIComponent(produto.id || "")}`;
 
         const imagem = produto.imagem_url
@@ -926,6 +926,7 @@
                 <div class="produto-global-imagem">
                     ${imagem}
                     ${temPromocao ? '<span class="produto-global-oferta"><i class="fa-solid fa-tag" aria-hidden="true"></i> Oferta</span>' : ""}
+                    ${lojaDestaque ? '<span class="produto-global-destaque"><i class="fa-solid fa-crown" aria-hidden="true"></i> Loja destaque</span>' : ""}
                     <button
                         type="button"
                         class="btn-favorito-produto"
@@ -953,21 +954,17 @@
                     <p class="produto-global-descricao">${descricao}</p>
 
                     <div class="produto-global-indicadores">
-                        <span class="produto-global-avaliacao" aria-label="${escaparAtributo(textoAvaliacoes)}">
+                        <span class="produto-global-avaliacao" aria-label="${escaparAtributo(textoAvaliacoes)}" title="Nota do vendedor">
                             <i class="fa-solid fa-star" aria-hidden="true"></i>
                             ${totalAvaliacoes > 0
-                                ? `<strong>${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong><small>(${totalAvaliacoes})</small>`
-                                : "Sem avaliações"}
-                        </span>
-                        <span aria-label="${totalVendido} ${totalVendido === 1 ? "unidade vendida" : "unidades vendidas"}">
-                            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
-                            ${totalVendido} ${totalVendido === 1 ? "vendido" : "vendidos"}
+                                ? `<strong>${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong><small>(${totalAvaliacoes})</small> <small>vendedor</small>`
+                                : "Vendedor novo"}
                         </span>
                     </div>
 
                     <p class="produto-global-loja">
                         <i class="fa-solid fa-store" aria-hidden="true"></i>
-                        Vendido por <strong>${nomeLoja}</strong>
+                        Anunciado por <strong>${nomeLoja}</strong>
                     </p>
 
                     <div class="produto-global-rodape">
@@ -1082,7 +1079,7 @@
             elementos.lista.innerHTML = `
                 <div class="estado-produtos-globais">
                     <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                    <h3>Não foi possível carregar os produtos.</h3>
+                    <h3>Não foi possível carregar os anúncios.</h3>
                     <p>${escaparHTML(mensagem)}</p>
                     <button type="button" data-recarregar-produtos>
                         <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
@@ -1153,7 +1150,6 @@
             "nome",
             "menor-preco",
             "maior-preco",
-            "mais-vendidos",
             "melhor-avaliados",
             "recentes"
         ].includes(ordenacao)

@@ -99,9 +99,9 @@
     <section class="categoria-secao" id="produtos-categoria" aria-labelledby="titulo-produtos-categoria">
       <div class="categoria-secao-cabecalho">
         <div>
-          <span class="secao-eyebrow">Catálogo</span>
-          <h2 id="titulo-produtos-categoria">Produtos da categoria</h2>
-          <p>Pesquise e compare os produtos das lojas desta categoria.</p>
+          <span class="secao-eyebrow">Classificados</span>
+          <h2 id="titulo-produtos-categoria">Anúncios da categoria</h2>
+          <p>Pesquise e compare os anúncios de vizinhos e lojas desta categoria.</p>
         </div>
         <span id="total-produtos-categoria" class="total-produtos-badge" aria-live="polite"></span>
       </div>
@@ -188,7 +188,7 @@
         </div>
 
         <div class="categoria-campo">
-          <label for="avaliacao-minima-categoria">Avaliação mínima</label>
+          <label for="avaliacao-minima-categoria">Nota do vendedor</label>
           <select id="avaliacao-minima-categoria">
             <option value="">Todas as notas</option>
             <option value="5">5 estrelas</option>
@@ -203,12 +203,11 @@
           <label for="ordenacao-categoria">Ordenar por</label>
           <select id="ordenacao-categoria">
             <option value="relevancia">Relevância</option>
-            <option value="destaques">Destaques</option>
+            <option value="destaques">Lojas destaque</option>
             <option value="nome">Nome</option>
             <option value="menor-preco">Menor preço</option>
             <option value="maior-preco">Maior preço</option>
-            <option value="mais-vendidos">Mais vendidos</option>
-            <option value="melhor-avaliados">Melhor avaliados</option>
+            <option value="melhor-avaliados">Vendedores mais bem avaliados</option>
             <option value="recentes">Mais recentes</option>
           </select>
         </div>
@@ -226,15 +225,15 @@
       <div id="lista-produtos-categoria" class="grade-produtos-globais" aria-live="polite" aria-busy="true">
         <div class="estado-produtos-globais">
           <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-          <h3>Carregando produtos...</h3>
-          <p>Estamos preparando o catálogo desta categoria.</p>
+          <h3>Carregando anúncios...</h3>
+          <p>Estamos buscando os anúncios desta categoria.</p>
         </div>
       </div>
 
       <nav
         id="paginacao-categoria"
         class="paginacao-produtos-globais"
-        aria-label="Paginação dos produtos da categoria"
+        aria-label="Paginação dos anúncios da categoria"
         hidden
       ></nav>
     </section>

@@ -11,7 +11,7 @@
   />
 
   <title>
-    Novo Produto | Comércio da Cidade
+    Novo anúncio | Comércio da Cidade
   </title>
 
 
@@ -92,19 +92,19 @@
     <div class="breadcrumb">
 
       <a href="painel-loja.html">
-        Dashboard
+        Painel
       </a>
 
       >
 
       <a href="produtos.html">
-        Produtos
+        Meus anúncios
       </a>
 
       >
 
       <strong>
-        Novo Produto
+        Novo anúncio
       </strong>
 
     </div>
@@ -121,7 +121,7 @@
 
         <i class="fa-solid fa-plus"></i>
 
-        Novo Produto
+        Novo anúncio
 
       </h1>
 
@@ -148,13 +148,13 @@
             <div class="campo">
 
               <label for="nome">
-                Nome do Produto
+                Título do anúncio
               </label>
 
               <input
                 type="text"
                 id="nome"
-                placeholder="Ex.: Bolo de Chocolate"
+                placeholder="Ex.: Bicicleta aro 29"
                 autocomplete="off"
                 required
               />
@@ -174,7 +174,7 @@
                 id="descricao"
                 rows="5"
                 maxlength="500"
-                placeholder="Descreva o produto..."
+                placeholder="Conte como está, o que acompanha, onde retirar..."
               ></textarea>
 
             </div>
@@ -253,7 +253,7 @@
               <div class="campo">
 
                 <label for="preco-promocao">
-                  Preço Promocional
+                  Preço promocional
                 </label>
 
                 <input
@@ -317,25 +317,7 @@
                   checked
                 />
 
-                Produto ativo
-
-              </label>
-
-            </div>
-
-
-            <!-- DESTAQUE -->
-
-            <div class="campo">
-
-              <label>
-
-                <input
-                  type="checkbox"
-                  id="destaque"
-                />
-
-                Produto em destaque
+                Anúncio ativo
 
               </label>
 
@@ -357,7 +339,7 @@
 
               <img
                 id="preview"
-                alt="Prévia do produto"
+                alt="Prévia da foto principal"
                 style="display: none;"
               />
 
@@ -384,7 +366,7 @@
 
               <small>
                 Formatos aceitos: JPG, PNG ou WEBP.
-                Máximo de 5 MB.
+                Até 15 MB: a foto é diminuída automaticamente antes do envio.
               </small>
 
             </div>
@@ -465,7 +447,7 @@
 
             <i class="fa-solid fa-floppy-disk"></i>
 
-            Salvar Produto
+            Enviar anúncio
 
           </button>
 
@@ -506,6 +488,7 @@
   <!-- NOVO PRODUTO -->
 
   <script src="js/novo-produto.js"></script>
+  <script src="js/comprimir-imagem.js"></script>
   <script src="js/anuncio-fotos.js"></script>
   <script src="js/anuncio-campos.js"></script>
   <script src="js/limite-anuncios.js"></script>

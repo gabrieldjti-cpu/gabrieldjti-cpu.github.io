@@ -1078,8 +1078,9 @@ function mostrarPreview(
     // TAMANHO
     // ==================================
 
+    // A foto é diminuída antes do envio, então aceitamos fotos grandes de celular.
     const tamanhoMaximo =
-        5 * 1024 * 1024;
+        15 * 1024 * 1024;
 
 
     if (
@@ -1088,7 +1089,7 @@ function mostrarPreview(
     ) {
 
         notificar(
-            "A imagem do produto deve possuir no máximo 5 MB.",
+            "A foto deve ter no máximo 15 MB.",
             "aviso",
             "Imagem muito grande"
         );
@@ -1801,6 +1802,11 @@ async function enviarImagemProduto(
     arquivo
 ) {
 
+    // Foto mais leve antes do envio (js/comprimir-imagem.js).
+    if (typeof window.comprimirImagem === "function") {
+        arquivo = await window.comprimirImagem(arquivo);
+    }
+
     const extensao =
         arquivo.name
             .split(".")
@@ -1865,7 +1871,7 @@ async function enviarImagemProduto(
 
 
         throw new Error(
-            "Não foi possível enviar a imagem do produto."
+            "Não foi possível enviar a foto do anúncio."
         );
 
     }
@@ -1968,7 +1974,7 @@ function tratarErroProduto(
 
         return (
             erro?.message ||
-            "Não foi possível enviar a imagem do produto."
+            "Não foi possível enviar a foto do anúncio."
         );
 
     }

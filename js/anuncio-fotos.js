@@ -14,7 +14,7 @@
     "use strict";
 
     const MAX_EXTRAS = 4;
-    const TAMANHO_MAXIMO = 5 * 1024 * 1024;
+    const TAMANHO_MAXIMO = 15 * 1024 * 1024; // a foto é diminuída antes do envio
     const TIPOS = ["image/jpeg", "image/png", "image/webp"];
 
     let existentes = [];   // { id, imagem_url, pendente }
@@ -93,7 +93,7 @@
                 continue;
             }
             if (arquivo.size > TAMANHO_MAXIMO) {
-                avisar(`"${arquivo.name}" passa de 5 MB.`);
+                avisar(`"${arquivo.name}" passa de 15 MB.`);
                 continue;
             }
             novas.push({ arquivo, url: URL.createObjectURL(arquivo) });
@@ -139,6 +139,9 @@
     }
 
     async function enviarArquivo(lojaId, arquivo) {
+        if (typeof window.comprimirImagem === "function") {
+            arquivo = await window.comprimirImagem(arquivo);
+        }
         const extensao = (arquivo.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
         const caminho = `${lojaId}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${extensao || "jpg"}`;
 

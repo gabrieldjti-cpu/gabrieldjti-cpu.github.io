@@ -1644,3 +1644,23 @@ body.dark-theme .interesse-avaliar textarea {
     color: #64748b;
     font-size: 12px;
 }
+
+/* Enviar o anúncio pelo WhatsApp */
+.produto-acoes-secundarias .produto-compartilhar-whatsapp {
+    padding: 6px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #1f9d55;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.produto-acoes-secundarias .produto-compartilhar-whatsapp:hover {
+    color: #17803f;
+}
+
+html.dark-theme body.dark-theme .produto-acoes-secundarias .produto-compartilhar-whatsapp {
+    color: #4ade80;
+}
