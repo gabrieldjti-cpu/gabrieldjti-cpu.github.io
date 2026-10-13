@@ -210,7 +210,7 @@
 
 .favorito-card-imagem img {
     display: block;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .favorito-card-placeholder {

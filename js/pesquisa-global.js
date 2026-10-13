@@ -262,7 +262,8 @@
                     : (categoriaId ? Number(categoriaId) : null),
                 p_loja_id: lojaId || null,
                 p_categoria_loja_id: null,
-                p_disponibilidade: disponibilidade || null,
+                // Anúncio indisponível não aparece na página inicial.
+                p_disponibilidade: "estoque",
                 p_condicao: condicao || null,
                 p_preco_min: precoMinimo === "" ? null : Number(precoMinimo),
                 p_preco_max: precoMaximo === "" ? null : Number(precoMaximo),
@@ -728,7 +729,8 @@
                     : (estado.categoriaId ? Number(estado.categoriaId) : null),
                 p_loja_id: estado.lojaId || null,
                 p_categoria_loja_id: null,
-                p_disponibilidade: estado.disponibilidade || null,
+                // Anúncio indisponível não aparece na página inicial.
+                p_disponibilidade: "estoque",
                 p_condicao: estado.condicao || null,
                 p_preco_min: estado.precoMinimo === ""
                     ? null

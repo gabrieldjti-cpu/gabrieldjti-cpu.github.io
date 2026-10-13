@@ -276,6 +276,7 @@
                 .from("produto_imagens")
                 .select("imagem_url,ordem")
                 .eq("produto_id", estado.produtoId)
+                .eq("pendente", false)
                 .order("ordem", { ascending: true });
 
             if (error) throw error;

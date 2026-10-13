@@ -405,7 +405,7 @@ body{
 
     height:210px;
 
-    object-fit:cover;
+    object-fit: contain;
 
     display:block;
 

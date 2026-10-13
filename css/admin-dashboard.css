@@ -953,3 +953,9 @@ body.dark-theme .filtro-pedidos-opcao { color: #e2e8f0; }
 body.dark-theme .avaliacao-admin-nota strong { color: #f8fafc; }
 body.dark-theme .avaliacao-admin-motivos { background: #3f1d1d; color: #fecaca; }
 body.dark-theme .filtro-avaliacoes-admin select { border-color: #475569; background: #0f172a; color: #f8fafc; }
+
+/* Fotos extras na fila de aprovação */
+.fila-anuncio-fotos { display: grid; gap: 6px; margin: 0 0 12px; }
+.fila-anuncio-fotos small { color: #64748b; font-size: 12px; font-weight: 600; }
+.fila-anuncio-fotos div { display: flex; flex-wrap: wrap; gap: 8px; }
+.fila-anuncio-fotos img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e8f0; }

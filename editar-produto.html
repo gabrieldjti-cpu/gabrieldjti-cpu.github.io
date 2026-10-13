@@ -65,6 +65,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
   />
 
+<link rel="stylesheet" href="css/anuncio-fotos.css">
 <link rel="stylesheet" href="css/dark-mode.css">
 </head>
 
@@ -372,7 +373,7 @@
 
                 <i class="fa-solid fa-image"></i>
 
-                Alterar Imagem
+                Trocar foto principal
 
               </label>
 
@@ -386,6 +387,34 @@
                 Formatos aceitos: JPG, PNG ou WEBP.
                 Máximo de 5 MB.
               </small>
+
+            </div>
+
+
+            <!-- MAIS FOTOS (até 4, total de 5) -->
+
+            <div class="campo campo-fotos-extras">
+
+              <label for="fotosExtras">
+
+                <i class="fa-solid fa-images"></i>
+
+                Mais fotos
+
+              </label>
+
+              <input
+                type="file"
+                id="fotosExtras"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+              />
+
+              <small id="ajudaFotosExtras">
+                Você pode colocar mais 4 fotos (até 5 no total, contando a principal).
+              </small>
+
+              <div id="listaFotosExtras" class="fotos-extras-lista" aria-live="polite"></div>
 
             </div>
 
@@ -484,6 +513,7 @@
   <!-- EDITAR PRODUTO -->
 
   <script src="js/editar-produto.js"></script>
+  <script src="js/anuncio-fotos.js"></script>
   <script src="js/anuncio-campos.js"></script>
   <script src="js/limite-anuncios.js"></script>
 
