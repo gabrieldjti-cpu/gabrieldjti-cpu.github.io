@@ -201,7 +201,7 @@
         alerta.textContent = "";
 
         document.getElementById("tituloModalDenuncia").textContent = tipo === "produto"
-            ? "Denunciar produto"
+            ? "Denunciar anúncio"
             : "Denunciar avaliação";
         document.getElementById("descricaoModalDenuncia").textContent =
             `Conte o que precisa ser analisado em “${titulo || "conteúdo"}”.`;

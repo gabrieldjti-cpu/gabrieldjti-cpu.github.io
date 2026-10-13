@@ -156,7 +156,7 @@ async function verificarUsuario() {
         ) {
 
             notificar(
-                "Entre na sua conta para gerenciar seus produtos.",
+                "Entre na sua conta para gerenciar seus anúncios.",
                 "info",
                 "Login necessário",
                 2500
@@ -515,7 +515,7 @@ async function carregarProdutos() {
 
 
         mostrarErroProdutos(
-            "Não foi possível carregar os produtos da sua loja."
+            "Não foi possível carregar os anúncios da sua loja."
         );
 
 
@@ -524,7 +524,7 @@ async function carregarProdutos() {
                 erro
             ),
             "erro",
-            "Erro ao carregar produtos",
+            "Erro ao carregar anúncios",
             5000
         );
 
@@ -583,7 +583,7 @@ function renderizarProdutos(
                 <i class="fa-solid fa-magnifying-glass"></i>
 
                 <h2>
-                    Nenhum produto encontrado.
+                    Nenhum anúncio encontrado.
                 </h2>
 
                 <p>
@@ -616,11 +616,11 @@ function renderizarProdutos(
                 <i class="fa-solid fa-box-open"></i>
 
                 <h2>
-                    Nenhum produto cadastrado.
+                    Nenhum anúncio ainda.
                 </h2>
 
                 <p>
-                    Cadastre um novo produto
+                    Crie um anúncio
                     para começar.
                 </p>
 
@@ -1171,7 +1171,7 @@ function editarProduto(
         notificar(
             "Não foi possível identificar este produto.",
             "erro",
-            "Produto não encontrado"
+            "Anúncio não encontrado"
         );
 
 
@@ -1201,7 +1201,7 @@ async function excluirProduto(
         notificar(
             "Não foi possível identificar este produto.",
             "erro",
-            "Produto não encontrado"
+            "Anúncio não encontrado"
         );
 
 
@@ -1275,10 +1275,10 @@ async function excluirProduto(
         await window.confirmarAcao({
 
             titulo:
-                "Desativar produto?",
+                "Desativar anúncio?",
 
             mensagem:
-                `Deseja desativar "${nomeProduto}"? Ele sairá do catálogo público, mas continuará salvo para preservar pedidos e históricos.`,
+                `Deseja desativar "${nomeProduto}"? Ele sai do site, mas continua salvo na sua conta.`,
 
             textoConfirmar:
                 "Sim, desativar",
@@ -1373,7 +1373,7 @@ async function excluirProduto(
         if (!data) {
 
             throw new Error(
-                "Produto não encontrado ou sem permissão para alteração."
+                "Anúncio não encontrado ou sem permissão para alteração."
             );
 
         }
@@ -1384,9 +1384,9 @@ async function excluirProduto(
         // ==================================
 
         notificar(
-            `"${nomeProduto}" foi desativado e removido do catálogo público.`,
+            `"${nomeProduto}" foi desativado e saiu do site.`,
             "sucesso",
-            "Produto desativado",
+            "Anúncio desativado",
             3000
         );
 

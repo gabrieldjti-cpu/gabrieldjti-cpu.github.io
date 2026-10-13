@@ -432,7 +432,7 @@
         const cidade = escaparHTML(loja.cidade || "Cidade não informada");
         const estadoLoja = escaparHTML(loja.estado || "");
         const descricao = escaparHTML(
-            loja.descricao || "Conheça o catálogo e os produtos disponíveis nesta loja."
+            loja.descricao || "Veja os anúncios desta loja."
         );
         const link = `loja.html?id=${encodeURIComponent(loja.id || "")}`;
 
@@ -656,7 +656,7 @@
         elementos.listaProdutos.innerHTML = `
             <div class="estado-produtos-globais">
                 <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                <h3>Carregando produtos...</h3>
+                <h3>Carregando anúncios...</h3>
                 <p>Estamos preparando o catálogo desta categoria.</p>
             </div>
         `;
@@ -680,8 +680,8 @@
             elementos.listaProdutos.innerHTML = `
                 <div class="estado-produtos-globais">
                     <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-                    <h3>${temFiltro ? "Nenhum produto encontrado." : "Ainda não há produtos nesta categoria."}</h3>
-                    <p>${temFiltro ? "Tente outro nome ou remova os filtros." : "Os produtos aparecerão aqui quando as lojas adicionarem seus catálogos."}</p>
+                    <h3>${temFiltro ? "Nenhum anúncio encontrado." : "Ainda não há anúncios nesta categoria."}</h3>
+                    <p>${temFiltro ? "Tente outro nome ou remova os filtros." : "Os anúncios aparecem aqui assim que forem aprovados."}</p>
                     ${temFiltro ? `
                         <button type="button" data-limpar-produtos-categoria>
                             <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
@@ -717,10 +717,10 @@
         const avaliacaoMedia = totalAvaliacoes > 0
             ? Math.min(5, Math.max(0, Number(produto.avaliacao_media || 0)))
             : 0;
-        const totalVendido = Math.max(0, Number(produto.total_vendido || 0));
+        const lojaDestaque = produto.destaque === true;
         const textoAvaliacoes = totalAvaliacoes > 0
-            ? `${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5, ${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
-            : "Produto ainda sem avaliações";
+            ? `Nota do vendedor: ${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} de 5, ${totalAvaliacoes} ${totalAvaliacoes === 1 ? "avaliação" : "avaliações"}`
+            : "Vendedor ainda sem avaliações";
         const link = `produto.html?id=${encodeURIComponent(produto.id || "")}`;
 
         const imagem = produto.imagem_url
@@ -760,6 +760,7 @@
                 <div class="produto-global-imagem">
                     ${imagem}
                     ${temPromocao ? '<span class="produto-global-oferta"><i class="fa-solid fa-tag" aria-hidden="true"></i> Oferta</span>' : ""}
+                    ${lojaDestaque ? '<span class="produto-global-destaque"><i class="fa-solid fa-crown" aria-hidden="true"></i> Loja destaque</span>' : ""}
                     <button
                         type="button"
                         class="btn-favorito-produto"
@@ -787,21 +788,17 @@
                     <p class="produto-global-descricao">${descricao}</p>
 
                     <div class="produto-global-indicadores">
-                        <span class="produto-global-avaliacao" aria-label="${escaparAtributo(textoAvaliacoes)}">
+                        <span class="produto-global-avaliacao" aria-label="${escaparAtributo(textoAvaliacoes)}" title="Nota do vendedor">
                             <i class="fa-solid fa-star" aria-hidden="true"></i>
                             ${totalAvaliacoes > 0
-                                ? `<strong>${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong><small>(${totalAvaliacoes})</small>`
-                                : "Sem avaliações"}
-                        </span>
-                        <span aria-label="${totalVendido} ${totalVendido === 1 ? "unidade vendida" : "unidades vendidas"}">
-                            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
-                            ${totalVendido} ${totalVendido === 1 ? "vendido" : "vendidos"}
+                                ? `<strong>${avaliacaoMedia.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong><small>(${totalAvaliacoes})</small> <small>vendedor</small>`
+                                : "Vendedor novo"}
                         </span>
                     </div>
 
                     <p class="produto-global-loja">
                         <i class="fa-solid fa-store" aria-hidden="true"></i>
-                        Vendido por <strong>${nomeLoja}</strong>
+                        Anunciado por <strong>${nomeLoja}</strong>
                     </p>
 
                     <div class="produto-global-rodape">
@@ -844,7 +841,7 @@
             elementos.listaProdutos.innerHTML = `
                 <div class="estado-produtos-globais">
                     <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                    <h3>Não foi possível carregar os produtos.</h3>
+                    <h3>Não foi possível carregar os anúncios.</h3>
                     <p>Tente novamente em alguns instantes.</p>
                     <button type="button" data-recarregar-produtos-categoria>
                         <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
@@ -985,7 +982,6 @@
             "nome",
             "menor-preco",
             "maior-preco",
-            "mais-vendidos",
             "melhor-avaliados",
             "recentes"
         ].includes(ordenacao)

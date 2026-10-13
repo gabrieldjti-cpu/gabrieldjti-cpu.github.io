@@ -223,7 +223,7 @@
         </label>
       </div>
 
-      <form id="filtros-produtos-globais" class="filtros-produtos-globais filtros-recolhiveis" aria-label="Filtros de produtos">
+      <form id="filtros-produtos-globais" class="filtros-produtos-globais filtros-recolhiveis" aria-label="Filtros de anúncios">
         <div class="filtro-produto-campo">
           <label for="filtro-categoria-produto">Categoria</label>
           <select id="filtro-categoria-produto" name="categoria">
@@ -283,7 +283,7 @@
         </div>
 
         <div class="filtro-produto-campo">
-          <label for="filtro-avaliacao-produto">Avaliação mínima</label>
+          <label for="filtro-avaliacao-produto">Nota do vendedor</label>
           <select id="filtro-avaliacao-produto" name="avaliacao">
             <option value="">Todas as notas</option>
             <option value="5">5 estrelas</option>
@@ -298,12 +298,11 @@
           <label for="ordenacao-produtos-globais">Ordenar por</label>
           <select id="ordenacao-produtos-globais" name="ordenacao">
             <option value="relevancia">Relevância</option>
-            <option value="destaques">Destaques</option>
+            <option value="destaques">Lojas destaque</option>
             <option value="nome">Nome</option>
             <option value="menor-preco">Menor preço</option>
             <option value="maior-preco">Maior preço</option>
-            <option value="mais-vendidos">Mais vendidos</option>
-            <option value="melhor-avaliados">Melhor avaliados</option>
+            <option value="melhor-avaliados">Vendedores mais bem avaliados</option>
             <option value="recentes">Mais recentes</option>
           </select>
         </div>
@@ -321,12 +320,12 @@
       <div id="lista-produtos-globais" class="grade-produtos-globais" aria-live="polite" aria-busy="true">
         <div class="estado-produtos-globais">
           <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-          <h3>Carregando produtos...</h3>
-          <p>Estamos consultando as lojas da cidade.</p>
+          <h3>Carregando anúncios...</h3>
+          <p>Estamos buscando os anúncios da cidade.</p>
         </div>
       </div>
 
-      <nav id="paginacao-produtos-globais" class="paginacao-produtos-globais" aria-label="Paginação dos produtos" hidden></nav>
+      <nav id="paginacao-produtos-globais" class="paginacao-produtos-globais" aria-label="Paginação dos anúncios" hidden></nav>
     </section>
 
     <!-- LOJAS -->

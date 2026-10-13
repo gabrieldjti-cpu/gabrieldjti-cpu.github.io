@@ -45,6 +45,8 @@ O site **não vende, não recebe pagamentos e não faz entregas**. Ele organiza 
 
 ### 2.2 Assinatura de lojista
 
+- Benefício visível: os anúncios da loja assinante saem com o selo **Loja destaque** e aparecem primeiro no início e nas categorias.
+
 - Mensal, **ativada manualmente** pela administração depois que o lojista pede no painel e combina o pagamento.
 - Anúncios **sem limite** e **sem vencimento**. O lojista **pode editar**: a edição vai para a fila do admin e a versão antiga continua no ar até a aprovação.
 - A loja informa **CPF ou CNPJ** (sem foto de documento) e é aprovada pela administração.
@@ -145,4 +147,5 @@ As tabelas de carrinho, pedidos, avaliação de pedido e documentos do modelo an
 
 - **Até a feira (30/10/2026):** testes com dados reais e ajustes.
 - **Limpeza (etapa 12, feita):** arquivos de compra apagados do repositório; tabelas, gatilhos e funções de pedido removidos do banco.
-- **Ideias:** anúncio em destaque como benefício do assinante; comparação do mesmo item entre anunciantes; aviso de "anúncio vence amanhã".
+- **Feito em outubro:** destaque para lojas assinantes (selo "Loja destaque" e primeiro lugar no início e nas categorias), aviso de "anúncio sai do ar amanhã", nota do vendedor nos cards, compartilhar pelo WhatsApp e fotos diminuídas antes do envio.
+- **Ideias:** filtro por bairro; comparação do mesmo item entre anunciantes.
