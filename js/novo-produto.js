@@ -1329,6 +1329,21 @@ async function salvarProduto(
         }
 
 
+        // Fotos extras (até 4) depois que o anúncio existe.
+        if (window.anuncioFotos?.temNovas()) {
+
+            if (botao) {
+                botao.innerHTML = `
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Enviando fotos...
+                `;
+            }
+
+            await window.anuncioFotos.enviar(data.id, lojaId);
+
+        }
+
+
         // ==================================
         // SUCESSO
         // ==================================

@@ -519,7 +519,8 @@
                         : null),
                 p_loja_id: null,
                 p_categoria_loja_id: estado.categoriaId,
-                p_disponibilidade: estado.disponibilidade || null,
+                // Só anúncios disponíveis nas listas de categoria.
+                p_disponibilidade: "estoque",
                 p_condicao: estado.condicao || null,
                 p_preco_min: estado.precoMinimo === ""
                     ? null

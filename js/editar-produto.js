@@ -1690,6 +1690,14 @@ async function atualizarProduto(
         }
 
 
+        // Fotos extras novas (vão para a aprovação junto com a edição).
+        if (window.anuncioFotos?.temNovas()) {
+
+            await window.anuncioFotos.enviar(produtoId, lojaId);
+
+        }
+
+
         // ==================================
         // SUCESSO
         // ==================================

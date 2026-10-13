@@ -513,8 +513,7 @@ section h2 {
     display:
         block;
 
-    object-fit:
-        cover;
+    object-fit: contain;
 
 }
 

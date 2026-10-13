@@ -167,7 +167,7 @@ main {
     color: #9ca1aa;
 }
 
-.pesquisa-home button {
+.hero-home .pesquisa-home button {
     min-height: 50px;
     padding: 0 24px;
     border-radius: 13px;
@@ -178,7 +178,7 @@ main {
     transition: transform .2s ease, background .2s ease;
 }
 
-.pesquisa-home button:hover {
+.hero-home .pesquisa-home button:hover {
     transform: translateY(-1px);
     background: #101114;
 }
@@ -1000,10 +1000,11 @@ main {
     .hero-home-container {
         min-height: auto;
         padding: 58px 0 62px;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .hero-conteudo {
+        min-width: 0;
         text-align: center;
     }
 
@@ -1076,14 +1077,14 @@ main {
         border-radius: 15px;
     }
 
-    .pesquisa-home button {
+    .hero-home .pesquisa-home button {
         width: 48px;
         min-height: 46px;
         padding: 0;
         font-size: 0;
     }
 
-    .pesquisa-home button::before {
+    .hero-home .pesquisa-home button::before {
         content: "\f002";
         font: var(--fa-font-solid);
         font-size: 15px;

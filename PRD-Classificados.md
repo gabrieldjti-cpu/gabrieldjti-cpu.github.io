@@ -84,10 +84,10 @@ O site **não vende, não recebe pagamentos e não faz entregas**. Ele organiza 
 | Código | Requisito | Situação |
 |---|---|---|
 | RF-01 | Cadastro, login, recuperação de senha e perfil | Feito |
-| RF-02 | Publicar anúncio com fotos, categoria, preço, condição e disponibilidade | Feito |
+| RF-02 | Publicar anúncio com até 5 fotos, categoria, preço, condição e disponibilidade | Feito |
 | RF-03 | Limite e vencimento do plano grátis | Feito |
 | RF-04 | Meus anúncios: situação, limite restante, marcar indisponível, excluir | Feito |
-| RF-05 | Busca com filtros de categoria, condição, preço e disponibilidade | Feito |
+| RF-05 | Busca com filtros de categoria, condição e preço (só anúncios disponíveis) | Feito |
 | RF-06 | Página do anúncio com "Falar com o anunciante", "Ir até a loja" e "Tenho interesse" | Feito |
 | RF-07 | Favoritos | Feito |
 | RF-08 | Cadastro de loja com CPF ou CNPJ e "Quero ser lojista" | Feito |

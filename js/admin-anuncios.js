@@ -68,6 +68,19 @@
         return "";
     }
 
+    // Fotos além da principal: no anúncio novo, todas; na edição, só as
+    // fotos novas que esperam aprovação.
+    function criarFotosExtras(item, edicao) {
+        const lista = edicao ? item.dados_novos?.imagens_novas : item.dados_novos?.imagens_extras;
+        if (!Array.isArray(lista) || lista.length === 0) return "";
+        return `
+            <div class="fila-anuncio-fotos">
+                <small>${edicao ? "Fotos novas" : "Outras fotos"} (${lista.length})</small>
+                <div>${lista.map(url => `<a href="${escapar(url)}" target="_blank" rel="noopener"><img src="${escapar(url)}" alt="" loading="lazy"></a>`).join("")}</div>
+            </div>
+        `;
+    }
+
     // Em uma edição, mostra lado a lado só o que mudou.
     function criarComparacao(item) {
         const novos = item.dados_novos || {};
@@ -144,6 +157,7 @@
                     <h3>${escapar(item.nome || "Anúncio")}</h3>
                     <p class="fila-anuncio-preco">${escapar(preco)}${item.categoria ? ` · ${escapar(item.categoria)}` : ""}${!edicao && rotuloCondicao(item.dados_novos?.condicao_atual) ? ` · ${rotuloCondicao(item.dados_novos.condicao_atual)}` : ""}</p>
                     ${edicao ? criarComparacao(item) : `<p class="fila-anuncio-descricao">${escapar(item.descricao || "Sem descrição.")}</p>`}
+                    ${criarFotosExtras(item, edicao)}
 
                     <div class="fila-anuncio-rejeicao" hidden>
                         <label>
