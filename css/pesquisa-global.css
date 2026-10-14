@@ -792,3 +792,22 @@ body.dark-theme .produto-global-meta .condicao-anuncio {
     color: #8c929b;
     font-weight: 600;
 }
+
+/* Bairro do anúncio (opcional) */
+.produto-global-bairro {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6f7680;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.produto-global-bairro i {
+    color: var(--home-primary, #ff6b35);
+}
+
+html.dark-theme body.dark-theme .produto-global-bairro {
+    color: #aab2bd;
+}

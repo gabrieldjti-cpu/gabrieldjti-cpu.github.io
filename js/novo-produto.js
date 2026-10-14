@@ -270,6 +270,9 @@ async function verificarUsuario() {
         window.perfilAnunciantePessoal =
             loja.tipo === "pessoal";
 
+        // Bairro opcional: sugere o bairro do perfil, se houver.
+        preencherBairroDoPerfil(usuario.id);
+
         // No plano gratuito o anúncio nasce disponível (1 unidade).
         const campoEstoque =
             document.getElementById("estoque");
@@ -1284,7 +1287,8 @@ async function salvarProduto(
 
             ativo,
 
-            destaque
+            bairro:
+                lerBairroAnuncio()
 
         };
 
@@ -1436,6 +1440,29 @@ async function salvarProduto(
 // ==========================================
 // ENVIAR IMAGEM DO PRODUTO
 // ==========================================
+
+async function preencherBairroDoPerfil(usuarioId) {
+    const campo = document.getElementById("bairro");
+    if (!campo || campo.value.trim() || !usuarioId) return;
+    try {
+        const { data } = await window.db
+            .from("profiles")
+            .select("bairro")
+            .eq("id", usuarioId)
+            .maybeSingle();
+        if (data?.bairro && !campo.value.trim()) campo.value = data.bairro;
+    } catch (erro) {
+        console.warn("Não foi possível sugerir o bairro do perfil:", erro);
+    }
+}
+
+
+// Bairro opcional: vazio vira nulo (o banco arruma espaços).
+function lerBairroAnuncio() {
+    const valor = String(document.getElementById("bairro")?.value || "").trim();
+    return valor.length >= 2 ? valor.slice(0, 60) : null;
+}
+
 
 async function enviarImagemProduto(
     arquivo

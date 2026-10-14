@@ -171,6 +171,7 @@
                 preco_promocional,
                 estoque,
                 condicao,
+                bairro,
                 imagem_url,
                 destaque,
                 ativo,
@@ -497,6 +498,11 @@
         if (linhaCondicao) linhaCondicao.hidden = !textoCondicao;
         const detalheCondicao = document.getElementById("detalheCondicaoProduto");
         if (detalheCondicao) detalheCondicao.textContent = textoCondicao || "—";
+        const bairro = String(produto.bairro || "").trim();
+        const linhaBairro = document.getElementById("linhaBairroProduto");
+        if (linhaBairro) linhaBairro.hidden = !bairro;
+        const detalheBairro = document.getElementById("detalheBairroProduto");
+        if (detalheBairro) detalheBairro.textContent = bairro || "—";
 
         elementos.quantidadeProduto.max = String(Math.max(1, estoque));
         elementos.quantidadeProduto.disabled = !emEstoque;
@@ -860,7 +866,7 @@
     }
 
     async function buscarRelacionados({ categoriaId, lojaId }) {
-        const { data, error } = await window.db.rpc("buscar_anuncios_publicos", {
+        const { data, error } = await window.db.rpc("buscar_anuncios", {
             p_termo: "",
             p_categoria_id: categoriaId ? Number(categoriaId) : null,
             p_loja_id: lojaId || null,

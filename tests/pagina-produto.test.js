@@ -73,7 +73,7 @@ test("o produto público exige item ativo e loja aprovada", () => {
 test("avaliações e produtos relacionados usam as APIs públicas existentes", () => {
     assert.match(codigo, /resumo_avaliacoes_vendedor/);
     assert.match(codigo, /listar_avaliacoes_vendedor/);
-    assert.match(codigo, /buscar_anuncios_publicos/);
+    assert.match(codigo, /rpc\("buscar_anuncios"/);
     assert.match(codigo, /p_disponibilidade: "estoque"/);
 });
 

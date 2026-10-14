@@ -20,6 +20,7 @@
         lojaId: "",
         disponibilidade: "",
         condicao: "",
+        bairro: "",
         precoMinimo: "",
         precoMaximo: "",
         avaliacaoMinima: "",
@@ -57,7 +58,8 @@
 
         await Promise.allSettled([
             carregarCategorias(),
-            carregarLojas()
+            carregarLojas(),
+            carregarBairros()
         ]);
 
         await buscarProdutos();
@@ -75,6 +77,7 @@
         elementos.loja = document.getElementById("filtro-loja-produto");
         elementos.disponibilidade = document.getElementById("filtro-disponibilidade-produto");
         elementos.condicao = document.getElementById("filtro-condicao-produto");
+        elementos.bairro = document.getElementById("filtro-bairro-produto");
         elementos.precoMinimo = document.getElementById("filtro-preco-minimo-produto");
         elementos.precoMaximo = document.getElementById("filtro-preco-maximo-produto");
         elementos.avaliacaoMinima = document.getElementById("filtro-avaliacao-produto");
@@ -169,6 +172,7 @@
             elementos.loja,
             elementos.disponibilidade,
             elementos.condicao,
+            elementos.bairro,
             elementos.precoMinimo,
             elementos.precoMaximo,
             elementos.avaliacaoMinima,
@@ -255,7 +259,7 @@
                 elementos.avaliacaoMinima?.value
             );
 
-            const { data, error } = await window.db.rpc("buscar_anuncios_publicos", {
+            const { data, error } = await window.db.rpc("buscar_anuncios", {
                 p_termo: termo,
                 p_categoria_id: subcategoriaId
                     ? Number(subcategoriaId)
@@ -722,7 +726,7 @@
 
         const inicio = (estado.pagina - 1) * TAMANHO_PAGINA;
         try {
-            const { data, error } = await window.db.rpc("buscar_anuncios_publicos", {
+            const { data, error } = await window.db.rpc("buscar_anuncios", {
                 p_termo: estado.termo,
                 p_categoria_id: estado.subcategoriaId
                     ? Number(estado.subcategoriaId)
@@ -732,6 +736,7 @@
                 // Anúncio indisponível não aparece na página inicial.
                 p_disponibilidade: "estoque",
                 p_condicao: estado.condicao || null,
+                p_bairro: estado.bairro || null,
                 p_preco_min: estado.precoMinimo === ""
                     ? null
                     : Number(estado.precoMinimo),
@@ -782,6 +787,7 @@
         estado.lojaId = String(elementos.loja?.value || "");
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
         estado.condicao = String(elementos.condicao?.value || "");
+        estado.bairro = String(elementos.bairro?.value || "");
         estado.precoMinimo = sanitizarPrecoFiltro(elementos.precoMinimo?.value);
         estado.precoMaximo = sanitizarPrecoFiltro(elementos.precoMaximo?.value);
         estado.avaliacaoMinima = sanitizarAvaliacaoFiltro(
@@ -967,6 +973,10 @@
                         Anunciado por <strong>${nomeLoja}</strong>
                     </p>
 
+                    ${produto.bairro
+                        ? `<p class="produto-global-bairro"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${escaparHTML(produto.bairro)}</p>`
+                        : ""}
+
                     <div class="produto-global-rodape">
                         <div class="produto-global-preco">${precoHTML}</div>
                     </div>
@@ -1092,6 +1102,39 @@
         if (elementos.paginacao) elementos.paginacao.hidden = true;
     }
 
+    // Bairros com anúncios disponíveis (filtro opcional).
+    async function carregarBairros() {
+        if (!window.db || !elementos.bairro) return;
+        try {
+            const { data, error } = await window.db.rpc("listar_bairros_anuncios");
+            if (error) throw error;
+            const opcoes = (Array.isArray(data) ? data : [])
+                .filter(item => item && item.bairro)
+                .map(item => {
+                    const opcao = document.createElement("option");
+                    opcao.value = item.bairro;
+                    opcao.textContent = item.bairro;
+                    return opcao;
+                });
+            elementos.bairro.replaceChildren(
+                Object.assign(document.createElement("option"), { value: "", textContent: "Todos os bairros" }),
+                ...opcoes
+            );
+            definirBairroSelecionado();
+        } catch (erro) {
+            console.warn("Não foi possível carregar os bairros:", erro);
+        }
+    }
+
+    function definirBairroSelecionado() {
+        if (!elementos.bairro) return;
+        const valor = String(estado.bairro || "");
+        if (valor && ![...elementos.bairro.options].some(opcao => opcao.value === valor)) {
+            elementos.bairro.append(Object.assign(document.createElement("option"), { value: valor, textContent: valor }));
+        }
+        elementos.bairro.value = valor;
+    }
+
     function limparFiltros() {
         clearTimeout(temporizadorPesquisa);
         clearTimeout(temporizadorSugestoes);
@@ -1106,6 +1149,7 @@
         if (elementos.loja) elementos.loja.value = "";
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
         if (elementos.condicao) elementos.condicao.value = "";
+        if (elementos.bairro) elementos.bairro.value = "";
         if (elementos.precoMinimo) elementos.precoMinimo.value = "";
         if (elementos.precoMaximo) elementos.precoMaximo.value = "";
         if (elementos.avaliacaoMinima) elementos.avaliacaoMinima.value = "";
@@ -1140,6 +1184,7 @@
             ? disponibilidade
             : "";
         estado.condicao = ["novo", "usado"].includes(condicao) ? condicao : "";
+        estado.bairro = String(params.get("bairro") || "").trim().slice(0, 60);
         estado.precoMinimo = precoMinimo;
         estado.precoMaximo = precoMaximo;
         estado.avaliacaoMinima = avaliacaoMinima;
@@ -1158,6 +1203,7 @@
 
         if (elementos.disponibilidade) elementos.disponibilidade.value = estado.disponibilidade;
         if (elementos.condicao) elementos.condicao.value = estado.condicao;
+        definirBairroSelecionado();
         if (elementos.precoMinimo) elementos.precoMinimo.value = estado.precoMinimo;
         if (elementos.precoMaximo) elementos.precoMaximo.value = estado.precoMaximo;
         if (elementos.avaliacaoMinima) {
@@ -1175,6 +1221,7 @@
         atualizarParametro(url, "loja_produto", estado.lojaId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
         atualizarParametro(url, "condicao", estado.condicao);
+        atualizarParametro(url, "bairro", estado.bairro);
         atualizarParametro(url, "preco_minimo", estado.precoMinimo);
         atualizarParametro(url, "preco_maximo", estado.precoMaximo);
         atualizarParametro(url, "avaliacao_minima", estado.avaliacaoMinima);

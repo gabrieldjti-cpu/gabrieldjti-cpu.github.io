@@ -54,7 +54,7 @@ test("busca filtra por condição e mostra o selo", () => {
     assert.match(ler("categoria.html"), /id="condicao-categoria"/);
     for (const arquivo of ["js/pesquisa-global.js", "js/categoria.js"]) {
         const codigo = ler(arquivo);
-        assert.match(codigo, /rpc\("buscar_anuncios_publicos"/);
+        assert.match(codigo, /rpc\("buscar_anuncios"/);
         assert.doesNotMatch(codigo, /rpc\("buscar_produtos_publicos"/);
         assert.match(codigo, /p_condicao:/);
         assert.match(codigo, /condicao-anuncio/);

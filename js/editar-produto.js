@@ -937,6 +937,19 @@ async function carregarProduto() {
         }
 
 
+        const bairro =
+            document.getElementById(
+                "bairro"
+            );
+
+        if (bairro) {
+
+            bairro.value =
+                produto.bairro || "";
+
+        }
+
+
         // ==================================
         // PREVIEW
         // ==================================
@@ -1656,7 +1669,8 @@ async function atualizarProduto(
 
                     ativo,
 
-                    destaque
+                    bairro:
+                        lerBairroAnuncio()
 
                 })
 
@@ -1797,6 +1811,13 @@ async function atualizarProduto(
 // ==========================================
 // ENVIAR IMAGEM
 // ==========================================
+
+// Bairro opcional: vazio vira nulo (o banco arruma espaços).
+function lerBairroAnuncio() {
+    const valor = String(document.getElementById("bairro")?.value || "").trim();
+    return valor.length >= 2 ? valor.slice(0, 60) : null;
+}
+
 
 async function enviarImagemProduto(
     arquivo

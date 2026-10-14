@@ -17,6 +17,7 @@
         subcategoriaProdutoId: "",
         disponibilidade: "",
         condicao: "",
+        bairro: "",
         precoMinimo: "",
         precoMaximo: "",
         avaliacaoMinima: "",
@@ -64,6 +65,7 @@
         await Promise.allSettled([
             carregarAtalhosCategorias(),
             carregarLojasCategoria(),
+            carregarBairros(),
             buscarProdutosCategoria()
         ]);
     }
@@ -85,6 +87,7 @@
         elementos.subcategoriaProduto = document.getElementById("subcategoria-produto-categoria");
         elementos.disponibilidade = document.getElementById("disponibilidade-categoria");
         elementos.condicao = document.getElementById("condicao-categoria");
+        elementos.bairro = document.getElementById("bairro-categoria");
         elementos.precoMinimo = document.getElementById("preco-minimo-categoria");
         elementos.precoMaximo = document.getElementById("preco-maximo-categoria");
         elementos.avaliacaoMinima = document.getElementById("avaliacao-minima-categoria");
@@ -128,6 +131,7 @@
             elementos.subcategoriaProduto,
             elementos.disponibilidade,
             elementos.condicao,
+            elementos.bairro,
             elementos.precoMinimo,
             elementos.precoMaximo,
             elementos.avaliacaoMinima,
@@ -510,7 +514,7 @@
 
         const inicio = (estado.pagina - 1) * TAMANHO_PAGINA;
         try {
-            const { data, error } = await window.db.rpc("buscar_anuncios_publicos", {
+            const { data, error } = await window.db.rpc("buscar_anuncios", {
                 p_termo: estado.termo,
                 p_categoria_id: estado.subcategoriaProdutoId
                     ? Number(estado.subcategoriaProdutoId)
@@ -522,6 +526,7 @@
                 // Só anúncios disponíveis nas listas de categoria.
                 p_disponibilidade: "estoque",
                 p_condicao: estado.condicao || null,
+                p_bairro: estado.bairro || null,
                 p_preco_min: estado.precoMinimo === ""
                     ? null
                     : Number(estado.precoMinimo),
@@ -583,6 +588,7 @@
         );
         estado.disponibilidade = String(elementos.disponibilidade?.value || "");
         estado.condicao = String(elementos.condicao?.value || "");
+        estado.bairro = String(elementos.bairro?.value || "");
         estado.precoMinimo = sanitizarPrecoFiltro(elementos.precoMinimo?.value);
         estado.precoMaximo = sanitizarPrecoFiltro(elementos.precoMaximo?.value);
         estado.avaliacaoMinima = sanitizarAvaliacaoFiltro(
@@ -672,6 +678,7 @@
                 || estado.subcategoriaProdutoId
                 || estado.disponibilidade
                 || estado.condicao
+                || estado.bairro
                 || estado.precoMinimo
                 || estado.precoMaximo
                 || estado.avaliacaoMinima
@@ -801,6 +808,10 @@
                         Anunciado por <strong>${nomeLoja}</strong>
                     </p>
 
+                    ${produto.bairro
+                        ? `<p class="produto-global-bairro"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${escaparHTML(produto.bairro)}</p>`
+                        : ""}
+
                     <div class="produto-global-rodape">
                         <div class="produto-global-preco">${precoHTML}</div>
                     </div>
@@ -825,8 +836,8 @@
 
     function atualizarTotalProdutos() {
         const texto = estado.totalProdutos === 1
-            ? "1 produto"
-            : `${estado.totalProdutos} produtos`;
+            ? "1 anúncio"
+            : `${estado.totalProdutos} anúncios`;
 
         if (elementos.totalProdutos) elementos.totalProdutos.textContent = texto;
         if (elementos.resumoProdutos) {
@@ -929,6 +940,39 @@
         buscarProdutosCategoria({ rolarAteProdutos: true });
     }
 
+    // Bairros com anúncios disponíveis (filtro opcional).
+    async function carregarBairros() {
+        if (!window.db || !elementos.bairro) return;
+        try {
+            const { data, error } = await window.db.rpc("listar_bairros_anuncios");
+            if (error) throw error;
+            const opcoes = (Array.isArray(data) ? data : [])
+                .filter(item => item && item.bairro)
+                .map(item => {
+                    const opcao = document.createElement("option");
+                    opcao.value = item.bairro;
+                    opcao.textContent = item.bairro;
+                    return opcao;
+                });
+            elementos.bairro.replaceChildren(
+                Object.assign(document.createElement("option"), { value: "", textContent: "Todos os bairros" }),
+                ...opcoes
+            );
+            definirBairroSelecionado();
+        } catch (erro) {
+            console.warn("Não foi possível carregar os bairros:", erro);
+        }
+    }
+
+    function definirBairroSelecionado() {
+        if (!elementos.bairro) return;
+        const valor = String(estado.bairro || "");
+        if (valor && ![...elementos.bairro.options].some(opcao => opcao.value === valor)) {
+            elementos.bairro.append(Object.assign(document.createElement("option"), { value: valor, textContent: valor }));
+        }
+        elementos.bairro.value = valor;
+    }
+
     function limparFiltros() {
         clearTimeout(temporizadorPesquisa);
         numeroConsultaProdutos += 1;
@@ -940,6 +984,7 @@
         preencherSubcategoriasProdutos("");
         if (elementos.disponibilidade) elementos.disponibilidade.value = "";
         if (elementos.condicao) elementos.condicao.value = "";
+        if (elementos.bairro) elementos.bairro.value = "";
         if (elementos.precoMinimo) elementos.precoMinimo.value = "";
         if (elementos.precoMaximo) elementos.precoMaximo.value = "";
         if (elementos.avaliacaoMinima) elementos.avaliacaoMinima.value = "";
@@ -969,6 +1014,7 @@
             ? subcategoriaProduto
             : "";
         estado.condicao = ["novo", "usado"].includes(condicao) ? condicao : "";
+        estado.bairro = String(params.get("bairro") || "").trim().slice(0, 60);
         estado.disponibilidade = ["estoque", "esgotado"].includes(disponibilidade)
             ? disponibilidade
             : "";
@@ -991,6 +1037,7 @@
 
         if (elementos.pesquisa) elementos.pesquisa.value = termo;
         if (elementos.condicao) elementos.condicao.value = estado.condicao;
+        definirBairroSelecionado();
         if (elementos.disponibilidade) {
             elementos.disponibilidade.value = estado.disponibilidade;
         }
@@ -1010,6 +1057,7 @@
         atualizarParametro(url, "subcategoria_produto", estado.subcategoriaProdutoId);
         atualizarParametro(url, "disponibilidade", estado.disponibilidade);
         atualizarParametro(url, "condicao", estado.condicao);
+        atualizarParametro(url, "bairro", estado.bairro);
         atualizarParametro(url, "preco_minimo", estado.precoMinimo);
         atualizarParametro(url, "preco_maximo", estado.precoMaximo);
         atualizarParametro(url, "avaliacao_minima", estado.avaliacaoMinima);
