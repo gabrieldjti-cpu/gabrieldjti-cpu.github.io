@@ -60,3 +60,10 @@ body.dark-theme .foto-extra {
   border-color: #334155;
   background: #273449;
 }
+
+/* "(opcional)" ao lado do rótulo */
+.campo-opcional {
+    color: #8c929b;
+    font-size: .85em;
+    font-weight: 500;
+}

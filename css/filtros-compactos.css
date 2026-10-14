@@ -233,13 +233,15 @@
     }
 
     /* Campos de nome comprido ocupam a linha toda */
+    /* Início: categoria, subcategoria, bairro e nota; loja + condição e preços lado a lado */
     #filtros-produtos-globais > :nth-child(1),
     #filtros-produtos-globais > :nth-child(2),
-    #filtros-produtos-globais > :nth-child(7),
+    #filtros-produtos-globais > :nth-child(5),
+    #filtros-produtos-globais > :nth-child(8),
+    /* Categoria: condição + bairro e preços lado a lado */
     #filtros-categoria > :nth-child(1),
     #filtros-categoria > :nth-child(2),
-    #filtros-categoria > :nth-child(3),
-    #filtros-categoria > :nth-child(6) {
+    #filtros-categoria > :nth-child(7) {
         grid-column: 1 / -1;
     }
 

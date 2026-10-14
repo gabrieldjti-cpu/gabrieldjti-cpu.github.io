@@ -101,6 +101,11 @@
             ]);
         }
 
+        // Edições antigas não traziam o bairro.
+        if (Object.prototype.hasOwnProperty.call(novos, "bairro")) {
+            campos.push(["Bairro", novos.bairro_atual || "", novos.bairro || ""]);
+        }
+
         const linhas = campos
             .filter(([, antes, depois]) => String(antes ?? "") !== String(depois ?? ""))
             .map(([rotulo, antes, depois]) => `
@@ -155,7 +160,7 @@
                         <small>${escapar(anunciante)}: ${escapar(item.loja_nome || "")} · enviado em ${escapar(dataHora(item.enviado_em))}</small>
                     </div>
                     <h3>${escapar(item.nome || "Anúncio")}</h3>
-                    <p class="fila-anuncio-preco">${escapar(preco)}${item.categoria ? ` · ${escapar(item.categoria)}` : ""}${!edicao && rotuloCondicao(item.dados_novos?.condicao_atual) ? ` · ${rotuloCondicao(item.dados_novos.condicao_atual)}` : ""}</p>
+                    <p class="fila-anuncio-preco">${escapar(preco)}${item.categoria ? ` · ${escapar(item.categoria)}` : ""}${!edicao && rotuloCondicao(item.dados_novos?.condicao_atual) ? ` · ${rotuloCondicao(item.dados_novos.condicao_atual)}` : ""}${!edicao && item.dados_novos?.bairro_atual ? ` · ${escapar(item.dados_novos.bairro_atual)}` : ""}</p>
                     ${edicao ? criarComparacao(item) : `<p class="fila-anuncio-descricao">${escapar(item.descricao || "Sem descrição.")}</p>`}
                     ${criarFotosExtras(item, edicao)}
 
